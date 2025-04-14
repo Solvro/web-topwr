@@ -18,18 +18,22 @@
   },
   "prettier": "@solvro/config/prettier",
   "dependencies": {
-    "@radix-ui/react-slot": "^1.1.2",
+    "@hookform/resolvers": "^5.0.1",
+    "@radix-ui/react-label": "^2.1.3",
+    "@radix-ui/react-slot": "^1.2.0",
     "@tanstack/react-query": "^5.71.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.487.0",
     "next": "15.2.4",
-    "ra-data-json-server": "^5.7.2",
+    "ra-data-fakerest": "^5.7.2",
     "react": "^19.0.0",
     "react-admin": "^5.7.2",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.55.0",
     "tailwind-merge": "^3.1.0",
-    "tw-animate-css": "^1.2.5"
+    "tw-animate-css": "^1.2.5",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
