@@ -1,6 +1,3 @@
-/* eslint-disable unicorn/no-empty-file, import/consistent-type-specifier-style */
-// Here implement the types used in the app
-
 // Types Source: backend-topwr
 export interface ValidationIssue {
   message: string;
@@ -41,6 +38,6 @@ export interface SerializedErrorReport {
 }
 
 export interface SuccessResponse<T> {
-  success?: boolean;
+  success: boolean;
   data?: T;
 }

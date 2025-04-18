@@ -1,10 +1,9 @@
 import { API_URL } from "@/config/api";
-import { SerializedErrorReport, SuccessResponse } from "@/lib/types";
+import type { SerializedErrorReport, SuccessResponse } from "@/lib/types";
 
 type RequestOptions = {
-  allowStatus0?: boolean;
   headers?: Record<string, string>;
-  body?: BodyInit | null;
+  body?: BodyInit;
 } & Omit<RequestInit, "headers">;
 
 const isAbsolutePath = (url: string) => /^https?:\/\//.test(url);
@@ -22,7 +21,7 @@ export async function fetchData<T>(
   endpoint: string,
   options: RequestOptions = {},
   body?: T,
-): Promise<SuccessResponse<T>> {
+): Promise<SuccessResponse<T> | SerializedErrorReport> {
   const method = options.method ?? "GET";
 
   if (["POST", "PUT", "PATCH"].includes(method)) {
@@ -33,14 +32,17 @@ export async function fetchData<T>(
     };
 
     // Automatically stringify the body if provided
-    options.body = body ? JSON.stringify(body) : undefined;
+    options.body =
+      body !== null && body !== undefined ? JSON.stringify(body) : undefined;
   } else if (method === "GET") {
     // Ensure no body is sent for GET requests
     delete options.body;
   }
 
   const response = await fetch(
-    isAbsolutePath(endpoint) ? endpoint : `${API_URL}/${endpoint}`,
+    isAbsolutePath(endpoint)
+      ? endpoint
+      : `${API_URL.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`,
     {
       ...options,
       next: { revalidate: 60 },
@@ -56,8 +58,12 @@ export async function fetchData<T>(
   } catch (error) {
     console.warn("Could not parse the response body as JSON", error);
   }
-
-  if (!response.ok || !responseBody || "success" in responseBody === false) {
+  //@eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+  if (
+    !response.ok ||
+    responseBody === null ||
+    ("success" in responseBody && !responseBody.success)
+  ) {
     const errorReport = responseBody as SerializedErrorReport;
     console.error("Error response body:", JSON.stringify(errorReport, null, 2));
     throw new FetchError(response.statusText, errorReport);
