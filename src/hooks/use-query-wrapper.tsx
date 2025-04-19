@@ -10,7 +10,6 @@ export function useQueryWrapper<TData, TError>(
 ) {
   return useQuery<TData, TError>({
     queryFn: async () => await queryFunction,
-    //@eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: [queryKey, queryFunction],
     ...options,
   });
