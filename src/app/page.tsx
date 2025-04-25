@@ -3,8 +3,7 @@
 import dynamic from "next/dynamic";
 
 const AdminApp = dynamic(
-  async () =>
-    import("@/components/admin-app").then((module) => module.AdminApp),
+  async () => import("./admin-app").then((module) => module.AdminApp),
   { ssr: false },
 );
 

@@ -4,17 +4,16 @@ import { EditBase, Form, required, useEditContext } from "ra-core";
 import type { RaRecord } from "ra-core";
 import { Link } from "react-admin";
 
+import { RaInput } from "@/components/ra-input";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
 
-import { RaInput } from "./ra-input";
-import { Button } from "./ui/button";
-
-export function PlaceholderUsersEdit() {
+export function ArticlesEdit() {
   return (
     <EditBase mutationMode="pessimistic">
       <ProductEditView />
@@ -36,18 +35,19 @@ function ProductEditView() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <Link href="/" to="/users">
-              Users
+            <Link href="/" to="/articles">
+              Artykuły
             </Link>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          <BreadcrumbItem>{context.record?.name ?? "User"}</BreadcrumbItem>
+          <BreadcrumbItem>{context.record?.name ?? "Artykuł"}</BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
       <h2>{context.record?.name ?? ""}</h2>
       <Form>
         <RaInput source="name" label="Name" validate={required()} />
-        <Button type="submit">Save</Button>
+        <RaInput source="contents" label="Contents" validate={required()} />
+        <Button type="submit">Zapisz</Button>
       </Form>
     </>
   );

@@ -14,12 +14,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export function PlaceholderUsersList() {
+export function OrganizationsList() {
   const listContext = useListController<{
     id: number;
     name: string;
-    username: string;
-    email: string;
+    contents: string;
   }>({
     sort: { field: "reference", order: "ASC" },
   });
@@ -27,25 +26,25 @@ export function PlaceholderUsersList() {
   return (
     <ListContextProvider value={listContext}>
       <Table>
-        <TableCaption>A list of users.</TableCaption>
+        <TableCaption>A list of organizations.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>ID</TableHead>
             <TableHead>Name</TableHead>
-            <TableHead>Username</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Edit</TableHead>
+            <TableHead>Contents</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {listContext.data?.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.id}</TableCell>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.username}</TableCell>
-              <TableCell>{user.email}</TableCell>
+          {listContext.data?.map((organization) => (
+            <TableRow key={organization.id}>
+              <TableCell>{organization.id}</TableCell>
+              <TableCell>{organization.name}</TableCell>
+              <TableCell>{organization.contents}</TableCell>
               <TableCell>
-                <Link href="/" to={`/users/${user.id.toString()}`}>
+                <Link
+                  href="/"
+                  to={`/organizations/${organization.id.toString()}`}
+                >
                   edit
                 </Link>
               </TableCell>
@@ -54,7 +53,9 @@ export function PlaceholderUsersList() {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={4}>Total Users: {listContext.total}</TableCell>
+            <TableCell colSpan={4}>
+              Total organizations: {listContext.total}
+            </TableCell>
           </TableRow>
         </TableFooter>
       </Table>
