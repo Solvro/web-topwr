@@ -26,7 +26,6 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.487.0",
     "next": "15.2.4",
-    "ra-data-fakerest": "^5.7.2",
     "react": "^19.0.0",
     "react-admin": "^5.7.2",
     "react-dom": "^19.0.0",

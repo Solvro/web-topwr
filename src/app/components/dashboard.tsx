@@ -6,11 +6,8 @@ export function Dashboard() {
   return (
     <div>
       *dashboard*
-      <Link href="/" to="/articles">
-        Artykuły
-      </Link>
-      <Link href="/" to="/organizations">
-        Organizacje
+      <Link href="/" to="/student_organizations">
+        Zarządzanie organizacjami
       </Link>
     </div>
   );

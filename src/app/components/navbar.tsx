@@ -1,20 +1,24 @@
 "use client";
 
-import { Link } from "react-admin";
+import { Link, useLogout } from "react-admin";
+
+import { Button } from "@/components/ui/button";
 
 export function Navbar() {
+  const logout = useLogout();
+  const handleClick = async () => {
+    await logout();
+  };
   return (
     <div className="flex flex-row">
       *navbar*
       <Link href="/" to="/">
         Home
       </Link>
-      <Link href="/" to="/articles">
-        Artykuły
+      <Link href="/" to="/student_organizations">
+        Organizacje studenckie
       </Link>
-      <Link href="/" to="/organizations">
-        Organizacje
-      </Link>
+      <Button onClick={handleClick}>logout</Button>
     </div>
   );
 }

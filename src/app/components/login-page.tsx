@@ -10,11 +10,11 @@ export function LoginPage() {
 
   return (
     <Form
-      className="space-y-8"
       onSubmit={async (values: unknown) =>
         login(values as { email: string; password: string })
       }
     >
+      <p>login/haslo: john 123</p>
       <RaInput
         label="Email"
         source="email"

@@ -1,46 +1,28 @@
 "use client";
 
 import { CoreAdmin, Resource } from "ra-core";
-import fakeDataProvider from "ra-data-fakerest";
 
+import { authProvider } from "./auth-provider";
 import { Dashboard } from "./components/dashboard";
 import { Layout } from "./components/layout";
 import { LoginPage } from "./components/login-page";
-import { ArticlesEdit } from "./edit-pages/articles-edit";
-import { OrganizationsEdit } from "./edit-pages/organizations-edit";
-import { ArticlesList } from "./list-pages/articles-list";
-import { OrganizationsList } from "./list-pages/organizations-list";
-
-// prettier-ignore
-const dataProvider = fakeDataProvider({
-    articles: [
-        { id: 0, name: "Hello, world!", contents: "Lorem ipsum." },
-        { id: 1, name: "Hello, world!", contents: "Lorem ipsum dolor sit amet." },
-    ],
-    organizations: [
-        { id: 0, name: "org 1", contents: "Lorem ipsum." },
-        { id: 1, name: "org 2", contents: "Lorem ipsum dolor sit amet." },
-    ]
-});
+import { dataProvider } from "./data-provider";
+import { StudentOrganizationsEdit } from "./edit-pages/student-organizations-edit";
+import { StudentOrganizationsList } from "./list-pages/student-organizations-list";
 
 export function AdminApp() {
   return (
     <CoreAdmin
+      authProvider={authProvider}
       dataProvider={dataProvider}
       loginPage={LoginPage}
       dashboard={Dashboard}
       layout={Layout}
     >
       <Resource
-        name="articles"
-        list={ArticlesList}
-        edit={ArticlesEdit}
-        recordRepresentation={"name"}
-      />
-      <Resource
-        name="organizations"
-        list={OrganizationsList}
-        edit={OrganizationsEdit}
+        name="student_organizations"
+        list={StudentOrganizationsList}
+        edit={StudentOrganizationsEdit}
         recordRepresentation={"name"}
       />
     </CoreAdmin>
