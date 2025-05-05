@@ -6,7 +6,28 @@ export interface FileData {
   url: string;
 }
 
-export interface Organization {
+export enum OrganizationType {
+  ScientificClub = "scientific_club",
+  StudentOrganization = "student_organization",
+  StudentMedium = "student_medium",
+  CultureAgenda = "culture_agenda",
+  StudentCouncil = "student_council",
+}
+
+export enum OrganizationSource {
+  StudentDepartment = "student_department",
+  Manual = "manual",
+  PwrActive = "pwr_active",
+}
+
+export enum OrganizationStatus {
+  Active = "active",
+  Inactive = "inactive",
+  Dissolved = "dissolved",
+  Unknown = "unknown",
+}
+
+export interface StudentOrganization {
   id: number;
   name: string;
   departmentId: number | null;
@@ -15,9 +36,9 @@ export interface Organization {
   description: string | null;
   shortDescription: string | null;
   coverPreview: boolean;
-  source: string;
-  organizationType: string;
+  source: OrganizationSource;
+  organizationType: OrganizationType;
+  organizationStatus: OrganizationStatus;
   createdAt: string;
   updatedAt: string;
-  organizationStatus: string;
 }

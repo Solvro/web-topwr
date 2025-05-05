@@ -8,7 +8,12 @@ import { Button } from "@/components/ui/button";
 
 export function StudentOrganizationsEdit() {
   return (
-    <EditBase mutationMode="pessimistic">
+    <EditBase
+      mutationMode="pessimistic"
+      transform={(data: RaRecord) => ({
+        name: data.name as string,
+      })}
+    >
       <ProductEditView />
     </EditBase>
   );

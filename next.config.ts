@@ -1,14 +1,15 @@
 import type { NextConfig } from "next";
 
-const domain = process.env.IMAGES_DOMAIN;
+const API_DOMAIN = new URL(process.env.NEXT_PUBLIC_API_URL ?? "").hostname;
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns:
-      typeof domain === "string" && domain.length > 0
+      typeof API_DOMAIN === "string" && API_DOMAIN.length > 0
         ? [
             {
               protocol: "https",
-              hostname: domain,
+              hostname: API_DOMAIN,
             },
           ]
         : [],
