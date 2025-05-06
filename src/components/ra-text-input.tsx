@@ -10,14 +10,14 @@ import {
 
 import { Input } from "./ui/input";
 
-export function RaInput(props: InputProps) {
+export function RaTextInput(props: InputProps) {
   const { field } = useInput(props);
 
   return (
     <FormItem>
       <FormLabel>{props.label}</FormLabel>
       <FormControl>
-        <Input {...field} />
+        <Input {...field} type={props.type} />
       </FormControl>
       <FormDescription>{props.helperText}</FormDescription>
     </FormItem>

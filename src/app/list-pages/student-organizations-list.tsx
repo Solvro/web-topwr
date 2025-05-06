@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { ListContextProvider, useListController } from "ra-core";
 import { useEffect, useState } from "react";
-import { Link } from "react-admin";
 
 import type { StudentOrganization } from "@/lib/types";
 import { getImageUrl } from "@/lib/utils";
@@ -59,26 +58,12 @@ export function StudentOrganizationsList() {
           ? "No description"
           : `${organization.shortDescription.slice(0, 100)}...`,
     },
-    {
-      header: "Edit",
-      render: (organization: StudentOrganization) => (
-        <Link
-          href="/"
-          to={`/student_organizations/${organization.id.toString()}`}
-        >
-          edit
-        </Link>
-      ),
-    },
-    {
-      header: "Delete",
-      render: () => "delete placeholder",
-    },
   ];
 
   return (
     <ListContextProvider value={listContext}>
       <AbstractList
+        resource="student_organizations"
         data={listContext.data}
         columns={columns}
         page={listContext.page}

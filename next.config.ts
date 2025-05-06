@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
-const API_DOMAIN = new URL(process.env.NEXT_PUBLIC_API_URL ?? "").hostname;
+const API_DOMAIN =
+  process.env.NEXT_PUBLIC_API_URL == null
+    ? ""
+    : new URL(process.env.NEXT_PUBLIC_API_URL).hostname;
 
 const nextConfig: NextConfig = {
   images: {
