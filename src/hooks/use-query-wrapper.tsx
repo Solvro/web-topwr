@@ -11,7 +11,7 @@ import type { UseQueryOptions } from "@tanstack/react-query";
  *
  * @param {string} queryKey - A unique key for the query.
  * @param {() => Promise<TData>} queryFunction - A function that resolves the query data.
- * @param {Omit<QueryOptions<TData, TError>, "queryKey" | "queryFn">} [options] - Optional configuration for the query, excluding `queryKey` and `queryFn`.
+ * @param {Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">} [options] - Optional configuration for the query, excluding `queryKey` and `queryFn`.
  *
  * @returns {UseQueryResult<TData, TError>} The result of the query, including data, status, and error.
  */
