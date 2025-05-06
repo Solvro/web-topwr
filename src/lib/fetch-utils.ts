@@ -9,11 +9,20 @@ type RequestOptions = {
 const isAbsolutePath = (url: string) => /^https?:\/\//.test(url);
 
 export class FetchError extends Error {
-  public errorReport: SerializedErrorReport;
+  public errorReport: SerializedErrorReport | null;
 
-  constructor(message: string, errorReport: SerializedErrorReport) {
+  constructor(
+    message: string,
+    errorReport: SerializedErrorReport | null = null,
+  ) {
     super(message);
     this.errorReport = errorReport;
+
+    // Adjust the stack trace to remove this constructor
+    if (typeof this.stack === "string" && this.stack.trim() !== "") {
+      const stackLines = this.stack.split("\n");
+      this.stack = [stackLines[0], ...stackLines.slice(2)].join("\n");
+    }
   }
 }
 
@@ -35,9 +44,13 @@ async function handleResponse<T>(
     responseBody === null ||
     ("success" in responseBody && !responseBody.success)
   ) {
-    const errorReport = responseBody as SerializedErrorReport;
+    const errorReport = responseBody as SerializedErrorReport | null;
     console.error("Error response body:", JSON.stringify(errorReport, null, 2));
-    throw new FetchError(response.statusText, errorReport);
+
+    throw new FetchError(
+      `Error ${String(response.status)}: ${String(response.statusText)}`,
+      errorReport,
+    );
   }
 
   return responseBody as SuccessResponse<T>;
@@ -50,16 +63,15 @@ export async function fetchQuery<T>(
   // Ensure no body is sent for GET requests
   delete options.body;
 
-  const response = await fetch(
-    isAbsolutePath(endpoint)
-      ? endpoint
-      : `${API_URL.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`,
-    {
-      ...options,
-      method: "GET",
-      next: { revalidate: 60 },
-    },
-  );
+  const url = isAbsolutePath(endpoint)
+    ? endpoint
+    : `${API_URL.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`;
+
+  const response = await fetch(url, {
+    ...options,
+    method: "GET",
+    next: { revalidate: 60 },
+  });
 
   return handleResponse<T>(response);
 }
