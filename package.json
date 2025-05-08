@@ -33,7 +33,7 @@
     "@commitlint/cli": "^19.8.0",
     "@eslint/eslintrc": "^3",
     "@next/eslint-plugin-next": "^15.2.4",
-    "@solvro/config": "^1.13.4",
+    "@solvro/config": "^1.13.5",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
