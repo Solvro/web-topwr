@@ -10,10 +10,18 @@ export function StudentOrganizationsCreate() {
   return (
     <CreateBase
       mutationMode="pessimistic"
+      // TODO: use actual data instead of placeholders, implement missing fields
       transform={(data: RaRecord) => ({
         name: data.name as string,
+        departmentId: null,
+        logoKey: null,
+        coverKey: null,
         description: data.description as string,
         shortDescription: data.shortDescription as string,
+        coverPreview: false,
+        source: "student_department",
+        organizationType: "scientific_club",
+        organizationStatus: "unknown",
       })}
     >
       <CreateView />

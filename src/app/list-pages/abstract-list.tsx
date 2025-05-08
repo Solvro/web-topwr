@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ChevronLeft,
-  ChevronRight,
-  Plus,
-  SquarePen,
-  Trash2,
-} from "lucide-react";
+import { Plus, SquarePen, Trash2 } from "lucide-react";
 import { useCreatePath, useDelete } from "react-admin";
 import { Link } from "react-router-dom";
 
@@ -21,6 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Pagiation } from "@/components/ui/pagination";
 import {
   Table,
   TableBody,
@@ -36,10 +31,10 @@ export function AbstractList<T extends { id: number; name: string }>({
   data,
   columns,
   page,
+  totalPages,
   hasNextPage,
   hasPreviousPage,
-  onNextPage,
-  onPreviousPage,
+  setPage,
 }: {
   resource: string;
   data?: T[];
@@ -48,15 +43,15 @@ export function AbstractList<T extends { id: number; name: string }>({
     render: (item: T) => React.ReactNode;
   }[];
   page: number;
+  totalPages: number;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
-  onNextPage: () => void;
-  onPreviousPage: () => void;
+  setPage: (pageNumber: number) => void;
 }) {
   const createPath = useCreatePath();
 
   return (
-    <div>
+    <div className="container mx-auto">
       <Table>
         <TableHeader>
           <TableRow>
@@ -107,15 +102,13 @@ export function AbstractList<T extends { id: number; name: string }>({
           <Plus />
         </Button>
       </Link>
-      <div>
-        <Button onClick={onPreviousPage} disabled={!hasPreviousPage}>
-          <ChevronLeft />
-        </Button>
-        <Button onClick={onNextPage} disabled={!hasNextPage}>
-          <ChevronRight />
-        </Button>
-        <span className="text-sm">Page {page}</span>
-      </div>
+      <Pagiation
+        page={page}
+        totalPages={totalPages}
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        setPage={setPage}
+      />
     </div>
   );
 }
@@ -140,7 +133,9 @@ function DeleteButtonWithDialog({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Czy na pewno chcesz usunąć {name}</DialogTitle>
+          <DialogTitle>
+            Czy na pewno chcesz usunąć &quot;{name}&quot;
+          </DialogTitle>
           <DialogDescription>Tego kroku nie można cofnąć</DialogDescription>
         </DialogHeader>
         <DialogFooter>

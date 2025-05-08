@@ -12,6 +12,8 @@ import { AbstractList } from "./abstract-list";
 export function StudentOrganizationsList() {
   const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
   const listContext = useListController<StudentOrganization>({ perPage: 10 });
+  const { total, perPage = 10 } = listContext;
+  const totalPages: number = total == null ? 0 : Math.ceil(total / perPage);
 
   useEffect(() => {
     const fetchImageUrls = async () => {
@@ -67,13 +69,11 @@ export function StudentOrganizationsList() {
         data={listContext.data}
         columns={columns}
         page={listContext.page}
+        totalPages={totalPages}
         hasNextPage={listContext.hasNextPage ?? false}
         hasPreviousPage={listContext.hasPreviousPage ?? false}
-        onNextPage={() => {
-          listContext.setPage(listContext.page + 1);
-        }}
-        onPreviousPage={() => {
-          listContext.setPage(listContext.page - 1);
+        setPage={(pageNumber) => {
+          listContext.setPage(pageNumber);
         }}
       />
     </ListContextProvider>

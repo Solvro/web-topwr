@@ -48,41 +48,24 @@ export const dataProvider: DataProvider = {
   //   getManyReference: (resource, parameters) => Promise,
 
   // create a record
-  //! works only for student_organizations (for now)
   create: async <
     ResultRecordType extends RaRecord = Omit<RaRecord, "id"> & {
       id: Identifier;
     },
   >(
     resource: string,
-    parameters: CreateParams<{
-      name?: string;
-      description?: string;
-      shortDescription?: string;
-    }>,
+    parameters: CreateParams,
   ): Promise<CreateResult<ResultRecordType>> => {
     if (API_URL == null) {
       throw new Error("API_URL is not defined");
     }
-
-    // TODO: use actual data instead of placeholders
-    //! some optional fields are not implemented
-    const inputData = {
-      name: parameters.data.name,
-      description: parameters.data.description,
-      shortDescription: parameters.data.shortDescription,
-      coverPreview: false,
-      source: "student_department",
-      organizationType: "scientific_club",
-      organizationStatus: "unknown",
-    };
 
     const token: string = localStorage.getItem("token") ?? "";
 
     const url = `${API_URL}api/v1/${resource}/`;
     const response = await fetch(url, {
       method: "POST",
-      body: JSON.stringify(inputData),
+      body: JSON.stringify(parameters.data),
       //   credentials: "include",
       headers: {
         "Content-Type": "application/json",
@@ -93,8 +76,6 @@ export const dataProvider: DataProvider = {
     const { data } = (await response.json()) as {
       data: ResultRecordType;
     };
-    // eslint-disable-next-line no-console
-    console.log(data);
     return { data };
   },
 
