@@ -9,12 +9,12 @@ export default function Home() {
     <div className="container mx-auto flex h-full items-center justify-center">
       <div className="container mx-auto grid max-w-[1280px] grid-cols-1 gap-8 p-4 md:grid-cols-2">
         <DashboardButton
-          href="/organizations"
+          href="/student_organizations"
           icon={Building}
           label="Zarządzanie organizacjami"
         />
         <DashboardButton
-          href="/"
+          href="/guide_articles"
           icon={BookOpen}
           label="Zarządzanie artykułami"
         />
