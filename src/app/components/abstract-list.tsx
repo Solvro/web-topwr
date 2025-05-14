@@ -1,14 +1,10 @@
-import { ChevronLeft, Plus, SquarePen, Trash2 } from "lucide-react";
+import { ChevronLeft, Plus, SquarePen } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+
+import { DeleteButtonWithDialog } from "./delete-button-with-dialog";
+import { PaginationComponent } from "./pagination";
 
 export function AbstractList({
   resource,
@@ -24,15 +20,29 @@ export function AbstractList({
   resultsNumber: number;
 }) {
   return (
-    <div className="container mx-auto flex h-full flex-col space-y-5">
+    <div className="container mx-auto flex h-full flex-col space-y-5 px-2">
       <div className="flex-[1_1_0] space-y-4 overflow-y-scroll pr-2">
         {data.map((item) => (
           <div
             key={item.id}
-            className="grid grid-cols-[200px_1fr_auto] items-center gap-x-4 rounded-xl bg-[#F7F7F8] p-4"
+            className="grid grid-cols-[8rem_1fr_auto] items-center gap-x-4 rounded-xl bg-[#F7F7F8] p-4 sm:grid-cols-[12rem_1fr_auto] xl:grid-cols-[20rem_1fr_auto]"
           >
-            <span className="font-medium">{item.name}</span>
-            <span>{item.description ?? "no description"}</span>
+            <span className="white text-center font-medium">{item.name}</span>
+            <span>
+              {item.description == null
+                ? "Brak opisu"
+                : (() => {
+                    const temporaryDiv = document.createElement("div");
+                    temporaryDiv.innerHTML = item.description;
+                    if (temporaryDiv.textContent == null) {
+                      return "Brak opisu";
+                    }
+                    const sanitized = temporaryDiv.textContent || "";
+                    return sanitized.length > 100
+                      ? `${sanitized.slice(0, 100)}...`
+                      : sanitized;
+                  })()}
+            </span>
             <div className="space-x-2">
               <Link
                 href={`/${resource}/edit/${String(item.id)}`}
@@ -43,14 +53,13 @@ export function AbstractList({
                   <SquarePen />
                 </Button>
               </Link>
-              <Button variant={"ghost"} className="h-10 w-10 text-red-500">
-                <Trash2 />
-              </Button>
+
+              <DeleteButtonWithDialog resource={resource} id={item.id} />
             </div>
           </div>
         ))}
       </div>
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-col justify-between space-y-2 xl:flex-row">
         <PaginationComponent
           page={page}
           totalPages={totalPages}
@@ -60,7 +69,10 @@ export function AbstractList({
 
         <Link href={`/${resource}/create`} passHref className="">
           <Button className="">
-            Dodaj nowy artykuł <Plus />
+            {resource === "student_organizations"
+              ? "Dodaj nową organizację"
+              : "Dodaj nowy artykuł"}
+            <Plus />
           </Button>
         </Link>
       </div>
@@ -71,51 +83,5 @@ export function AbstractList({
         </Button>
       </Link>
     </div>
-  );
-}
-
-function PaginationComponent({
-  page,
-  totalPages,
-  currentResultsNumber,
-  resultsNumber,
-}: {
-  page: number;
-  totalPages: number;
-  currentResultsNumber: number;
-  resultsNumber: number;
-}) {
-  return (
-    <Pagination className="mx-0 flex w-min flex-row items-center justify-start">
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious
-            href={page > 1 ? `?page=${String(page - 1)}` : "#"}
-            className={page === 1 ? "pointer-events-none opacity-50" : ""}
-          />
-        </PaginationItem>
-
-        {/* <PaginationItem>
-          <PaginationLink href="/">1</PaginationLink>
-        </PaginationItem>
-
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem> */}
-
-        <PaginationItem>
-          <PaginationNext
-            href={page < totalPages ? `?page=${String(page + 1)}` : "#"}
-            className={
-              page === totalPages ? "pointer-events-none opacity-50" : ""
-            }
-          />
-        </PaginationItem>
-      </PaginationContent>
-
-      <span className="text-xs whitespace-nowrap">
-        Showing {currentResultsNumber} of {resultsNumber} results
-      </span>
-    </Pagination>
   );
 }
