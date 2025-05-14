@@ -39,7 +39,7 @@ export default function Page() {
 
   return (
     <div className="flex h-full flex-col space-y-10 py-10">
-      <h2 className="bg-primary w-[40rem] rounded-r-xl p-5 text-center text-lg font-medium whitespace-nowrap text-white">
+      <h2 className="bg-primary w-96 rounded-r-xl p-5 text-center text-lg font-medium whitespace-nowrap text-white md:w-[30rem] xl:w-[40rem]">
         Zarządzanie organizacjami
       </h2>
       <div className="flex-grow">
