@@ -21,7 +21,7 @@ export function PaginationComponent({
   resultsNumber: number;
 }) {
   return (
-    <Pagination className="mx-0 flex w-min flex-row items-center justify-start">
+    <Pagination className="flex w-min flex-row items-center justify-start xl:mx-0">
       <PaginationContent>
         <PaginationItem>
           <PaginationFirst
@@ -126,7 +126,8 @@ export function PaginationComponent({
       </PaginationContent>
 
       <span className="hidden text-xs whitespace-nowrap xl:block">
-        Showing {currentResultsNumber} of {resultsNumber} results
+        {page * currentResultsNumber - 10} - {page * currentResultsNumber} z{" "}
+        {resultsNumber} wyników
       </span>
     </Pagination>
   );
