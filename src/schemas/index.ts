@@ -13,9 +13,9 @@ export const LoginSchema = z.object({
 
 export const StudentOrganizationSchema = z.object({
   name: z.string().min(1),
-  departmentId: z.number().int().positive().nullable(),
-  logoKey: z.string().nullable(),
-  coverKey: z.string().nullable(),
+  //   departmentId: z.number().int().positive().nullable(),
+  //   logoKey: z.string().nullable(),
+  //   coverKey: z.string().nullable(),
   description: z.string().nullable(),
   shortDescription: z.string().nullable(),
   coverPreview: z.boolean(),

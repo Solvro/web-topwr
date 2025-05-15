@@ -1,7 +1,8 @@
-// import { notFound } from "next/navigation";
-
-export default function Page({ params }: { params: { id: number } }) {
-  const { id } = params;
-
-  return <div>edit/{id}</div>;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return <div>article: {id}</div>;
 }
