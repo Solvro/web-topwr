@@ -3,6 +3,7 @@ import { Space_Grotesk } from "next/font/google";
 
 import { QueryProvider } from "@/lib/query-client";
 
+import { Navbar } from "./components/navbar";
 import "./globals.css";
 
 const space_grotesk = Space_Grotesk({
@@ -23,8 +24,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <QueryProvider>
-        <body className={`${space_grotesk.variable} font-sans antialiased`}>
-          {children}
+        <body
+          className={`${space_grotesk.variable} flex h-screen flex-col font-sans antialiased`}
+        >
+          <Navbar />
+          <div className="h-full w-screen">{children}</div>
         </body>
       </QueryProvider>
     </html>
