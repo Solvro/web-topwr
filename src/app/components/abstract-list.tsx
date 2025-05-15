@@ -20,14 +20,14 @@ export function AbstractList({
   resultsNumber: number;
 }) {
   return (
-    <div className="container mx-auto flex h-full flex-col space-y-5 px-2">
+    <div className="container mx-auto flex h-full flex-col space-y-5 px-2 xl:px-32">
       <div className="flex-[1_1_0] space-y-4 overflow-y-scroll pr-2">
         {data.map((item) => (
           <div
             key={item.id}
-            className="grid grid-cols-[8rem_1fr_auto] items-center gap-x-4 rounded-xl bg-[#F7F7F8] p-4 sm:grid-cols-[12rem_1fr_auto] xl:grid-cols-[20rem_1fr_auto]"
+            className="bg-background-secondary grid grid-cols-[8rem_1fr_auto] items-center gap-x-4 rounded-xl p-4 sm:grid-cols-[12rem_1fr_auto] xl:grid-cols-[20rem_1fr_auto]"
           >
-            <span className="white text-center font-medium">{item.name}</span>
+            <span className="text-center font-medium">{item.name}</span>
             <span>
               {item.description == null
                 ? "Brak opisu"
@@ -38,8 +38,8 @@ export function AbstractList({
                       return "Brak opisu";
                     }
                     const sanitized = temporaryDiv.textContent || "";
-                    return sanitized.length > 100
-                      ? `${sanitized.slice(0, 100)}...`
+                    return sanitized.length > 75
+                      ? `${sanitized.slice(0, 75)}...`
                       : sanitized;
                   })()}
             </span>

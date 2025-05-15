@@ -41,7 +41,7 @@ export default function Page() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full space-y-4 rounded-xl bg-white px-6 py-6"
+            className="bg-background w-full space-y-4 rounded-xl px-6 py-6"
           >
             <FormField
               control={form.control}
