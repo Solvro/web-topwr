@@ -8,6 +8,7 @@ import type { z } from "zod";
 import SolvroLogo from "@/../public/logo-solvro.png";
 import TOPWRLogo from "@/../public/logo-topwr-white.png";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -25,6 +26,7 @@ export default function Page() {
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
 
@@ -41,7 +43,7 @@ export default function Page() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="bg-background w-full space-y-4 rounded-xl px-6 py-6"
+            className="bg-background w-full space-y-4 rounded-xl px-6 py-8"
           >
             <FormField
               control={form.control}
@@ -65,12 +67,12 @@ export default function Page() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Hasło</FormLabel>
                   <FormControl>
                     <Input
                       className="border-primary bg-none"
                       type="password"
-                      placeholder="password"
+                      placeholder="hasło"
                       {...field}
                     />
                   </FormControl>
@@ -78,9 +80,30 @@ export default function Page() {
                 </FormItem>
               )}
             />
-            <div className="flex justify-center">
-              <Button type="submit" className="">
-                Submit
+            <FormField
+              control={form.control}
+              name="rememberMe"
+              render={({ field }) => (
+                <FormItem className="flex flex-row">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked);
+                      }}
+                    />
+                  </FormControl>
+                  <FormLabel>Remember me</FormLabel>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="mt-8 flex justify-center">
+              <Button
+                type="submit"
+                className="h-10 w-24 bg-gradient-to-l from-[#F47147] to-[#DF381C] transition duration-300 hover:opacity-75"
+              >
+                Login
               </Button>
             </div>
           </form>
