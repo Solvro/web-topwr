@@ -37,19 +37,12 @@ export function StudentOrganizationsPage() {
   }, [page]);
 
   return (
-    <div className="flex h-full flex-col space-y-5 py-5">
-      <h2 className="bg-primary w-96 rounded-r-xl p-5 text-center text-lg font-medium whitespace-nowrap text-white md:w-[30rem] xl:w-[40rem]">
-        Zarządzanie organizacjami
-      </h2>
-      <div className="flex-grow">
-        <AbstractList
-          resource="student_organizations"
-          data={organizations}
-          page={page}
-          totalPages={totalPages}
-          resultsNumber={resultsNumber}
-        />
-      </div>
-    </div>
+    <AbstractList
+      resource="student_organizations"
+      data={organizations}
+      page={page}
+      totalPages={totalPages}
+      resultsNumber={resultsNumber}
+    />
   );
 }
