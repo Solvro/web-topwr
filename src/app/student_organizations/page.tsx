@@ -4,7 +4,7 @@ import { StudentOrganizationsPage } from "./student-organizations-page";
 
 export default function Page() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div></div>}>
       <StudentOrganizationsPage />
     </Suspense>
   );

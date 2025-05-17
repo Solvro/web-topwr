@@ -7,8 +7,9 @@ import {
 } from "@/lib/types";
 
 export const LoginSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email(),
   password: z.string(),
+  rememberMe: z.boolean(),
 });
 
 export const StudentOrganizationSchema = z.object({
@@ -22,4 +23,5 @@ export const StudentOrganizationSchema = z.object({
   source: z.nativeEnum(OrganizationSource),
   organizationType: z.nativeEnum(OrganizationType),
   organizationStatus: z.nativeEnum(OrganizationStatus),
+  isStrategic: z.boolean(),
 });

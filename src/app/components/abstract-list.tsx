@@ -1,4 +1,4 @@
-import { ChevronLeft, Plus, SquarePen } from "lucide-react";
+import { Plus, SquarePen } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -20,8 +20,8 @@ export function AbstractList({
   resultsNumber: number;
 }) {
   return (
-    <div className="container mx-auto flex h-full flex-col space-y-5 px-2 xl:px-32">
-      <div className="flex-[1_1_0] space-y-4 overflow-y-scroll pr-2">
+    <div className="flex h-full flex-col space-y-5">
+      <div className="flex-[1_1_0] space-y-4 overflow-y-auto pr-2">
         {data.map((item) => (
           <div
             key={item.id}
@@ -59,7 +59,7 @@ export function AbstractList({
           </div>
         ))}
       </div>
-      <div className="flex flex-col justify-between space-y-2 xl:flex-row">
+      <div className="flex flex-col items-center justify-between space-y-4 sm:flex-row">
         <PaginationComponent
           page={page}
           totalPages={totalPages}
@@ -76,12 +76,6 @@ export function AbstractList({
           </Button>
         </Link>
       </div>
-      <Link href="/" passHref className="">
-        <Button variant={"ghost"} className="text-primary">
-          <ChevronLeft />
-          Wroć na stronę główną
-        </Button>
-      </Link>
     </div>
   );
 }

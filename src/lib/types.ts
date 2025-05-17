@@ -39,6 +39,16 @@ export interface StudentOrganization {
   source: OrganizationSource;
   organizationType: OrganizationType;
   organizationStatus: OrganizationStatus;
+  isStrategic: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface GuideArticle {
+  id: number;
+  title: string;
+  shortDesc: string;
+  description: string;
+  imageKey: string;
   createdAt: string;
   updatedAt: string;
 }
