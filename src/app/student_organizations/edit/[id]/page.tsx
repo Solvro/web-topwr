@@ -1,8 +1,10 @@
-export default async function Page({
+import { Editor } from "../../editor";
+
+export default async function EditPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return <div>org: {id}</div>;
+  return <Editor id={id} />;
 }

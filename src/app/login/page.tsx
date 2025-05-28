@@ -101,7 +101,7 @@ export default function Page() {
             <div className="mt-8 flex justify-center">
               <Button
                 type="submit"
-                className="h-10 w-24 bg-gradient-to-l from-[#F47147] to-[#DF381C] transition duration-300 hover:opacity-75"
+                className="h-10 w-24 transition duration-300 hover:opacity-90"
               >
                 Login
               </Button>
@@ -110,8 +110,8 @@ export default function Page() {
         </Form>
       </div>
       <a
-        href="https://solvro.pwr.edu.pl"
-        className="absolute bottom-4 aspect-square w-12"
+        href="https://solvro.pwr.edu.pl/pl/"
+        className="absolute bottom-8 h-8"
         target="_blank"
         rel="noreferrer"
       >
