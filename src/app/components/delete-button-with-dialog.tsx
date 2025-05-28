@@ -11,14 +11,18 @@ import {
 } from "@/components/ui/dialog";
 
 export function DeleteButtonWithDialog({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   resource,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   id,
 }: {
   resource: string;
   id: number;
 }) {
+  const handleDelete = () => {
+    // TODO
+    // eslint-disable-next-line no-console
+    console.log(`Delete called for resource: ${resource}, id: ${String(id)}`);
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -32,7 +36,11 @@ export function DeleteButtonWithDialog({
           <DialogDescription>Tego kroku nie można cofnąć.</DialogDescription>
         </DialogHeader>
         <div className="mt-4 flex w-full gap-2 p-4">
-          <Button variant="destructive" className="h-12 w-1/2">
+          <Button
+            variant="destructive"
+            className="h-12 w-1/2"
+            onClick={handleDelete}
+          >
             Usuń
           </Button>
           <DialogTrigger asChild>

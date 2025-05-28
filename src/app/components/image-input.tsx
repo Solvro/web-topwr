@@ -20,6 +20,7 @@ export function ImageInput({ label }: { label: string }) {
     });
     reader.readAsDataURL(file);
   }
+
   return (
     <div className="space-y-2">
       <FormLabel>{label}</FormLabel>
@@ -34,7 +35,7 @@ export function ImageInput({ label }: { label: string }) {
         />
         <div className="bg-background flex h-48 w-48 items-center justify-center overflow-hidden rounded-lg shadow-sm">
           {currentImage == null ? (
-            <Camera color="#DDDDDD" />
+            <Camera className="h-12 w-12" color="#DDDDDD" />
           ) : (
             <Image
               src={currentImage}

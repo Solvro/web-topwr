@@ -47,11 +47,15 @@ function DashboardButton({
   variant?: "default" | "outline";
 }) {
   return (
-    <Link href={href} passHref>
-      <Button className="h-20 w-full justify-start space-x-2" variant={variant}>
+    <Button
+      className="h-20 w-full justify-start space-x-2"
+      variant={variant}
+      asChild
+    >
+      <Link href={href}>
         <Icon style={{ width: 20, height: 20 }} />
         <span className="text-xl">{label}</span>
-      </Button>
-    </Link>
+      </Link>
+    </Button>
   );
 }

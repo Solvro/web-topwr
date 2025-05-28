@@ -1,3 +1,7 @@
-export default function Page() {
-  return <div className="">create page</div>;
+"use client";
+
+import { Editor } from "../editor";
+
+export default function CreatePage() {
+  return <Editor id={null} />;
 }

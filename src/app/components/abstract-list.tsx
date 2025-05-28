@@ -14,7 +14,13 @@ export function AbstractList({
   resultsNumber,
 }: {
   resource: string;
-  data: { id: number; name: string; description?: string | null }[];
+  data: {
+    id: number;
+    name?: string;
+    title?: string;
+    shortDesc?: string | null;
+    description?: string | null;
+  }[];
   page: number;
   totalPages: number;
   resultsNumber: number;
@@ -27,32 +33,41 @@ export function AbstractList({
             key={item.id}
             className="bg-background-secondary grid grid-cols-[8rem_1fr_auto] items-center gap-x-4 rounded-xl p-4 sm:grid-cols-[12rem_1fr_auto] xl:grid-cols-[20rem_1fr_auto]"
           >
-            <span className="text-center font-medium">{item.name}</span>
+            <span className="text-center font-medium">
+              {item.name ?? item.title}
+            </span>
             <span>
-              {item.description == null
-                ? "Brak opisu"
-                : (() => {
-                    const temporaryDiv = document.createElement("div");
-                    temporaryDiv.innerHTML = item.description;
-                    if (temporaryDiv.textContent == null) {
-                      return "Brak opisu";
-                    }
-                    const sanitized = temporaryDiv.textContent || "";
-                    return sanitized.length > 75
-                      ? `${sanitized.slice(0, 75)}...`
-                      : sanitized;
-                  })()}
+              {(() => {
+                let desc: string;
+                if (item.shortDesc != null && item.shortDesc.trim() !== "") {
+                  desc = item.shortDesc;
+                } else if (
+                  item.description != null &&
+                  item.description.trim() !== ""
+                ) {
+                  const temporaryDiv = document.createElement("div");
+                  temporaryDiv.innerHTML = item.description ?? "";
+                  desc = temporaryDiv.textContent ?? "";
+                } else {
+                  desc = "";
+                }
+
+                if (!desc || desc.trim() === "") {
+                  return "Brak opisu";
+                }
+
+                return desc.length > 75 ? `${desc.slice(0, 75)}...` : desc;
+              })()}
             </span>
             <div className="space-x-2">
-              <Link
-                href={`/${resource}/edit/${String(item.id)}`}
-                passHref
-                className=""
-              >
-                <Button variant={"ghost"} className="h-10 w-10">
+              <Button variant={"ghost"} className="h-10 w-10" asChild>
+                <Link
+                  href={`/${resource}/edit/${String(item.id)}`}
+                  className=""
+                >
                   <SquarePen />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
               <DeleteButtonWithDialog resource={resource} id={item.id} />
             </div>
@@ -67,14 +82,14 @@ export function AbstractList({
           resultsNumber={resultsNumber}
         />
 
-        <Link href={`/${resource}/create`} passHref className="">
-          <Button className="">
+        <Button asChild>
+          <Link href={`/${resource}/create`}>
             {resource === "student_organizations"
               ? "Dodaj nową organizację"
               : "Dodaj nowy artykuł"}
             <Plus />
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
     </div>
   );

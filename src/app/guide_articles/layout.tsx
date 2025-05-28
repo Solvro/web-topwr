@@ -11,9 +11,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   let title = "Page";
 
   const titleMap: Record<string, string> = {
-    "/student_organizations/create": "Dodawanie organizacji",
-    "/student_organizations/edit": "Edycja organizacji",
-    "/student_organizations": "Zarządzenie organizacjami",
+    "/guide_articles/create": "Dodawanie artykułu",
+    "/guide_articles/edit": "Edycja artykułu",
+    "/guide_articles": "Zarządzenie artykułami",
   };
 
   const matched = Object.entries(titleMap).find(([key]) => {
@@ -37,7 +37,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           className="text-primary hover:text-primary w-min"
           asChild
         >
-          <Link href="/" className="">
+          <Link href="/">
             <ChevronsLeft />
             Wroć na stronę główną
           </Link>
