@@ -96,3 +96,8 @@ export interface GuideArticle {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Department {
+  id: number;
+  name: string;
+}

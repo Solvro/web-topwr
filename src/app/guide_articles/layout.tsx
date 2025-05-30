@@ -1,10 +1,8 @@
 "use client";
 
-import { ChevronsLeft } from "lucide-react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { AbstractResourceLayout } from "../components/abstract-resource-layout";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -26,23 +24,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-full flex-col space-y-5 py-5">
-      <h2 className="bg-primary w-96 rounded-r-xl p-5 text-center text-lg font-medium whitespace-nowrap text-white md:w-[30rem] xl:w-[40rem]">
-        {title}
-      </h2>
-      <div className="container mx-auto flex h-full flex-grow flex-col space-y-1 px-2 xl:px-32">
-        <div className="flex-grow">{children}</div>
-        <Button
-          variant={"ghost"}
-          className="text-primary hover:text-primary w-min"
-          asChild
-        >
-          <Link href="/">
-            <ChevronsLeft />
-            Wroć na stronę główną
-          </Link>
-        </Button>
-      </div>
-    </div>
+    <AbstractResourceLayout title={title}>{children}</AbstractResourceLayout>
   );
 }

@@ -62,69 +62,71 @@ export function Editor({ id }: { id: string | null }) {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-grow flex-col space-y-8"
+          className="flex flex-grow flex-col space-y-4"
         >
-          <div className="bg-background-secondary flex flex-grow flex-row space-x-4 rounded-xl p-4">
-            <div className="flex w-48 flex-col space-y-4">
-              <ImageInput label="Logo" />
-            </div>
+          <div className="flex-[1_1_0] flex-grow overflow-y-auto">
+            <div className="bg-background-secondary flex min-h-full flex-row space-y-4 space-x-4 rounded-xl p-4">
+              <div className="flex w-48 flex-col space-y-4">
+                <ImageInput label="Logo" />
+              </div>
 
-            <div className="flex h-full w-full flex-col space-y-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tytuł</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder=""
-                        className="bg-background placeholder:text-foreground"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex w-full flex-col space-y-4">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tytuł</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder=""
+                          className="bg-background placeholder:text-foreground"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="shortDescription"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Krótki opis</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder=""
-                        className="bg-background placeholder:text-foreground"
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="shortDescription"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Krótki opis</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder=""
+                          className="bg-background placeholder:text-foreground"
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem className="flex flex-grow flex-col">
-                    <FormLabel>Opis</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder=""
-                        className="bg-background placeholder:text-foreground h-full"
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-grow flex-col">
+                      <FormLabel>Opis</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder=""
+                          className="bg-background placeholder:text-foreground h-full min-h-32"
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
           </div>
           <div className="flex justify-end">
