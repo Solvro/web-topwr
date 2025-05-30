@@ -1,13 +1,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import type { GuideArticle } from "@/lib/types";
 
 import { AbstractList } from "../components/abstract-list";
 
-export default function GuideArticlesPage() {
+function GuideArticlesContent() {
   const searchParameters = useSearchParams();
   const page = Number.parseInt(searchParameters.get("page") ?? "1", 10);
 
@@ -45,5 +45,13 @@ export default function GuideArticlesPage() {
       totalPages={totalPages}
       resultsNumber={resultsNumber}
     />
+  );
+}
+
+export default function GuideArticlesPage() {
+  return (
+    <Suspense fallback={<div></div>}>
+      <GuideArticlesContent />
+    </Suspense>
   );
 }

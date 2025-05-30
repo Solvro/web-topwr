@@ -21,7 +21,7 @@ export function PaginationComponent({
   resultsNumber: number;
 }) {
   return (
-    <Pagination className="flex w-min flex-row items-center justify-start sm:mx-0">
+    <Pagination className="my-0 flex w-full flex-row items-center justify-center sm:mx-0 sm:w-min sm:justify-start">
       <PaginationContent>
         <PaginationItem>
           <PaginationFirst
@@ -38,7 +38,7 @@ export function PaginationComponent({
 
         {(page === totalPages || page === totalPages - 1) &&
           totalPages >= 5 && (
-            <PaginationItem>
+            <PaginationItem className="hidden sm:inline-flex">
               <PaginationLink
                 href={`?page=${String(totalPages - 4)}`}
                 isActive={false}
@@ -48,7 +48,7 @@ export function PaginationComponent({
             </PaginationItem>
           )}
         {page === totalPages && totalPages >= 5 && (
-          <PaginationItem>
+          <PaginationItem className="hidden sm:inline-flex">
             <PaginationLink
               href={`?page=${String(totalPages - 3)}`}
               isActive={false}
@@ -59,7 +59,7 @@ export function PaginationComponent({
         )}
 
         {page > 2 && (
-          <PaginationItem>
+          <PaginationItem className="hidden sm:inline-flex">
             <PaginationLink href={`?page=${String(page - 1)}`} isActive={false}>
               {page - 2}
             </PaginationLink>
@@ -85,7 +85,7 @@ export function PaginationComponent({
           </PaginationItem>
         )}
         {page < totalPages - 1 && (
-          <PaginationItem>
+          <PaginationItem className="hidden sm:inline-flex">
             <PaginationLink href={`?page=${String(page + 2)}`} isActive={false}>
               {page + 2}
             </PaginationLink>
@@ -93,14 +93,14 @@ export function PaginationComponent({
         )}
 
         {page === 1 && totalPages >= 5 && (
-          <PaginationItem>
+          <PaginationItem className="hidden sm:inline-flex">
             <PaginationLink href={`?page=${String(4)}`} isActive={false}>
               {4}
             </PaginationLink>
           </PaginationItem>
         )}
         {(page === 1 || page === 2) && totalPages >= 5 && (
-          <PaginationItem>
+          <PaginationItem className="hidden sm:inline-flex">
             <PaginationLink href={`?page=${String(5)}`} isActive={false}>
               {5}
             </PaginationLink>

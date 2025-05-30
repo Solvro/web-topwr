@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { departments } from "@/lib/constants";
 import {
   OrganizationSource,
   OrganizationStatus,
@@ -33,65 +34,6 @@ import {
 } from "@/lib/types";
 import type { StudentOrganization } from "@/lib/types";
 import { StudentOrganizationSchema } from "@/schemas";
-
-const departments = [
-  {
-    id: 1,
-    name: "Wydział Architektury",
-  },
-  {
-    id: 2,
-    name: "Wydział Budownictwa Lądowego i Wodnego",
-  },
-  {
-    id: 4,
-    name: "Wydział Chemiczny",
-  },
-  {
-    id: 5,
-    name: "Wydział Informatyki i Telekomunikacji",
-  },
-  {
-    id: 6,
-    name: "Wydział Elektryczny",
-  },
-  {
-    id: 7,
-    name: "Wydział Geoinżynierii, Górnictwa i Geologii",
-  },
-  {
-    id: 8,
-    name: "Wydział Inżynierii Środowiska",
-  },
-  {
-    id: 9,
-    name: "Wydział Zarządzania",
-  },
-  {
-    id: 10,
-    name: "Wydział Mechaniczno-Energetyczny",
-  },
-  {
-    id: 11,
-    name: "Wydział Mechaniczny",
-  },
-  {
-    id: 12,
-    name: "Wydział Podstawowych Problemów Techniki",
-  },
-  {
-    id: 13,
-    name: "Wydział Elektroniki, Fotoniki i Mikrosystemów",
-  },
-  {
-    id: 14,
-    name: "Wydział Matematyki",
-  },
-  {
-    id: 15,
-    name: "Wydział Medyczny",
-  },
-];
 
 export function Editor({ id }: { id: string | null }) {
   const form = useForm<z.infer<typeof StudentOrganizationSchema>>({
@@ -140,102 +82,29 @@ export function Editor({ id }: { id: string | null }) {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-grow flex-col space-y-8"
+          className="flex flex-grow flex-col space-y-4"
         >
-          <div className="bg-background-secondary flex flex-grow flex-row space-x-4 rounded-xl p-4">
-            <div className="flex w-48 flex-col space-y-4">
-              <ImageInput label="Logo" />
-              <ImageInput label="Cover" />
-            </div>
+          <div className="flex-[1_1_0] flex-grow overflow-y-auto">
+            <div className="bg-background-secondary flex min-h-full flex-col space-y-4 space-x-4 rounded-xl p-4 pb-8 md:flex-row">
+              <div className="flex w-48 flex-col space-y-4">
+                <ImageInput label="Logo" />
+                <ImageInput label="Baner" />
+              </div>
 
-            <div className="flex h-full w-full flex-col space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nazwa</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder=""
-                        className="bg-background placeholder:text-foreground"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="shortDescription"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Krótki opis</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder=""
-                        className="bg-background placeholder:text-foreground"
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem className="flex flex-grow flex-col">
-                    <FormLabel>Opis</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder=""
-                        className="bg-background placeholder:text-foreground h-full"
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex w-full flex-col space-y-4">
                 <FormField
                   control={form.control}
-                  name="departmentId"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Wydział</FormLabel>
-                      <Select
-                        value={
-                          field.value === null ? undefined : String(field.value)
-                        }
-                        onValueChange={(value) => {
-                          field.onChange(value ? Number(value) : null);
-                        }}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="bg-background w-full">
-                            <SelectValue placeholder="Wybierz wydział" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="border-input">
-                          {departments.map((department) => (
-                            <SelectItem
-                              key={department.id}
-                              value={department.id.toString()}
-                            >
-                              {department.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormLabel>Nazwa</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder=""
+                          className="bg-background placeholder:text-foreground"
+                          {...field}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -243,37 +112,18 @@ export function Editor({ id }: { id: string | null }) {
 
                 <FormField
                   control={form.control}
-                  name="source"
+                  name="shortDescription"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Źródło</FormLabel>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="bg-background w-full">
-                            <SelectValue placeholder="Wybierz źródło" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="border-input">
-                          {Object.entries(OrganizationSource).map(
-                            ([, value]) => {
-                              const labels: Record<string, string> = {
-                                [OrganizationSource.StudentDepartment]:
-                                  "Dział Studencki",
-                                [OrganizationSource.Manual]: "Ręcznie",
-                                [OrganizationSource.PwrActive]: "PWR Active",
-                              };
-                              return (
-                                <SelectItem key={value} value={value}>
-                                  {labels[value] ?? value}
-                                </SelectItem>
-                              );
-                            },
-                          )}
-                        </SelectContent>
-                      </Select>
+                      <FormLabel>Krótki opis</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder=""
+                          className="bg-background placeholder:text-foreground"
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -281,102 +131,201 @@ export function Editor({ id }: { id: string | null }) {
 
                 <FormField
                   control={form.control}
-                  name="organizationType"
+                  name="description"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Typ</FormLabel>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="bg-background w-full">
-                            <SelectValue placeholder="Wybierz typ" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="border-input">
-                          {Object.entries(OrganizationType).map(([, value]) => {
-                            const labels: Record<string, string> = {
-                              [OrganizationType.ScientificClub]: "Koło naukowe",
-                              [OrganizationType.StudentOrganization]:
-                                "Organizacja studencka",
-                              [OrganizationType.StudentMedium]:
-                                "Środowisko studenckie",
-                              [OrganizationType.CultureAgenda]:
-                                "Agenda kultury",
-                              [OrganizationType.StudentCouncil]:
-                                "Samorząd studencki",
-                            };
-                            return (
-                              <SelectItem key={value} value={value}>
-                                {labels[value] ?? value}
+                    <FormItem className="flex flex-grow flex-col">
+                      <FormLabel>Opis</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder=""
+                          className="bg-background placeholder:text-foreground h-full min-h-32"
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="departmentId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Wydział</FormLabel>
+                        <Select
+                          value={
+                            field.value === null
+                              ? undefined
+                              : String(field.value)
+                          }
+                          onValueChange={(value) => {
+                            field.onChange(value ? Number(value) : null);
+                          }}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="bg-background w-full">
+                              <SelectValue placeholder="Wybierz wydział" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="border-input">
+                            {departments.map((department) => (
+                              <SelectItem
+                                key={department.id}
+                                value={department.id.toString()}
+                              >
+                                {department.name}
                               </SelectItem>
-                            );
-                          })}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
+                  <FormField
+                    control={form.control}
+                    name="source"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Źródło</FormLabel>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="bg-background w-full">
+                              <SelectValue placeholder="Wybierz źródło" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="border-input">
+                            {Object.entries(OrganizationSource).map(
+                              ([, value]) => {
+                                const labels: Record<string, string> = {
+                                  [OrganizationSource.StudentDepartment]:
+                                    "Dział Studencki",
+                                  [OrganizationSource.Manual]: "Ręcznie",
+                                  [OrganizationSource.PwrActive]: "PWR Active",
+                                };
+                                return (
+                                  <SelectItem key={value} value={value}>
+                                    {labels[value] ?? value}
+                                  </SelectItem>
+                                );
+                              },
+                            )}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="organizationType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Typ</FormLabel>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="bg-background w-full">
+                              <SelectValue placeholder="Wybierz typ" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="border-input">
+                            {Object.entries(OrganizationType).map(
+                              ([, value]) => {
+                                const labels: Record<string, string> = {
+                                  [OrganizationType.ScientificClub]:
+                                    "Koło naukowe",
+                                  [OrganizationType.StudentOrganization]:
+                                    "Organizacja studencka",
+                                  [OrganizationType.StudentMedium]:
+                                    "Środowisko studenckie",
+                                  [OrganizationType.CultureAgenda]:
+                                    "Agenda kultury",
+                                  [OrganizationType.StudentCouncil]:
+                                    "Samorząd studencki",
+                                };
+                                return (
+                                  <SelectItem key={value} value={value}>
+                                    {labels[value] ?? value}
+                                  </SelectItem>
+                                );
+                              },
+                            )}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="organizationStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="bg-background w-full">
+                              <SelectValue placeholder="Wybierz status" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="border-input">
+                            {Object.entries(OrganizationStatus).map(
+                              ([, value]) => {
+                                const labels: Record<string, string> = {
+                                  [OrganizationStatus.Active]: "Aktywna",
+                                  [OrganizationStatus.Inactive]: "Nieaktywna",
+                                  [OrganizationStatus.Dissolved]: "Rozwiązana",
+                                  [OrganizationStatus.Unknown]: "Nieznany",
+                                };
+                                return (
+                                  <SelectItem key={value} value={value}>
+                                    {labels[value] ?? value}
+                                  </SelectItem>
+                                );
+                              },
+                            )}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 <FormField
                   control={form.control}
-                  name="organizationStatus"
+                  name="isStrategic"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Status</FormLabel>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="bg-background w-full">
-                            <SelectValue placeholder="Wybierz status" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="border-input">
-                          {Object.entries(OrganizationStatus).map(
-                            ([, value]) => {
-                              const labels: Record<string, string> = {
-                                [OrganizationStatus.Active]: "Aktywna",
-                                [OrganizationStatus.Inactive]: "Nieaktywna",
-                                [OrganizationStatus.Dissolved]: "Rozwiązana",
-                                [OrganizationStatus.Unknown]: "Nieznany",
-                              };
-                              return (
-                                <SelectItem key={value} value={value}>
-                                  {labels[value] ?? value}
-                                </SelectItem>
-                              );
-                            },
-                          )}
-                        </SelectContent>
-                      </Select>
+                    <FormItem className="flex flex-row">
+                      <FormLabel>Czy jest kołem strategicznym?</FormLabel>
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          className="bg-background"
+                          onCheckedChange={(checked) => {
+                            field.onChange(checked);
+                          }}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-              <FormField
-                control={form.control}
-                name="isStrategic"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row">
-                    <FormLabel>Czy jest kołem strategicznym?</FormLabel>
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        className="bg-background"
-                        onCheckedChange={(checked) => {
-                          field.onChange(checked);
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
           </div>
 

@@ -1,13 +1,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import type { StudentOrganization } from "@/lib/types";
 
 import { AbstractList } from "../components/abstract-list";
 
-export default function StudentOrganizationsPage() {
+function StudentOrganizationsContent() {
   const [organizations, setOrganizations] = useState<StudentOrganization[]>([]);
 
   const searchParameters = useSearchParams();
@@ -15,6 +15,7 @@ export default function StudentOrganizationsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const resultsPerPage = 10;
   const [resultsNumber, setResultsNumber] = useState(0);
+
   useEffect(() => {
     const fetchOrganizations = async () => {
       try {
@@ -44,5 +45,13 @@ export default function StudentOrganizationsPage() {
       totalPages={totalPages}
       resultsNumber={resultsNumber}
     />
+  );
+}
+
+export default function StudentOrganizationsPage() {
+  return (
+    <Suspense fallback={<div></div>}>
+      <StudentOrganizationsContent />
+    </Suspense>
   );
 }

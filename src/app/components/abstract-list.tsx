@@ -26,40 +26,32 @@ export function AbstractList({
   resultsNumber: number;
 }) {
   return (
-    <div className="flex h-full flex-col space-y-5">
+    <div className="flex h-full flex-col space-y-4">
       <div className="flex-[1_1_0] space-y-4 overflow-y-auto pr-2">
         {data.map((item) => (
           <div
             key={item.id}
-            className="bg-background-secondary grid grid-cols-[8rem_1fr_auto] items-center gap-x-4 rounded-xl p-4 sm:grid-cols-[12rem_1fr_auto] xl:grid-cols-[20rem_1fr_auto]"
+            className="bg-background-secondary grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[12rem_1fr_auto] md:gap-x-4 xl:grid-cols-[20rem_1fr_auto]"
           >
-            <span className="text-center font-medium">
+            <span className="font-medium md:text-center">
               {item.name ?? item.title}
             </span>
-            <span>
+            <span className="hidden truncate md:block">
               {(() => {
-                let desc: string;
                 if (item.shortDesc != null && item.shortDesc.trim() !== "") {
-                  desc = item.shortDesc;
+                  return item.shortDesc;
                 } else if (
                   item.description != null &&
                   item.description.trim() !== ""
                 ) {
                   const temporaryDiv = document.createElement("div");
                   temporaryDiv.innerHTML = item.description ?? "";
-                  desc = temporaryDiv.textContent ?? "";
-                } else {
-                  desc = "";
+                  return temporaryDiv.textContent ?? "";
                 }
-
-                if (!desc || desc.trim() === "") {
-                  return "Brak opisu";
-                }
-
-                return desc.length > 75 ? `${desc.slice(0, 75)}...` : desc;
+                return "Brak opisu";
               })()}
             </span>
-            <div className="space-x-2">
+            <div className="space-x-0.5 sm:space-x-2">
               <Button variant={"ghost"} className="h-10 w-10" asChild>
                 <Link
                   href={`/${resource}/edit/${String(item.id)}`}
@@ -74,7 +66,7 @@ export function AbstractList({
           </div>
         ))}
       </div>
-      <div className="flex flex-col items-center justify-between space-y-4 sm:flex-row">
+      <div className="flex flex-col items-center justify-between gap-y-4 sm:flex-row">
         <PaginationComponent
           page={page}
           totalPages={totalPages}
