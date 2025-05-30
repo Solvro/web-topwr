@@ -1,46 +1,68 @@
-import Image from "next/image";
+import { BookOpen, Building, RefreshCcw, Send } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-10 overflow-hidden bg-gradient-to-br from-slate-950 to-blue-900">
-      <Image
-        className="px-4"
-        src="/logo.svg"
-        alt="Solvro Logo"
-        style={{ objectFit: "cover" }}
-        width={400}
-        height={400}
-        priority
-      />
-      <h1 className="px-4 text-center font-sans text-xl text-white md:text-4xl">
-        Twoja aplikacja NEXT.JS się odpala
-      </h1>
-      <div className="flex flex-row items-center justify-center gap-4 pt-10">
-        <Button asChild>
-          <Link href="https://docs.solvro.pl/">Docs Solvro</Link>
-        </Button>
-        <Button asChild>
-          <Link href="https://github.com/orgs/Solvro/teams/kn-solvro">
-            <Image
-              src="/github-mark.svg"
-              alt="Github"
-              style={{ objectFit: "cover" }}
-              width={20}
-              height={20}
-            />
-            Github
-          </Link>
-        </Button>
+    <div className="container mx-auto flex h-full max-w-[1280px] flex-col items-center space-y-20 p-8">
+      <span className="mt-16 w-full text-2xl">Cześć, &quot;nazwa&quot;!</span>
+      <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
+        <DashboardButton
+          href="/student_organizations"
+          icon={Building}
+          label="Zarządzanie organizacjami"
+          className="order-1"
+        />
+        <DashboardButton
+          href="/guide_articles"
+          icon={BookOpen}
+          label="Zarządzanie artykułami"
+          className="order-2 md:order-3"
+        />
+        <DashboardButton
+          href="/"
+          icon={RefreshCcw}
+          label="Review zmian"
+          variant="outline"
+          className="order-3 md:order-2"
+        />
+        <DashboardButton
+          href="/"
+          icon={Send}
+          label="Wyślij powiadomienie"
+          variant="outline"
+          className="order-4"
+        />
       </div>
-      <footer className="absolute right-0 bottom-0 left-0 p-4 text-center text-white">
-        <p className="text-sm">
-          Made with ❤️ by{" "}
-          <Link href="https://solvro.pwr.edu.pl/pl/"> Solvro </Link>
-        </p>
-      </footer>
     </div>
+  );
+}
+
+function DashboardButton({
+  href,
+  icon: Icon,
+  label,
+  variant = "default",
+  className = "",
+}: {
+  href: string;
+  icon: LucideIcon;
+  label: string;
+  variant?: "default" | "outline";
+  className?: string;
+}) {
+  return (
+    <Button
+      className={`h-20 w-full justify-start space-x-2 rounded-xl ${className}`}
+      variant={variant}
+      asChild
+    >
+      <Link href={href}>
+        <Icon style={{ width: 20, height: 20 }} />
+        <span className="text-lg md:text-xl">{label}</span>
+      </Link>
+    </Button>
   );
 }
