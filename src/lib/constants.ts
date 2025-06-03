@@ -1,5 +1,7 @@
 import type { Department } from "./types";
 
+export const solvroWebsiteUrl = "https://solvro.pwr.edu.pl/pl/";
+
 export const departments: Department[] = [
   {
     id: 1,

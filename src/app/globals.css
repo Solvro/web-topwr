@@ -113,4 +113,7 @@
 
 @theme {
   --color-background-secondary: #f7f7f8;
+  --color-gradient-1: #f47147;
+  --color-gradient-2: #df381c;
+  --color-image-input-icon: #dddddd;
 }

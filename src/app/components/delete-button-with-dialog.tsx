@@ -26,7 +26,7 @@ export function DeleteButtonWithDialog({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"ghost"} className="h-10 w-10 text-red-500">
+        <Button variant="ghost" className="text-destructive h-10 w-10">
           <Trash2 />
         </Button>
       </DialogTrigger>

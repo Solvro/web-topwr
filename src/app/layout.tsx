@@ -30,7 +30,7 @@ export default function RootLayout({
           className={`${space_grotesk.variable} flex h-screen flex-col font-sans antialiased`}
         >
           <Navbar />
-          <div className="h-full w-screen">{children}</div>
+          <div className="h-full w-full">{children}</div>
         </body>
       </QueryProvider>
     </html>

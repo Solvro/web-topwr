@@ -109,7 +109,11 @@ export function PaginationComponent({
 
         <PaginationItem>
           <PaginationNext
-            href={page < totalPages ? `?page=${String(page + 1)}` : "/"}
+            href={
+              page < totalPages
+                ? `?page=${String(page + 1)}`
+                : `?page=${String(page)}`
+            }
             className={
               page === totalPages ? "pointer-events-none opacity-50" : ""
             }

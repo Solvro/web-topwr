@@ -1,10 +1,11 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
 
 import { AbstractResourceLayout } from "../components/abstract-resource-layout";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   let title = "Page";
 

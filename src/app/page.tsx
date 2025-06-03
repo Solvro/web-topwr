@@ -1,13 +1,21 @@
+"use client";
+
+import type { VariantProps } from "class-variance-authority";
 import { BookOpen, Building, RefreshCcw, Send } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
+  // TODO
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [username, setUsername] = useState<string>('"nazwa"');
+
   return (
-    <div className="container mx-auto flex h-full max-w-[1280px] flex-col items-center space-y-20 p-8">
-      <span className="mt-16 w-full text-2xl">Cześć, &quot;nazwa&quot;!</span>
+    <div className="container mx-auto flex h-full max-w-[1280px] flex-col items-center space-y-20 p-4 sm:p-8">
+      <span className="mt-16 w-full text-2xl">Cześć, {username}!</span>
       <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
         <DashboardButton
           href="/student_organizations"
@@ -50,7 +58,7 @@ function DashboardButton({
   href: string;
   icon: LucideIcon;
   label: string;
-  variant?: "default" | "outline";
+  variant?: VariantProps<typeof Button>["variant"];
   className?: string;
 }) {
   return (

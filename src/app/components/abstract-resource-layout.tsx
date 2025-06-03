@@ -18,7 +18,7 @@ export function AbstractResourceLayout({
       <div className="container mx-auto flex h-full flex-grow flex-col space-y-2 px-2 xl:px-32">
         <div className="flex-grow">{children}</div>
         <Button
-          variant={"ghost"}
+          variant="ghost"
           className="text-primary hover:text-primary w-min"
           asChild
         >
