@@ -33,13 +33,18 @@ export function ImageInput({ label }: { label: string }) {
           }}
           className="hidden"
         />
-        <div className="bg-background flex h-48 w-48 items-center justify-center overflow-hidden rounded-lg shadow-sm">
+        <div className="bg-background flex h-48 w-48 flex-col items-center justify-center overflow-hidden rounded-lg shadow-sm">
           {currentImage == null ? (
-            <Camera className="h-12 w-12" color="#DDDDDD" />
+            <>
+              <Camera className="text-image-input-icon h-12 w-12" />
+              <span className="text-muted-foreground text-xs">
+                Kliknij, aby dodać zdjęcie
+              </span>
+            </>
           ) : (
             <Image
               src={currentImage}
-              alt=""
+              alt={label}
               className="h-full max-w-full object-cover"
               width={256}
               height={256}

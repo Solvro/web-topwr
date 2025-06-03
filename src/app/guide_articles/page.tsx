@@ -1,41 +1,48 @@
-"use client";
-
-import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
-
+import { API_URL } from "@/config/api";
 import type { GuideArticle } from "@/lib/types";
 
 import { AbstractList } from "../components/abstract-list";
 
-function GuideArticlesContent() {
-  const searchParameters = useSearchParams();
-  const page = Number.parseInt(searchParameters.get("page") ?? "1", 10);
+async function fetchGuideArticles(page: number, resultsPerPage: number) {
+  try {
+    const response = await fetch(
+      `${API_URL}/api/v1/guide_articles?page=${String(page)}&limit=${String(resultsPerPage)}`,
+      { cache: "no-store" },
+    );
 
-  const [articles, setArticles] = useState<GuideArticle[]>([]);
-  const [totalPages, setTotalPages] = useState(1);
-  const resultsPerPage = 10;
-  const [resultsNumber, setResultsNumber] = useState(0);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch guide articles: ${String(response.status)}`,
+      );
+    }
 
-  useEffect(() => {
-    const fetchOrganizations = async () => {
-      try {
-        const response = await fetch(
-          `https://api.topwr.solvro.pl/api/v1/guide_articles?page=${String(page)}&limit=${String(resultsPerPage)}`,
-        );
-        const { data, meta } = (await response.json()) as {
-          data: GuideArticle[];
-          meta: { total: number };
-        };
-        setTotalPages(Math.ceil(meta.total / resultsPerPage));
-        setResultsNumber(meta.total);
-        setArticles(data);
-      } catch (error) {
-        console.error("Error fetching organizations:", error);
-        setArticles([]);
-      }
+    const { data, meta } = (await response.json()) as {
+      data: GuideArticle[];
+      meta: { total: number };
     };
-    void fetchOrganizations();
-  }, [page]);
+
+    return { data, meta };
+  } catch (error) {
+    console.error("Error fetching guide articles:", error);
+    return { data: [], meta: { total: 0 } };
+  }
+}
+
+export default async function GuideArticlesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const resolvedSearchParameters = await searchParams;
+  const page = Number.parseInt(resolvedSearchParameters.page ?? "1", 10);
+  const resultsPerPage = 10; // może będzie do zmiany przez użytkownika w przyszłości
+
+  const { data: articles, meta } = await fetchGuideArticles(
+    page,
+    resultsPerPage,
+  );
+  const totalPages = Math.ceil(meta.total / resultsPerPage);
+  const resultsNumber = meta.total;
 
   return (
     <AbstractList
@@ -45,13 +52,5 @@ function GuideArticlesContent() {
       totalPages={totalPages}
       resultsNumber={resultsNumber}
     />
-  );
-}
-
-export default function GuideArticlesPage() {
-  return (
-    <Suspense fallback={<div></div>}>
-      <GuideArticlesContent />
-    </Suspense>
   );
 }

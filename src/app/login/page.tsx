@@ -2,11 +2,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
 import SolvroLogo from "@/../public/logo-solvro.png";
-import TOPWRLogo from "@/../public/logo-topwr-white.png";
+import LogoToPWR from "@/../public/logo-topwr-white.png";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -18,6 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { solvroWebsiteUrl } from "@/lib/constants";
 import { LoginSchema } from "@/schemas";
 
 export default function Page() {
@@ -36,9 +38,9 @@ export default function Page() {
   }
 
   return (
-    <div className="flex h-full w-full items-center justify-center bg-gradient-to-r from-[#F47147] to-[#DF381C]">
+    <div className="from-gradient-1 to-gradient-2 flex h-full w-full items-center justify-center bg-gradient-to-r">
       <div className="-mt-20 flex w-96 flex-col items-center space-y-4">
-        <Image src={TOPWRLogo} alt={""} className="p-8" />
+        <Image src={LogoToPWR} alt={"Logo ToPWR"} className="p-8" />
 
         <Form {...form}>
           <form
@@ -109,14 +111,18 @@ export default function Page() {
           </form>
         </Form>
       </div>
-      <a
-        href="https://solvro.pwr.edu.pl/pl/"
+      <Link
+        href={solvroWebsiteUrl}
         className="absolute bottom-8 h-8"
         target="_blank"
         rel="noreferrer"
       >
-        <Image src={SolvroLogo} alt={""} className="h-full w-full"></Image>
-      </a>
+        <Image
+          src={SolvroLogo}
+          alt={"Logo Solvro"}
+          className="h-full w-full"
+        ></Image>
+      </Link>
     </div>
   );
 }

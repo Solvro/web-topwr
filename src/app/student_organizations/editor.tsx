@@ -5,7 +5,6 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import type { z } from "zod";
 
 import { ImageInput } from "@/app/components/image-input";
 import { Button } from "@/components/ui/button";
@@ -32,11 +31,18 @@ import {
   OrganizationStatus,
   OrganizationType,
 } from "@/lib/types";
-import type { StudentOrganization } from "@/lib/types";
+import type {
+  StudentOrganization,
+  StudentOrganizationFormValues,
+} from "@/lib/types";
 import { StudentOrganizationSchema } from "@/schemas";
 
-export function Editor({ id }: { id: string | null }) {
-  const form = useForm<z.infer<typeof StudentOrganizationSchema>>({
+export function Editor({
+  initialData,
+}: {
+  initialData?: StudentOrganization | null;
+}) {
+  const form = useForm<StudentOrganizationFormValues>({
     resolver: zodResolver(StudentOrganizationSchema),
     defaultValues: {
       name: "",
@@ -52,29 +58,21 @@ export function Editor({ id }: { id: string | null }) {
   });
 
   useEffect(() => {
-    const fetchOrganizations = async () => {
-      try {
-        const response = await fetch(
-          `https://api.topwr.solvro.pl/api/v1/student_organizations/${String(id)}`,
-        );
-        const { data } = (await response.json()) as {
-          data: StudentOrganization;
-        };
-        form.reset(data);
-      } catch (error) {
-        console.error("Error fetching organization:", error);
-      }
-    };
-    if (id !== null) {
-      void fetchOrganizations();
+    if (initialData != null) {
+      form.reset(initialData);
     }
-  }, [form, id]);
+  }, [form, initialData]);
 
-  function onSubmit(values: z.infer<typeof StudentOrganizationSchema>) {
-    // eslint-disable-next-line no-console
-    console.log(id ?? "no id");
+  function onSubmit(values: StudentOrganizationFormValues) {
     // eslint-disable-next-line no-console
     console.log(values);
+    if (initialData == null) {
+      //TODO: create new
+    } else {
+      //TODO: update existing
+      // eslint-disable-next-line no-console
+      console.log(initialData.id);
+    }
   }
 
   return (
@@ -100,7 +98,6 @@ export function Editor({ id }: { id: string | null }) {
                       <FormLabel>Nazwa</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder=""
                           className="bg-background placeholder:text-foreground"
                           {...field}
                         />
@@ -118,7 +115,6 @@ export function Editor({ id }: { id: string | null }) {
                       <FormLabel>Krótki opis</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder=""
                           className="bg-background placeholder:text-foreground"
                           {...field}
                           value={field.value ?? ""}
@@ -137,7 +133,6 @@ export function Editor({ id }: { id: string | null }) {
                       <FormLabel>Opis</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder=""
                           className="bg-background placeholder:text-foreground h-full min-h-32"
                           {...field}
                           value={field.value ?? ""}
@@ -248,9 +243,9 @@ export function Editor({ id }: { id: string | null }) {
                                   [OrganizationType.StudentOrganization]:
                                     "Organizacja studencka",
                                   [OrganizationType.StudentMedium]:
-                                    "Środowisko studenckie",
+                                    "Organizacja medialna",
                                   [OrganizationType.CultureAgenda]:
-                                    "Agenda kultury",
+                                    "Organizacja kulturalna",
                                   [OrganizationType.StudentCouncil]:
                                     "Samorząd studencki",
                                 };
@@ -335,13 +330,13 @@ export function Editor({ id }: { id: string | null }) {
         </form>
       </Form>
       <Button
-        variant={"ghost"}
+        variant="ghost"
         className="text-primary hover:text-primary w-min"
         asChild
       >
         <Link href="/student_organizations" className="">
           <ChevronLeft />
-          Wroć do organizacjami
+          Wroć do organizacji
         </Link>
       </Button>
     </div>

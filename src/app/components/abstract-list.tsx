@@ -1,3 +1,5 @@
+"use client";
+
 import { Plus, SquarePen } from "lucide-react";
 import Link from "next/link";
 
@@ -37,22 +39,10 @@ export function AbstractList({
               {item.name ?? item.title}
             </span>
             <span className="hidden truncate md:block">
-              {(() => {
-                if (item.shortDesc != null && item.shortDesc.trim() !== "") {
-                  return item.shortDesc;
-                } else if (
-                  item.description != null &&
-                  item.description.trim() !== ""
-                ) {
-                  const temporaryDiv = document.createElement("div");
-                  temporaryDiv.innerHTML = item.description ?? "";
-                  return temporaryDiv.textContent ?? "";
-                }
-                return "Brak opisu";
-              })()}
+              {item.shortDesc?.trim() == null ? "Brak opisu" : item.shortDesc}
             </span>
             <div className="space-x-0.5 sm:space-x-2">
-              <Button variant={"ghost"} className="h-10 w-10" asChild>
+              <Button variant="ghost" className="h-10 w-10" asChild>
                 <Link
                   href={`/${resource}/edit/${String(item.id)}`}
                   className=""

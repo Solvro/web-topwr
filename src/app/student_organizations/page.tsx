@@ -1,41 +1,48 @@
-"use client";
-
-import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
-
+import { API_URL } from "@/config/api";
 import type { StudentOrganization } from "@/lib/types";
 
 import { AbstractList } from "../components/abstract-list";
 
-function StudentOrganizationsContent() {
-  const [organizations, setOrganizations] = useState<StudentOrganization[]>([]);
+async function fetchStudentOrganizations(page: number, resultsPerPage: number) {
+  try {
+    const response = await fetch(
+      `${API_URL}/api/v1/student_organizations?page=${String(page)}&limit=${String(resultsPerPage)}`,
+      { cache: "no-store" },
+    );
 
-  const searchParameters = useSearchParams();
-  const page = Number.parseInt((searchParameters.get("page") ?? "") || "1", 10);
-  const [totalPages, setTotalPages] = useState(1);
-  const resultsPerPage = 10;
-  const [resultsNumber, setResultsNumber] = useState(0);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch student organizations: ${String(response.status)}`,
+      );
+    }
 
-  useEffect(() => {
-    const fetchOrganizations = async () => {
-      try {
-        const response = await fetch(
-          `https://api.topwr.solvro.pl/api/v1/student_organizations?page=${String(page)}&limit=${String(resultsPerPage)}`,
-        );
-        const { data, meta } = (await response.json()) as {
-          data: StudentOrganization[];
-          meta: { total: number };
-        };
-        setTotalPages(Math.ceil(meta.total / resultsPerPage));
-        setResultsNumber(meta.total);
-        setOrganizations(data);
-      } catch (error) {
-        console.error("Error fetching organizations:", error);
-        setOrganizations([]);
-      }
+    const { data, meta } = (await response.json()) as {
+      data: StudentOrganization[];
+      meta: { total: number };
     };
-    void fetchOrganizations();
-  }, [page]);
+
+    return { data, meta };
+  } catch (error) {
+    console.error("Error fetching student organizations:", error);
+    return { data: [], meta: { total: 0 } };
+  }
+}
+
+export default async function StudentOrganizationsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const resolvedSearchParameters = await searchParams;
+  const page = Number.parseInt(resolvedSearchParameters.page ?? "1", 10);
+  const resultsPerPage = 10; // może będzie do zmiany przez użytkownika w przyszłości
+
+  const { data: organizations, meta } = await fetchStudentOrganizations(
+    page,
+    resultsPerPage,
+  );
+  const totalPages = Math.ceil(meta.total / resultsPerPage);
+  const resultsNumber = meta.total;
 
   return (
     <AbstractList
@@ -45,13 +52,5 @@ function StudentOrganizationsContent() {
       totalPages={totalPages}
       resultsNumber={resultsNumber}
     />
-  );
-}
-
-export default function StudentOrganizationsPage() {
-  return (
-    <Suspense fallback={<div></div>}>
-      <StudentOrganizationsContent />
-    </Suspense>
   );
 }
