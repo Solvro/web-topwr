@@ -16,6 +16,8 @@ import type {
 
 import { CreateButton } from "./create-button";
 import { EditButton } from "./edit-button";
+import { DragHandle } from "./orderable-list/drag-handle";
+import { OrderableItemWrapper } from "./orderable-list/orderable-item-wrapper";
 import { SortFilters } from "./sort-filters";
 
 interface ApiResponse<T extends Resource> {
@@ -58,18 +60,48 @@ export interface ListSearchParameters {
   searchTerm?: string;
 }
 
+export function AbstractResourceListItem({
+  item,
+  resource,
+  orderable = false,
+}: {
+  item: ListItem;
+  resource: Resource;
+  orderable?: boolean;
+}) {
+  return (
+    <div className="bg-background-secondary grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[12rem_1fr_auto] md:gap-x-4 xl:grid-cols-[20rem_1fr_auto]">
+      <div className="flex h-full items-center">
+        {orderable ? <DragHandle item={item} /> : null}
+        <span className="w-full font-medium md:text-center">{item.name}</span>
+      </div>
+      <span className="hidden truncate md:block">
+        {item.shortDescription == null || item.shortDescription.trim() === ""
+          ? "Brak opisu"
+          : item.shortDescription}
+      </span>
+      <div className="space-x-0.5 sm:space-x-2">
+        <EditButton resource={resource} id={item.id} />
+        <DeleteButtonWithDialog resource={resource} id={item.id} />
+      </div>
+    </div>
+  );
+}
+
 export async function AbstractResourceList<T extends Resource>({
   resource,
   searchParams,
   sortableFields = [],
   searchableFields = [],
   resourceMapper,
+  orderable = false,
 }: {
   resource: T;
   searchParams: Promise<ListSearchParameters>;
   sortableFields?: ResourceDeclinableField<T>[];
   searchableFields?: ResourceDeclinableField<T>[];
   resourceMapper: (item: ResourceDataType<T>) => Omit<ListItem, "id">;
+  orderable?: boolean;
 }) {
   const resolvedSearchParameters = await searchParams;
   const page = Number.parseInt(resolvedSearchParameters.page ?? "1", 10);
@@ -103,28 +135,17 @@ export async function AbstractResourceList<T extends Resource>({
         searchableFields={searchableFields}
       />
       <div className="grow basis-[0] space-y-4 overflow-y-auto pr-2">
-        {listItems.map((item) => (
-          <div
-            key={item.id}
-            className="bg-background-secondary grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[12rem_1fr_auto] md:gap-x-4 xl:grid-cols-[20rem_1fr_auto]"
-          >
-            <span className="font-medium md:text-center">{item.name}</span>
-            <span className="hidden truncate md:block">
-              {item.shortDescription == null ||
-              item.shortDescription.trim() === ""
-                ? "Brak opisu"
-                : item.shortDescription}
-            </span>
-            <div className="space-x-0.5 sm:space-x-2">
-              <EditButton resource={resource} id={item.id} />
-              <DeleteButtonWithDialog
-                resource={resource}
-                id={item.id}
-                itemName={item.name}
-              />
-            </div>
-          </div>
-        ))}
+        {orderable ? (
+          <OrderableItemWrapper items={listItems} resource={resource} />
+        ) : (
+          listItems.map((item) => (
+            <AbstractResourceListItem
+              key={item.id}
+              item={item}
+              resource={resource}
+            />
+          ))
+        )}
       </div>
       <div className="flex flex-col items-center justify-between gap-y-4 sm:flex-row">
         <PaginationComponent
