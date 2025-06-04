@@ -17,6 +17,7 @@ export default function GuideArticlesPage({
         name: item.title,
         shortDescription: item.shortDesc,
       })}
+      orderable
     />
   );
 }

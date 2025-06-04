@@ -17,6 +17,7 @@ export default function StudentOrganizationsPage({
         name: item.name,
         shortDescription: item.shortDescription,
       })}
+      orderable
     />
   );
 }
