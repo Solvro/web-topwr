@@ -43,15 +43,15 @@ export function AbstractResourceListItem({
 }) {
   return (
     <div className="bg-background-secondary grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[12rem_1fr_auto] md:gap-x-4 xl:grid-cols-[20rem_1fr_auto]">
-      <span className="font-medium md:text-center">{item.name}</span>
-      <div className="flex items-center justify-around">
-        <span className="hidden truncate md:block">
-          {item.shortDescription == null || item.shortDescription.trim() === ""
-            ? "Brak opisu"
-            : item.shortDescription}
-        </span>
+      <div className="flex items-center">
         {orderable ? <GripHorizontal className="cursor-grab" /> : null}
+        <span className="w-full font-medium md:text-center">{item.name}</span>
       </div>
+      <span className="hidden truncate md:block">
+        {item.shortDescription == null || item.shortDescription.trim() === ""
+          ? "Brak opisu"
+          : item.shortDescription}
+      </span>
       <div className="space-x-0.5 sm:space-x-2">
         <Button variant="ghost" className="h-10 w-10" asChild>
           <Link href={`/${resource}/edit/${String(item.id)}`}>

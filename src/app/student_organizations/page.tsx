@@ -17,7 +17,6 @@ export default function StudentOrganizationsPage({
         shortDescription: item.shortDescription,
       })}
       addButtonLabel="Dodaj organizację studencką"
-      orderable
     />
   );
 }
