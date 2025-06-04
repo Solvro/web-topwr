@@ -56,7 +56,6 @@ export default async function StudentOrganizationsPage({
       page={page}
       totalPages={totalPages}
       resultsNumber={resultsNumber}
-      orderable
     />
   );
 }
