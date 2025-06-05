@@ -32,7 +32,8 @@ export function AbstractList({
           >
             <span className="font-medium md:text-center">{item.name}</span>
             <span className="hidden truncate md:block">
-              {item.shortDescription?.trim() == null
+              {item.shortDescription == null ||
+              item.shortDescription.trim() === ""
                 ? "Brak opisu"
                 : item.shortDescription}
             </span>

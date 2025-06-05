@@ -1,6 +1,10 @@
 import type { z } from "zod";
 
-import type { GuideArticleSchema, StudentOrganizationSchema } from "@/schemas";
+import type {
+  GuideArticleSchema,
+  LoginSchema,
+  StudentOrganizationSchema,
+} from "@/schemas";
 
 // Types Source: backend-topwr
 export interface ValidationIssue {
@@ -115,6 +119,7 @@ export interface ListItem {
   shortDescription?: string | null;
 }
 
+export type LoginFormValues = z.infer<typeof LoginSchema>;
 export type GuideArticleFormValues = z.infer<typeof GuideArticleSchema>;
 export type StudentOrganizationFormValues = z.infer<
   typeof StudentOrganizationSchema

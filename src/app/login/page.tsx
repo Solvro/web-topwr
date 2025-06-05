@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import type { z } from "zod";
 
 import SolvroLogo from "@/../public/logo-solvro.png";
 import LogoToPWR from "@/../public/logo-topwr-white.png";
@@ -20,10 +19,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { solvroWebsiteUrl } from "@/lib/constants";
+import type { LoginFormValues } from "@/lib/types";
 import { LoginSchema } from "@/schemas";
 
 export default function Page() {
-  const form = useForm<z.infer<typeof LoginSchema>>({
+  const form = useForm<LoginFormValues>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
@@ -32,7 +32,8 @@ export default function Page() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof LoginSchema>) {
+  function onSubmit(values: LoginFormValues) {
+    // TODO
     // eslint-disable-next-line no-console
     console.log(values);
   }
