@@ -1,7 +1,6 @@
+import { AbstractList } from "@/components/abstract-list";
 import { API_URL } from "@/config/api";
 import type { StudentOrganization } from "@/lib/types";
-
-import { AbstractList } from "../components/abstract-list";
 
 async function fetchStudentOrganizations(page: number, resultsPerPage: number) {
   try {

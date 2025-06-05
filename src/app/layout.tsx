@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import type { ReactNode } from "react";
 
+import { Navbar } from "@/components/navbar";
 import { QueryProvider } from "@/lib/query-client";
 
-import { Navbar } from "./components/navbar";
 import "./globals.css";
 
 const space_grotesk = Space_Grotesk({
