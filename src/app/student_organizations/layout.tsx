@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
-import { AbstractResourceLayout } from "../components/abstract-resource-layout";
+import { AbstractResourceLayout } from "@/components/abstract-resource-layout";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -12,7 +12,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   const titleMap: Record<string, string> = {
     "/student_organizations/create": "Dodawanie organizacji",
     "/student_organizations/edit": "Edycja organizacji",
-    "/student_organizations": "Zarządzenie organizacjami",
+    "/student_organizations": "Zarządzanie organizacjami",
   };
 
   const matched = Object.entries(titleMap).find(([key]) => {

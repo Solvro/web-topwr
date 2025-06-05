@@ -3,10 +3,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 
-import { ImageInput } from "@/app/components/image-input";
+import { ImageInput } from "@/components/image-input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -42,9 +42,12 @@ export function Editor({
 }: {
   initialData?: StudentOrganization | null;
 }) {
-  const form = useForm<StudentOrganizationFormValues>({
-    resolver: zodResolver(StudentOrganizationSchema),
-    defaultValues: {
+  const defaultValues = useMemo((): StudentOrganizationFormValues => {
+    if (initialData != null) {
+      return initialData;
+    }
+
+    return {
       name: "",
       shortDescription: "",
       description: "",
@@ -54,14 +57,13 @@ export function Editor({
       organizationType: OrganizationType.ScientificClub,
       organizationStatus: OrganizationStatus.Unknown,
       isStrategic: false,
-    },
-  });
+    };
+  }, [initialData]);
 
-  useEffect(() => {
-    if (initialData != null) {
-      form.reset(initialData);
-    }
-  }, [form, initialData]);
+  const form = useForm<StudentOrganizationFormValues>({
+    resolver: zodResolver(StudentOrganizationSchema),
+    defaultValues,
+  });
 
   function onSubmit(values: StudentOrganizationFormValues) {
     // eslint-disable-next-line no-console

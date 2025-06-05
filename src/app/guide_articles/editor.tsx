@@ -3,10 +3,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 
-import { ImageInput } from "@/app/components/image-input";
+import { ImageInput } from "@/components/image-input";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,20 +21,22 @@ import type { GuideArticle, GuideArticleFormValues } from "@/lib/types";
 import { GuideArticleSchema } from "@/schemas";
 
 export function Editor({ initialData }: { initialData?: GuideArticle | null }) {
+  const defaultValues = useMemo((): GuideArticleFormValues => {
+    if (initialData != null) {
+      return initialData;
+    }
+
+    return {
+      title: "",
+      shortDesc: "",
+      description: "",
+    };
+  }, [initialData]);
+
   const form = useForm<GuideArticleFormValues>({
     resolver: zodResolver(GuideArticleSchema),
-    defaultValues: {
-      title: "",
-      shortDescription: "",
-      description: "",
-    },
+    defaultValues,
   });
-
-  useEffect(() => {
-    if (initialData != null) {
-      form.reset(initialData);
-    }
-  }, [form, initialData]);
 
   function onSubmit(values: GuideArticleFormValues) {
     // eslint-disable-next-line no-console
@@ -81,7 +83,7 @@ export function Editor({ initialData }: { initialData?: GuideArticle | null }) {
 
                 <FormField
                   control={form.control}
-                  name="shortDescription"
+                  name="shortDesc"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Krótki opis</FormLabel>

@@ -1,5 +1,6 @@
 import { ChevronsLeft } from "lucide-react";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -8,7 +9,7 @@ export function AbstractResourceLayout({
   children,
 }: {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div className="flex h-full flex-col space-y-4 py-2">

@@ -21,6 +21,7 @@ export function AbstractList({
     name?: string;
     title?: string;
     shortDesc?: string | null;
+    shortDescription?: string | null;
     description?: string | null;
   }[];
   page: number;
@@ -39,7 +40,10 @@ export function AbstractList({
               {item.name ?? item.title}
             </span>
             <span className="hidden truncate md:block">
-              {item.shortDesc?.trim() == null ? "Brak opisu" : item.shortDesc}
+              {(item.shortDesc?.trim() != null && item.shortDesc.trim()) ||
+                (item.shortDescription?.trim() != null &&
+                  item.shortDescription.trim()) ||
+                "Brak opisu"}
             </span>
             <div className="space-x-0.5 sm:space-x-2">
               <Button variant="ghost" className="h-10 w-10" asChild>

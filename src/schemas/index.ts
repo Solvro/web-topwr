@@ -29,6 +29,6 @@ export const StudentOrganizationSchema = z.object({
 export const GuideArticleSchema = z.object({
   title: z.string().min(1, "Title is required"),
   //   imageKey: z.string().nullable().optional(),
-  shortDescription: z.string().nullable().optional(),
+  shortDesc: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
 });

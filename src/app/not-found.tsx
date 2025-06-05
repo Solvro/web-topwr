@@ -8,7 +8,7 @@ export default function NotFound() {
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex flex-col justify-center">
         <h2 className="-mt-18 text-center text-5xl font-semibold">404</h2>
-        <p className="text-cente mt-2">Nie znaleziono podanej strony</p>
+        <p className="mt-2 text-center">Nie znaleziono podanej strony</p>
         <Button variant="ghost" asChild className="mt-8">
           <Link className="" href="/">
             <ArrowLeft></ArrowLeft>
