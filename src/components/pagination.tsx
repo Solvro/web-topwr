@@ -9,6 +9,15 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
+function createPageHref(page: number): string {
+  if (typeof window === "undefined") {
+    return `?page=${String(page)}`;
+  }
+  const url = new URL(window.location.href);
+  url.searchParams.set("page", page.toString());
+  return url.search;
+}
+
 export function PaginationComponent({
   page,
   totalPages,
@@ -25,13 +34,13 @@ export function PaginationComponent({
       <PaginationContent>
         <PaginationItem>
           <PaginationFirst
-            href={`?page=1`}
+            href={createPageHref(1)}
             className={page === 1 ? "pointer-events-none opacity-50" : ""}
           />
         </PaginationItem>
         <PaginationItem>
           <PaginationPrevious
-            href={page > 1 ? `?page=${String(page - 1)}` : "/"}
+            href={page > 1 ? createPageHref(page - 1) : createPageHref(1)}
             className={page === 1 ? "pointer-events-none opacity-50" : ""}
           />
         </PaginationItem>
@@ -40,7 +49,7 @@ export function PaginationComponent({
           totalPages >= 5 && (
             <PaginationItem className="hidden sm:inline-flex">
               <PaginationLink
-                href={`?page=${String(totalPages - 4)}`}
+                href={createPageHref(totalPages - 4)}
                 isActive={false}
               >
                 {totalPages - 4}
@@ -50,7 +59,7 @@ export function PaginationComponent({
         {page === totalPages && totalPages >= 5 && (
           <PaginationItem className="hidden sm:inline-flex">
             <PaginationLink
-              href={`?page=${String(totalPages - 3)}`}
+              href={createPageHref(totalPages - 3)}
               isActive={false}
             >
               {totalPages - 3}
@@ -60,33 +69,33 @@ export function PaginationComponent({
 
         {page > 2 && (
           <PaginationItem className="hidden sm:inline-flex">
-            <PaginationLink href={`?page=${String(page - 1)}`} isActive={false}>
+            <PaginationLink href={createPageHref(page - 2)} isActive={false}>
               {page - 2}
             </PaginationLink>
           </PaginationItem>
         )}
         {page > 1 && (
           <PaginationItem>
-            <PaginationLink href={`?page=${String(page - 1)}`} isActive={false}>
+            <PaginationLink href={createPageHref(page - 1)} isActive={false}>
               {page - 1}
             </PaginationLink>
           </PaginationItem>
         )}
         <PaginationItem>
-          <PaginationLink href={`?page=${String(page)}`} isActive>
+          <PaginationLink href={createPageHref(page)} isActive>
             {page}
           </PaginationLink>
         </PaginationItem>
         {page < totalPages && (
           <PaginationItem>
-            <PaginationLink href={`?page=${String(page + 1)}`} isActive={false}>
+            <PaginationLink href={createPageHref(page + 1)} isActive={false}>
               {page + 1}
             </PaginationLink>
           </PaginationItem>
         )}
         {page < totalPages - 1 && (
           <PaginationItem className="hidden sm:inline-flex">
-            <PaginationLink href={`?page=${String(page + 2)}`} isActive={false}>
+            <PaginationLink href={createPageHref(page + 2)} isActive={false}>
               {page + 2}
             </PaginationLink>
           </PaginationItem>
@@ -94,14 +103,14 @@ export function PaginationComponent({
 
         {page === 1 && totalPages >= 5 && (
           <PaginationItem className="hidden sm:inline-flex">
-            <PaginationLink href={`?page=${String(4)}`} isActive={false}>
+            <PaginationLink href={createPageHref(4)} isActive={false}>
               {4}
             </PaginationLink>
           </PaginationItem>
         )}
         {(page === 1 || page === 2) && totalPages >= 5 && (
           <PaginationItem className="hidden sm:inline-flex">
-            <PaginationLink href={`?page=${String(5)}`} isActive={false}>
+            <PaginationLink href={createPageHref(5)} isActive={false}>
               {5}
             </PaginationLink>
           </PaginationItem>
@@ -111,8 +120,8 @@ export function PaginationComponent({
           <PaginationNext
             href={
               page < totalPages
-                ? `?page=${String(page + 1)}`
-                : `?page=${String(page)}`
+                ? createPageHref(page + 1)
+                : createPageHref(page)
             }
             className={
               page === totalPages ? "pointer-events-none opacity-50" : ""
@@ -121,7 +130,7 @@ export function PaginationComponent({
         </PaginationItem>
         <PaginationItem>
           <PaginationLast
-            href={`?page=${String(totalPages)}`}
+            href={createPageHref(totalPages)}
             className={
               page === totalPages ? "pointer-events-none opacity-50" : ""
             }
@@ -130,9 +139,9 @@ export function PaginationComponent({
       </PaginationContent>
 
       {/* <span className="hidden text-xs whitespace-nowrap xl:block">
-        {page * currentResultsNumber - 10} - {page * currentResultsNumber} z{" "}
-        {resultsNumber} wyników
-      </span> */}
+          {page * currentResultsNumber - 10} - {page * currentResultsNumber} z{" "}
+          {resultsNumber} wyników
+        </span> */}
     </Pagination>
   );
 }
