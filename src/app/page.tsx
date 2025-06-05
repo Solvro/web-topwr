@@ -14,7 +14,7 @@ export default function Home() {
   const [username, setUsername] = useState<string>('"nazwa"');
 
   return (
-    <div className="container mx-auto flex h-full max-w-[1280px] flex-col items-center space-y-20 p-4 sm:p-8">
+    <div className="container mx-auto flex h-full flex-col items-center space-y-20 p-4 sm:p-8 2xl:max-w-[1280px]">
       <span className="mt-16 w-full text-2xl">Cześć, {username}!</span>
       <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
         <DashboardButton
@@ -68,7 +68,7 @@ function DashboardButton({
       asChild
     >
       <Link href={href}>
-        <Icon style={{ width: 20, height: 20 }} />
+        <Icon style={{ width: 20, height: 20 }} className="ml-2" />
         <span className="text-lg md:text-xl">{label}</span>
       </Link>
     </Button>

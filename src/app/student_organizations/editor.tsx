@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 
 import { ImageInput } from "@/components/image-input";
@@ -42,38 +41,42 @@ export function Editor({
 }: {
   initialData?: StudentOrganization | null;
 }) {
-  const defaultValues = useMemo((): StudentOrganizationFormValues => {
-    if (initialData != null) {
-      return initialData;
-    }
-
-    return {
-      name: "",
-      shortDescription: "",
-      description: "",
-      coverPreview: false,
-      departmentId: null,
-      source: OrganizationSource.Manual,
-      organizationType: OrganizationType.ScientificClub,
-      organizationStatus: OrganizationStatus.Unknown,
-      isStrategic: false,
-    };
-  }, [initialData]);
+  const defaultValues: StudentOrganizationFormValues = initialData ?? {
+    name: "",
+    shortDescription: "",
+    description: "",
+    coverPreview: false,
+    departmentId: null,
+    source: OrganizationSource.Manual,
+    organizationType: OrganizationType.ScientificClub,
+    organizationStatus: OrganizationStatus.Unknown,
+    isStrategic: false,
+  };
 
   const form = useForm<StudentOrganizationFormValues>({
     resolver: zodResolver(StudentOrganizationSchema),
     defaultValues,
   });
 
-  function onSubmit(values: StudentOrganizationFormValues) {
+  // TODO: add images handling
+
+  function createOrganization(data: StudentOrganizationFormValues) {
+    // TODO
     // eslint-disable-next-line no-console
-    console.log(values);
+    console.log("Creating organization:", data);
+  }
+
+  function updateOrganization(id: number, data: StudentOrganizationFormValues) {
+    // TODO
+    // eslint-disable-next-line no-console
+    console.log(`Updating organization ${String(id)}:`, data);
+  }
+
+  function onSubmit(values: StudentOrganizationFormValues) {
     if (initialData == null) {
-      //TODO: create new
+      createOrganization(values);
     } else {
-      //TODO: update existing
-      // eslint-disable-next-line no-console
-      console.log(initialData.id);
+      updateOrganization(initialData.id, values);
     }
   }
 

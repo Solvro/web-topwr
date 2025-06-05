@@ -43,10 +43,16 @@ export default async function StudentOrganizationsPage({
   const totalPages = Math.ceil(meta.total / resultsPerPage);
   const resultsNumber = meta.total;
 
+  const listItems = organizations.map((organization) => ({
+    id: organization.id,
+    name: organization.name,
+    shortDescription: organization.shortDescription,
+  }));
+
   return (
     <AbstractList
       resource="student_organizations"
-      data={organizations}
+      listItems={listItems}
       page={page}
       totalPages={totalPages}
       resultsNumber={resultsNumber}

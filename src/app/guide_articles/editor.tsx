@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 
 import { ImageInput } from "@/components/image-input";
@@ -21,32 +20,36 @@ import type { GuideArticle, GuideArticleFormValues } from "@/lib/types";
 import { GuideArticleSchema } from "@/schemas";
 
 export function Editor({ initialData }: { initialData?: GuideArticle | null }) {
-  const defaultValues = useMemo((): GuideArticleFormValues => {
-    if (initialData != null) {
-      return initialData;
-    }
-
-    return {
-      title: "",
-      shortDesc: "",
-      description: "",
-    };
-  }, [initialData]);
+  const defaultValues: GuideArticleFormValues = initialData ?? {
+    title: "",
+    shortDesc: "",
+    description: "",
+  };
 
   const form = useForm<GuideArticleFormValues>({
     resolver: zodResolver(GuideArticleSchema),
     defaultValues,
   });
 
-  function onSubmit(values: GuideArticleFormValues) {
+  // TODO: add images handling
+
+  function createArticle(data: GuideArticleFormValues) {
+    // TODO
     // eslint-disable-next-line no-console
-    console.log(values);
+    console.log("Creating article:", data);
+  }
+
+  function editArticle(id: number, data: GuideArticleFormValues) {
+    // TODO
+    // eslint-disable-next-line no-console
+    console.log(`Updating article ${String(id)}:`, data);
+  }
+
+  function onSubmit(values: GuideArticleFormValues) {
     if (initialData == null) {
-      //TODO: create new
+      createArticle(values);
     } else {
-      //TODO: update existing
-      // eslint-disable-next-line no-console
-      console.log(initialData.id);
+      editArticle(initialData.id, values);
     }
   }
 

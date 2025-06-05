@@ -91,6 +91,7 @@ export interface StudentOrganization {
   createdAt: string;
   updatedAt: string;
 }
+
 export interface GuideArticle {
   id: number;
   title: string;
@@ -104,6 +105,14 @@ export interface GuideArticle {
 export interface Department {
   id: number;
   name: string;
+}
+
+export type Resource = "guide_articles" | "student_organizations";
+
+export interface ListItem {
+  id: number;
+  name?: string;
+  shortDescription?: string | null;
 }
 
 export type GuideArticleFormValues = z.infer<typeof GuideArticleSchema>;

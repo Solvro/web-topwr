@@ -39,7 +39,7 @@ export default function Page() {
 
   return (
     <div className="from-gradient-1 to-gradient-2 flex h-full w-full items-center justify-center bg-gradient-to-r">
-      <div className="-mt-20 flex w-96 flex-col items-center space-y-4">
+      <div className="-mt-20 flex w-96 flex-col items-center space-y-4 p-4">
         <Image src={LogoToPWR} alt={"Logo ToPWR"} className="p-8" />
 
         <Form {...form}>
@@ -113,7 +113,7 @@ export default function Page() {
       </div>
       <Link
         href={solvroWebsiteUrl}
-        className="absolute bottom-8 h-8"
+        className="absolute bottom-8 h-6"
         target="_blank"
         rel="noreferrer"
       >

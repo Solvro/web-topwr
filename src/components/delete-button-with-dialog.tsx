@@ -9,12 +9,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import type { Resource } from "@/lib/types";
 
 export function DeleteButtonWithDialog({
   resource,
   id,
 }: {
-  resource: string;
+  resource: Resource;
   id: number;
 }) {
   const handleDelete = () => {

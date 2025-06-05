@@ -43,10 +43,16 @@ export default async function GuideArticlesPage({
   const totalPages = Math.ceil(meta.total / resultsPerPage);
   const resultsNumber = meta.total;
 
+  const listItems = articles.map((article) => ({
+    id: article.id,
+    name: article.title,
+    shortDescription: article.shortDesc,
+  }));
+
   return (
     <AbstractList
       resource="guide_articles"
-      data={articles}
+      listItems={listItems}
       page={page}
       totalPages={totalPages}
       resultsNumber={resultsNumber}

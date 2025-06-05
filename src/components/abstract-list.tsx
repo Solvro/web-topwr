@@ -4,26 +4,20 @@ import { Plus, SquarePen } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import type { ListItem, Resource } from "@/lib/types";
 
 import { DeleteButtonWithDialog } from "./delete-button-with-dialog";
 import { PaginationComponent } from "./pagination";
 
 export function AbstractList({
   resource,
-  data,
+  listItems,
   page,
   totalPages,
   resultsNumber,
 }: {
-  resource: string;
-  data: {
-    id: number;
-    name?: string;
-    title?: string;
-    shortDesc?: string | null;
-    shortDescription?: string | null;
-    description?: string | null;
-  }[];
+  resource: Resource;
+  listItems: ListItem[];
   page: number;
   totalPages: number;
   resultsNumber: number;
@@ -31,19 +25,16 @@ export function AbstractList({
   return (
     <div className="flex h-full flex-col space-y-4">
       <div className="flex-[1_1_0] space-y-4 overflow-y-auto pr-2">
-        {data.map((item) => (
+        {listItems.map((item) => (
           <div
             key={item.id}
             className="bg-background-secondary grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[12rem_1fr_auto] md:gap-x-4 xl:grid-cols-[20rem_1fr_auto]"
           >
-            <span className="font-medium md:text-center">
-              {item.name ?? item.title}
-            </span>
+            <span className="font-medium md:text-center">{item.name}</span>
             <span className="hidden truncate md:block">
-              {(item.shortDesc?.trim() != null && item.shortDesc.trim()) ||
-                (item.shortDescription?.trim() != null &&
-                  item.shortDescription.trim()) ||
-                "Brak opisu"}
+              {item.shortDescription?.trim() == null
+                ? "Brak opisu"
+                : item.shortDescription}
             </span>
             <div className="space-x-0.5 sm:space-x-2">
               <Button variant="ghost" className="h-10 w-10" asChild>
@@ -64,7 +55,7 @@ export function AbstractList({
         <PaginationComponent
           page={page}
           totalPages={totalPages}
-          currentResultsNumber={data.length}
+          currentResultsNumber={listItems.length}
           resultsNumber={resultsNumber}
         />
 
