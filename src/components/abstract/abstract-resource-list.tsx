@@ -1,4 +1,4 @@
-import { GripHorizontal, Plus, SquarePen } from "lucide-react";
+import { Plus, SquarePen } from "lucide-react";
 import Link from "next/link";
 
 import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
@@ -9,7 +9,8 @@ import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import type { ListItem, ResourceTypes } from "@/types/app";
 
-import { OrderableItemWrapper } from "../order-widget";
+import { DragHandle } from "./orderable-list/drag-handle";
+import { OrderableItemWrapper } from "./orderable-list/orderable-item-wrapper";
 
 interface ApiResponse<T extends Resource> {
   data: ResourceTypes[T][];
@@ -43,8 +44,8 @@ export function AbstractResourceListItem({
 }) {
   return (
     <div className="bg-background-secondary grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[12rem_1fr_auto] md:gap-x-4 xl:grid-cols-[20rem_1fr_auto]">
-      <div className="flex items-center">
-        {orderable ? <GripHorizontal className="cursor-grab" /> : null}
+      <div className="flex h-full items-center">
+        {orderable ? <DragHandle item={item} /> : null}
         <span className="w-full font-medium md:text-center">{item.name}</span>
       </div>
       <span className="hidden truncate md:block">

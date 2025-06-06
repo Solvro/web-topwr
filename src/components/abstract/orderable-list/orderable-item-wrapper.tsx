@@ -18,7 +18,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AbstractResourceListItem } from "@/components/abstract/abstract-resource-list";
 import type { Resource } from "@/config/enums";
@@ -32,13 +32,18 @@ export function OrderableItemWrapper({
   resource: Resource;
 }) {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-  const [items, setItems] = useState<ListItem[]>(initialItems);
+  const [items, setItems] = useState<ListItem[]>([]);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
+
+  useEffect(() => {
+    // update each time the base items change, e.g. when switching pages
+    setItems(initialItems);
+  }, [initialItems]);
 
   function getActiveItem() {
     const activeItem = items.find((item) => item.id === activeId);
@@ -66,12 +71,14 @@ export function OrderableItemWrapper({
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragStart={(event) => {
+        document.body.style.cursor = "grabbing";
         setActiveId(event.active.id);
       }}
       onDragEnd={(event) => {
         if (event.active.id !== event.over?.id) {
           updateItemOrder(event.active.id, event.over?.id);
         }
+        document.body.style.cursor = "default";
         setActiveId(null);
       }}
     >
@@ -102,8 +109,7 @@ function SortableItem({
   item: ListItem;
   resource: Resource;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: item.id });
+  const { setNodeRef, transform, transition } = useSortable({ id: item.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -111,7 +117,7 @@ function SortableItem({
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div ref={setNodeRef} style={style}>
       <AbstractResourceListItem item={item} resource={resource} orderable />
     </div>
   );
