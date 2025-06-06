@@ -56,6 +56,7 @@ export default async function GuideArticlesPage({
       page={page}
       totalPages={totalPages}
       resultsNumber={resultsNumber}
+      orderable
     />
   );
 }
