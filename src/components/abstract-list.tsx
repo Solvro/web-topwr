@@ -1,14 +1,31 @@
 "use client";
 
+import { useDraggable } from "@dnd-kit/core";
 import { GripHorizontal, Plus, SquarePen } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { ListItem, Resource } from "@/types/app";
 
 import { DeleteButtonWithDialog } from "./delete-button-with-dialog";
 import { OrderableItemWrapper } from "./order-widget";
 import { PaginationComponent } from "./pagination";
+
+function DragHandle({ item }: { item: ListItem }) {
+  const { attributes, listeners, isDragging } = useDraggable({
+    id: item.id,
+  });
+  return (
+    <GripHorizontal
+      className={cn("mr-2 h-full", {
+        "cursor-grab": !isDragging,
+      })}
+      {...attributes}
+      {...listeners}
+    />
+  );
+}
 
 export function AbstractListItem({
   item,
@@ -21,8 +38,8 @@ export function AbstractListItem({
 }) {
   return (
     <div className="bg-background-secondary grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[12rem_1fr_auto] md:gap-x-4 xl:grid-cols-[20rem_1fr_auto]">
-      <div className="flex items-center">
-        {orderable ? <GripHorizontal className="cursor-grab" /> : null}
+      <div className="flex h-full items-center">
+        {orderable ? <DragHandle item={item} /> : null}
         <span className="w-full font-medium md:text-center">{item.name}</span>
       </div>
       <span className="hidden truncate md:block">
