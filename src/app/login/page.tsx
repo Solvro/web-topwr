@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { solvroWebsiteUrl } from "@/lib/constants";
+import { SOLVRO_WEBPAGE_URL } from "@/config/constants";
 import type { LoginFormValues } from "@/lib/types";
 import { LoginSchema } from "@/schemas";
 
@@ -113,7 +113,7 @@ export default function Page() {
         </Form>
       </div>
       <Link
-        href={solvroWebsiteUrl}
+        href={SOLVRO_WEBPAGE_URL}
         className="absolute bottom-8 h-6"
         target="_blank"
         rel="noreferrer"

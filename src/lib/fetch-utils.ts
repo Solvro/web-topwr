@@ -1,4 +1,4 @@
-import { API_URL } from "@/config/api";
+import { API_URL } from "@/config/constants";
 import type { SerializedErrorReport, SuccessResponse } from "@/lib/types";
 
 type RequestOptions = {
