@@ -2,7 +2,8 @@ import type { Department } from "@/lib/types";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
-export const API_URL = process.env.API_URL ?? "https://api.topwr.solvro.pl";
+export const API_URL =
+  process.env.API_URL ?? "https://api.topwr.solvro.pl/api/v1";
 
 export const UNIVERSITY_DEPARTMENTS: Department[] = [
   {

@@ -9,7 +9,7 @@ async function getStudentOrganization(
   try {
     const sanitizedId = String(id).split(/ /)[0].replaceAll(/[^\d]/g, "");
     const response = await fetch(
-      `${API_URL}/api/v1/student_organizations/${sanitizedId}`,
+      `${API_URL}/student_organizations/${sanitizedId}`,
       {
         cache: "no-store",
       },
