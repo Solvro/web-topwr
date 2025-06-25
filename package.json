@@ -12,7 +12,7 @@
     "prepare": "husky || true",
     "start": "next start",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage --passWithNoTests",
     "typecheck": "tsc --noEmit"
   },
   "lint-staged": {

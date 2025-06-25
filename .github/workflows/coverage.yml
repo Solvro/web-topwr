@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - "**/*.test.ts"
+      - "tests/**"
 
 jobs:
   coverage:
@@ -31,7 +34,7 @@ jobs:
         run: npm ci
 
       - name: Run tests on base branch
-        run: npx vitest run --coverage
+        run: npm run test:coverage
 
       - name: Save base branch coverage
         run: cp coverage/coverage-summary.json base-coverage.json
