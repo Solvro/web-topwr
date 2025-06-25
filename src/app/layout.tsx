@@ -3,7 +3,8 @@ import { Space_Grotesk } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { Navbar } from "@/components/navbar";
-import { QueryProvider } from "@/lib/query-client";
+import { Providers } from "@/components/providers";
+import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
 
@@ -25,14 +26,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <QueryProvider>
+      <Providers>
         <body
           className={`${space_grotesk.variable} flex h-screen flex-col font-sans antialiased`}
         >
           <Navbar />
           <div className="h-full w-full">{children}</div>
+          <Toaster />
         </body>
-      </QueryProvider>
+      </Providers>
     </html>
   );
 }

@@ -4,18 +4,23 @@ import type { VariantProps } from "class-variance-authority";
 import { BookOpen, Building, RefreshCcw, Send } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function Home() {
-  // TODO
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [username, setUsername] = useState<string>('"nazwa"');
+  const auth = useAuth();
+
+  if (!auth.isAuthenticated) {
+    console.error("User is not authenticated, but Home is rendered.");
+    return null;
+  }
 
   return (
     <div className="container mx-auto flex h-full flex-col items-center space-y-20 p-4 sm:p-8 2xl:max-w-[1280px]">
-      <span className="mt-16 w-full text-2xl">Cześć, {username}!</span>
+      <span className="mt-16 w-full text-2xl">
+        Cześć, {auth.user.fullName ?? auth.user.email}!
+      </span>
       <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
         <DashboardButton
           href="/student_organizations"

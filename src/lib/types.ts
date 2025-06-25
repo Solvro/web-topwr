@@ -8,7 +8,7 @@ import type {
 } from "@/schemas";
 
 // Types Source: backend-topwr
-export interface ValidationIssue {
+export interface MessageResponse {
   message: string;
 }
 
@@ -28,7 +28,7 @@ export interface SerializedErrorReport {
   /**
    * List of validation errors for 'E_VALIDATION_ERROR' errors.
    */
-  validationIssues?: ValidationIssue[];
+  validationIssues?: MessageResponse[];
   /**
    * Error message of each error cause in the error stack, ordered from top to bottom of the stack
    *
@@ -46,10 +46,12 @@ export interface SerializedErrorReport {
   rootStackTrace?: string[];
 }
 
-export interface SuccessResponse<T> {
-  success: boolean;
-  data?: T;
+export interface ErrorResponse {
+  success?: false;
+  error: SerializedErrorReport;
 }
+
+export type SuccessResponse<T> = T & { success: boolean };
 
 export interface FileData {
   id: string;
@@ -133,6 +135,12 @@ export interface User {
   email: string;
   createdAt: string;
   updatedAt: string;
+}
+
+/** As returned from POST /auth/login */
+export interface AuthState {
+  user: User;
+  token: string;
 }
 
 export type ErrorCode = keyof typeof ERROR_CODES;
