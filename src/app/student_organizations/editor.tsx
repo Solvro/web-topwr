@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { departments } from "@/lib/constants";
+import { UNIVERSITY_DEPARTMENTS } from "@/config/constants";
 import {
   OrganizationSource,
   OrganizationStatus,
@@ -171,7 +171,7 @@ export function Editor({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent className="border-input">
-                            {departments.map((department) => (
+                            {UNIVERSITY_DEPARTMENTS.map((department) => (
                               <SelectItem
                                 key={department.id}
                                 value={department.id.toString()}
