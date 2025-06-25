@@ -16,7 +16,11 @@
     "typecheck": "tsc --noEmit"
   },
   "lint-staged": {
-    "*": "prettier -w --ignore-unknown"
+    "*": "prettier -w --ignore-unknown",
+    "*.ts?(x)": [
+      "eslint",
+      "vitest related --run --passWithNoTests"
+    ]
   },
   "prettier": "@solvro/config/prettier",
   "dependencies": {

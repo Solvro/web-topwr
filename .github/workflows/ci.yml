@@ -34,3 +34,7 @@ jobs:
       - name: Build
         run: npm run build
         if: always()
+
+      - name: Run unit tests
+        run: npx vitest run --passWithNoTests
+        if: always()
