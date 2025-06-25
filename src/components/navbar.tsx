@@ -4,7 +4,6 @@ import { LogOut, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 
 import LogoToPWR from "@/../public/logo-topwr-color.png";
 import { Button } from "@/components/ui/button";
@@ -16,21 +15,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-function handleLogout() {
-  // TODO
-  //eslint-disable-next-line no-console
-  console.log("logout");
-}
+import { useAuth } from "@/hooks/use-auth";
 
 export function Navbar() {
   const pathname = usePathname();
-
-  // TODO
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [username, setUsername] = useState<string | null>("user");
+  const auth = useAuth();
 
   if (pathname === "/login") {
+    return null;
+  }
+
+  if (!auth.isAuthenticated) {
+    console.error("User is not authenticated, but Navbar is rendered.");
     return null;
   }
 
@@ -52,7 +48,7 @@ export function Navbar() {
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuLabel className="font-normal">
-                  Zalogowano jako: {username}
+                  Zalogowano jako: {auth.user.fullName}
                 </DropdownMenuLabel>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -60,7 +56,7 @@ export function Navbar() {
           <Button
             variant="ghost"
             className="aspect-square h-10 rounded-full"
-            onClick={handleLogout}
+            onClick={auth.logout}
           >
             <LogOut />
           </Button>

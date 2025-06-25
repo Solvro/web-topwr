@@ -1,5 +1,6 @@
 import { API_URL } from "@/config/constants";
-import type { SerializedErrorReport, SuccessResponse } from "@/lib/types";
+import type { ErrorResponse, SuccessResponse } from "@/lib/types";
+import { getAuthState } from "@/stores/auth";
 
 type RequestOptions = {
   headers?: Record<string, string>;
@@ -9,12 +10,9 @@ type RequestOptions = {
 const isAbsolutePath = (url: string) => /^https?:\/\//.test(url);
 
 export class FetchError extends Error {
-  public errorReport: SerializedErrorReport | null;
+  public errorReport: ErrorResponse | null;
 
-  constructor(
-    message: string,
-    errorReport: SerializedErrorReport | null = null,
-  ) {
+  constructor(message: string, errorReport: ErrorResponse | null = null) {
     super(message);
     this.errorReport = errorReport;
 
@@ -26,25 +24,23 @@ export class FetchError extends Error {
   }
 }
 
-async function handleResponse<T>(
-  response: Response,
-): Promise<SuccessResponse<T>> {
-  let responseBody: SuccessResponse<T> | SerializedErrorReport | null = null;
+async function handleResponse<T>(response: Response): Promise<NonNullable<T>> {
+  let responseBody = null;
 
   try {
-    responseBody = (await response.json()) as
-      | SuccessResponse<T>
-      | SerializedErrorReport;
+    responseBody = (await response.json()) as T;
   } catch (error) {
     console.warn("Could not parse the response body as JSON", error);
   }
 
+  const errorResponseBody = responseBody as ErrorResponse | SuccessResponse<T>;
+
   if (
     !response.ok ||
-    responseBody === null ||
-    ("success" in responseBody && !responseBody.success)
+    responseBody == null ||
+    ("success" in errorResponseBody && errorResponseBody.success !== true)
   ) {
-    const errorReport = responseBody as SerializedErrorReport | null;
+    const errorReport = responseBody as ErrorResponse | null;
     console.error("Error response body:", JSON.stringify(errorReport, null, 2));
 
     throw new FetchError(
@@ -53,34 +49,48 @@ async function handleResponse<T>(
     );
   }
 
-  return responseBody as SuccessResponse<T>;
+  return responseBody;
+}
+
+function createRequest(endpoint: string, options: RequestOptions): Request {
+  const url = isAbsolutePath(endpoint)
+    ? endpoint
+    : `${API_URL.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`;
+
+  const authState = getAuthState();
+
+  if (authState != null && typeof authState.token === "string") {
+    options.headers = {
+      ...options.headers,
+      Authorization: `Bearer ${authState.token}`,
+    };
+  }
+
+  return new Request(url, options);
 }
 
 export async function fetchQuery<T>(
   endpoint: string,
   options: RequestOptions = {},
-): Promise<SuccessResponse<T>> {
+): Promise<NonNullable<T>> {
   // Ensure no body is sent for GET requests
   delete options.body;
-
-  const url = isAbsolutePath(endpoint)
-    ? endpoint
-    : `${API_URL.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`;
-
-  const response = await fetch(url, {
-    ...options,
-    method: "GET",
-    next: { revalidate: 60 },
-  });
+  const response = await fetch(
+    createRequest(endpoint, {
+      ...options,
+      method: "GET",
+      next: { revalidate: 60 },
+    }),
+  );
 
   return handleResponse<T>(response);
 }
 
 export async function fetchMutation<T>(
   endpoint: string,
-  body: T,
+  body: unknown,
   options: RequestOptions = {},
-): Promise<SuccessResponse<T>> {
+): Promise<NonNullable<T>> {
   const method = options.method ?? "POST";
 
   if (!["POST", "PUT", "PATCH"].includes(method)) {
@@ -93,18 +103,9 @@ export async function fetchMutation<T>(
     "Content-Type": "application/json",
     ...options.headers,
   };
-
   options.body = JSON.stringify(body);
 
-  const response = await fetch(
-    isAbsolutePath(endpoint)
-      ? endpoint
-      : `${API_URL.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`,
-    {
-      ...options,
-      method,
-    },
-  );
+  const response = await fetch(createRequest(endpoint, { ...options, method }));
 
   return handleResponse<T>(response);
 }
