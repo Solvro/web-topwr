@@ -1,4 +1,4 @@
-import type { Department } from "../lib/types";
+import type { Department } from "@/lib/types";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
