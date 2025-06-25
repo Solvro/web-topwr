@@ -12,7 +12,6 @@ export default function Home() {
   const auth = useAuth();
 
   if (!auth.isAuthenticated) {
-    console.error("User is not authenticated, but Home is rendered.");
     return null;
   }
 

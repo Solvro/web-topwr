@@ -1,9 +1,14 @@
 import { useAtom } from "jotai";
+import Cookies from "js-cookie";
+import { useEffect } from "react";
 import { toast } from "sonner";
 
+import { AUTH_STATE_COOKIE_NAME } from "@/config/constants";
+import { getCookieOptions, parseAuthCookie } from "@/lib/cookies";
 import { fetchMutation } from "@/lib/fetch-utils";
 import type {
   AuthState,
+  LoginFormValues,
   MessageResponse,
   SuccessResponse,
   User,
@@ -23,7 +28,7 @@ interface AuthContextLoggedOut {
 }
 
 type AuthContext = (AuthContextLoggedIn | AuthContextLoggedOut) & {
-  login: (email: string, password: string) => Promise<void>;
+  login: (data: LoginFormValues) => Promise<AuthState>;
   logout: () => Promise<void>;
 };
 
@@ -48,21 +53,30 @@ export function useAuth(): AuthContext {
 
   const commonState = parseAuthState(authState);
 
-  async function login(email: string, password: string, rememberMe = false) {
+  useEffect(() => {
+    if (authState != null) {
+      return;
+    }
+    const cookie = Cookies.get(AUTH_STATE_COOKIE_NAME);
+    if (cookie == null) {
+      return;
+    }
+    const parsed = parseAuthCookie(cookie);
+    if (parsed == null) {
+      Cookies.remove(AUTH_STATE_COOKIE_NAME);
+    } else {
+      setAuthState(parsed);
+    }
+  }, [authState, setAuthState]);
+
+  async function login(data: LoginFormValues) {
     if (commonState.isAuthenticated) {
       throw new Error("Cannot log in when already authenticated");
     }
-
-    const response = await fetchMutation<AuthState>("/auth/login", {
-      email,
-      password,
-      rememberMe,
-    });
-
+    const response = await fetchMutation<AuthState>("/auth/login", data);
+    Cookies.set(AUTH_STATE_COOKIE_NAME, ...getCookieOptions(response));
     setAuthState(response);
-    toast.success(
-      `Pomyślnie zalogowano jako ${response.user.fullName ?? response.user.email}!`,
-    );
+    return response;
   }
 
   async function logout() {
@@ -77,6 +91,8 @@ export function useAuth(): AuthContext {
       throw new Error(result.message || "Logout failed");
     }
     toast.success("Wylogowano pomyślnie.");
+    Cookies.remove(AUTH_STATE_COOKIE_NAME);
+    setAuthState(null);
   }
 
   return { ...commonState, login, logout };

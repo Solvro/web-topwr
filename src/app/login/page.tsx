@@ -1,9 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import SolvroLogo from "@/../public/logo-solvro.png";
 import LogoToPWR from "@/../public/logo-topwr-white.png";
@@ -19,10 +22,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SOLVRO_WEBPAGE_URL } from "@/config/constants";
+import { useAuth } from "@/hooks/use-auth";
+import { getErrorMessage } from "@/lib/error-handling";
 import type { LoginFormValues } from "@/lib/types";
 import { LoginSchema } from "@/schemas";
 
 export default function Page() {
+  const router = useRouter();
+  const auth = useAuth();
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -32,11 +40,15 @@ export default function Page() {
     },
   });
 
-  function onSubmit(values: LoginFormValues) {
-    // TODO
-    // eslint-disable-next-line no-console
-    console.log(values);
-  }
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async (data: LoginFormValues) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
+      return auth.login(data);
+    },
+    onSuccess: () => {
+      router.refresh();
+    },
+  });
 
   return (
     <div className="from-gradient-1 to-gradient-2 flex h-full w-full items-center justify-center bg-gradient-to-r">
@@ -45,7 +57,15 @@ export default function Page() {
 
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit((data) =>
+              toast.promise(mutateAsync(data), {
+                loading: "Trwa logowanie...",
+                success: (response) =>
+                  `Pomyślnie zalogowano jako ${response.user.fullName ?? response.user.email}!`,
+                error: (error) =>
+                  getErrorMessage(error, "Nastąpił błąd podczas logowania"),
+              }),
+            )}
             className="bg-background w-full space-y-4 rounded-xl px-6 py-8"
           >
             <FormField
@@ -105,6 +125,7 @@ export default function Page() {
               <Button
                 type="submit"
                 className="h-10 w-24 transition duration-300 hover:opacity-90"
+                loading={isPending}
               >
                 Login
               </Button>
