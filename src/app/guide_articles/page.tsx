@@ -5,7 +5,7 @@ import type { GuideArticle } from "@/lib/types";
 async function fetchGuideArticles(page: number, resultsPerPage: number) {
   try {
     const response = await fetch(
-      `${API_URL}/api/v1/guide_articles?page=${String(page)}&limit=${String(resultsPerPage)}`,
+      `${API_URL}/guide_articles?page=${String(page)}&limit=${String(resultsPerPage)}`,
       { cache: "no-store" },
     );
 

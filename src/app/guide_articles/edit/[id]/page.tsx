@@ -6,12 +6,9 @@ import { Editor } from "../../editor";
 async function getGuideArticle(id: string): Promise<GuideArticle | null> {
   try {
     const sanitizedId = String(id).split(/ /)[0].replaceAll(/[^\d]/g, "");
-    const response = await fetch(
-      `${API_URL}/api/v1/guide_articles/${sanitizedId}`,
-      {
-        cache: "no-store",
-      },
-    );
+    const response = await fetch(`${API_URL}/guide_articles/${sanitizedId}`, {
+      cache: "no-store",
+    });
 
     if (!response.ok) {
       throw new Error(

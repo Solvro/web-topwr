@@ -5,7 +5,7 @@ import type { StudentOrganization } from "@/lib/types";
 async function fetchStudentOrganizations(page: number, resultsPerPage: number) {
   try {
     const response = await fetch(
-      `${API_URL}/api/v1/student_organizations?page=${String(page)}&limit=${String(resultsPerPage)}`,
+      `${API_URL}/student_organizations?page=${String(page)}&limit=${String(resultsPerPage)}`,
       { cache: "no-store" },
     );
 
