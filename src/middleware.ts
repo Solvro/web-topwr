@@ -1,38 +1,102 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-const protectedRoutes: Record<string, string[] | undefined> = {
+import { AUTH_STATE_COOKIE_NAME } from "@/config/constants";
+import { getCookieOptions, parseAuthCookie } from "@/lib/cookies";
+import { fetchQuery } from "@/lib/fetch-utils";
+import type { User } from "@/lib/types";
+
+const REQUIRED_ROUTE_PERMISSIONS: Record<string, string[] | undefined> = {
   "/login": [],
   "/": ["user", "admin"],
   "/guide_articles": ["user", "admin"],
   "/student_organizations": ["user", "admin"],
+  "/change_review": ["admin"],
 };
 
-function getUserPermissions(request: NextRequest): string[] {
-  const permissions = request.cookies.get("permissions")?.value;
-  return permissions == null ? [] : permissions.split(",");
+async function verifyUserCookie(
+  request: NextRequest,
+  response: NextResponse,
+): Promise<User | null> {
+  const cookie = request.cookies.get(AUTH_STATE_COOKIE_NAME);
+  if (cookie == null) {
+    return null;
+  }
+  const authState = parseAuthCookie(cookie.value);
+  if (authState == null) {
+    response.cookies.delete(AUTH_STATE_COOKIE_NAME);
+    return null;
+  }
+  let user: User;
+  try {
+    user = await fetchQuery<User>("/auth/me", {
+      accessTokenOverride: authState.token,
+    });
+  } catch (error) {
+    console.warn("Invalid token in cookie:", error);
+    response.cookies.delete(AUTH_STATE_COOKIE_NAME);
+    return null;
+  }
+  // update the client user data in case it changed on the backend
+  response.cookies.set(
+    AUTH_STATE_COOKIE_NAME,
+    ...getCookieOptions(authState, user),
+  );
+  return user;
 }
 
-export function middleware(request: NextRequest) {
+function getUserPermissions(user: User | null): string[] {
+  if (user == null) {
+    return [];
+  }
+  // TODO: update this when the backend supports user roles
+  const roles = ["user"];
+  // if (user.email.endsWith("@solvro.pl")) {
+  //   roles.push("admin");
+  // }
+  return roles;
+}
+
+export async function middleware(request: NextRequest) {
+  const response = NextResponse.next();
   const { pathname } = request.nextUrl;
 
+  const redirect = (
+    to: string,
+    method: "redirect" | "rewrite" = "redirect",
+  ) => {
+    console.warn(`${method} from ${pathname} to ${to}`);
+    return NextResponse[method](new URL(to, request.url));
+  };
+
+  const user = await verifyUserCookie(request, response);
   const firstSegment = pathname.split("/")[1];
-  const requiredPermissions = protectedRoutes[`/${firstSegment}`] ?? ["admin"];
+  if (user == null && firstSegment !== "login") {
+    return redirect("/login");
+  }
+
+  const requiredPermissions = REQUIRED_ROUTE_PERMISSIONS[
+    `/${firstSegment}`
+  ] ?? ["admin"];
 
   if (requiredPermissions.length > 0) {
-    const userPermissions = getUserPermissions(request);
+    const userPermissions = getUserPermissions(user);
 
     const hasPermission = requiredPermissions.some((perm) =>
       userPermissions.includes(perm),
     );
 
     if (!hasPermission) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      return redirect("/error/403", "rewrite");
     }
   }
 
-  // Allow request to proceed
-  return NextResponse.next();
+  if (firstSegment === "login" && user != null) {
+    // TODO?: potential to add a redirect to chosen path via query params
+    return redirect("/");
+  }
+
+  return response;
 }
 
 export const config = {

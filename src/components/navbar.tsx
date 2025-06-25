@@ -3,7 +3,7 @@
 import { LogOut, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import LogoToPWR from "@/../public/logo-topwr-color.png";
 import { Button } from "@/components/ui/button";
@@ -18,15 +18,10 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 
 export function Navbar() {
-  const pathname = usePathname();
+  const router = useRouter();
   const auth = useAuth();
 
-  if (pathname === "/login") {
-    return null;
-  }
-
   if (!auth.isAuthenticated) {
-    console.error("User is not authenticated, but Navbar is rendered.");
     return null;
   }
 
@@ -48,7 +43,7 @@ export function Navbar() {
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuLabel className="font-normal">
-                  Zalogowano jako: {auth.user.fullName}
+                  {auth.user.fullName ?? auth.user.email}
                 </DropdownMenuLabel>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -56,7 +51,11 @@ export function Navbar() {
           <Button
             variant="ghost"
             className="aspect-square h-10 rounded-full"
-            onClick={auth.logout}
+            onClick={async () => {
+              await auth.logout();
+              router.push("/login");
+            }}
+            tooltip="Wyloguj się"
           >
             <LogOut />
           </Button>

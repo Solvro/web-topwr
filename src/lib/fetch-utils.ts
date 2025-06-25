@@ -5,6 +5,7 @@ import { getAuthState } from "@/stores/auth";
 type RequestOptions = {
   headers?: Record<string, string>;
   body?: BodyInit;
+  accessTokenOverride?: string;
 } & Omit<RequestInit, "headers">;
 
 const isAbsolutePath = (url: string) => /^https?:\/\//.test(url);
@@ -41,7 +42,7 @@ async function handleResponse<T>(response: Response): Promise<NonNullable<T>> {
     ("success" in errorResponseBody && errorResponseBody.success !== true)
   ) {
     const errorReport = responseBody as ErrorResponse | null;
-    console.error("Error response body:", JSON.stringify(errorReport, null, 2));
+    // console.error("Error response body:", JSON.stringify(errorReport, null, 2));
 
     throw new FetchError(
       `Error ${String(response.status)}: ${String(response.statusText)}`,
@@ -52,17 +53,22 @@ async function handleResponse<T>(response: Response): Promise<NonNullable<T>> {
   return responseBody;
 }
 
-function createRequest(endpoint: string, options: RequestOptions): Request {
+const getAccessToken = () => getAuthState()?.token;
+
+function createRequest(
+  endpoint: string,
+  { accessTokenOverride, ...options }: RequestOptions,
+): Request {
   const url = isAbsolutePath(endpoint)
     ? endpoint
-    : `${API_URL.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`;
+    : `${API_URL}/${endpoint.replace(/^\/+/, "")}`;
 
-  const authState = getAuthState();
+  const token = accessTokenOverride ?? getAccessToken();
 
-  if (authState != null && typeof authState.token === "string") {
+  if (token != null && typeof token === "string") {
     options.headers = {
       ...options.headers,
-      Authorization: `Bearer ${authState.token}`,
+      Authorization: `Bearer ${token}`,
     };
   }
 
