@@ -30,7 +30,7 @@ export const MOCK_RESPONSE = {
   validationFailure: () =>
     HttpResponse.json(
       {
-        error: { message: "Validation failure", code: "E_VALIDATION_FAILURE" },
+        error: { message: "Validation failure", code: "E_VALIDATION_ERROR" },
       },
       { status: 422 },
     ),
