@@ -27,7 +27,7 @@ import { getErrorMessage } from "@/lib/error-handling";
 import type { LoginFormValues } from "@/lib/types";
 import { LoginSchema } from "@/schemas";
 
-export default function Page() {
+export default function LoginPage() {
   const router = useRouter();
   const auth = useAuth();
 
@@ -41,10 +41,7 @@ export default function Page() {
   });
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: async (data: LoginFormValues) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
-      return auth.login(data);
-    },
+    mutationFn: auth.login,
     onSuccess: () => {
       router.refresh();
     },
