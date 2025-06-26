@@ -51,7 +51,7 @@
     "@eslint/eslintrc": "^3",
     "@fakerjs/faker": "^3.0.0",
     "@next/eslint-plugin-next": "^15.2.4",
-    "@solvro/config": "^1.13.5",
+    "@solvro/config": "^1.13.6",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
