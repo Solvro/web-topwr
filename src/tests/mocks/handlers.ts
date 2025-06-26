@@ -19,7 +19,7 @@ export const handlers = [
           user: MOCK_USER.valid,
           token: MOCK_TOKEN.valid,
         })
-      : body.password == null
+      : body.password == null || body.password === ""
         ? MOCK_RESPONSE.validationFailure()
         : HttpResponse.json(
             {

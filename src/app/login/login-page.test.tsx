@@ -73,7 +73,7 @@ describe("Login page", () => {
     await form.user.click(form.submitButton);
 
     expect(getErrorMessage).toHaveReturnedWith(
-      ERROR_MESSAGES.E_INVALID_CREDENTIALS,
+      ERROR_MESSAGES.E_VALIDATION_ERROR,
     );
   });
 
