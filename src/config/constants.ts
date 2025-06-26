@@ -63,3 +63,18 @@ export const UNIVERSITY_DEPARTMENTS: Department[] = [
     name: "Wydział Medyczny",
   },
 ];
+
+export const AUTH_STATE_COOKIE_NAME = "topwr_auth";
+
+export const ERROR_CODES = {
+  401: "Ta strona wymaga zalogowania",
+  403: "Nie masz uprawnień do przeglądania tej strony",
+  404: "Nie znaleziono podanej strony",
+  500: "Wystąpił błąd serwera",
+};
+
+export const ERROR_MESSAGES = {
+  E_INVALID_CREDENTIALS: "Wpisano niepoprawny email lub hasło",
+  E_UNEXPECTED_ERROR: "Nastąpił nieoczekiwany błąd",
+  E_VALIDATION_ERROR: "Wpisane dane są niekompletne lub nieprawidłowe",
+};

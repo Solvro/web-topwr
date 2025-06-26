@@ -1,7 +1,10 @@
 import "@testing-library/jest-dom/vitest";
+import { cleanup } from "@testing-library/react";
 import ResizeObserver from "resize-observer-polyfill";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
+import { MOCK_NOT_FOUND, MOCK_ROUTER } from "./mocks/functions";
+import { MockImage } from "./mocks/image";
 import { server } from "./mocks/server";
 
 beforeAll(() => {
@@ -9,10 +12,26 @@ beforeAll(() => {
 });
 afterEach(() => {
   server.resetHandlers();
+  vi.clearAllMocks();
+  cleanup();
 });
 afterAll(() => {
   server.close();
 });
+
+type NextNavigationModule = typeof import("next/navigation");
+vi.mock("next/navigation", async (importOriginal) => {
+  const original = await importOriginal<NextNavigationModule>();
+  return {
+    ...original,
+    notFound: MOCK_NOT_FOUND,
+    useRouter: () => MOCK_ROUTER,
+  } satisfies NextNavigationModule;
+});
+
+vi.mock("next/image", () => ({ default: MockImage }));
+vi.mock("@/lib/error-handling", { spy: true });
+vi.mock("js-cookie");
 
 globalThis.ResizeObserver = ResizeObserver as typeof globalThis.ResizeObserver;
 

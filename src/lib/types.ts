@@ -1,5 +1,6 @@
 import type { z } from "zod";
 
+import type { ERROR_CODES } from "@/config/constants";
 import type {
   GuideArticleSchema,
   LoginSchema,
@@ -124,3 +125,14 @@ export type GuideArticleFormValues = z.infer<typeof GuideArticleSchema>;
 export type StudentOrganizationFormValues = z.infer<
   typeof StudentOrganizationSchema
 >;
+
+/** As returned from GET /auth/me */
+export interface User {
+  id: number;
+  fullName: string | null;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ErrorCode = keyof typeof ERROR_CODES;
