@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import type { ListItem, Resource } from "@/types/app";
 
 import { DeleteButtonWithDialog } from "./delete-button-with-dialog";
-import { OrderableItemWrapper } from "./order-widget";
+import { OrderableItemWrapper } from "./orderable-item-wrapper";
 import { PaginationComponent } from "./pagination";
 
 function DragHandle({ item }: { item: ListItem }) {
