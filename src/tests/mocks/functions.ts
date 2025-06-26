@@ -1,13 +1,10 @@
-import type { useRouter } from "next/navigation";
 import { vi } from "vitest";
 
-export const MOCK_ROUTER: ReturnType<typeof useRouter> = {
-  push: vi.fn(),
-  replace: vi.fn(),
-  refresh: vi.fn(),
-  prefetch: vi.fn(),
-  back: vi.fn(),
-  forward: vi.fn(),
-};
+export const MOCK_ROUTER_PUSH = vi.fn();
+export const MOCK_ROUTER_REPLACE = vi.fn();
+export const MOCK_ROUTER_REFRESH = vi.fn();
+export const MOCK_ROUTER_PREFETCH = vi.fn();
+export const MOCK_ROUTER_BACK = vi.fn();
+export const MOCK_ROUTER_FORWARD = vi.fn();
 
 export const MOCK_NOT_FOUND = vi.fn(() => null as never);
