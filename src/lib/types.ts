@@ -110,6 +110,7 @@ export interface Department {
   id: number;
   name: string;
 }
+//
 
 export type Resource = "guide_articles" | "student_organizations";
 
@@ -119,8 +120,42 @@ export interface ListItem {
   shortDescription?: string | null;
 }
 
+// forms
 export type LoginFormValues = z.infer<typeof LoginSchema>;
 export type GuideArticleFormValues = z.infer<typeof GuideArticleSchema>;
 export type StudentOrganizationFormValues = z.infer<
   typeof StudentOrganizationSchema
 >;
+
+export interface SelectInputOption {
+  value: string | number;
+  label: string;
+}
+
+export interface formImageInputs {
+  label: string;
+}
+
+export interface formTextInputs {
+  name: string;
+  label: string;
+}
+
+export interface formRichTextInput {
+  name: string;
+  label: string;
+}
+
+export interface formSelectInputs {
+  name: string;
+  label: string;
+  placeholder: string;
+  options: SelectInputOption[];
+  allowNull?: boolean;
+}
+
+export interface formCheckboxInputs {
+  name: string;
+  label: string;
+}
+//

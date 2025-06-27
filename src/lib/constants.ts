@@ -2,6 +2,7 @@ import type { Department } from "./types";
 
 export const solvroWebsiteUrl = "https://solvro.pwr.edu.pl/pl/";
 
+//from https://api.topwr.solvro.pl/api/v1/departments
 export const departments: Department[] = [
   {
     id: 1,
