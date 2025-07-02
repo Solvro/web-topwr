@@ -4,9 +4,9 @@ import { getAuthState } from "@/stores/auth";
 
 type RequestOptions = {
   headers?: Record<string, string>;
-  body?: BodyInit;
   accessTokenOverride?: string;
-} & Omit<RequestInit, "headers">;
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+} & Omit<RequestInit, "headers" | "method" | "body">;
 
 const isAbsolutePath = (url: string) => /^https?:\/\//.test(url);
 
@@ -57,7 +57,7 @@ const getAccessToken = () => getAuthState()?.token;
 
 function createRequest(
   endpoint: string,
-  { accessTokenOverride, ...options }: RequestOptions,
+  { accessTokenOverride, ...options }: RequestOptions & { body?: unknown },
 ): Request {
   const url = isAbsolutePath(endpoint)
     ? endpoint
@@ -71,16 +71,16 @@ function createRequest(
       Authorization: `Bearer ${token}`,
     };
   }
-
-  return new Request(url, options);
+  if (options.body != null) {
+    options.body = JSON.stringify(options.body);
+  }
+  return new Request(url, options as RequestOptions & { body?: string });
 }
 
 export async function fetchQuery<T>(
   endpoint: string,
   options: RequestOptions = {},
 ): Promise<NonNullable<T>> {
-  // Ensure no body is sent for GET requests
-  delete options.body;
   const response = await fetch(
     createRequest(endpoint, {
       ...options,
@@ -88,7 +88,6 @@ export async function fetchQuery<T>(
       next: { revalidate: 60 },
     }),
   );
-
   return handleResponse<T>(response);
 }
 
@@ -98,20 +97,12 @@ export async function fetchMutation<T>(
   options: RequestOptions = {},
 ): Promise<NonNullable<T>> {
   const method = options.method ?? "POST";
-
-  if (!["POST", "PUT", "PATCH"].includes(method)) {
-    throw new Error(
-      `Invalid method "${method}" for fetchMutation. Use POST, PUT, or PATCH.`,
-    );
-  }
-
   options.headers = {
     "Content-Type": "application/json",
     ...options.headers,
   };
-  options.body = JSON.stringify(body);
-
-  const response = await fetch(createRequest(endpoint, { ...options, method }));
-
+  const response = await fetch(
+    createRequest(endpoint, { ...options, method, body }),
+  );
   return handleResponse<T>(response);
 }
