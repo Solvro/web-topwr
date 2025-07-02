@@ -71,7 +71,7 @@ function createRequest(
       Authorization: `Bearer ${token}`,
     };
   }
-  if (options.body != null) {
+  if (options.body != null && typeof options.body !== "string") {
     options.body = JSON.stringify(options.body);
   }
   return new Request(url, options as RequestOptions & { body?: string });
