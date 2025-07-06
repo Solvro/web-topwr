@@ -79,6 +79,23 @@ export enum OrganizationStatus {
   Unknown = "unknown",
 }
 
+export enum DepartmentIds { //from https://api.topwr.solvro.pl/api/v1/departments
+  Architecture = 1,
+  CivilEngineering = 2,
+  Chemistry = 4,
+  ComputerScienceAndTelecommunications = 5,
+  ElectricalEngineering = 6,
+  GeoengineeringMiningAndGeology = 7,
+  EnvironmentalEngineering = 8,
+  Management = 9,
+  MechanicalAndPowerEngineering = 10,
+  Mechanical = 11,
+  FundamentalProblemsOfTechnology = 12,
+  ElectronicsPhotonicsAndMicrosystems = 13,
+  Mathematics = 14,
+  Medical = 15,
+}
+
 export interface StudentOrganization {
   id: number;
   name: string;
@@ -116,7 +133,7 @@ export type Resource = "guide_articles" | "student_organizations";
 
 export interface ListItem {
   id: number;
-  name?: string;
+  name: string;
   shortDescription?: string | null;
 }
 

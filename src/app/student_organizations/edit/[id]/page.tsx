@@ -1,7 +1,7 @@
 import { API_URL } from "@/config/constants";
 import type { StudentOrganization } from "@/types/app";
 
-import { Editor } from "../../editor";
+import { Editor } from "../../form";
 
 async function getStudentOrganization(
   id: string,

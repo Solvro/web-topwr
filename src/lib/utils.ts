@@ -9,20 +9,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const enumToFormSelectOptions = (
-  enumObject: Record<string, string>,
-  labels: Record<string, string>,
+  enumObject: Record<string, string | number>,
+  labels: Record<string | number, string>,
 ): SelectInputOption[] => {
-  return Object.entries(enumObject).map(([, value]) => ({
-    value,
-    label: labels[value] ?? value,
-  }));
-};
-
-export const arrayToFormSelectOptions = (
-  array: { id: number; name: string }[],
-): SelectInputOption[] => {
-  return array.map((item) => ({
-    value: item.id,
-    label: item.name,
-  }));
+  return Object.entries(enumObject)
+    .filter(([key]) => Number.isNaN(Number(key)))
+    .map(([, value]) => ({
+      value,
+      label: labels[value] ?? String(value),
+    }));
 };

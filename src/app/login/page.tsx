@@ -50,7 +50,7 @@ export default function LoginPage() {
   return (
     <div className="from-gradient-1 to-gradient-2 flex h-full w-full items-center justify-center bg-gradient-to-r">
       <div className="-mt-20 flex w-96 flex-col items-center space-y-4 p-4">
-        <Image src={LogoToPWR} alt={"Logo ToPWR"} className="p-8" />
+        <Image src={LogoToPWR} alt={"Logo ToPWR"} className="p-10" />
 
         <Form {...form}>
           <form
@@ -118,21 +118,19 @@ export default function LoginPage() {
                 </FormItem>
               )}
             />
-            <div className="mt-8 flex justify-center">
-              <Button
-                type="submit"
-                className="h-10 w-24 transition duration-300 hover:opacity-90"
-                loading={isPending}
-              >
-                Login
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              className="mx-auto mt-8 block h-10 w-24 transition duration-300 hover:opacity-90"
+              loading={isPending}
+            >
+              Login
+            </Button>
           </form>
         </Form>
       </div>
       <Link
         href={SOLVRO_WEBPAGE_URL}
-        className="absolute bottom-8 h-6"
+        className="absolute bottom-4 h-6 md:bottom-8"
         target="_blank"
         rel="noreferrer"
       >

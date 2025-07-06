@@ -33,7 +33,7 @@ export function ImageInput({ label }: { label: string }) {
           }}
           className="hidden"
         />
-        <div className="bg-background flex h-48 w-48 flex-col items-center justify-center overflow-hidden rounded-lg shadow-sm">
+        <div className="bg-background flex aspect-video w-full flex-col items-center justify-center overflow-hidden rounded-lg md:h-48 md:w-48">
           {currentImage == null ? (
             <>
               <Camera className="text-image-input-icon h-12 w-12" />

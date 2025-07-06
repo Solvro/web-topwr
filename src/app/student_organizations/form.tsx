@@ -1,8 +1,8 @@
 "use client";
 
-import { AbstractEditor } from "@/components/abstract-editor";
-import { departments } from "@/lib/constants";
+import { AbstractEditor } from "@/components/abstract-resource-form";
 import {
+  DepartmentIds,
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
@@ -14,7 +14,7 @@ import type {
   formSelectInputs,
   formTextInputs,
 } from "@/lib/types";
-import { arrayToFormSelectOptions, enumToFormSelectOptions } from "@/lib/utils";
+import { enumToFormSelectOptions } from "@/lib/utils";
 import { StudentOrganizationSchema } from "@/schemas";
 import type { StudentOrganization } from "@/types/app";
 import type { StudentOrganizationFormValues } from "@/types/schemas";
@@ -46,7 +46,7 @@ const textInputs: formTextInputs[] = [
     label: "Nazwa",
   },
   {
-    name: "shortDesc",
+    name: "shortDescription",
     label: "Krótki opis",
   },
 ];
@@ -61,7 +61,28 @@ const selectInputs: formSelectInputs[] = [
     name: "departmentId",
     label: "Wydział",
     placeholder: "Wybierz wydział",
-    options: arrayToFormSelectOptions(departments),
+    options: enumToFormSelectOptions(DepartmentIds, {
+      [DepartmentIds.Architecture]: "Wydział Architektury",
+      [DepartmentIds.CivilEngineering]:
+        "Wydział Budownictwa Lądowego i Wodnego",
+      [DepartmentIds.Chemistry]: "Wydział Chemiczny",
+      [DepartmentIds.ComputerScienceAndTelecommunications]:
+        "Wydział Informatyki i Telekomunikacji",
+      [DepartmentIds.ElectricalEngineering]: "Wydział Elektryczny",
+      [DepartmentIds.GeoengineeringMiningAndGeology]:
+        "Wydział Geoinżynierii, Górnictwa i Geologii",
+      [DepartmentIds.EnvironmentalEngineering]: "Wydział Inżynierii Środowiska",
+      [DepartmentIds.Management]: "Wydział Zarządzania",
+      [DepartmentIds.MechanicalAndPowerEngineering]:
+        "Wydział Mechaniczno-Energetyczny",
+      [DepartmentIds.Mechanical]: "Wydział Mechaniczny",
+      [DepartmentIds.FundamentalProblemsOfTechnology]:
+        "Wydział Podstawowych Problemów Techniki",
+      [DepartmentIds.ElectronicsPhotonicsAndMicrosystems]:
+        "Wydział Elektroniki, Fotoniki i Mikrosystemów",
+      [DepartmentIds.Mathematics]: "Wydział Matematyki",
+      [DepartmentIds.Medical]: "Wydział Medyczny",
+    }),
     allowNull: true,
   },
   {
@@ -113,8 +134,13 @@ export function Editor({
 }) {
   const defaultValues: StudentOrganizationFormValues = initialData ?? {
     ...(null as unknown as StudentOrganizationFormValues),
+    departmentId: null,
+    logoKey: null,
+    coverKey: null,
+    description: null,
+    shortDescription: null,
     coverPreview: false, // cholera wi co to jest, te organizacje co są już na backendzie mają to zawsze na false
-    isStrategic: false, // checkbox can't be null => default to false
+    isStrategic: false,
   };
 
   return (
@@ -128,6 +154,7 @@ export function Editor({
       richTextInput={richTextInput}
       selectInputs={selectInputs}
       checkboxInputs={checkboxInputs}
+      returnButtonLabel="Wróć do organizacji"
     ></AbstractEditor>
   );
 }
