@@ -24,7 +24,7 @@ export function AbstractList({
 }) {
   return (
     <div className="flex h-full flex-col space-y-4">
-      <div className="flex-[1_1_0] space-y-4 overflow-y-auto pr-2">
+      <div className="grow basis-[0] space-y-4 overflow-y-auto pr-2">
         {listItems.map((item) => (
           <div
             key={item.id}

@@ -17,8 +17,8 @@ export default function Home() {
   }
 
   return (
-    <div className="container mx-auto flex h-full flex-col items-center space-y-20 p-4 sm:p-8 2xl:max-w-[1280px]">
-      <span className="mt-16 w-full text-2xl">
+    <div className="container mx-auto flex h-full flex-col items-center space-y-14 p-4 sm:p-8 md:space-y-20 2xl:max-w-[1280px]">
+      <span className="mt-4 w-full text-2xl md:mt-16">
         Cześć, {getUserDisplayName(auth.user)}!
       </span>
       <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">

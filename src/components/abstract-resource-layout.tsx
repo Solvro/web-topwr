@@ -16,8 +16,8 @@ export function AbstractResourceLayout({
       <h2 className="bg-primary w-[20rem] max-w-full rounded-r-xl p-5 text-center text-lg font-medium whitespace-nowrap text-white sm:w-[25rem] md:w-[30rem] xl:w-[40rem]">
         {title}
       </h2>
-      <div className="container mx-auto flex h-full flex-grow flex-col space-y-2 px-2 xl:px-32">
-        <div className="flex-grow">{children}</div>
+      <div className="container mx-auto flex h-full grow flex-col space-y-2 px-2 xl:px-32">
+        <div className="grow">{children}</div>
         <Button
           variant="ghost"
           className="text-primary hover:text-primary w-min"

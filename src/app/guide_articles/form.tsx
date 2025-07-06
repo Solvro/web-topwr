@@ -1,6 +1,6 @@
 "use client";
 
-import { AbstractEditor } from "@/components/abstract-editor";
+import { AbstractEditor } from "@/components/abstract-resource-form";
 import type {
   formImageInputs,
   formRichTextInput,
@@ -47,6 +47,9 @@ const richTextInput: formRichTextInput = {
 export function Editor({ initialData }: { initialData?: GuideArticle | null }) {
   const defaultValues: GuideArticleFormValues = initialData ?? {
     ...(null as unknown as GuideArticleFormValues),
+    imageKey: null,
+    description: "",
+    shortDesc: "",
   };
 
   return (
@@ -58,6 +61,7 @@ export function Editor({ initialData }: { initialData?: GuideArticle | null }) {
       imageInputs={imageInputs}
       textInputs={textInputs}
       richTextInput={richTextInput}
+      returnButtonLabel="Wróć do artykułów"
     ></AbstractEditor>
   );
 }

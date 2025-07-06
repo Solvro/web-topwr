@@ -28,11 +28,11 @@ export default function RootLayout({
     <html lang="en">
       <Providers>
         <body
-          className={`${space_grotesk.variable} flex h-screen flex-col font-sans antialiased`}
+          className={`${space_grotesk.variable} flex h-screen flex-col overflow-hidden font-sans antialiased`}
         >
           <Navbar />
-          <div className="h-full w-full">{children}</div>
           <Toaster />
+          <div className="w-full grow">{children}</div>
         </body>
       </Providers>
     </html>

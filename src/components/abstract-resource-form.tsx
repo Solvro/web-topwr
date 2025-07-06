@@ -43,6 +43,7 @@ export function AbstractEditor<T extends ZodType>({
   richTextInput,
   selectInputs = [],
   checkboxInputs = [],
+  returnButtonLabel,
 }: {
   schema: T;
   defaultValues?: TypeOf<T>;
@@ -53,6 +54,7 @@ export function AbstractEditor<T extends ZodType>({
   richTextInput?: formRichTextInput;
   selectInputs?: formSelectInputs[];
   checkboxInputs?: formCheckboxInputs[];
+  returnButtonLabel: string;
 }) {
   const form = useForm<TypeOf<T>>({
     resolver: zodResolver(schema),
@@ -75,12 +77,12 @@ export function AbstractEditor<T extends ZodType>({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-grow flex-col space-y-4"
+          className="flex grow flex-col space-y-4"
         >
-          <div className="flex-[1_1_0] flex-grow overflow-y-auto">
-            <div className="bg-background-secondary flex min-h-full flex-row space-y-4 space-x-4 rounded-xl p-4">
+          <div className="grow basis-[0] overflow-y-auto">
+            <div className="bg-background-secondary flex min-h-full flex-col space-y-4 space-x-4 rounded-xl p-4 md:flex-row">
               {/* // TODO: include images in form data */}
-              <div className="flex w-48 flex-col space-y-4">
+              <div className="flex w-full flex-col space-y-4 md:w-48">
                 {imageInputs.map((input) => (
                   <ImageInput key={input.label} label={input.label} />
                 ))}
@@ -97,7 +99,7 @@ export function AbstractEditor<T extends ZodType>({
                         <FormLabel>{input.label}</FormLabel>
                         <FormControl>
                           <Input
-                            className="bg-background placeholder:text-foreground"
+                            className="bg-background placeholder:text-foreground border-none shadow-none"
                             {...field}
                             value={field.value ?? ""}
                           />
@@ -119,7 +121,7 @@ export function AbstractEditor<T extends ZodType>({
                         <FormLabel>{richTextInput.label}</FormLabel>
                         <FormControl>
                           <Input
-                            className="bg-background placeholder:text-foreground h-20"
+                            className="bg-background placeholder:text-foreground h-20 border-none shadow-none"
                             {...field}
                             value={field.value ?? ""}
                           />
@@ -153,7 +155,7 @@ export function AbstractEditor<T extends ZodType>({
                             }}
                           >
                             <FormControl>
-                              <SelectTrigger className="bg-background w-full">
+                              <SelectTrigger className="bg-background w-full border-none shadow-none">
                                 <SelectValue placeholder={input.placeholder} />
                               </SelectTrigger>
                             </FormControl>
@@ -200,21 +202,22 @@ export function AbstractEditor<T extends ZodType>({
               </div>
             </div>
           </div>
-          <div className="flex justify-end">
+
+          <div className="flex w-full justify-between">
+            <Button
+              variant="ghost"
+              className="text-primary hover:text-primary w-min"
+              asChild
+            >
+              <Link href="/guide_articles" className="">
+                <ChevronLeft />
+                {returnButtonLabel}
+              </Link>
+            </Button>
             <Button type="submit">Zapisz</Button>
           </div>
         </form>
       </Form>
-      <Button
-        variant="ghost"
-        className="text-primary hover:text-primary w-min"
-        asChild
-      >
-        <Link href="/guide_articles" className="">
-          <ChevronLeft />
-          Wroć do artykułów
-        </Link>
-      </Button>
     </div>
   );
 }
