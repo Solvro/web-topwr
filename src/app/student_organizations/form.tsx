@@ -1,6 +1,6 @@
 "use client";
 
-import { AbstractEditor } from "@/components/abstract-resource-form";
+import { AbstractResourceForm } from "@/components/abstract-resource-form";
 import {
   DepartmentIds,
   OrganizationSource,
@@ -127,24 +127,27 @@ const checkboxInputs: formCheckboxInputs[] = [
   },
 ];
 
-export function Editor({
+export function Form({
   initialData,
 }: {
   initialData?: StudentOrganization | null;
 }) {
   const defaultValues: StudentOrganizationFormValues = initialData ?? {
-    ...(null as unknown as StudentOrganizationFormValues),
+    name: "",
     departmentId: null,
     logoKey: null,
     coverKey: null,
     description: null,
     shortDescription: null,
-    coverPreview: false, // cholera wi co to jest, te organizacje co są już w bazie mają to w 99% przypadków na false
+    coverPreview: false, // pojęcia nie mam co to jest, te organizacje co są już w bazie mają to w 99% przypadków na false
+    source: OrganizationSource.Manual,
+    organizationType: OrganizationType.ScientificClub,
+    organizationStatus: OrganizationStatus.Active,
     isStrategic: false,
   };
 
   return (
-    <AbstractEditor
+    <AbstractResourceForm
       schema={StudentOrganizationSchema}
       defaultValues={defaultValues}
       createOnSubmit={createOnSubmit}
@@ -154,7 +157,8 @@ export function Editor({
       richTextInput={richTextInput}
       selectInputs={selectInputs}
       checkboxInputs={checkboxInputs}
+      returnButtonPath="/student_organizations"
       returnButtonLabel="Wróć do organizacji"
-    ></AbstractEditor>
+    ></AbstractResourceForm>
   );
 }

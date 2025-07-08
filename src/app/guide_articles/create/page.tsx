@@ -1,5 +1,5 @@
-import { Editor } from "../form";
+import { Form } from "../form";
 
 export default function CreatePage() {
-  return <Editor />;
+  return <Form />;
 }
