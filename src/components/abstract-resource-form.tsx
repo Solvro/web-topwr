@@ -142,12 +142,17 @@ export function AbstractEditor<T extends ZodType>({
                         <FormItem>
                           <FormLabel>{input.label}</FormLabel>
                           <Select
+                            value={String(field.value ?? "")}
                             onValueChange={(value) => {
                               if (!value && input.allowNull === true) {
                                 field.onChange(null);
+                                return;
                               }
 
-                              if (typeof input.options[0]?.value === "number") {
+                              if (
+                                typeof input.options[0]?.value === "number" ||
+                                typeof field.value === "number"
+                              ) {
                                 field.onChange(value ? Number(value) : null);
                               } else {
                                 field.onChange(value || null);

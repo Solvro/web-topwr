@@ -139,7 +139,7 @@ export function Editor({
     coverKey: null,
     description: null,
     shortDescription: null,
-    coverPreview: false, // cholera wi co to jest, te organizacje co są już na backendzie mają to zawsze na false
+    coverPreview: false, // cholera wi co to jest, te organizacje co są już w bazie mają to w 99% przypadków na false
     isStrategic: false,
   };
 
