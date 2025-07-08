@@ -1,7 +1,7 @@
 import { API_URL } from "@/config/constants";
 import type { StudentOrganization } from "@/types/app";
 
-import { Editor } from "../../form";
+import { Form } from "../../form";
 
 async function getStudentOrganization(
   id: string,
@@ -40,5 +40,5 @@ export default async function EditStudentOrganizationPage({
   const { id } = await params;
   const studentOrganization = await getStudentOrganization(id);
 
-  return <Editor initialData={studentOrganization} />;
+  return <Form initialData={studentOrganization} />;
 }

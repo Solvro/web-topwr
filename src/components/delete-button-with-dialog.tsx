@@ -34,7 +34,7 @@ export function DeleteButtonWithDialog({
           <Trash2 />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="border-none">
         <DialogHeader>
           <DialogTitle>Czy na pewno chcesz usunąć ten element?</DialogTitle>
           <DialogDescription>Tego kroku nie można cofnąć.</DialogDescription>

@@ -1,7 +1,7 @@
 import { API_URL } from "@/config/constants";
 import type { GuideArticle } from "@/types/app";
 
-import { Editor } from "../../form";
+import { Form } from "../../form";
 
 async function getGuideArticle(id: string): Promise<GuideArticle | null> {
   try {
@@ -35,5 +35,5 @@ export default async function EditGuideArticlePage({
   const { id } = await params;
   const guideArticle = await getGuideArticle(id);
 
-  return <Editor initialData={guideArticle} />;
+  return <Form initialData={guideArticle} />;
 }

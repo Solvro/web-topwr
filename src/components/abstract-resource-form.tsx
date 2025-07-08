@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import type { FieldPath } from "react-hook-form";
 import type { TypeOf, ZodType } from "zod";
 
 import { ImageInput } from "@/components/image-input";
@@ -33,7 +34,7 @@ import type {
   formTextInputs,
 } from "@/lib/types";
 
-export function AbstractEditor<T extends ZodType>({
+export function AbstractResourceForm<T extends ZodType>({
   schema,
   defaultValues,
   createOnSubmit,
@@ -43,6 +44,7 @@ export function AbstractEditor<T extends ZodType>({
   richTextInput,
   selectInputs = [],
   checkboxInputs = [],
+  returnButtonPath,
   returnButtonLabel,
 }: {
   schema: T;
@@ -54,6 +56,7 @@ export function AbstractEditor<T extends ZodType>({
   richTextInput?: formRichTextInput;
   selectInputs?: formSelectInputs[];
   checkboxInputs?: formCheckboxInputs[];
+  returnButtonPath: string;
   returnButtonLabel: string;
 }) {
   const form = useForm<TypeOf<T>>({
@@ -93,7 +96,7 @@ export function AbstractEditor<T extends ZodType>({
                   <FormField
                     key={input.name}
                     control={form.control}
-                    name={input.name as TypeOf<T>}
+                    name={input.name as FieldPath<TypeOf<T>>}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{input.label}</FormLabel>
@@ -214,7 +217,7 @@ export function AbstractEditor<T extends ZodType>({
               className="text-primary hover:text-primary w-min"
               asChild
             >
-              <Link href="/guide_articles" className="">
+              <Link href={returnButtonPath} className="">
                 <ChevronLeft />
                 {returnButtonLabel}
               </Link>
