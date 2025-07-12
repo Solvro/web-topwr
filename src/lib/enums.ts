@@ -18,3 +18,21 @@ export enum OrganizationStatus {
   Dissolved = "dissolved",
   Unknown = "unknown",
 }
+
+//from https://api.topwr.solvro.pl/api/v1/departments
+export enum DepartmentIds {
+  Architecture = 1,
+  CivilEngineering = 2,
+  Chemistry = 4,
+  ComputerScienceAndTelecommunications = 5,
+  ElectricalEngineering = 6,
+  GeoengineeringMiningAndGeology = 7,
+  EnvironmentalEngineering = 8,
+  Management = 9,
+  MechanicalAndPowerEngineering = 10,
+  Mechanical = 11,
+  FundamentalProblemsOfTechnology = 12,
+  ElectronicsPhotonicsAndMicrosystems = 13,
+  Mathematics = 14,
+  Medical = 15,
+}

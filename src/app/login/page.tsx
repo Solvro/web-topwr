@@ -104,13 +104,14 @@ export default function LoginPage() {
               control={form.control}
               name="rememberMe"
               render={({ field }) => (
-                <FormItem className="flex flex-row">
+                <FormItem className="flex flex-row items-center space-x-2">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={(checked) => {
                         field.onChange(checked);
                       }}
+                      className="my-auto"
                     />
                   </FormControl>
                   <FormLabel>Remember me</FormLabel>
@@ -134,11 +135,7 @@ export default function LoginPage() {
         target="_blank"
         rel="noreferrer"
       >
-        <Image
-          src={SolvroLogo}
-          alt={"Logo Solvro"}
-          className="h-full w-full"
-        ></Image>
+        <Image src={SolvroLogo} alt={"Logo Solvro"} className="h-full w-full" />
       </Link>
     </div>
   );

@@ -4,8 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import type { FieldPath } from "react-hook-form";
-import type { TypeOf, ZodType } from "zod";
+import type { TypeOf, ZodType, z } from "zod";
 
 import { ImageInput } from "@/components/image-input";
 import { Button } from "@/components/ui/button";
@@ -26,36 +25,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type {
-  formCheckboxInputs,
-  formImageInputs,
-  formRichTextInput,
-  formSelectInputs,
-  formTextInputs,
-} from "@/lib/types";
+import type { AbstractResourceFormInputs } from "@/lib/types";
 
 export function AbstractResourceForm<T extends ZodType>({
   schema,
   defaultValues,
   createOnSubmit,
   editOnSubmit,
-  imageInputs = [],
-  textInputs = [],
-  richTextInput,
-  selectInputs = [],
-  checkboxInputs = [],
+  formInputs: {
+    imageInputs = [],
+    textInputs = [],
+    richTextInput,
+    selectInputs = [],
+    checkboxInputs = [],
+  },
   returnButtonPath,
   returnButtonLabel,
 }: {
   schema: T;
-  defaultValues?: TypeOf<T>;
+  defaultValues?: TypeOf<T> & { id?: number };
   createOnSubmit: (data: TypeOf<T>) => void;
   editOnSubmit: (id: number, data: TypeOf<T>) => void;
-  imageInputs?: formImageInputs[];
-  textInputs?: formTextInputs[];
-  richTextInput?: formRichTextInput;
-  selectInputs?: formSelectInputs[];
-  checkboxInputs?: formCheckboxInputs[];
+  formInputs: AbstractResourceFormInputs<z.infer<T>>;
   returnButtonPath: string;
   returnButtonLabel: string;
 }) {
@@ -65,13 +56,10 @@ export function AbstractResourceForm<T extends ZodType>({
   });
 
   function onSubmit(values: TypeOf<T>) {
-    if (
-      defaultValues != null &&
-      (defaultValues as { id?: number }).id !== undefined
-    ) {
-      editOnSubmit((defaultValues as { id: number }).id, values);
-    } else {
+    if (defaultValues == null || defaultValues.id === undefined) {
       createOnSubmit(values);
+    } else {
+      editOnSubmit(defaultValues.id as number, values);
     }
   }
 
@@ -96,13 +84,13 @@ export function AbstractResourceForm<T extends ZodType>({
                   <FormField
                     key={input.name}
                     control={form.control}
-                    name={input.name as FieldPath<TypeOf<T>>}
+                    name={input.name}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{input.label}</FormLabel>
                         <FormControl>
                           <Input
-                            className="bg-background placeholder:text-foreground border-none shadow-none"
+                            className="bg-background placeholder:text-foreground shadow-none"
                             {...field}
                             value={field.value ?? ""}
                           />
@@ -118,13 +106,13 @@ export function AbstractResourceForm<T extends ZodType>({
                   <FormField
                     key={richTextInput.name}
                     control={form.control}
-                    name={richTextInput.name as TypeOf<T>}
+                    name={richTextInput.name}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{richTextInput.label}</FormLabel>
                         <FormControl>
                           <Input
-                            className="bg-background placeholder:text-foreground h-20 border-none shadow-none"
+                            className="bg-background placeholder:text-foreground h-20 shadow-none"
                             {...field}
                             value={field.value ?? ""}
                           />
@@ -140,7 +128,7 @@ export function AbstractResourceForm<T extends ZodType>({
                     <FormField
                       key={input.name}
                       control={form.control}
-                      name={input.name as TypeOf<T>}
+                      name={input.name}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>{input.label}</FormLabel>
@@ -163,7 +151,7 @@ export function AbstractResourceForm<T extends ZodType>({
                             }}
                           >
                             <FormControl>
-                              <SelectTrigger className="bg-background w-full border-none shadow-none">
+                              <SelectTrigger className="bg-background w-full shadow-none">
                                 <SelectValue placeholder={input.placeholder} />
                               </SelectTrigger>
                             </FormControl>
@@ -189,9 +177,9 @@ export function AbstractResourceForm<T extends ZodType>({
                   <FormField
                     key={input.name}
                     control={form.control}
-                    name={input.name as TypeOf<T>}
+                    name={input.name}
                     render={({ field }) => (
-                      <FormItem className="flex flex-row">
+                      <FormItem className="flex flex-row space-x-2">
                         <FormLabel>{input.label}</FormLabel>
                         <FormControl>
                           <Checkbox

@@ -22,7 +22,7 @@ export function ImageInput({ label }: { label: string }) {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       <FormLabel>{label}</FormLabel>
       <label className="cursor-pointer">
         <input
@@ -33,7 +33,7 @@ export function ImageInput({ label }: { label: string }) {
           }}
           className="hidden"
         />
-        <div className="bg-background flex aspect-video w-full flex-col items-center justify-center overflow-hidden rounded-lg md:h-48 md:w-48">
+        <div className="bg-background border-input flex aspect-video w-full flex-col items-center justify-center overflow-hidden rounded-lg border md:h-48 md:w-48">
           {currentImage == null ? (
             <>
               <Camera className="text-image-input-icon h-12 w-12" />
