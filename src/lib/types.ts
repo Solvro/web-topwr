@@ -1,10 +1,18 @@
+import type { FieldPath, FieldValues } from "react-hook-form";
 import type { z } from "zod";
 
+import type { ERROR_CODES } from "@/config/constants";
 import type {
   GuideArticleSchema,
   LoginSchema,
   StudentOrganizationSchema,
 } from "@/schemas";
+
+import type {
+  OrganizationSource,
+  OrganizationStatus,
+  OrganizationType,
+} from "./enums";
 
 // Types Source: backend-topwr
 export interface ValidationIssue {
@@ -58,44 +66,6 @@ export interface FileData {
   url: string;
 }
 
-export enum OrganizationType {
-  ScientificClub = "scientific_club",
-  StudentOrganization = "student_organization",
-  StudentMedium = "student_medium",
-  CultureAgenda = "culture_agenda",
-  StudentCouncil = "student_council",
-}
-
-export enum OrganizationSource {
-  StudentDepartment = "student_department",
-  Manual = "manual",
-  PwrActive = "pwr_active",
-}
-
-export enum OrganizationStatus {
-  Active = "active",
-  Inactive = "inactive",
-  Dissolved = "dissolved",
-  Unknown = "unknown",
-}
-
-export enum DepartmentIds { //from https://api.topwr.solvro.pl/api/v1/departments
-  Architecture = 1,
-  CivilEngineering = 2,
-  Chemistry = 4,
-  ComputerScienceAndTelecommunications = 5,
-  ElectricalEngineering = 6,
-  GeoengineeringMiningAndGeology = 7,
-  EnvironmentalEngineering = 8,
-  Management = 9,
-  MechanicalAndPowerEngineering = 10,
-  Mechanical = 11,
-  FundamentalProblemsOfTechnology = 12,
-  ElectronicsPhotonicsAndMicrosystems = 13,
-  Mathematics = 14,
-  Medical = 15,
-}
-
 export interface StudentOrganization {
   id: number;
   name: string;
@@ -123,20 +93,6 @@ export interface GuideArticle {
   updatedAt: string;
 }
 
-export interface Department {
-  id: number;
-  name: string;
-}
-//
-
-export type Resource = "guide_articles" | "student_organizations";
-
-export interface ListItem {
-  id: number;
-  name: string;
-  shortDescription?: string | null;
-}
-
 // forms
 export type LoginFormValues = z.infer<typeof LoginSchema>;
 export type GuideArticleFormValues = z.infer<typeof GuideArticleSchema>;
@@ -149,30 +105,56 @@ export interface SelectInputOption {
   label: string;
 }
 
-export interface formImageInputs {
+export interface FormImageInput {
   label: string;
 }
 
-export interface formTextInputs {
-  name: string;
+export interface FormTextInput<T extends FieldValues> {
+  name: FieldPath<T>;
   label: string;
 }
 
-export interface formRichTextInput {
-  name: string;
+export interface FormRichTextInput<T extends FieldValues> {
+  name: FieldPath<T>;
   label: string;
 }
 
-export interface formSelectInputs {
-  name: string;
+export interface FormSelectInput<T extends FieldValues> {
+  name: FieldPath<T>;
   label: string;
   placeholder: string;
   options: SelectInputOption[];
   allowNull?: boolean;
 }
 
-export interface formCheckboxInputs {
-  name: string;
+export interface FormCheckboxInput<T extends FieldValues> {
+  name: FieldPath<T>;
   label: string;
 }
-//
+
+export interface AbstractResourceFormInputs<T extends FieldValues> {
+  imageInputs?: FormImageInput[];
+  textInputs?: FormTextInput<T>[];
+  richTextInput?: FormRichTextInput<T>;
+  selectInputs?: FormSelectInput<T>[];
+  checkboxInputs?: FormCheckboxInput<T>[];
+}
+
+/** As returned from GET /auth/me */
+export interface User {
+  id: number;
+  fullName: string | null;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type Resource = "guide_articles" | "student_organizations";
+
+export type ErrorCode = keyof typeof ERROR_CODES;
+
+export interface ListItem {
+  id: number;
+  name: string;
+  shortDescription?: string | null;
+}

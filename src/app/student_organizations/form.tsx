@@ -6,13 +6,13 @@ import {
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
-} from "@/lib/types";
+} from "@/lib/enums";
 import type {
-  formCheckboxInputs,
-  formImageInputs,
-  formRichTextInput,
-  formSelectInputs,
-  formTextInputs,
+  FormCheckboxInput,
+  FormImageInput,
+  FormRichTextInput,
+  FormSelectInput,
+  FormTextInput,
 } from "@/lib/types";
 import { enumToFormSelectOptions } from "@/lib/utils";
 import { StudentOrganizationSchema } from "@/schemas";
@@ -31,7 +31,7 @@ function editOnSubmit(id: number, data: StudentOrganizationFormValues) {
   console.log(`Updating organization ${String(id)}:`, data);
 }
 
-const imageInputs: formImageInputs[] = [
+const imageInputs: FormImageInput[] = [
   {
     label: "Logo",
   },
@@ -40,7 +40,7 @@ const imageInputs: formImageInputs[] = [
   },
 ];
 
-const textInputs: formTextInputs[] = [
+const textInputs: FormTextInput<StudentOrganizationFormValues>[] = [
   {
     name: "name",
     label: "Nazwa",
@@ -51,12 +51,12 @@ const textInputs: formTextInputs[] = [
   },
 ];
 
-const richTextInput: formRichTextInput = {
+const richTextInput: FormRichTextInput<StudentOrganizationFormValues> = {
   name: "description",
   label: "Opis",
 };
 
-const selectInputs: formSelectInputs[] = [
+const selectInputs: FormSelectInput<StudentOrganizationFormValues>[] = [
   {
     name: "departmentId",
     label: "Wydział",
@@ -120,7 +120,7 @@ const selectInputs: formSelectInputs[] = [
   },
 ];
 
-const checkboxInputs: formCheckboxInputs[] = [
+const checkboxInputs: FormCheckboxInput<StudentOrganizationFormValues>[] = [
   {
     name: "isStrategic",
     label: "Czy jest kołem strategicznym?",
@@ -152,13 +152,15 @@ export function Form({
       defaultValues={defaultValues}
       createOnSubmit={createOnSubmit}
       editOnSubmit={editOnSubmit}
-      imageInputs={imageInputs}
-      textInputs={textInputs}
-      richTextInput={richTextInput}
-      selectInputs={selectInputs}
-      checkboxInputs={checkboxInputs}
+      formInputs={{
+        imageInputs,
+        textInputs,
+        richTextInput,
+        selectInputs,
+        checkboxInputs,
+      }}
       returnButtonPath="/student_organizations"
       returnButtonLabel="Wróć do organizacji"
-    ></AbstractResourceForm>
+    />
   );
 }

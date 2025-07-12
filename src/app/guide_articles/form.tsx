@@ -2,9 +2,9 @@
 
 import { AbstractResourceForm } from "@/components/abstract-resource-form";
 import type {
-  formImageInputs,
-  formRichTextInput,
-  formTextInputs,
+  FormImageInput,
+  FormRichTextInput,
+  FormTextInput,
 } from "@/lib/types";
 import { GuideArticleSchema } from "@/schemas";
 import type { GuideArticle } from "@/types/app";
@@ -22,13 +22,13 @@ function editOnSubmit(id: number, data: GuideArticleFormValues) {
   console.log(`Updating article ${String(id)}:`, data);
 }
 
-const imageInputs: formImageInputs[] = [
+const imageInputs: FormImageInput[] = [
   {
     label: "Zdjęcie",
   },
 ];
 
-const textInputs: formTextInputs[] = [
+const textInputs: FormTextInput<GuideArticleFormValues>[] = [
   {
     name: "title",
     label: "Tytuł",
@@ -39,7 +39,7 @@ const textInputs: formTextInputs[] = [
   },
 ];
 
-const richTextInput: formRichTextInput = {
+const richTextInput: FormRichTextInput<GuideArticleFormValues> = {
   name: "description",
   label: "Opis",
 };
@@ -58,11 +58,13 @@ export function Form({ initialData }: { initialData?: GuideArticle | null }) {
       defaultValues={defaultValues}
       createOnSubmit={createOnSubmit}
       editOnSubmit={editOnSubmit}
-      imageInputs={imageInputs}
-      textInputs={textInputs}
-      richTextInput={richTextInput}
+      formInputs={{
+        imageInputs,
+        textInputs,
+        richTextInput,
+      }}
       returnButtonPath="/guide_articles"
       returnButtonLabel="Wróć do artykułów"
-    ></AbstractResourceForm>
+    />
   );
 }
