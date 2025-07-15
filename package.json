@@ -33,6 +33,9 @@
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tooltip": "^1.2.7",
+=======
+    "@radix-ui/react-slot": "^1.2.3",
+>>>>>>> bf20cc8 (feat: add core calendar and add event form functionality without submit logic)
     "@tanstack/react-query": "^5.71.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
