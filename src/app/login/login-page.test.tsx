@@ -71,9 +71,7 @@ describe("Login page", () => {
     expect(getErrorMessage).not.toHaveBeenCalled();
     await form.user.click(form.submitButton);
 
-    expect(getErrorMessage).toHaveReturnedWith(
-      ERROR_MESSAGES.E_VALIDATION_ERROR,
-    );
+    expect(await form.screen.findByText(/wymagane/i)).toBeInTheDocument();
   });
 
   it("should accept valid credentials", enterValidCredentials);
