@@ -81,3 +81,9 @@ export const ERROR_MESSAGES: Record<string, string> = {
   E_UNEXPECTED_ERROR: "Nastąpił nieoczekiwany błąd",
   E_VALIDATION_ERROR: "Wpisane dane są niekompletne lub nieprawidłowe",
 };
+
+export const FORM_ERROR_MESSAGES = {
+  REQUIRED: "Wymagane",
+  NONEMPTY: "Wymagane",
+  INVALID_EMAIL: "Niepoprawny adres email",
+};

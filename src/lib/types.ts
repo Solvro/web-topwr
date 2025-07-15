@@ -12,7 +12,7 @@ import type {
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
-} from "./enums";
+} from "./form-enums";
 
 // Types Source: backend-topwr
 export interface ValidationIssue {

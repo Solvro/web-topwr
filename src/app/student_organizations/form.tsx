@@ -6,7 +6,7 @@ import {
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
-} from "@/lib/enums";
+} from "@/lib/form-enums";
 import type {
   FormCheckboxInput,
   FormImageInput,
