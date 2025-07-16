@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { AUTH_STATE_COOKIE_NAME } from "@/config/constants";
 import { getCookieOptions, parseAuthCookie } from "@/lib/cookies";
 import { fetchMutation } from "@/lib/fetch-utils";
+import { getUserDisplayName } from "@/lib/helpers";
 import { authStateAtom } from "@/stores/auth";
 import type {
   AuthState,
@@ -51,8 +52,6 @@ const parseAuthState = (
 export function useAuth(): AuthContext {
   const [authState, setAuthState] = useAtom(authStateAtom);
 
-  const commonState = parseAuthState(authState);
-
   useEffect(() => {
     if (authState != null) {
       return;
@@ -70,8 +69,10 @@ export function useAuth(): AuthContext {
   }, [authState, setAuthState]);
 
   async function login(data: LoginFormValues) {
-    if (commonState.isAuthenticated) {
-      throw new Error("Cannot log in when already authenticated");
+    if (authState != null) {
+      throw new Error(
+        `Cannot log in: already authenticated as ${getUserDisplayName(authState.user)}`,
+      );
     }
     const response = await fetchMutation<AuthState>("/auth/login", data);
     Cookies.set(AUTH_STATE_COOKIE_NAME, ...getCookieOptions(response));
@@ -80,7 +81,7 @@ export function useAuth(): AuthContext {
   }
 
   async function logout() {
-    if (!commonState.isAuthenticated) {
+    if (authState == null) {
       throw new Error("Cannot log out when not authenticated");
     }
     const result = await fetchMutation<SuccessResponse<MessageResponse>>(
@@ -95,5 +96,5 @@ export function useAuth(): AuthContext {
     setAuthState(null);
   }
 
-  return { ...commonState, login, logout };
+  return { ...parseAuthState(authState), login, logout };
 }
