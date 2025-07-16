@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { getUserDisplayName } from "@/lib/helpers";
 
 export default function Home() {
   const auth = useAuth();
@@ -18,7 +19,7 @@ export default function Home() {
   return (
     <div className="container mx-auto flex h-full flex-col items-center space-y-20 p-4 sm:p-8 2xl:max-w-[1280px]">
       <span className="mt-16 w-full text-2xl">
-        Cześć, {auth.user.fullName ?? auth.user.email}!
+        Cześć, {getUserDisplayName(auth.user)}!
       </span>
       <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
         <DashboardButton
