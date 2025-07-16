@@ -1,6 +1,6 @@
 import { API_URL } from "@/config/constants";
-import type { ErrorResponse, SuccessResponse } from "@/lib/types";
 import { getAuthState } from "@/stores/auth";
+import type { ErrorResponse, SuccessResponse } from "@/types/api";
 
 type RequestOptions = {
   headers?: Record<string, string>;

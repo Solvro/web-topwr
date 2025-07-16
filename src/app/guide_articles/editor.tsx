@@ -16,8 +16,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { GuideArticle, GuideArticleFormValues } from "@/lib/types";
 import { GuideArticleSchema } from "@/schemas";
+import type { GuideArticle } from "@/types/app";
+import type { GuideArticleFormValues } from "@/types/schemas";
 
 export function Editor({ initialData }: { initialData?: GuideArticle | null }) {
   const defaultValues: GuideArticleFormValues = initialData ?? {

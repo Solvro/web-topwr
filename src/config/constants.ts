@@ -1,4 +1,4 @@
-import type { Department } from "@/lib/types";
+import type { Department } from "@/types/app";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
@@ -75,7 +75,8 @@ export const ERROR_CODES = {
   500: "Wystąpił błąd serwera",
 };
 
-export const ERROR_MESSAGES = {
+/** A map of API error codes to user-friendly messages */
+export const ERROR_MESSAGES: Record<string, string> = {
   E_INVALID_CREDENTIALS: "Wpisano niepoprawny email lub hasło",
   E_UNEXPECTED_ERROR: "Nastąpił nieoczekiwany błąd",
   E_VALIDATION_ERROR: "Wpisane dane są niekompletne lub nieprawidłowe",

@@ -1,10 +1,6 @@
-import { FetchError } from "./fetch-utils";
+import { ERROR_MESSAGES } from "@/config/constants";
 
-const ERROR_MESSAGES: Record<string, string> = {
-  E_INVALID_CREDENTIALS: "Wpisano niepoprawny email lub hasło",
-  E_UNEXPECTED_ERROR: "Nastąpił nieoczekiwany błąd",
-  E_VALIDATION_ERROR: "Wpisane dane są niekompletne lub nieprawidłowe",
-};
+import { FetchError } from "./fetch-utils";
 
 function getCodedMessage(code: string, fallback: string): string {
   if (code in ERROR_MESSAGES) {
