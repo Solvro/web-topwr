@@ -4,7 +4,7 @@ import { Plus, SquarePen } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import type { ListItem, Resource } from "@/lib/types";
+import type { ListItem, Resource } from "@/types/app";
 
 import { DeleteButtonWithDialog } from "./delete-button-with-dialog";
 import { PaginationComponent } from "./pagination";

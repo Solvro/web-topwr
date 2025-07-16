@@ -1,6 +1,6 @@
 import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
-import type { AuthState, User } from "./types";
+import type { AuthState, User } from "@/types/api";
 
 export function parseAuthCookie(
   cookie: string | undefined | null,

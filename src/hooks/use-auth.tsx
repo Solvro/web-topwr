@@ -6,14 +6,14 @@ import { toast } from "sonner";
 import { AUTH_STATE_COOKIE_NAME } from "@/config/constants";
 import { getCookieOptions, parseAuthCookie } from "@/lib/cookies";
 import { fetchMutation } from "@/lib/fetch-utils";
+import { authStateAtom } from "@/stores/auth";
 import type {
   AuthState,
-  LoginFormValues,
   MessageResponse,
   SuccessResponse,
   User,
-} from "@/lib/types";
-import { authStateAtom } from "@/stores/auth";
+} from "@/types/api";
+import type { LoginFormValues } from "@/types/schemas";
 
 interface AuthContextLoggedIn {
   isAuthenticated: true;

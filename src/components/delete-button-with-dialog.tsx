@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { Resource } from "@/lib/types";
+import type { Resource } from "@/types/app";
 
 export function DeleteButtonWithDialog({
   resource,

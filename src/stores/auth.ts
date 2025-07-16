@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 
-import type { AuthState } from "@/lib/types";
+import type { AuthState } from "@/types/api";
 
 import { globalStore } from "./global";
 

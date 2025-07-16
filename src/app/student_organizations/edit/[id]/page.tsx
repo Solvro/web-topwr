@@ -1,5 +1,5 @@
 import { API_URL } from "@/config/constants";
-import type { StudentOrganization } from "@/lib/types";
+import type { StudentOrganization } from "@/types/app";
 
 import { Editor } from "../../editor";
 

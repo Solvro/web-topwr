@@ -29,12 +29,10 @@ import {
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
-} from "@/lib/types";
-import type {
-  StudentOrganization,
-  StudentOrganizationFormValues,
-} from "@/lib/types";
+} from "@/lib/enums";
 import { StudentOrganizationSchema } from "@/schemas";
+import type { StudentOrganization } from "@/types/app";
+import type { StudentOrganizationFormValues } from "@/types/schemas";
 
 export function Editor({
   initialData,

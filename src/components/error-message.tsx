@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { ERROR_CODES } from "@/config/constants";
-import type { ErrorCode } from "@/lib/types";
+import type { ErrorCode } from "@/types/app";
 
 export function ErrorMessage({ code }: { code: ErrorCode }) {
   return (

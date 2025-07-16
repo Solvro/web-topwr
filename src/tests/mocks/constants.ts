@@ -1,6 +1,6 @@
 import { HttpResponse } from "msw";
 
-import type { User } from "@/lib/types";
+import type { User } from "@/types/api";
 
 interface Mocked<T> {
   valid: T;

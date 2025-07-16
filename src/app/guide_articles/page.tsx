@@ -1,6 +1,6 @@
 import { AbstractList } from "@/components/abstract-list";
 import { API_URL } from "@/config/constants";
-import type { GuideArticle } from "@/lib/types";
+import type { GuideArticle } from "@/types/app";
 
 async function fetchGuideArticles(page: number, resultsPerPage: number) {
   try {

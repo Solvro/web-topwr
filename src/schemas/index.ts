@@ -4,7 +4,7 @@ import {
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
-} from "@/lib/types";
+} from "@/lib/enums";
 
 export const LoginSchema = z.object({
   email: z.string().email(),
