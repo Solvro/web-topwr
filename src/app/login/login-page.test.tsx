@@ -4,11 +4,10 @@ import { describe, expect, it } from "vitest";
 
 import { API_URL, ERROR_MESSAGES } from "@/config/constants";
 import { getErrorMessage } from "@/lib/error-handling";
-import { getToaster } from "@/tests/helpers";
+import { getToaster, renderWithProviders } from "@/tests/helpers";
 import { MOCK_PASSWORD, MOCK_TOKEN, MOCK_USER } from "@/tests/mocks/constants";
 import { MOCK_ROUTER_REFRESH } from "@/tests/mocks/functions";
 import { server } from "@/tests/mocks/server";
-import { renderWithProviders } from "@/tests/test-providers";
 
 import LoginPage from "./page";
 

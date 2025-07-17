@@ -1,16 +1,10 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { RenderResult } from "@testing-library/react";
-import { render } from "@testing-library/react";
-import { Provider, createStore } from "jotai";
-import type { ComponentProps, ReactNode } from "react";
+import { Provider } from "jotai";
+import type { ComponentProps } from "react";
 
 import { Toaster } from "@/components/ui/sonner";
-
-interface RenderResultWithStore extends RenderResult {
-  store: ReturnType<typeof createStore>;
-}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,7 +18,7 @@ const queryClient = new QueryClient({
   },
 });
 
-function TestProviders({
+export function TestProviders({
   children,
   store,
   renderToaster,
@@ -37,19 +31,4 @@ function TestProviders({
       </QueryClientProvider>
     </Provider>
   );
-}
-
-export function renderWithProviders(
-  component: ReactNode,
-  renderToaster = true,
-): RenderResultWithStore {
-  const store = createStore();
-  return {
-    store,
-    ...render(
-      <TestProviders store={store} renderToaster={renderToaster}>
-        {component}
-      </TestProviders>,
-    ),
-  };
 }
