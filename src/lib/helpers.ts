@@ -21,5 +21,5 @@ export function enumToFormSelectOptions<
 }
 
 export function sanitizeId(id: string): string {
-  return String(id).split(/ /)[0].replaceAll(/[^\d]/g, "");
+  return String(id).trim().replaceAll(/[^\d]/g, "");
 }
