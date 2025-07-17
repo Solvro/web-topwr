@@ -25,7 +25,7 @@ import { SOLVRO_WEBPAGE_URL } from "@/config/constants";
 import { useAuth } from "@/hooks/use-auth";
 import { getErrorMessage } from "@/lib/error-handling";
 import { LoginSchema } from "@/schemas";
-import type { LoginFormValues } from "@/types/schemas";
+import type { LoginFormValues } from "@/types/forms";
 
 export default function LoginPage() {
   const router = useRouter();
