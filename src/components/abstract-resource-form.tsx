@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { AbstractResourceFormInputs } from "@/lib/types";
+import type { AbstractResourceFormInputs } from "@/types/forms";
 
 export function AbstractResourceForm<T extends ZodType>({
   schema,

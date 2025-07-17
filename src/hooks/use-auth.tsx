@@ -14,7 +14,7 @@ import type {
   SuccessResponse,
   User,
 } from "@/types/api";
-import type { LoginFormValues } from "@/types/schemas";
+import type { LoginFormValues } from "@/types/forms";
 
 interface AuthContextLoggedIn {
   isAuthenticated: true;

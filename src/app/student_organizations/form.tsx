@@ -8,17 +8,17 @@ import {
   OrganizationStatus,
   OrganizationType,
 } from "@/lib/form-enums";
+import { enumToFormSelectOptions } from "@/lib/helpers";
+import { StudentOrganizationSchema } from "@/schemas";
+import type { StudentOrganization } from "@/types/app";
 import type {
   FormCheckboxInput,
   FormImageInput,
   FormRichTextInput,
   FormSelectInput,
   FormTextInput,
-} from "@/lib/types";
-import { enumToFormSelectOptions } from "@/lib/utils";
-import { StudentOrganizationSchema } from "@/schemas";
-import type { StudentOrganization } from "@/types/app";
-import type { StudentOrganizationFormValues } from "@/types/schemas";
+  StudentOrganizationFormValues,
+} from "@/types/forms";
 
 function createOnSubmit(data: StudentOrganizationFormValues) {
   // TODO

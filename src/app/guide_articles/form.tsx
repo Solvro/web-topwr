@@ -1,14 +1,14 @@
 "use client";
 
 import { AbstractResourceForm } from "@/components/abstract-resource-form";
+import { GuideArticleSchema } from "@/schemas";
+import type { GuideArticle } from "@/types/app";
 import type {
   FormImageInput,
   FormRichTextInput,
   FormTextInput,
-} from "@/lib/types";
-import { GuideArticleSchema } from "@/schemas";
-import type { GuideArticle } from "@/types/app";
-import type { GuideArticleFormValues } from "@/types/schemas";
+  GuideArticleFormValues,
+} from "@/types/forms";
 
 function createOnSubmit(data: GuideArticleFormValues) {
   // TODO
