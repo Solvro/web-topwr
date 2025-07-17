@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { AUTH_STATE_COOKIE_NAME } from "@/config/constants";
 import { getCookieOptions, parseAuthCookie } from "@/lib/cookies";
-import { fetchMutation } from "@/lib/fetch-utils";
+import { fetchMutation } from "@/lib/fetching";
 import { getUserDisplayName } from "@/lib/helpers";
 import { authStateAtom } from "@/stores/auth";
 import type {

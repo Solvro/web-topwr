@@ -1,6 +1,6 @@
 import { ERROR_MESSAGES } from "@/config/constants";
 
-import { FetchError } from "./fetch-utils";
+import { FetchError } from "./fetching";
 
 function getCodedMessage(code: string, fallback: string): string {
   if (code in ERROR_MESSAGES) {
