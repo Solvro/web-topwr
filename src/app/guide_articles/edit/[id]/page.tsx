@@ -1,5 +1,4 @@
 import { AbstractEditPage } from "@/components/abstract-edit-page";
-import type { GuideArticle } from "@/types/app";
 
 import { Form } from "../../form";
 
@@ -9,7 +8,7 @@ export default function EditGuideArticlePage({
   params: Promise<{ id: string }>;
 }) {
   return (
-    <AbstractEditPage<GuideArticle>
+    <AbstractEditPage
       resource="guide_articles"
       params={params}
       FormComponent={Form}

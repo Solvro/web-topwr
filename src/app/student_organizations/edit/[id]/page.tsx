@@ -1,5 +1,4 @@
 import { AbstractEditPage } from "@/components/abstract-edit-page";
-import type { StudentOrganization } from "@/types/app";
 
 import { Form } from "../../form";
 
@@ -9,7 +8,7 @@ export default function EditStudentOrganizationPage({
   params: Promise<{ id: string }>;
 }) {
   return (
-    <AbstractEditPage<StudentOrganization>
+    <AbstractEditPage
       resource="student_organizations"
       params={params}
       FormComponent={Form}

@@ -7,10 +7,10 @@ export default function GuideArticlesPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   return (
-    <AbstractResource<GuideArticle>
+    <AbstractResource
       resource="guide_articles"
       searchParams={searchParams}
-      mapItemToList={(item) => ({
+      mapItemToList={(item: GuideArticle) => ({
         id: item.id,
         name: item.title,
         shortDescription: item.shortDesc,

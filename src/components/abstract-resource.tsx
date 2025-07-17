@@ -1,19 +1,19 @@
 import { AbstractList } from "@/components/abstract-list";
 import { fetchQuery } from "@/lib/fetch-utils";
-import type { ListItem, Resource } from "@/types/app";
+import type { ListItem, Resource, ResourceTypes } from "@/types/app";
 
 interface ApiResponse<T> {
   data: T[];
   meta: { total: number };
 }
 
-async function fetchResource<T>(
-  resource: Resource,
+async function fetchResource<T extends Resource>(
+  resource: T,
   page: number,
   resultsPerPage: number,
-): Promise<ApiResponse<T>> {
+): Promise<ApiResponse<ResourceTypes[T]>> {
   try {
-    const result = await fetchQuery<ApiResponse<T>>(
+    const result = await fetchQuery<ApiResponse<ResourceTypes[T]>>(
       `${resource}?page=${String(page)}&limit=${String(resultsPerPage)}`,
     );
     return result;
@@ -23,25 +23,26 @@ async function fetchResource<T>(
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
-export async function AbstractResource<T>({
+export async function AbstractResource<T extends Resource>({
   resource,
   searchParams,
   mapItemToList,
 }: {
-  resource: Resource;
+  resource: T;
   searchParams: Promise<{ page?: string }>;
-  mapItemToList: (item: T) => ListItem;
+  mapItemToList: (item: ResourceTypes[T]) => ListItem;
 }) {
   const resolvedSearchParameters = await searchParams;
   const page = Number.parseInt(resolvedSearchParameters.page ?? "1", 10);
   const resultsPerPage = 10;
 
-  const { data, meta } = await fetchResource<T>(resource, page, resultsPerPage);
+  const { data, meta } = await fetchResource(resource, page, resultsPerPage);
 
   const totalPages = Math.ceil(meta.total / resultsPerPage);
   const resultsNumber = meta.total;
-  const listItems: ListItem[] = data.map((item: T) => mapItemToList(item));
+  const listItems: ListItem[] = data.map((item: ResourceTypes[T]) =>
+    mapItemToList(item),
+  );
 
   return (
     <AbstractList
