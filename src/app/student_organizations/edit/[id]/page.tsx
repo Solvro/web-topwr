@@ -1,44 +1,18 @@
-import { API_URL } from "@/config/constants";
+import { AbstractEditPage } from "@/components/abstract-edit-page";
 import type { StudentOrganization } from "@/types/app";
 
 import { Form } from "../../form";
 
-async function getStudentOrganization(
-  id: string,
-): Promise<StudentOrganization | null> {
-  try {
-    const sanitizedId = String(id).split(/ /)[0].replaceAll(/[^\d]/g, "");
-    const response = await fetch(
-      `${API_URL}/student_organizations/${sanitizedId}`,
-      {
-        cache: "no-store",
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch student organization: ${String(response.status)}`,
-      );
-    }
-
-    const { data } = (await response.json()) as {
-      data: StudentOrganization;
-    };
-
-    return data;
-  } catch (error) {
-    console.error("Error fetching student organization:", error);
-    return null;
-  }
-}
-
-export default async function EditStudentOrganizationPage({
+export default function EditStudentOrganizationPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const studentOrganization = await getStudentOrganization(id);
-
-  return <Form initialData={studentOrganization} />;
+  return (
+    <AbstractEditPage<StudentOrganization>
+      resource="student_organizations"
+      params={params}
+      FormComponent={Form}
+    />
+  );
 }
