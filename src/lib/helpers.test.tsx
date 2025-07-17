@@ -35,7 +35,7 @@ describe("enumToFormSelectOptions function", () => {
     ]);
   });
 
-  it("should map nubmeric values with labels", () => {
+  it("should map numeric values with labels", () => {
     enum Status {
       Active = 1,
       Inactive = 2,
