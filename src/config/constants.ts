@@ -1,3 +1,9 @@
+import {
+  DepartmentIds,
+  OrganizationSource,
+  OrganizationStatus,
+  OrganizationType,
+} from "@/lib/enums";
 import type { Department } from "@/types/app";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
@@ -83,7 +89,52 @@ export const ERROR_MESSAGES: Record<string, string> = {
 };
 
 export const FORM_ERROR_MESSAGES = {
-  REQUIRED: "Wymagane",
-  NONEMPTY: "Wymagane",
+  REQUIRED: "To pole jest wymagane",
+  NONEMPTY: "To pole jest wymagane",
   INVALID_EMAIL: "Niepoprawny adres email",
+};
+
+export const SELECT_OPTION_LABELS = {
+  STUDENT_ORGANIZATIONS: {
+    DEPARTMENT: {
+      [DepartmentIds.Architecture]: "Wydział Architektury",
+      [DepartmentIds.CivilEngineering]:
+        "Wydział Budownictwa Lądowego i Wodnego",
+      [DepartmentIds.Chemistry]: "Wydział Chemiczny",
+      [DepartmentIds.ComputerScienceAndTelecommunications]:
+        "Wydział Informatyki i Telekomunikacji",
+      [DepartmentIds.ElectricalEngineering]: "Wydział Elektryczny",
+      [DepartmentIds.GeoengineeringMiningAndGeology]:
+        "Wydział Geoinżynierii, Górnictwa i Geologii",
+      [DepartmentIds.EnvironmentalEngineering]: "Wydział Inżynierii Środowiska",
+      [DepartmentIds.Management]: "Wydział Zarządzania",
+      [DepartmentIds.MechanicalAndPowerEngineering]:
+        "Wydział Mechaniczno-Energetyczny",
+      [DepartmentIds.Mechanical]: "Wydział Mechaniczny",
+      [DepartmentIds.FundamentalProblemsOfTechnology]:
+        "Wydział Podstawowych Problemów Techniki",
+      [DepartmentIds.ElectronicsPhotonicsAndMicrosystems]:
+        "Wydział Elektroniki, Fotoniki i Mikrosystemów",
+      [DepartmentIds.Mathematics]: "Wydział Matematyki",
+      [DepartmentIds.Medical]: "Wydział Medyczny",
+    },
+    SOURCE: {
+      [OrganizationSource.StudentDepartment]: "Dział Studencki",
+      [OrganizationSource.Manual]: "Ręcznie",
+      [OrganizationSource.PwrActive]: "PWR Active",
+    },
+    TYPE: {
+      [OrganizationType.ScientificClub]: "Koło naukowe",
+      [OrganizationType.StudentOrganization]: "Organizacja studencka",
+      [OrganizationType.StudentMedium]: "Organizacja medialna",
+      [OrganizationType.CultureAgenda]: "Organizacja kulturalna",
+      [OrganizationType.StudentCouncil]: "Samorząd studencki",
+    },
+    STATUS: {
+      [OrganizationStatus.Active]: "Aktywna",
+      [OrganizationStatus.Inactive]: "Nieaktywna",
+      [OrganizationStatus.Dissolved]: "Rozwiązana",
+      [OrganizationStatus.Unknown]: "Nieznany",
+    },
+  },
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import { AbstractResourceForm } from "@/components/abstract-resource-form";
+import { SELECT_OPTION_LABELS } from "@/config/constants";
 import {
   DepartmentIds,
   OrganizationSource,
@@ -61,62 +62,38 @@ const selectInputs: FormSelectInput<StudentOrganizationFormValues>[] = [
     name: "departmentId",
     label: "Wydział",
     placeholder: "Wybierz wydział",
-    options: enumToFormSelectOptions(DepartmentIds, {
-      [DepartmentIds.Architecture]: "Wydział Architektury",
-      [DepartmentIds.CivilEngineering]:
-        "Wydział Budownictwa Lądowego i Wodnego",
-      [DepartmentIds.Chemistry]: "Wydział Chemiczny",
-      [DepartmentIds.ComputerScienceAndTelecommunications]:
-        "Wydział Informatyki i Telekomunikacji",
-      [DepartmentIds.ElectricalEngineering]: "Wydział Elektryczny",
-      [DepartmentIds.GeoengineeringMiningAndGeology]:
-        "Wydział Geoinżynierii, Górnictwa i Geologii",
-      [DepartmentIds.EnvironmentalEngineering]: "Wydział Inżynierii Środowiska",
-      [DepartmentIds.Management]: "Wydział Zarządzania",
-      [DepartmentIds.MechanicalAndPowerEngineering]:
-        "Wydział Mechaniczno-Energetyczny",
-      [DepartmentIds.Mechanical]: "Wydział Mechaniczny",
-      [DepartmentIds.FundamentalProblemsOfTechnology]:
-        "Wydział Podstawowych Problemów Techniki",
-      [DepartmentIds.ElectronicsPhotonicsAndMicrosystems]:
-        "Wydział Elektroniki, Fotoniki i Mikrosystemów",
-      [DepartmentIds.Mathematics]: "Wydział Matematyki",
-      [DepartmentIds.Medical]: "Wydział Medyczny",
-    }),
+    options: enumToFormSelectOptions(
+      DepartmentIds,
+      SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.DEPARTMENT,
+    ),
     allowNull: true,
   },
   {
     name: "source",
     label: "Źródło",
     placeholder: "Wybierz źródło",
-    options: enumToFormSelectOptions(OrganizationSource, {
-      [OrganizationSource.StudentDepartment]: "Dział Studencki",
-      [OrganizationSource.Manual]: "Ręcznie",
-      [OrganizationSource.PwrActive]: "PWR Active",
-    }),
+    options: enumToFormSelectOptions(
+      OrganizationSource,
+      SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.SOURCE,
+    ),
   },
   {
     name: "organizationType",
     label: "Typ",
     placeholder: "Wybierz typ",
-    options: enumToFormSelectOptions(OrganizationType, {
-      [OrganizationType.ScientificClub]: "Koło naukowe",
-      [OrganizationType.StudentOrganization]: "Organizacja studencka",
-      [OrganizationType.StudentMedium]: "Organizacja medialna",
-      [OrganizationType.CultureAgenda]: "Organizacja kulturalna",
-      [OrganizationType.StudentCouncil]: "Samorząd studencki",
-    }),
+    options: enumToFormSelectOptions(
+      OrganizationType,
+      SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.TYPE,
+    ),
   },
   {
     name: "organizationStatus",
     label: "Status",
     placeholder: "Wybierz status",
-    options: enumToFormSelectOptions(OrganizationStatus, {
-      [OrganizationStatus.Active]: "Aktywna",
-      [OrganizationStatus.Inactive]: "Nieaktywna",
-      [OrganizationStatus.Dissolved]: "Rozwiązana",
-      [OrganizationStatus.Unknown]: "Nieznany",
-    }),
+    options: enumToFormSelectOptions(
+      OrganizationStatus,
+      SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
+    ),
   },
 ];
 

@@ -1,39 +1,18 @@
-import { API_URL } from "@/config/constants";
+import { AbstractEditPage } from "@/components/abstract-edit-page";
 import type { GuideArticle } from "@/types/app";
 
 import { Form } from "../../form";
 
-async function getGuideArticle(id: string): Promise<GuideArticle | null> {
-  try {
-    const sanitizedId = String(id).split(/ /)[0].replaceAll(/[^\d]/g, "");
-    const response = await fetch(`${API_URL}/guide_articles/${sanitizedId}`, {
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch guide article: ${String(response.status)}`,
-      );
-    }
-
-    const { data } = (await response.json()) as {
-      data: GuideArticle;
-    };
-
-    return data;
-  } catch (error) {
-    console.error("Error fetching guide article:", error);
-    return null;
-  }
-}
-
-export default async function EditGuideArticlePage({
+export default function EditGuideArticlePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const guideArticle = await getGuideArticle(id);
-
-  return <Form initialData={guideArticle} />;
+  return (
+    <AbstractEditPage<GuideArticle>
+      resource="guide_articles"
+      params={params}
+      FormComponent={Form}
+    />
+  );
 }
