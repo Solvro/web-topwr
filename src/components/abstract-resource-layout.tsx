@@ -5,12 +5,25 @@ import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 
 export function AbstractResourceLayout({
-  title,
+  titleMap,
+  pathname,
   children,
 }: {
-  title: string;
+  titleMap: Record<string, string>;
+  pathname: string;
   children: ReactNode;
 }) {
+  let title = "";
+
+  const matched = Object.entries(titleMap).find(([key]) => {
+    const isMatch = pathname.startsWith(key);
+    return isMatch;
+  });
+
+  if (matched != null) {
+    title = matched[1];
+  }
+
   return (
     <div className="flex h-full flex-col space-y-4 py-2">
       <h2 className="bg-primary w-[20rem] max-w-full rounded-r-xl p-5 text-center text-lg font-medium whitespace-nowrap text-white sm:w-[25rem] md:w-[30rem] xl:w-[40rem]">

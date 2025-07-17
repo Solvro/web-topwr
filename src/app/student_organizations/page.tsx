@@ -7,10 +7,10 @@ export default function StudentOrganizationsPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   return (
-    <AbstractResource<StudentOrganization>
+    <AbstractResource
       resource="student_organizations"
       searchParams={searchParams}
-      mapItemToList={(item) => ({
+      mapItemToList={(item: StudentOrganization) => ({
         id: item.id,
         name: item.name,
         shortDescription: item.shortDescription,

@@ -1,15 +1,16 @@
-import { API_URL } from "@/config/constants";
+import type { ComponentType } from "react";
+
 import { fetchQuery } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
-import type { Resource } from "@/types/app";
+import type { Resource, ResourceTypes } from "@/types/app";
 
-async function fetchSingleResource<T>(
-  resource: Resource,
+async function fetchResource<T extends Resource>(
+  resource: T,
   id: string,
-): Promise<T | null> {
+): Promise<ResourceTypes[T] | null> {
   try {
-    const response = await fetchQuery<{ data: T }>(
-      `${API_URL}/${resource}/${sanitizeId(id)}`,
+    const response = await fetchQuery<{ data: ResourceTypes[T] }>(
+      `${resource}/${sanitizeId(id)}`,
     );
     return response.data;
   } catch (error) {
@@ -18,18 +19,17 @@ async function fetchSingleResource<T>(
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
-export async function AbstractEditPage<T>({
+export async function AbstractEditPage<T extends Resource>({
   resource,
   params,
   FormComponent,
 }: {
-  resource: Resource;
+  resource: T;
   params: Promise<{ id: string }>;
-  FormComponent: React.ComponentType<{ initialData: T | null }>;
+  FormComponent: ComponentType<{ initialData: ResourceTypes[T] | null }>;
 }) {
   const { id } = await params;
-  const resourceData = await fetchSingleResource<T>(resource, id);
+  const resourceData = await fetchResource(resource, id);
 
   return <FormComponent initialData={resourceData} />;
 }

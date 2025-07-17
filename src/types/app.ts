@@ -37,7 +37,12 @@ export interface Department {
   name: string;
 }
 
-export type Resource = "guide_articles" | "student_organizations";
+export interface ResourceTypes {
+  guide_articles: GuideArticle;
+  student_organizations: StudentOrganization;
+}
+
+export type Resource = keyof ResourceTypes;
 
 export interface ListItem {
   id: number;
