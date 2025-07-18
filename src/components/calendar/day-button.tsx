@@ -1,5 +1,5 @@
-import type { DateObject } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import type { DateObject } from "@/types/calendar";
 
 interface Props {
   day: number;
