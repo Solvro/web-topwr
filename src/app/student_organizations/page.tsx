@@ -1,5 +1,5 @@
 import { AbstractResourceList } from "@/components/abstract/abstract-resource-list";
-import { ResourcePaths } from "@/lib/enums";
+import { Resource } from "@/lib/enums";
 import type { StudentOrganization } from "@/types/app";
 
 export default function StudentOrganizationsPage({
@@ -9,7 +9,7 @@ export default function StudentOrganizationsPage({
 }) {
   return (
     <AbstractResourceList
-      resource={ResourcePaths.StudentOrganizations}
+      resource={Resource.StudentOrganizations}
       searchParams={searchParams}
       mapItemToList={(item: StudentOrganization) => ({
         id: item.id,

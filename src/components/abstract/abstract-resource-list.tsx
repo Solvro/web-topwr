@@ -2,8 +2,9 @@ import { Plus, SquarePen } from "lucide-react";
 import Link from "next/link";
 
 import { LIST_RESULTS_PER_PAGE, RESOURCE_API_PATHS } from "@/config/constants";
+import type { Resource } from "@/lib/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
-import type { ListItem, Resource, ResourceTypes } from "@/types/app";
+import type { ListItem, ResourceTypes } from "@/types/app";
 
 import { DeleteButtonWithDialog } from "../delete-button-with-dialog";
 import { PaginationComponent } from "../pagination";

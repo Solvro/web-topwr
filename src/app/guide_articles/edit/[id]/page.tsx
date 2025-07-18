@@ -1,5 +1,5 @@
 import { AbstractResourceEditPage } from "@/components/abstract/abstract-resource-edit-page";
-import { ResourcePaths } from "@/lib/enums";
+import { Resource } from "@/lib/enums";
 
 import { Form } from "../../form";
 
@@ -10,7 +10,7 @@ export default function EditGuideArticlePage({
 }) {
   return (
     <AbstractResourceEditPage
-      resource={ResourcePaths.GuideArticles}
+      resource={Resource.GuideArticles}
       params={params}
       FormComponent={Form}
     />

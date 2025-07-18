@@ -7,8 +7,8 @@ import {
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
-  ResourcePaths,
-} from "@/lib/form-enums";
+  Resource,
+} from "@/lib/enums";
 import { enumToFormSelectOptions } from "@/lib/helpers";
 import { StudentOrganizationSchema } from "@/schemas";
 import type { StudentOrganization } from "@/types/app";
@@ -136,7 +136,7 @@ export function Form({
         selectInputs,
         checkboxInputs,
       }}
-      returnButtonPath={`/${ResourcePaths.StudentOrganizations}`}
+      returnButtonPath={`/${Resource.StudentOrganizations}`}
       returnButtonLabel="Wróć do organizacji"
     />
   );
