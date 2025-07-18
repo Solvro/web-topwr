@@ -1,49 +1,40 @@
 import type { DateObject } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
-import { AddEventForm } from "./add-event-form";
-
 interface Props {
   day: number;
   today: DateObject;
-  clickable?: boolean;
+  clickable: boolean;
+  onDayClick?: (day: number) => void;
 }
 
-export function DayButton({ day, today, clickable = false }: Props) {
-  const isCurrentDay = day === new Date().getDate();
+export function DayButton({ day, today, clickable, onDayClick }: Props) {
+  const currentDate = new Date();
+  const isCurrentDay =
+    day === currentDate.getDate() &&
+    today.month.value === currentDate.getMonth() + 1 &&
+    today.year === currentDate.getFullYear();
+
+  const handleClick = () => {
+    if (clickable) {
+      onDayClick?.(day);
+    }
+  };
 
   return (
-    <Dialog>
-      <DialogTrigger>
-        <div
-          className={cn(
-            "flex h-20 items-center justify-center border",
-            isCurrentDay ? "bg-blue-500 text-white" : "bg-white text-black",
-            clickable ? "cursor-pointer hover:bg-gray-100" : "cursor-default",
-          )}
-        >
-          <button disabled={!clickable}>{day}</button>
-        </div>
-      </DialogTrigger>
-      <DialogContent className="max-h-[80vh] w-max">
-        <DialogHeader>
-          <DialogTitle>
-            {today.day} {today.month.name} {today.year}
-          </DialogTitle>
-          <DialogDescription></DialogDescription>
-        </DialogHeader>
-        <div className="mx-auto w-full">
-          <AddEventForm />
-        </div>
-      </DialogContent>
-    </Dialog>
+    <button
+      type="button"
+      className={cn(
+        "flex h-20 items-center justify-center border",
+        clickable ? "cursor-pointer hover:bg-gray-100" : "cursor-default",
+        isCurrentDay ? "bg-blue-500 text-white" : "bg-white text-black",
+      )}
+      onClick={handleClick}
+      disabled={!clickable}
+      tabIndex={clickable ? 0 : -1}
+      aria-disabled={!clickable}
+    >
+      {day}
+    </button>
   );
 }
