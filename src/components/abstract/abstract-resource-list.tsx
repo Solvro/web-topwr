@@ -1,10 +1,7 @@
 import { Plus, SquarePen } from "lucide-react";
 import Link from "next/link";
 
-import {
-  LIST_RESULTS_PER_PAGE,
-  resourcePathToApiPath,
-} from "@/config/constants";
+import { LIST_RESULTS_PER_PAGE, RESOURCE_API_PATHS } from "@/config/constants";
 import { fetchQuery } from "@/lib/fetch-utils";
 import type { ListItem, Resource, ResourceTypes } from "@/types/app";
 
@@ -24,7 +21,7 @@ async function fetchResource<T extends Resource>(
 ): Promise<ApiResponse<T>> {
   try {
     const result = await fetchQuery<ApiResponse<T>>(
-      `${resourcePathToApiPath[resource]}?page=${String(page)}&limit=${String(resultsPerPage)}`,
+      `${RESOURCE_API_PATHS[resource]}?page=${String(page)}&limit=${String(resultsPerPage)}`,
     );
     return result;
   } catch (error) {

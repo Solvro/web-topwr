@@ -13,7 +13,7 @@ export const API_URL = (
   process.env.API_URL ?? "https://api.topwr.solvro.pl/api/v1"
 ).replace(/\/+$/, "");
 
-export const resourcePathToApiPath = {
+export const RESOURCE_API_PATHS = {
   [ResourcePaths.GuideArticles]: "guide_articles",
   [ResourcePaths.StudentOrganizations]: "student_organizations",
 } as const;
