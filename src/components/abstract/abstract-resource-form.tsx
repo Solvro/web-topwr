@@ -136,7 +136,7 @@ export function AbstractResourceForm<T extends ZodType>({
                             value={String(field.value ?? "")}
                             onValueChange={(value) => {
                               field.onChange(
-                                Number.isNaN(Number(value))
+                                Number.isNaN(Number.parseInt(value))
                                   ? value
                                   : Number(value),
                               );
