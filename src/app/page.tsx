@@ -6,8 +6,8 @@ import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { Resource } from "@/config/enums";
 import { useAuth } from "@/hooks/use-auth";
-import { Resource } from "@/lib/enums";
 import { getUserDisplayName } from "@/lib/helpers";
 
 export default function Home() {

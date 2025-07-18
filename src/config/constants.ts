@@ -4,7 +4,7 @@ import {
   OrganizationStatus,
   OrganizationType,
   Resource,
-} from "@/lib/enums";
+} from "@/config/enums";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
@@ -13,6 +13,10 @@ export const API_URL = (
   process.env.API_URL ?? "https://api.topwr.solvro.pl/api/v1"
 ).replace(/\/+$/, "");
 
+/**
+ * A mapping of the client-side resources to their paths in the backend API.
+ * Currently they are the same, but this allows for flexibility in the website paths.
+ */
 export const RESOURCE_API_PATHS = {
   [Resource.GuideArticles]: "guide_articles",
   [Resource.StudentOrganizations]: "student_organizations",
@@ -30,7 +34,7 @@ export const ERROR_CODES = {
 };
 
 /** A map of API error codes to user-friendly messages */
-export const ERROR_MESSAGES: Record<string, string> = {
+export const API_ERROR_MESSAGES: Record<string, string> = {
   E_INVALID_CREDENTIALS: "Wpisano niepoprawny email lub hasło",
   E_UNEXPECTED_ERROR: "Nastąpił nieoczekiwany błąd",
   E_VALIDATION_ERROR: "Wpisane dane są niekompletne lub nieprawidłowe",

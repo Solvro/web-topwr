@@ -1,14 +1,13 @@
 import { Plus, SquarePen } from "lucide-react";
 import Link from "next/link";
 
+import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
+import { PaginationComponent } from "@/components/pagination";
+import { Button } from "@/components/ui/button";
 import { LIST_RESULTS_PER_PAGE, RESOURCE_API_PATHS } from "@/config/constants";
-import type { Resource } from "@/lib/enums";
+import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import type { ListItem, ResourceTypes } from "@/types/app";
-
-import { DeleteButtonWithDialog } from "../delete-button-with-dialog";
-import { PaginationComponent } from "../pagination";
-import { Button } from "../ui/button";
 
 interface ApiResponse<T extends Resource> {
   data: ResourceTypes[T][];

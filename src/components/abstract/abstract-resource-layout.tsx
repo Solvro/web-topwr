@@ -3,26 +3,23 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
+import type { Resource } from "@/config/enums";
 
 export function AbstractResourceLayout({
+  resource,
   titleMap,
   pathname,
   children,
 }: {
+  resource?: Resource;
   titleMap: Record<string, string>;
   pathname: string;
   children: ReactNode;
 }) {
-  let title = "";
-
-  const matched = Object.entries(titleMap).find(([key]) => {
-    const isMatch = pathname.startsWith(key);
-    return isMatch;
-  });
-
-  if (matched != null) {
-    title = matched[1];
-  }
+  const titlePrefix = resource == null ? "" : `/${resource}`;
+  const [_, title] = Object.entries(titleMap).find(([key]) =>
+    pathname.startsWith(titlePrefix + key),
+  ) ?? ["", ""];
 
   return (
     <div className="flex h-full flex-col space-y-4 py-2">

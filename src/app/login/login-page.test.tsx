@@ -2,7 +2,7 @@ import { userEvent } from "@testing-library/user-event";
 import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
-import { API_URL, ERROR_MESSAGES } from "@/config/constants";
+import { API_ERROR_MESSAGES, API_URL } from "@/config/constants";
 import { getErrorMessage } from "@/lib/error-handling";
 import { getToaster, renderWithProviders } from "@/tests/helpers";
 import { MOCK_PASSWORD, MOCK_TOKEN, MOCK_USER } from "@/tests/mocks/constants";
@@ -60,7 +60,7 @@ describe("Login page", () => {
     await form.user.click(form.submitButton);
 
     expect(getErrorMessage).toHaveReturnedWith(
-      ERROR_MESSAGES.E_INVALID_CREDENTIALS,
+      API_ERROR_MESSAGES.E_INVALID_CREDENTIALS,
     );
   });
 

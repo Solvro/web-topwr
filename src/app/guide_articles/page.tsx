@@ -1,5 +1,5 @@
 import { AbstractResourceList } from "@/components/abstract/abstract-resource-list";
-import { Resource } from "@/lib/enums";
+import { Resource } from "@/config/enums";
 import type { GuideArticle } from "@/types/app";
 
 export default function GuideArticlesPage({

@@ -8,7 +8,7 @@ import {
   OrganizationStatus,
   OrganizationType,
   Resource,
-} from "@/lib/enums";
+} from "@/config/enums";
 import { enumToFormSelectOptions } from "@/lib/helpers";
 import { StudentOrganizationSchema } from "@/schemas";
 import type { StudentOrganization } from "@/types/app";
