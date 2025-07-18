@@ -1,7 +1,17 @@
 "use client";
 
+import { useState } from "react";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { getCurrentDate } from "@/lib/date-utils";
 
+import { AddEventForm } from "./add-event-form";
 import { DayButton } from "./day-button";
 
 interface Props {
@@ -10,6 +20,8 @@ interface Props {
 
 export function Calendar({ clickable = false }: Props) {
   const today = getCurrentDate();
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Calculate the first day of the month and what day of week it falls on
   const firstDayOfMonth = new Date(today.year, today.month.value - 1, 1);
@@ -31,6 +43,16 @@ export function Calendar({ clickable = false }: Props) {
       day: index - startDayOfWeek + 1,
     }; // Actual day number
   });
+
+  const handleDayClick = (day: number) => {
+    setSelectedDay(day);
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    setSelectedDay(null);
+  };
 
   return (
     <div className="mx-auto mt-10 grid w-[85%] grid-cols-7 md:max-w-7xl">
@@ -66,12 +88,27 @@ export function Calendar({ clickable = false }: Props) {
               day={cell.day}
               today={today}
               clickable={clickable}
+              onDayClick={handleDayClick}
             />
           );
         }
 
         return null;
       })}
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-h-[80vh] w-max">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedDay} {today.month.name} {today.year}
+            </DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
+          <div className="mx-auto w-full">
+            <AddEventForm onSuccess={handleDialogClose} />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
