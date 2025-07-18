@@ -13,7 +13,6 @@ const space_grotesk = Space_Grotesk({
   subsets: ["latin"],
 });
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const metadata: Metadata = {
   title: "Admin Panel | ToPWR by Solvro",
   description:

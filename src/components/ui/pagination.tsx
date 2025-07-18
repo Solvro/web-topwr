@@ -52,10 +52,10 @@ function PaginationLink({
   isActive,
   size = "icon",
   href,
+  children,
   ...props
 }: PaginationLinkProps) {
   return (
-    // eslint-disable-next-line jsx-a11y/anchor-has-content
     <Link
       href={href}
       aria-current={(isActive ?? false) ? "page" : undefined}
@@ -69,7 +69,9 @@ function PaginationLink({
         className,
       )}
       {...props}
-    ></Link>
+    >
+      {children}
+    </Link>
   );
 }
 

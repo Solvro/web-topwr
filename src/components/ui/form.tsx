@@ -37,10 +37,12 @@ function FormField<
     </FormFieldContext.Provider>
   );
 }
+const FormItemContext = React.createContext<FormItemContextValue>(
+  {} as FormItemContextValue,
+);
 
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext);
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const itemContext = React.useContext(FormItemContext);
   const { getFieldState } = useFormContext();
   const formState = useFormState({ name: fieldContext.name });
@@ -61,10 +63,6 @@ const useFormField = () => {
 interface FormItemContextValue {
   id: string;
 }
-
-const FormItemContext = React.createContext<FormItemContextValue>(
-  {} as FormItemContextValue,
-);
 
 function FormItem({ className, ...props }: React.ComponentProps<"div">) {
   const id = React.useId();
