@@ -3,6 +3,7 @@ import type {
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
+  ResourcePaths,
 } from "@/lib/enums";
 
 export interface StudentOrganization {
@@ -38,8 +39,8 @@ export interface Department {
 }
 
 export interface ResourceTypes {
-  guide_articles: GuideArticle;
-  student_organizations: StudentOrganization;
+  [ResourcePaths.GuideArticles]: GuideArticle;
+  [ResourcePaths.StudentOrganizations]: StudentOrganization;
 }
 
 export type Resource = keyof ResourceTypes;

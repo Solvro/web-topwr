@@ -3,15 +3,16 @@
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
-import { AbstractResourceLayout } from "@/components/abstract-resource-layout";
+import { AbstractResourceLayout } from "@/components/abstract/abstract-resource-layout";
+import { ResourcePaths } from "@/lib/enums";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   const titleMap = {
-    "/student_organizations/create": "Dodawanie organizacji",
-    "/student_organizations/edit": "Edycja organizacji",
-    "/student_organizations": "Zarządzanie organizacjami",
+    [`/${ResourcePaths.StudentOrganizations}/create`]: "Dodawanie organizacji",
+    [`/${ResourcePaths.StudentOrganizations}/edit`]: "Edycja organizacji",
+    [`/${ResourcePaths.StudentOrganizations}`]: "Zarządzanie organizacjami",
   };
 
   return (

@@ -5,19 +5,16 @@ import type { SelectInputOption } from "@/types/forms";
 export const getUserDisplayName = (user: User): string =>
   user.fullName ?? user.email;
 
-export function enumToFormSelectOptions<
-  T extends Record<string, string | number>,
->(
-  enumObject: T,
-  labels: Partial<Record<T[keyof T], string>>,
-): SelectInputOption[] {
-  return Object.entries(enumObject)
+export const enumToFormSelectOptions = <T extends string | number>(
+  enumObject: Record<string, T>,
+  labels: Record<T, string>,
+): SelectInputOption[] =>
+  Object.entries(enumObject)
     .filter(([key]) => Number.isNaN(Number(key)))
     .map(([, value]) => ({
       value,
-      label: labels[value as T[keyof T]] ?? String(value),
+      label: labels[value],
     }));
-}
 
 export function sanitizeId(id: string): string {
   return String(id).trim().replaceAll(/[^\d]/g, "");

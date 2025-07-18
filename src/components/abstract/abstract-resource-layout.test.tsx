@@ -26,7 +26,6 @@ describe("Abstract Resource Layout", () => {
 
   it("shows empty title when no match is found", () => {
     renderLayout("/unknown");
-    const titleElement = screen.getByRole("heading");
-    expect(titleElement).toBeEmptyDOMElement();
+    expect(screen.getByRole("heading")).toBeEmptyDOMElement();
   });
 });

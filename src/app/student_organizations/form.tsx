@@ -1,12 +1,13 @@
 "use client";
 
-import { AbstractResourceForm } from "@/components/abstract-resource-form";
+import { AbstractResourceForm } from "@/components/abstract/abstract-resource-form";
 import { SELECT_OPTION_LABELS } from "@/config/constants";
 import {
   DepartmentIds,
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
+  ResourcePaths,
 } from "@/lib/form-enums";
 import { enumToFormSelectOptions } from "@/lib/helpers";
 import { StudentOrganizationSchema } from "@/schemas";
@@ -136,7 +137,7 @@ export function Form({
         selectInputs,
         checkboxInputs,
       }}
-      returnButtonPath="/student_organizations"
+      returnButtonPath={`/${ResourcePaths.StudentOrganizations}`}
       returnButtonLabel="Wróć do organizacji"
     />
   );

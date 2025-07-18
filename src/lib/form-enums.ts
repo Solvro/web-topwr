@@ -1,3 +1,8 @@
+export enum ResourcePaths {
+  GuideArticles = "guide_articles",
+  StudentOrganizations = "student_organizations",
+}
+
 export enum OrganizationType {
   ScientificClub = "scientific_club",
   StudentOrganization = "student_organization",

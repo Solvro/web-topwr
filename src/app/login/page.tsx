@@ -50,7 +50,7 @@ export default function LoginPage() {
   return (
     <div className="from-gradient-1 to-gradient-2 flex h-full w-full items-center justify-center bg-gradient-to-r">
       <div className="-mt-20 flex w-96 flex-col items-center space-y-4 p-4">
-        <Image src={LogoToPWR} alt={"Logo ToPWR"} className="p-10" />
+        <Image src={LogoToPWR} alt="Logo ToPWR" className="p-10" />
 
         <Form {...form}>
           <form
@@ -135,7 +135,7 @@ export default function LoginPage() {
         target="_blank"
         rel="noreferrer"
       >
-        <Image src={SolvroLogo} alt={"Logo Solvro"} className="h-full w-full" />
+        <Image src={SolvroLogo} alt="Logo Solvro" className="h-full w-full" />
       </Link>
     </div>
   );

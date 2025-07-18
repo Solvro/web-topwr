@@ -3,15 +3,16 @@
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
-import { AbstractResourceLayout } from "@/components/abstract-resource-layout";
+import { AbstractResourceLayout } from "@/components/abstract/abstract-resource-layout";
+import { ResourcePaths } from "@/lib/enums";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   const titleMap = {
-    "/guide_articles/create": "Dodawanie artykułu",
-    "/guide_articles/edit": "Edycja artykułu",
-    "/guide_articles": "Zarządzenie artykułami",
+    [`/${ResourcePaths.GuideArticles}/create`]: "Dodawanie artykułu",
+    [`/${ResourcePaths.GuideArticles}/edit`]: "Edycja artykułu",
+    [`/${ResourcePaths.GuideArticles}`]: "Zarządzenie artykułami",
   };
 
   return (
