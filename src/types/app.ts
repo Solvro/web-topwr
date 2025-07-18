@@ -4,7 +4,7 @@ import type {
   OrganizationStatus,
   OrganizationType,
   Resource,
-} from "@/lib/enums";
+} from "@/config/enums";
 
 export interface StudentOrganization {
   id: number;

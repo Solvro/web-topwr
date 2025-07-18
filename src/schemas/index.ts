@@ -5,7 +5,7 @@ import {
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
-} from "@/lib/enums";
+} from "@/config/enums";
 
 export const LoginSchema = z.object({
   email: z.string({ required_error: FORM_ERROR_MESSAGES.REQUIRED }).email({

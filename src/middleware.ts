@@ -2,11 +2,10 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { AUTH_STATE_COOKIE_NAME } from "@/config/constants";
+import { Resource } from "@/config/enums";
 import { getCookieOptions, parseAuthCookie } from "@/lib/cookies";
 import { fetchQuery } from "@/lib/fetch-utils";
 import type { User } from "@/types/api";
-
-import { Resource } from "./lib/enums";
 
 const REQUIRED_ROUTE_PERMISSIONS: Record<string, string[] | undefined> = {
   "/login": [],

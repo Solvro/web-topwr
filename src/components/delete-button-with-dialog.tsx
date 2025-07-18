@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { Resource } from "@/lib/enums";
+import type { Resource } from "@/config/enums";
 
 export function DeleteButtonWithDialog({
   resource,

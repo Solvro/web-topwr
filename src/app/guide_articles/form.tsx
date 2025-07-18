@@ -1,7 +1,7 @@
 "use client";
 
 import { AbstractResourceForm } from "@/components/abstract/abstract-resource-form";
-import { Resource } from "@/lib/enums";
+import { Resource } from "@/config/enums";
 import { GuideArticleSchema } from "@/schemas";
 import type { GuideArticle } from "@/types/app";
 import type {

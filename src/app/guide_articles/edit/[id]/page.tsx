@@ -1,5 +1,5 @@
 import { AbstractResourceEditPage } from "@/components/abstract/abstract-resource-edit-page";
-import { Resource } from "@/lib/enums";
+import { Resource } from "@/config/enums";
 
 import { Form } from "../../form";
 
