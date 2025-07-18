@@ -49,11 +49,6 @@ export function Calendar({ clickable = false }: Props) {
     setIsDialogOpen(true);
   };
 
-  const handleDialogClose = () => {
-    setIsDialogOpen(false);
-    setSelectedDay(null);
-  };
-
   return (
     <div className="mx-auto mt-10 grid w-[85%] grid-cols-7 md:max-w-7xl">
       <div className="col-span-7 text-center text-lg font-bold">
@@ -105,7 +100,7 @@ export function Calendar({ clickable = false }: Props) {
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <div className="mx-auto w-full">
-            <AddEventForm onSuccess={handleDialogClose} />
+            <AddEventForm />
           </div>
         </DialogContent>
       </Dialog>

@@ -1,4 +1,4 @@
-import type { DateObject } from "./types";
+import type { DateObject } from "@/types/calendar";
 
 export function getCurrentDate(locale = "pl"): DateObject {
   const today = new Date();
