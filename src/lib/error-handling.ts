@@ -7,7 +7,7 @@ function getCodedMessage(code: string, fallback: string): string {
     return API_ERROR_MESSAGES[code];
   }
   console.warn(
-    `Unhandled error code: ${code}. Please add it to src/error-handling.ts#ERROR_MESSAGES with a user-friendly error message.`,
+    `Unhandled error code: ${code}. Please add it to @/config/constants.ts#API_ERROR_MESSAGES with a user-friendly error message.`,
   );
   return fallback;
 }
