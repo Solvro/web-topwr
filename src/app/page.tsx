@@ -1,7 +1,7 @@
 "use client";
 
 import type { VariantProps } from "class-variance-authority";
-import { BookOpen, Building, RefreshCcw, Send } from "lucide-react";
+import { BookOpen, Building, Calendar, RefreshCcw, Send } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -40,14 +40,20 @@ export default function Home() {
           icon={RefreshCcw}
           label="Review zmian"
           variant="outline"
-          className="order-3 md:order-2"
+          className="order-4 md:order-2"
         />
         <DashboardButton
           href="/"
           icon={Send}
           label="Wyślij powiadomienie"
           variant="outline"
-          className="order-4"
+          className="order-5"
+        />
+        <DashboardButton
+          href="/calendar"
+          icon={Calendar}
+          label="Zarządzanie kalendarzem akademickim"
+          className="order-3 md:order-5"
         />
       </div>
     </div>
