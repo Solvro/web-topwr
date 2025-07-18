@@ -33,11 +33,6 @@ export interface GuideArticle {
   updatedAt: string;
 }
 
-export interface Department {
-  id: number;
-  name: string;
-}
-
 export interface ResourceTypes {
   [Resource.GuideArticles]: GuideArticle;
   [Resource.StudentOrganizations]: StudentOrganization;
