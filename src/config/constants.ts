@@ -3,8 +3,8 @@ import {
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
-  ResourcePaths,
-} from "@/lib/form-enums";
+  Resource,
+} from "@/lib/enums";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
@@ -14,8 +14,8 @@ export const API_URL = (
 ).replace(/\/+$/, "");
 
 export const RESOURCE_API_PATHS = {
-  [ResourcePaths.GuideArticles]: "guide_articles",
-  [ResourcePaths.StudentOrganizations]: "student_organizations",
+  [Resource.GuideArticles]: "guide_articles",
+  [Resource.StudentOrganizations]: "student_organizations",
 } as const;
 
 export const LIST_RESULTS_PER_PAGE = 10;

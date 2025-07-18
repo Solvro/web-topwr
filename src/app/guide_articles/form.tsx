@@ -1,7 +1,7 @@
 "use client";
 
 import { AbstractResourceForm } from "@/components/abstract/abstract-resource-form";
-import { ResourcePaths } from "@/lib/enums";
+import { Resource } from "@/lib/enums";
 import { GuideArticleSchema } from "@/schemas";
 import type { GuideArticle } from "@/types/app";
 import type {
@@ -64,7 +64,7 @@ export function Form({ initialData }: { initialData?: GuideArticle | null }) {
         textInputs,
         richTextInput,
       }}
-      returnButtonPath={`/${ResourcePaths.GuideArticles}`}
+      returnButtonPath={`/${Resource.GuideArticles}`}
       returnButtonLabel="Wróć do artykułów"
     />
   );

@@ -1,9 +1,10 @@
 import type { ComponentType } from "react";
 
 import { RESOURCE_API_PATHS } from "@/config/constants";
+import type { Resource } from "@/lib/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
-import type { Resource, ResourceTypes } from "@/types/app";
+import type { ResourceTypes } from "@/types/app";
 
 async function fetchResource<T extends Resource>(
   resource: T,

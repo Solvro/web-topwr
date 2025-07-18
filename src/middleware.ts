@@ -6,13 +6,13 @@ import { getCookieOptions, parseAuthCookie } from "@/lib/cookies";
 import { fetchQuery } from "@/lib/fetch-utils";
 import type { User } from "@/types/api";
 
-import { ResourcePaths } from "./lib/enums";
+import { Resource } from "./lib/enums";
 
 const REQUIRED_ROUTE_PERMISSIONS: Record<string, string[] | undefined> = {
   "/login": [],
   "/": ["user", "admin"],
-  [`/${ResourcePaths.GuideArticles}`]: ["user", "admin"],
-  [`/${ResourcePaths.StudentOrganizations}`]: ["user", "admin"],
+  [`/${Resource.GuideArticles}`]: ["user", "admin"],
+  [`/${Resource.StudentOrganizations}`]: ["user", "admin"],
   "/change_review": ["admin"],
 };
 

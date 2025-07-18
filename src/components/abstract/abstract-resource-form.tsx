@@ -138,7 +138,7 @@ export function AbstractResourceForm<T extends ZodType>({
                               field.onChange(
                                 Number.isNaN(Number.parseInt(value))
                                   ? value
-                                  : Number(value),
+                                  : Number.parseInt(value),
                               );
                             }}
                           >
