@@ -1,13 +1,63 @@
 "use client";
 
-import { Plus, SquarePen } from "lucide-react";
+import { useDraggable } from "@dnd-kit/core";
+import { GripHorizontal, Plus, SquarePen } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { ListItem, Resource } from "@/types/app";
 
 import { DeleteButtonWithDialog } from "./delete-button-with-dialog";
+import { OrderableItemWrapper } from "./orderable-item-wrapper";
 import { PaginationComponent } from "./pagination";
+
+function DragHandle({ item }: { item: ListItem }) {
+  const { attributes, listeners, isDragging } = useDraggable({
+    id: item.id,
+  });
+  return (
+    <GripHorizontal
+      className={cn("mr-2 h-full", {
+        "cursor-grab": !isDragging,
+      })}
+      {...attributes}
+      {...listeners}
+    />
+  );
+}
+
+export function AbstractListItem({
+  item,
+  resource,
+  orderable = false,
+}: {
+  item: ListItem;
+  resource: Resource;
+  orderable?: boolean;
+}) {
+  return (
+    <div className="bg-background-secondary grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[12rem_1fr_auto] md:gap-x-4 xl:grid-cols-[20rem_1fr_auto]">
+      <div className="flex h-full items-center">
+        {orderable ? <DragHandle item={item} /> : null}
+        <span className="w-full font-medium md:text-center">{item.name}</span>
+      </div>
+      <span className="hidden truncate md:block">
+        {item.shortDescription == null || item.shortDescription.trim() === ""
+          ? "Brak opisu"
+          : item.shortDescription}
+      </span>
+      <div className="space-x-0.5 sm:space-x-2">
+        <Button variant="ghost" className="h-10 w-10" asChild>
+          <Link href={`/${resource}/edit/${String(item.id)}`} className="">
+            <SquarePen />
+          </Link>
+        </Button>
+        <DeleteButtonWithDialog resource={resource} id={item.id} />
+      </div>
+    </div>
+  );
+}
 
 export function AbstractList({
   resource,
@@ -15,42 +65,25 @@ export function AbstractList({
   page,
   totalPages,
   resultsNumber,
+  orderable = false,
 }: {
   resource: Resource;
   listItems: ListItem[];
   page: number;
   totalPages: number;
   resultsNumber: number;
+  orderable?: boolean;
 }) {
   return (
     <div className="flex h-full flex-col space-y-4">
       <div className="flex-[1_1_0] space-y-4 overflow-y-auto pr-2">
-        {listItems.map((item) => (
-          <div
-            key={item.id}
-            className="bg-background-secondary grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[12rem_1fr_auto] md:gap-x-4 xl:grid-cols-[20rem_1fr_auto]"
-          >
-            <span className="font-medium md:text-center">{item.name}</span>
-            <span className="hidden truncate md:block">
-              {item.shortDescription == null ||
-              item.shortDescription.trim() === ""
-                ? "Brak opisu"
-                : item.shortDescription}
-            </span>
-            <div className="space-x-0.5 sm:space-x-2">
-              <Button variant="ghost" className="h-10 w-10" asChild>
-                <Link
-                  href={`/${resource}/edit/${String(item.id)}`}
-                  className=""
-                >
-                  <SquarePen />
-                </Link>
-              </Button>
-
-              <DeleteButtonWithDialog resource={resource} id={item.id} />
-            </div>
-          </div>
-        ))}
+        {orderable ? (
+          <OrderableItemWrapper items={listItems} resource={resource} />
+        ) : (
+          listItems.map((item) => (
+            <AbstractListItem key={item.id} item={item} resource={resource} />
+          ))
+        )}
       </div>
       <div className="flex flex-col items-center justify-between gap-y-4 sm:flex-row">
         <PaginationComponent
