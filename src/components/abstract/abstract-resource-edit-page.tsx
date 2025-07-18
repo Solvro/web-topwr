@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 
+import { resourcePathToApiPath } from "@/config/constants";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import type { Resource, ResourceTypes } from "@/types/app";
@@ -10,7 +11,7 @@ async function fetchResource<T extends Resource>(
 ): Promise<ResourceTypes[T] | null> {
   try {
     const response = await fetchQuery<{ data: ResourceTypes[T] }>(
-      `${resource}/${sanitizeId(id)}`,
+      `${resourcePathToApiPath[resource]}/${sanitizeId(id)}`,
     );
     return response.data;
   } catch (error) {
@@ -19,7 +20,7 @@ async function fetchResource<T extends Resource>(
   }
 }
 
-export async function AbstractEditPage<T extends Resource>({
+export async function AbstractResourceEditPage<T extends Resource>({
   resource,
   params,
   FormComponent,

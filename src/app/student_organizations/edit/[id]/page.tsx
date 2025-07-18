@@ -1,4 +1,5 @@
-import { AbstractEditPage } from "@/components/abstract-edit-page";
+import { AbstractResourceEditPage } from "@/components/abstract/abstract-resource-edit-page";
+import { ResourcePaths } from "@/lib/enums";
 
 import { Form } from "../../form";
 
@@ -8,8 +9,8 @@ export default function EditStudentOrganizationPage({
   params: Promise<{ id: string }>;
 }) {
   return (
-    <AbstractEditPage
-      resource="student_organizations"
+    <AbstractResourceEditPage
+      resource={ResourcePaths.StudentOrganizations}
       params={params}
       FormComponent={Form}
     />

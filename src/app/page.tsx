@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { ResourcePaths } from "@/lib/enums";
 import { getUserDisplayName } from "@/lib/helpers";
 
 export default function Home() {
@@ -23,13 +24,13 @@ export default function Home() {
       </span>
       <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
         <DashboardButton
-          href="/student_organizations"
+          href={`/${ResourcePaths.StudentOrganizations}`}
           icon={Building}
           label="Zarządzanie organizacjami"
           className="order-1"
         />
         <DashboardButton
-          href="/guide_articles"
+          href={`/${ResourcePaths.GuideArticles}`}
           icon={BookOpen}
           label="Zarządzanie artykułami"
           className="order-2 md:order-3"

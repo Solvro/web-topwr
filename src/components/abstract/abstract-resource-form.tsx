@@ -135,19 +135,11 @@ export function AbstractResourceForm<T extends ZodType>({
                           <Select
                             value={String(field.value ?? "")}
                             onValueChange={(value) => {
-                              if (!value && input.allowNull === true) {
-                                field.onChange(null);
-                                return;
-                              }
-
-                              if (
-                                typeof input.options[0]?.value === "number" ||
-                                typeof field.value === "number"
-                              ) {
-                                field.onChange(value ? Number(value) : null);
-                              } else {
-                                field.onChange(value || null);
-                              }
+                              field.onChange(
+                                Number.isNaN(Number(value))
+                                  ? value
+                                  : Number(value),
+                              );
                             }}
                           >
                             <FormControl>
