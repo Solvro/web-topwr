@@ -136,7 +136,7 @@ export function AbstractResourceForm<T extends ZodType>({
                           <Select
                             value={String(field.value ?? "")}
                             onValueChange={(value) => {
-                              if (value === "" || value === "__clear__") {
+                              if (value === "__clear__") {
                                 field.onChange(null);
                               } else {
                                 const parsedValue = Number.parseInt(value);
