@@ -13,11 +13,7 @@ import { enumToFormSelectOptions } from "@/lib/helpers";
 import { StudentOrganizationSchema } from "@/schemas";
 import type { StudentOrganization } from "@/types/app";
 import type {
-  FormCheckboxInput,
-  FormImageInput,
-  FormRichTextInput,
-  FormSelectInput,
-  FormTextInput,
+  AbstractResourceFormInputs,
   StudentOrganizationFormValues,
 } from "@/types/forms";
 
@@ -33,77 +29,75 @@ function editOnSubmit(id: number, data: StudentOrganizationFormValues) {
   console.log(`Updating organization ${String(id)}:`, data);
 }
 
-const imageInputs: FormImageInput[] = [
-  {
-    label: "Logo",
+const formInputs: AbstractResourceFormInputs<StudentOrganizationFormValues> = {
+  imageInputs: [
+    {
+      label: "Logo",
+    },
+    {
+      label: "Baner",
+    },
+  ],
+  textInputs: [
+    {
+      name: "name",
+      label: "Nazwa",
+    },
+    {
+      name: "shortDescription",
+      label: "Krótki opis",
+    },
+  ],
+  richTextInput: {
+    name: "description",
+    label: "Opis",
   },
-  {
-    label: "Baner",
-  },
-];
-
-const textInputs: FormTextInput<StudentOrganizationFormValues>[] = [
-  {
-    name: "name",
-    label: "Nazwa",
-  },
-  {
-    name: "shortDescription",
-    label: "Krótki opis",
-  },
-];
-
-const richTextInput: FormRichTextInput<StudentOrganizationFormValues> = {
-  name: "description",
-  label: "Opis",
+  selectInputs: [
+    {
+      name: "departmentId",
+      label: "Wydział",
+      placeholder: "Wybierz wydział",
+      options: enumToFormSelectOptions(
+        DepartmentIds,
+        SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.DEPARTMENT,
+      ),
+      isOptional: true,
+    },
+    {
+      name: "source",
+      label: "Źródło",
+      placeholder: "Wybierz źródło",
+      options: enumToFormSelectOptions(
+        OrganizationSource,
+        SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.SOURCE,
+      ),
+    },
+    {
+      name: "organizationType",
+      label: "Typ",
+      placeholder: "Wybierz typ",
+      options: enumToFormSelectOptions(
+        OrganizationType,
+        SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.TYPE,
+      ),
+    },
+    {
+      name: "organizationStatus",
+      label: "Status",
+      placeholder: "Wybierz status",
+      options: enumToFormSelectOptions(
+        OrganizationStatus,
+        SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
+      ),
+    },
+  ],
+  checkboxInputs: [
+    {
+      name: "isStrategic",
+      label: "Czy jest kołem strategicznym?",
+    },
+  ],
 };
-
-const selectInputs: FormSelectInput<StudentOrganizationFormValues>[] = [
-  {
-    name: "departmentId",
-    label: "Wydział",
-    placeholder: "Wybierz wydział",
-    options: enumToFormSelectOptions(
-      DepartmentIds,
-      SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.DEPARTMENT,
-    ),
-    isOptional: true,
-  },
-  {
-    name: "source",
-    label: "Źródło",
-    placeholder: "Wybierz źródło",
-    options: enumToFormSelectOptions(
-      OrganizationSource,
-      SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.SOURCE,
-    ),
-  },
-  {
-    name: "organizationType",
-    label: "Typ",
-    placeholder: "Wybierz typ",
-    options: enumToFormSelectOptions(
-      OrganizationType,
-      SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.TYPE,
-    ),
-  },
-  {
-    name: "organizationStatus",
-    label: "Status",
-    placeholder: "Wybierz status",
-    options: enumToFormSelectOptions(
-      OrganizationStatus,
-      SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
-    ),
-  },
-];
-
-const checkboxInputs: FormCheckboxInput<StudentOrganizationFormValues>[] = [
-  {
-    name: "isStrategic",
-    label: "Czy jest kołem strategicznym?",
-  },
-];
 
 export function Form({
   initialData,
@@ -130,13 +124,7 @@ export function Form({
       defaultValues={defaultValues}
       createOnSubmit={createOnSubmit}
       editOnSubmit={editOnSubmit}
-      formInputs={{
-        imageInputs,
-        textInputs,
-        richTextInput,
-        selectInputs,
-        checkboxInputs,
-      }}
+      formInputs={formInputs}
       returnButtonPath={`/${Resource.StudentOrganizations}`}
       returnButtonLabel="Wróć do organizacji"
     />
