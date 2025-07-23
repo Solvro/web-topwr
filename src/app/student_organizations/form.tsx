@@ -67,6 +67,7 @@ const selectInputs: FormSelectInput<StudentOrganizationFormValues>[] = [
       DepartmentIds,
       SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.DEPARTMENT,
     ),
+    isOptional: true,
   },
   {
     name: "source",

@@ -37,6 +37,7 @@ export interface FormSelectInput<T extends FieldValues> {
   label: string;
   placeholder: string;
   options: SelectInputOption[];
+  isOptional?: boolean;
 }
 
 export interface FormCheckboxInput<T extends FieldValues> {

@@ -69,6 +69,7 @@ export function AbstractResourceForm<T extends ZodType>({
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex grow flex-col space-y-4"
+          autoComplete="off"
         >
           <div className="grow basis-[0] overflow-y-auto">
             <div className="bg-background-secondary flex min-h-full flex-col space-y-4 space-x-4 rounded-xl p-4 md:flex-row">
@@ -135,11 +136,16 @@ export function AbstractResourceForm<T extends ZodType>({
                           <Select
                             value={String(field.value ?? "")}
                             onValueChange={(value) => {
-                              field.onChange(
-                                Number.isNaN(Number.parseInt(value))
-                                  ? value
-                                  : Number.parseInt(value),
-                              );
+                              if (value === "" || value === "__clear__") {
+                                field.onChange(null);
+                              } else {
+                                const parsedValue = Number.parseInt(value);
+                                field.onChange(
+                                  Number.isNaN(parsedValue)
+                                    ? value
+                                    : parsedValue,
+                                );
+                              }
                             }}
                           >
                             <FormControl>
@@ -148,6 +154,14 @@ export function AbstractResourceForm<T extends ZodType>({
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent className="border-input">
+                              {input.isOptional === true && (
+                                <SelectItem
+                                  value="__clear__"
+                                  className="text-muted-foreground"
+                                >
+                                  {input.placeholder}
+                                </SelectItem>
+                              )}
                               {input.options.map((option) => (
                                 <SelectItem
                                   key={option.value}
@@ -191,7 +205,8 @@ export function AbstractResourceForm<T extends ZodType>({
             </div>
           </div>
 
-          <div className="flex w-full justify-between">
+          <div className="flex w-full flex-row-reverse justify-between">
+            <Button type="submit">Zapisz</Button>
             <Button
               variant="ghost"
               className="text-primary hover:text-primary w-min"
@@ -202,7 +217,6 @@ export function AbstractResourceForm<T extends ZodType>({
                 {returnButtonLabel}
               </Link>
             </Button>
-            <Button type="submit">Zapisz</Button>
           </div>
         </form>
       </Form>
