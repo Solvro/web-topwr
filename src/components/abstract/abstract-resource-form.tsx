@@ -5,9 +5,9 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import type { FieldPath } from "react-hook-form";
+import type { DefaultValues } from "react-hook-form";
 import { toast } from "sonner";
-import type { TypeOf, ZodType, z } from "zod";
+import type { z } from "zod";
 
 import { ImageInput } from "@/components/image-input";
 import { Button } from "@/components/ui/button";
@@ -34,23 +34,21 @@ import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import { cn } from "@/lib/utils";
 import type { MessageResponse } from "@/types/api";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 
-type SchemaWithOptionalId<T extends ZodType> = Omit<TypeOf<T>, "id"> & {
-  id?: number;
-};
+type WithOptionalId<T> = T & { id?: number };
+type SchemaWithOptionalId<T extends z.ZodType> = WithOptionalId<z.infer<T>>;
 
-const isExistingResourceItem = <T extends ZodType>(
+const isExistingResourceItem = <T extends z.ZodType>(
   defaultValues?: SchemaWithOptionalId<T>,
-): defaultValues is TypeOf<T> & { id: number } =>
+): defaultValues is z.infer<T> & { id: number } =>
   defaultValues != null &&
   "id" in defaultValues &&
   defaultValues.id !== undefined &&
   typeof defaultValues.id === "number";
 
-const getMutationConfig = <T extends ZodType>(
+const getMutationConfig = <T extends z.ZodType>(
   resource: Resource,
   defaultValues?: SchemaWithOptionalId<T>,
 ) =>
@@ -66,7 +64,7 @@ const getMutationConfig = <T extends ZodType>(
         method: "POST",
       } as const);
 
-export function AbstractResourceForm<T extends ZodType>({
+export function AbstractResourceForm<T extends z.ZodObject<z.ZodRawShape>>({
   resource,
   schema,
   defaultValues,
@@ -80,14 +78,14 @@ export function AbstractResourceForm<T extends ZodType>({
   returnButtonPath,
 }: {
   resource: Resource;
-  schema: T;
-  defaultValues?: TypeOf<T> & { id?: number };
+  schema: "id" extends keyof z.infer<T> ? never : T; // ensure the schema does not include an 'id' field
+  defaultValues?: WithOptionalId<DefaultValues<z.infer<T>>>;
   formInputs: AbstractResourceFormInputs<z.infer<T>>;
   returnButtonPath: string;
 }) {
   const router = useRouter();
 
-  const form = useForm<TypeOf<T>>({
+  const form = useForm<z.infer<T>>({
     resolver: zodResolver(schema),
     defaultValues,
   });
@@ -97,11 +95,11 @@ export function AbstractResourceForm<T extends ZodType>({
     defaultValues,
   );
   type ResponseType = MessageResponse & {
-    data: Omit<TypeOf<T>, "id"> & { id: number };
+    data: Omit<z.infer<T>, "id"> & { id: number };
   };
   const { mutateAsync, isPending, isSuccess } = useMutationWrapper<
     ResponseType,
-    TypeOf<T>
+    z.infer<T>
   >(mutationKey, async (body) => {
     const response = await fetchMutation<ResponseType>(endpoint, {
       body,
@@ -111,14 +109,6 @@ export function AbstractResourceForm<T extends ZodType>({
     router.refresh();
     return response;
   });
-
-  const isFieldTouched = (name: FieldPath<TypeOf<T>>) =>
-    Boolean(
-      form.formState.touchedFields[
-        // TODO: figure out why this is necessary
-        name as keyof typeof form.formState.touchedFields
-      ],
-    );
 
   return (
     <div className="mx-auto flex h-full flex-col">
@@ -150,20 +140,7 @@ export function AbstractResourceForm<T extends ZodType>({
                     name={input.name}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel
-                          className={cn(
-                            // TODO: add this for all required fields, not just required text fields
-                            "before:text-destructive relative before:absolute before:-left-3 before:transition-opacity before:content-['*']",
-                            // TODO: extract this information from the zod schema rather than supplying it in the formInputs
-                            input.required === true &&
-                              field.value === "" &&
-                              isFieldTouched(input.name)
-                              ? "before:opacity-100"
-                              : "before:opacity-0",
-                          )}
-                        >
-                          {input.label}
-                        </FormLabel>
+                        <FormLabel>{input.label}</FormLabel>
                         <FormControl>
                           <Input
                             className="bg-background placeholder:text-foreground shadow-none"
