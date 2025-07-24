@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import type { z } from "zod";
 
 import { ImageInput } from "@/components/image-input";
+import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -164,10 +165,17 @@ export function AbstractResourceForm<T extends z.ZodObject<z.ZodRawShape>>({
                       <FormItem>
                         <FormLabel>{richTextInput.label}</FormLabel>
                         <FormControl>
-                          <Input
+                          {/* <Input
                             className="bg-background placeholder:text-foreground h-20 shadow-none"
                             {...field}
                             value={field.value ?? ""}
+                          /> */}
+                          <MinimalTiptapEditor
+                            value={field.value ?? ""}
+                            onChange={field.onChange}
+                            output="html"
+                            placeholder="Wpisz opis..."
+                            editable={true}
                           />
                         </FormControl>
                         <FormMessage />
