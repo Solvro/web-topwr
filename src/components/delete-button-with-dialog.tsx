@@ -35,18 +35,18 @@ export function DeleteButtonWithDialog({
   const router = useRouter();
 
   const sanitizedId = sanitizeId(String(id));
-  const { mutateAsync, isPending } = useMutationWrapper<MessageResponse, null>(
-    `delete__${resource}__${sanitizedId}`,
-    async () => {
-      const response = await fetchMutation<MessageResponse>(sanitizedId, {
-        resource,
-        method: "DELETE",
-      });
-      setIsDialogOpen(false);
-      router.refresh();
-      return response;
-    },
-  );
+  const { mutateAsync, isPending, isSuccess } = useMutationWrapper<
+    MessageResponse,
+    null
+  >(`delete__${resource}__${sanitizedId}`, async () => {
+    const response = await fetchMutation<MessageResponse>(sanitizedId, {
+      resource,
+      method: "DELETE",
+    });
+    setIsDialogOpen(false);
+    router.refresh();
+    return response;
+  });
 
   const declensions = declineNoun(resource);
 
@@ -90,6 +90,7 @@ export function DeleteButtonWithDialog({
             className="h-12 w-1/2"
             onClick={handleDelete}
             loading={isPending}
+            disabled={isSuccess}
           >
             Usuń
           </Button>

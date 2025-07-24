@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import type { FieldPath } from "react-hook-form";
 import { toast } from "sonner";
@@ -84,6 +85,8 @@ export function AbstractResourceForm<T extends ZodType>({
   formInputs: AbstractResourceFormInputs<z.infer<T>>;
   returnButtonPath: string;
 }) {
+  const router = useRouter();
+
   const form = useForm<TypeOf<T>>({
     resolver: zodResolver(schema),
     defaultValues,
@@ -96,7 +99,7 @@ export function AbstractResourceForm<T extends ZodType>({
   type ResponseType = MessageResponse & {
     data: Omit<TypeOf<T>, "id"> & { id: number };
   };
-  const { mutateAsync, isPending } = useMutationWrapper<
+  const { mutateAsync, isPending, isSuccess } = useMutationWrapper<
     ResponseType,
     TypeOf<T>
   >(mutationKey, async (body) => {
@@ -105,6 +108,7 @@ export function AbstractResourceForm<T extends ZodType>({
       method,
       resource,
     });
+    router.refresh();
     return response;
   });
 
@@ -278,7 +282,7 @@ export function AbstractResourceForm<T extends ZodType>({
                 })}
               </Link>
             </Button>
-            <Button type="submit" loading={isPending}>
+            <Button type="submit" loading={isPending} disabled={isSuccess}>
               Zapisz
             </Button>
           </div>
