@@ -1,6 +1,5 @@
 import type { ComponentType } from "react";
 
-import { RESOURCE_API_PATHS } from "@/config/constants";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
@@ -12,7 +11,8 @@ async function fetchResource<T extends Resource>(
 ): Promise<ResourceTypes[T] | null> {
   try {
     const response = await fetchQuery<{ data: ResourceTypes[T] }>(
-      `${RESOURCE_API_PATHS[resource]}/${sanitizeId(id)}`,
+      sanitizeId(id),
+      { resource },
     );
     return response.data;
   } catch (error) {

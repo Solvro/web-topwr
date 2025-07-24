@@ -34,7 +34,7 @@ export function declineNoun(
  * @param declensionOptions.case - The grammatical case to use for declension. If not provided, returns all declensions.
  * @param declensionOptions.prependDeterminer - Whether to prepend the determiner (i.e. to, ten, ta in the correct declension).
  * @param declensionOptions.plural - Whether to use the plural form.
- * @returns The declensed noun string.
+ * @returns The declined noun string.
  * @example
  * declineNoun(Resource.GuideArticles, { case: DeclensionCase.Nominative, prependDeterminer: true }) === 'ten artykuł'
  * declineNoun(Resource.StudentOrganizations, { case: DeclensionCase.Accusative, plural: true }) === 'organizacje studenckie'

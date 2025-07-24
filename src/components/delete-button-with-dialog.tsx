@@ -38,13 +38,10 @@ export function DeleteButtonWithDialog({
   const { mutateAsync, isPending } = useMutationWrapper<MessageResponse, null>(
     `delete__${resource}__${sanitizedId}`,
     async () => {
-      const response = await fetchMutation<MessageResponse>(
-        `${resource}/${sanitizedId}`,
-        {},
-        {
-          method: "DELETE",
-        },
-      );
+      const response = await fetchMutation<MessageResponse>(sanitizedId, {
+        resource,
+        method: "DELETE",
+      });
       setIsDialogOpen(false);
       router.refresh();
       return response;
