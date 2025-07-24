@@ -36,7 +36,7 @@ export function AbstractResourceLayout({
 }) {
   return (
     <div className="flex h-full flex-col space-y-4 py-2">
-      <h2 className="bg-primary w-[20rem] max-w-full rounded-r-xl p-5 text-center text-lg font-medium whitespace-nowrap text-white sm:w-[25rem] md:w-[30rem] xl:w-[40rem]">
+      <h2 className="bg-primary w-2xs max-w-full rounded-r-xl p-3 text-center text-sm font-medium whitespace-nowrap text-white sm:w-[25rem] sm:p-5 sm:text-lg md:w-[30rem] xl:w-[40rem]">
         {getTitle(resource, pathname)}
       </h2>
       <div className="container mx-auto flex h-full grow flex-col space-y-2 px-2 xl:px-32">
