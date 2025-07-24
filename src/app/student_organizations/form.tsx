@@ -21,18 +21,6 @@ import type {
   StudentOrganizationFormValues,
 } from "@/types/forms";
 
-function createOnSubmit(data: StudentOrganizationFormValues) {
-  // TODO
-  // eslint-disable-next-line no-console
-  console.log("Creating organization:", data);
-}
-
-function editOnSubmit(id: number, data: StudentOrganizationFormValues) {
-  // TODO
-  // eslint-disable-next-line no-console
-  console.log(`Updating organization ${String(id)}:`, data);
-}
-
 const imageInputs: FormImageInput[] = [
   {
     label: "Logo",
@@ -46,6 +34,7 @@ const textInputs: FormTextInput<StudentOrganizationFormValues>[] = [
   {
     name: "name",
     label: "Nazwa",
+    required: true,
   },
   {
     name: "shortDescription",
@@ -125,10 +114,9 @@ export function Form({
 
   return (
     <AbstractResourceForm
+      resource={Resource.StudentOrganizations}
       schema={StudentOrganizationSchema}
       defaultValues={defaultValues}
-      createOnSubmit={createOnSubmit}
-      editOnSubmit={editOnSubmit}
       formInputs={{
         imageInputs,
         textInputs,
@@ -137,7 +125,6 @@ export function Form({
         checkboxInputs,
       }}
       returnButtonPath={`/${Resource.StudentOrganizations}`}
-      returnButtonLabel="Wróć do organizacji"
     />
   );
 }

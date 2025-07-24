@@ -41,3 +41,23 @@ export enum DepartmentIds {
   Mathematics = 14,
   Medical = 15,
 }
+
+// #region Polish language enums
+
+export enum GrammaticalGender {
+  Neuter = 0,
+  Masculine = 1,
+  Feminine = 2,
+}
+
+export enum DeclensionCase {
+  Nominative = "nominative", // Mianownik - kto? co?
+  Genitive = "genitive", // Dopełniacz - kogo? czego?
+  Dative = "dative", // Celownik - komu? czemu?
+  Accusative = "accusative", // Biernik - kogo? co?
+  Instrumental = "instrumental", // Narzędnik - z kim? z czym?
+  Locative = "locative", // Miejscownik - o kim? o czym?
+  Vocative = "vocative", // Wołacz - o!
+}
+
+// #endregion

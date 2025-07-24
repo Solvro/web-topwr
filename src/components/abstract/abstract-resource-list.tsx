@@ -5,8 +5,10 @@ import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { PaginationComponent } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
 import { LIST_RESULTS_PER_PAGE, RESOURCE_API_PATHS } from "@/config/constants";
+import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
+import { declineNoun } from "@/lib/polish";
 import type { ListItem, ResourceTypes } from "@/types/app";
 
 interface ApiResponse<T extends Resource> {
@@ -34,12 +36,10 @@ export async function AbstractResourceList<T extends Resource>({
   resource,
   searchParams,
   mapItemToList,
-  addButtonLabel = "Dodaj",
 }: {
   resource: T;
   searchParams: Promise<{ page?: string }>;
   mapItemToList: (item: ResourceTypes[T]) => ListItem;
-  addButtonLabel?: string;
 }) {
   const resolvedSearchParameters = await searchParams;
   const page = Number.parseInt(resolvedSearchParameters.page ?? "1", 10);
@@ -78,7 +78,11 @@ export async function AbstractResourceList<T extends Resource>({
                 </Link>
               </Button>
 
-              <DeleteButtonWithDialog resource={resource} id={item.id} />
+              <DeleteButtonWithDialog
+                resource={resource}
+                id={item.id}
+                itemName={item.name}
+              />
             </div>
           </div>
         ))}
@@ -93,7 +97,7 @@ export async function AbstractResourceList<T extends Resource>({
 
         <Button asChild>
           <Link href={`/${resource}/create`}>
-            {addButtonLabel}
+            Dodaj {declineNoun(resource, { case: DeclensionCase.Accusative })}
             <Plus />
           </Link>
         </Button>
