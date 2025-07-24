@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import type { FieldPath } from "react-hook-form";
+import { toast } from "sonner";
 import type { TypeOf, ZodType, z } from "zod";
 
 import { ImageInput } from "@/components/image-input";
@@ -25,13 +27,49 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { RESOURCE_API_PATHS } from "@/config/constants";
+import { DeclensionCase } from "@/config/enums";
+import type { Resource } from "@/config/enums";
+import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
+import { fetchMutation } from "@/lib/fetch-utils";
+import { sanitizeId } from "@/lib/helpers";
+import { declineNoun } from "@/lib/polish";
+import { cn } from "@/lib/utils";
+import type { MessageResponse } from "@/types/api";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 
+type SchemaWithOptionalId<T extends ZodType> = Omit<TypeOf<T>, "id"> & {
+  id?: number;
+};
+
+const isExistingResourceItem = <T extends ZodType>(
+  defaultValues?: SchemaWithOptionalId<T>,
+): defaultValues is TypeOf<T> & { id: number } =>
+  defaultValues != null &&
+  "id" in defaultValues &&
+  defaultValues.id !== undefined &&
+  typeof defaultValues.id === "number";
+
+const getMutationConfig = <T extends ZodType>(
+  resource: Resource,
+  defaultValues?: SchemaWithOptionalId<T>,
+) =>
+  isExistingResourceItem(defaultValues)
+    ? ({
+        mutationKey: `update__${resource}__${String(defaultValues.id)}`,
+        endpoint: `${RESOURCE_API_PATHS[resource]}/${sanitizeId(String(defaultValues.id))}`,
+        method: "PATCH",
+      } as const)
+    : ({
+        mutationKey: `create__${resource}`,
+        endpoint: RESOURCE_API_PATHS[resource],
+        method: "POST",
+      } as const);
+
 export function AbstractResourceForm<T extends ZodType>({
+  resource,
   schema,
   defaultValues,
-  createOnSubmit,
-  editOnSubmit,
   formInputs: {
     imageInputs = [],
     textInputs = [],
@@ -40,34 +78,54 @@ export function AbstractResourceForm<T extends ZodType>({
     checkboxInputs = [],
   },
   returnButtonPath,
-  returnButtonLabel,
 }: {
+  resource: Resource;
   schema: T;
   defaultValues?: TypeOf<T> & { id?: number };
-  createOnSubmit: (data: TypeOf<T>) => void;
-  editOnSubmit: (id: number, data: TypeOf<T>) => void;
   formInputs: AbstractResourceFormInputs<z.infer<T>>;
   returnButtonPath: string;
-  returnButtonLabel: string;
 }) {
   const form = useForm<TypeOf<T>>({
     resolver: zodResolver(schema),
     defaultValues,
   });
 
-  function onSubmit(values: TypeOf<T>) {
-    if (defaultValues == null || defaultValues.id === undefined) {
-      createOnSubmit(values);
-    } else {
-      editOnSubmit(defaultValues.id as number, values);
-    }
-  }
+  const { mutationKey, endpoint, method } = getMutationConfig(
+    resource,
+    defaultValues,
+  );
+  type ResponseType = MessageResponse & {
+    data: Omit<TypeOf<T>, "id"> & { id: number };
+  };
+  const { mutateAsync, isPending } = useMutationWrapper<
+    ResponseType,
+    TypeOf<T>
+  >(mutationKey, async (body) => {
+    const response = await fetchMutation<ResponseType>(endpoint, body, {
+      method,
+    });
+    return response;
+  });
+
+  const isFieldTouched = (name: FieldPath<TypeOf<T>>) =>
+    Boolean(
+      form.formState.touchedFields[
+        // TODO: figure out why this is necessary
+        name as keyof typeof form.formState.touchedFields
+      ],
+    );
 
   return (
     <div className="mx-auto flex h-full flex-col">
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit((values) =>
+            toast.promise(mutateAsync(values), {
+              loading: "Trwa przetwarzanie...",
+              success: "Pomyślnie zapisano!",
+              error: "Wystąpił błąd podczas zapisywania.",
+            }),
+          )}
           className="flex grow flex-col space-y-4"
         >
           <div className="grow basis-[0] overflow-y-auto">
@@ -87,7 +145,20 @@ export function AbstractResourceForm<T extends ZodType>({
                     name={input.name}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{input.label}</FormLabel>
+                        <FormLabel
+                          className={cn(
+                            // TODO: add this for all required fields, not just required text fields
+                            "before:text-destructive relative before:absolute before:-left-3 before:transition-opacity before:content-['*']",
+                            // TODO: extract this information from the zod schema rather than supplying it in the formInputs
+                            input.required === true &&
+                              field.value === "" &&
+                              isFieldTouched(input.name)
+                              ? "before:opacity-100"
+                              : "before:opacity-0",
+                          )}
+                        >
+                          {input.label}
+                        </FormLabel>
                         <FormControl>
                           <Input
                             className="bg-background placeholder:text-foreground shadow-none"
@@ -199,10 +270,16 @@ export function AbstractResourceForm<T extends ZodType>({
             >
               <Link href={returnButtonPath} className="">
                 <ChevronLeft />
-                {returnButtonLabel}
+                Wróć do{" "}
+                {declineNoun(resource, {
+                  case: DeclensionCase.Genitive,
+                  plural: true,
+                })}
               </Link>
             </Button>
-            <Button type="submit">Zapisz</Button>
+            <Button type="submit" loading={isPending}>
+              Zapisz
+            </Button>
           </div>
         </form>
       </Form>

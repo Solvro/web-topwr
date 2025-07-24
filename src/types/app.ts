@@ -1,5 +1,6 @@
 import type { ERROR_CODES } from "@/config/constants";
 import type {
+  DeclensionCase,
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
@@ -45,3 +46,9 @@ export interface ListItem {
 }
 
 export type ErrorCode = keyof typeof ERROR_CODES;
+
+export interface Pluralized<T> {
+  singular: T;
+  plural: T;
+}
+export type Declensions = Record<DeclensionCase, string>;
