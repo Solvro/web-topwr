@@ -3,7 +3,7 @@ import fs from "node:fs";
 const current = JSON.parse(fs.readFileSync("current-coverage.json", "utf8"));
 const base = JSON.parse(fs.readFileSync("base-coverage.json", "utf8"));
 
-const categories = ["lines", "functions", "statements", "branches"];
+const categories = ["statements", "branches", "functions", "lines"];
 let failed = false;
 
 console.log("📊 Coverage Regression Check:\n");
@@ -26,7 +26,7 @@ for (const cat of categories) {
 if (failed) {
   console.error("\n❌ Coverage regression detected.");
   throw new Error(
-    "Coverage regression detected. Please fix the coverage issues.",
+    "Coverage regression detected. Please add tests for the code affected in this pull request.",
   );
 } else {
   console.log("\n✅ No coverage regression.");
