@@ -11,19 +11,29 @@ import { fetchQuery } from "@/lib/fetch-utils";
 import { declineNoun } from "@/lib/polish";
 import type { ListItem, ResourceTypes } from "@/types/app";
 
+import { SortFilters } from "./sort-filters";
+
 interface ApiResponse<T extends Resource> {
   data: ResourceTypes[T][];
   meta: { total: number };
 }
 
-async function fetchResource<T extends Resource>(
+async function fetchResources<T extends Resource>(
   resource: T,
   page: number,
   resultsPerPage: number,
+  sortBy: string,
+  sortDirection: "+" | "-",
+  searchField?: string,
+  searchTerm?: string,
 ): Promise<ApiResponse<T>> {
+  const search =
+    searchField == null || searchTerm == null
+      ? ""
+      : `${encodeURIComponent(searchField)}=%${encodeURIComponent(searchTerm)}%&`;
   try {
     const result = await fetchQuery<ApiResponse<T>>(
-      `?page=${String(page)}&limit=${String(resultsPerPage)}`,
+      `?${search}page=${String(page)}&limit=${String(resultsPerPage)}&sort=${sortDirection}${sortBy}`,
       { resource },
     );
     return result;
@@ -33,22 +43,43 @@ async function fetchResource<T extends Resource>(
   }
 }
 
+export interface ListSearchParameters {
+  page?: string;
+  sortBy?: string;
+  sortDirection?: "asc" | "desc";
+  searchField?: string;
+  searchTerm?: string;
+}
+
 export async function AbstractResourceList<T extends Resource>({
   resource,
   searchParams,
   mapItemToList,
+  sortFields = {},
+  searchFields = {},
 }: {
   resource: T;
-  searchParams: Promise<{ page?: string }>;
+  sortFields?: Record<string, string>;
+  searchFields?: Record<string, string>;
+  searchParams: Promise<ListSearchParameters>;
   mapItemToList: (item: ResourceTypes[T]) => ListItem;
 }) {
   const resolvedSearchParameters = await searchParams;
   const page = Number.parseInt(resolvedSearchParameters.page ?? "1", 10);
+  const sortBy = resolvedSearchParameters.sortBy ?? "id";
+  const sortDirection =
+    resolvedSearchParameters.sortDirection === "desc" ? "-" : "+";
+  const searchField = resolvedSearchParameters.searchField;
+  const searchTerm = resolvedSearchParameters.searchTerm;
 
-  const { data, meta } = await fetchResource(
+  const { data, meta } = await fetchResources(
     resource,
     page,
     LIST_RESULTS_PER_PAGE,
+    sortBy,
+    sortDirection,
+    searchField,
+    searchTerm,
   );
 
   const totalPages = Math.ceil(meta.total / LIST_RESULTS_PER_PAGE);
@@ -59,6 +90,11 @@ export async function AbstractResourceList<T extends Resource>({
 
   return (
     <div className="flex h-full flex-col space-y-4">
+      <SortFilters
+        searchParams={resolvedSearchParameters}
+        sortFields={sortFields}
+        searchFields={searchFields}
+      />
       <div className="grow basis-[0] space-y-4 overflow-y-auto pr-2">
         {listItems.map((item) => (
           <div
@@ -94,6 +130,7 @@ export async function AbstractResourceList<T extends Resource>({
           totalPages={totalPages}
           currentResultsNumber={listItems.length}
           resultsNumber={resultsNumber}
+          searchParams={resolvedSearchParameters}
         />
 
         <Button asChild>

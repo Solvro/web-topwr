@@ -11,6 +11,8 @@ export default function StudentOrganizationsPage({
     <AbstractResourceList
       resource={Resource.StudentOrganizations}
       searchParams={searchParams}
+      sortFields={{ name: "nazwy", shortDescription: "opisu" }}
+      searchFields={{ name: "nazwie", description: "opisie" }}
       mapItemToList={(item: StudentOrganization) => ({
         id: item.id,
         name: item.name,

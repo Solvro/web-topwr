@@ -11,6 +11,8 @@ export default function GuideArticlesPage({
     <AbstractResourceList
       resource={Resource.GuideArticles}
       searchParams={searchParams}
+      sortFields={{ title: "tytułu", shortDesc: "opisu" }}
+      searchFields={{ title: "tytule", description: "opisie" }}
       mapItemToList={(item: GuideArticle) => ({
         id: item.id,
         name: item.title,
