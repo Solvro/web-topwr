@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/select";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 
+const EMPTY_SELECT_OPTION = "EMPTY_SELECT_OPTION";
+
 export function AbstractResourceForm<T extends ZodType>({
   schema,
   defaultValues,
@@ -136,7 +138,7 @@ export function AbstractResourceForm<T extends ZodType>({
                           <Select
                             value={String(field.value ?? "")}
                             onValueChange={(value) => {
-                              if (value === "__clear__") {
+                              if (value === EMPTY_SELECT_OPTION) {
                                 field.onChange(null);
                               } else {
                                 const parsedValue = Number.parseInt(value);
@@ -156,7 +158,7 @@ export function AbstractResourceForm<T extends ZodType>({
                             <SelectContent className="border-input">
                               {input.isOptional === true && (
                                 <SelectItem
-                                  value="__clear__"
+                                  value={EMPTY_SELECT_OPTION}
                                   className="text-muted-foreground"
                                 >
                                   {input.placeholder}
