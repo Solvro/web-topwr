@@ -4,7 +4,7 @@ import Link from "next/link";
 import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { PaginationComponent } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
-import { LIST_RESULTS_PER_PAGE, RESOURCE_API_PATHS } from "@/config/constants";
+import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
@@ -23,7 +23,8 @@ async function fetchResource<T extends Resource>(
 ): Promise<ApiResponse<T>> {
   try {
     const result = await fetchQuery<ApiResponse<T>>(
-      `${RESOURCE_API_PATHS[resource]}?page=${String(page)}&limit=${String(resultsPerPage)}`,
+      `?page=${String(page)}&limit=${String(resultsPerPage)}`,
+      { resource },
     );
     return result;
   } catch (error) {

@@ -1,5 +1,5 @@
 import type { FieldPath } from "react-hook-form";
-import { ZodDefault, ZodOptional } from "zod";
+import { ZodDefault, ZodNullable, ZodOptional } from "zod";
 import type { ZodObject, ZodRawShape, z } from "zod";
 
 import type { User } from "@/types/api";
@@ -29,11 +29,11 @@ export function isFieldRequired<T extends ZodRawShape>(
   fieldName: FieldPath<z.infer<ZodObject<T>>>,
 ): boolean {
   const shape = schema.shape;
-
   const fieldSchema = shape[fieldName];
 
-  // If the field is optional or has a default, it's not required
-  return !(
-    fieldSchema instanceof ZodOptional || fieldSchema instanceof ZodDefault
-  );
+  const isOptional =
+    fieldSchema instanceof ZodOptional ||
+    fieldSchema instanceof ZodDefault ||
+    fieldSchema instanceof ZodNullable;
+  return !isOptional;
 }

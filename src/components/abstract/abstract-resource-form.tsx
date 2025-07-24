@@ -27,7 +27,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RESOURCE_API_PATHS } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
@@ -57,12 +56,12 @@ const getMutationConfig = <T extends ZodType>(
   isExistingResourceItem(defaultValues)
     ? ({
         mutationKey: `update__${resource}__${String(defaultValues.id)}`,
-        endpoint: `${RESOURCE_API_PATHS[resource]}/${sanitizeId(String(defaultValues.id))}`,
+        endpoint: sanitizeId(String(defaultValues.id)),
         method: "PATCH",
       } as const)
     : ({
         mutationKey: `create__${resource}`,
-        endpoint: RESOURCE_API_PATHS[resource],
+        endpoint: "/",
         method: "POST",
       } as const);
 
@@ -101,8 +100,10 @@ export function AbstractResourceForm<T extends ZodType>({
     ResponseType,
     TypeOf<T>
   >(mutationKey, async (body) => {
-    const response = await fetchMutation<ResponseType>(endpoint, body, {
+    const response = await fetchMutation<ResponseType>(endpoint, {
+      body,
       method,
+      resource,
     });
     return response;
   });
