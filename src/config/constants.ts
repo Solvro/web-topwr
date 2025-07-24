@@ -106,7 +106,7 @@ export const RESOURCE_DECLENSIONS: Pluralized<
       accusative: "artykuł",
       instrumental: "artykułem",
       locative: "artykule",
-      vocative: "artykuł",
+      vocative: "artykule",
     },
     [Resource.StudentOrganizations]: {
       gender: GrammaticalGender.Feminine,
