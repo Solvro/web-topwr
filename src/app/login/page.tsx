@@ -40,10 +40,10 @@ export default function LoginPage() {
     },
   });
 
-  const { mutateAsync, isPending } = useMutation({
+  const { mutateAsync, isPending, isSuccess } = useMutation({
     mutationFn: auth.login,
     onSuccess: () => {
-      router.refresh();
+      router.push("/");
     },
   });
 
@@ -119,13 +119,11 @@ export default function LoginPage() {
                 </FormItem>
               )}
             />
-            <Button
-              type="submit"
-              className="mx-auto mt-8 block h-10 w-24 transition duration-300 hover:opacity-90"
-              loading={isPending}
-            >
-              Login
-            </Button>
+            <div className="flex justify-center">
+              <Button type="submit" loading={isPending} disabled={isSuccess}>
+                Login
+              </Button>
+            </div>
           </form>
         </Form>
       </div>
