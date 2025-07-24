@@ -1,3 +1,7 @@
+import type { FieldPath } from "react-hook-form";
+import { ZodDefault, ZodOptional } from "zod";
+import type { ZodObject, ZodRawShape, z } from "zod";
+
 import type { User } from "@/types/api";
 import type { SelectInputOption } from "@/types/forms";
 
@@ -18,4 +22,18 @@ export const enumToFormSelectOptions = <T extends string | number>(
 
 export function sanitizeId(id: string): string {
   return String(id).trim().replaceAll(/[^\d]/g, "");
+}
+
+export function isFieldRequired<T extends ZodRawShape>(
+  schema: ZodObject<T>,
+  fieldName: FieldPath<z.infer<ZodObject<T>>>,
+): boolean {
+  const shape = schema.shape;
+
+  const fieldSchema = shape[fieldName];
+
+  // If the field is optional or has a default, it's not required
+  return !(
+    fieldSchema instanceof ZodOptional || fieldSchema instanceof ZodDefault
+  );
 }

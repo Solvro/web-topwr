@@ -11,18 +11,6 @@ import type {
   GuideArticleFormValues,
 } from "@/types/forms";
 
-function createOnSubmit(data: GuideArticleFormValues) {
-  // TODO
-  // eslint-disable-next-line no-console
-  console.log("Creating article:", data);
-}
-
-function editOnSubmit(id: number, data: GuideArticleFormValues) {
-  // TODO
-  // eslint-disable-next-line no-console
-  console.log(`Updating article ${String(id)}:`, data);
-}
-
 const imageInputs: FormImageInput[] = [
   {
     label: "Zdjęcie",
@@ -55,17 +43,15 @@ export function Form({ initialData }: { initialData?: GuideArticle | null }) {
 
   return (
     <AbstractResourceForm
+      resource={Resource.GuideArticles}
       schema={GuideArticleSchema}
       defaultValues={defaultValues}
-      createOnSubmit={createOnSubmit}
-      editOnSubmit={editOnSubmit}
       formInputs={{
         imageInputs,
         textInputs,
         richTextInput,
       }}
       returnButtonPath={`/${Resource.GuideArticles}`}
-      returnButtonLabel="Wróć do artykułów"
     />
   );
 }

@@ -12,11 +12,6 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <AbstractResourceLayout
       resource={Resource.GuideArticles}
-      titleMap={{
-        "/create": "Dodawanie artykułu",
-        "/edit": "Edycja artykułu",
-        "": "Zarządzenie artykułami",
-      }}
       pathname={pathname}
     >
       {children}
