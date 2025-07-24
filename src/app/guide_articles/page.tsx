@@ -17,6 +17,7 @@ export default function GuideArticlesPage({
         shortDescription: item.shortDesc,
       })}
       addButtonLabel="Dodaj artykuł"
+      orderable
     />
   );
 }
