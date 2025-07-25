@@ -1,17 +1,18 @@
 import type { FieldPath, FieldValues } from "react-hook-form";
 import type { z } from "zod";
 
-import type {
-  GuideArticleSchema,
-  LoginSchema,
-  SortFiltersSchema,
-  StudentOrganizationSchema,
-} from "@/schemas";
+import type { Resource } from "@/config/enums";
+import type { LoginSchema, SortFiltersSchema } from "@/schemas";
+import type { RESOURCE_SCHEMAS } from "@/schemas/resources";
+
+type ResourceSchemas = typeof RESOURCE_SCHEMAS;
 
 export type LoginFormValues = z.infer<typeof LoginSchema>;
-export type GuideArticleFormValues = z.infer<typeof GuideArticleSchema>;
+export type GuideArticleFormValues = z.infer<
+  ResourceSchemas[Resource.GuideArticles]
+>;
 export type StudentOrganizationFormValues = z.infer<
-  typeof StudentOrganizationSchema
+  ResourceSchemas[Resource.StudentOrganizations]
 >;
 export type SortFiltersFormValues = z.infer<typeof SortFiltersSchema>;
 

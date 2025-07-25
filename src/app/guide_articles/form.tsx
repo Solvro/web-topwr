@@ -1,8 +1,5 @@
-"use client";
-
-import { AbstractResourceForm } from "@/components/abstract/abstract-resource-form";
+import { AbstractResourceForm } from "@/components/abstract/resource-form";
 import { Resource } from "@/config/enums";
-import { GuideArticleSchema } from "@/schemas";
 import type { GuideArticle } from "@/types/app";
 import type {
   FormImageInput,
@@ -45,7 +42,6 @@ export function Form({ initialData }: { initialData?: GuideArticle | null }) {
   return (
     <AbstractResourceForm
       resource={Resource.GuideArticles}
-      schema={GuideArticleSchema}
       defaultValues={defaultValues}
       formInputs={{
         imageInputs,
