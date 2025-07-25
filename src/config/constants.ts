@@ -53,6 +53,7 @@ export const FORM_ERROR_MESSAGES = {
   REQUIRED: "To pole jest wymagane",
   NONEMPTY: "To pole jest wymagane",
   INVALID_EMAIL: "Niepoprawny adres email",
+  CONDITIONALLY_REQUIRED: "Należy wypełnić oba pola lub żadne z nich",
 };
 
 export const SELECT_OPTION_LABELS = {
@@ -212,4 +213,9 @@ export const DETERMINER_DECLENSIONS: Pluralized<
       vocative: "te",
     },
   },
+};
+
+export const SORT_DIRECTIONS: Record<string, string> = {
+  asc: "rosnącej",
+  desc: "malejącej",
 };

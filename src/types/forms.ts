@@ -4,6 +4,7 @@ import type { z } from "zod";
 import type {
   GuideArticleSchema,
   LoginSchema,
+  SortFiltersSchema,
   StudentOrganizationSchema,
 } from "@/schemas";
 
@@ -12,13 +13,15 @@ export type GuideArticleFormValues = z.infer<typeof GuideArticleSchema>;
 export type StudentOrganizationFormValues = z.infer<
   typeof StudentOrganizationSchema
 >;
+export type SortFiltersFormValues = z.infer<typeof SortFiltersSchema>;
 
 export interface SelectInputOption {
   value: string | number;
   label: string;
 }
 
-export interface FormImageInput {
+export interface FormImageInput<T extends FieldValues> {
+  name: FieldPath<T>;
   label: string;
 }
 
@@ -47,7 +50,7 @@ export interface FormCheckboxInput<T extends FieldValues> {
 }
 
 export interface AbstractResourceFormInputs<T extends FieldValues> {
-  imageInputs?: FormImageInput[];
+  imageInputs?: FormImageInput<T>[];
   textInputs?: FormTextInput<T>[];
   richTextInput?: FormRichTextInput<T>;
   selectInputs?: FormSelectInput<T>[];

@@ -9,14 +9,10 @@ import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { declineNoun } from "@/lib/polish";
+import type { ApiResponse } from "@/types/api";
 import type { ListItem, ResourceTypes } from "@/types/app";
 
 import { SortFilters } from "./sort-filters";
-
-interface ApiResponse<T extends Resource> {
-  data: ResourceTypes[T][];
-  meta: { total: number };
-}
 
 async function fetchResources<T extends Resource>(
   resource: T,
