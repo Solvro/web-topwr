@@ -1,3 +1,5 @@
+import type { z } from "zod";
+
 import type { ERROR_CODES } from "@/config/constants";
 import type {
   DeclensionCase,
@@ -52,3 +54,5 @@ export interface Pluralized<T> {
   plural: T;
 }
 export type Declensions = Record<DeclensionCase, string>;
+
+export type AppZodObject = z.ZodObject<z.ZodRawShape>;
