@@ -5,7 +5,7 @@ import { useQueryWrapper } from "@/hooks/use-query-wrapper";
 import { fetchQuery } from "@/lib/fetch-utils";
 import type { FileEntry } from "@/types/api";
 
-import { ApiImageCommon } from ".";
+import { ApiImageInternal } from ".";
 import type { ApiImageProps } from ".";
 
 export function ApiImage({ imageKey, ...props }: ApiImageProps) {
@@ -18,6 +18,6 @@ export function ApiImage({ imageKey, ...props }: ApiImageProps) {
   return isLoading ? (
     <Spinner />
   ) : isSuccess ? (
-    <ApiImageCommon fileEntry={data} {...props} />
+    <ApiImageInternal fileEntry={data} {...props} />
   ) : null;
 }
