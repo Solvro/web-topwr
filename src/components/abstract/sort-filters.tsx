@@ -1,29 +1,35 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import type { ClassValue } from "clsx";
 import { Check } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
+import { SORT_DIRECTIONS } from "@/config/constants";
 import { cn } from "@/lib/utils";
+import { SortFiltersSchema } from "@/schemas";
+import type { SortFiltersFormValues } from "@/types/forms";
 
-import type { ListSearchParameters } from "./abstract-resource-list";
-
-const directionOptions: Record<string, string> = {
-  asc: "rosnącej",
-  desc: "malejącej",
-};
+import { SelectClear } from "../select-clear";
 
 function FieldGroup({
   children,
@@ -36,21 +42,20 @@ function FieldGroup({
 }
 
 export function SortFilters({
-  sortFields,
-  searchFields,
-  searchParams,
+  sortFields = {},
+  searchFields = {},
 }: {
-  sortFields: Record<string, string>;
-  searchFields: Record<string, string>;
-  searchParams: ListSearchParameters;
+  sortFields?: Record<string, string>;
+  searchFields?: Record<string, string>;
 }) {
   const router = useRouter();
+  const searchParameters = useSearchParams();
+  const defaultValues = SortFiltersSchema.parse({});
   const form = useForm({
+    resolver: zodResolver(SortFiltersSchema),
     defaultValues: {
-      sortBy: "id",
-      sortDirection: "asc",
-      searchTerm: "",
-      searchField: Object.keys(searchFields)[0],
+      ...defaultValues,
+      ...Object.fromEntries(searchParameters.entries()),
     },
   });
 
@@ -61,14 +66,22 @@ export function SortFilters({
     updatedAt: "daty ostatniej aktualizacji",
   };
 
+  function handleSubmit(data: SortFiltersFormValues) {
+    const newParameters = new URLSearchParams(searchParameters);
+    for (const [key, value] of Object.entries(data)) {
+      if (value === "") {
+        newParameters.delete(key);
+      } else {
+        newParameters.set(key, String(value));
+      }
+    }
+    router.push(`?${newParameters.toString()}`);
+  }
+
   return (
     <form
-      className="flex flex-wrap items-center gap-2"
-      onSubmit={form.handleSubmit((values) => {
-        router.push(
-          `?${new URLSearchParams({ ...searchParams, ...values }).toString()}`,
-        );
-      })}
+      className="flex flex-wrap items-start gap-2"
+      onSubmit={form.handleSubmit(handleSubmit)}
     >
       <Form {...form}>
         <FieldGroup>
@@ -84,7 +97,11 @@ export function SortFilters({
                     field.onChange(value);
                   }}
                 >
-                  <SelectTrigger>{sortOptions[field.value]}</SelectTrigger>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="wybierz pole" />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     {Object.entries(sortOptions).map(([value, label]) => (
                       <SelectItem key={value} value={value}>
@@ -93,6 +110,7 @@ export function SortFilters({
                     ))}
                   </SelectContent>
                 </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -108,15 +126,20 @@ export function SortFilters({
                     field.onChange(value);
                   }}
                 >
-                  <SelectTrigger>{directionOptions[field.value]}</SelectTrigger>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
-                    {Object.entries(directionOptions).map(([value, label]) => (
+                    {Object.entries(SORT_DIRECTIONS).map(([value, label]) => (
                       <SelectItem key={value} value={value}>
                         {label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -134,8 +157,13 @@ export function SortFilters({
                     field.onChange(value);
                   }}
                 >
-                  <SelectTrigger>{searchFields[field.value]}</SelectTrigger>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="wybierz pole" />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
+                    <SelectClear field={field} />
                     {Object.entries(searchFields).map(([value, label]) => (
                       <SelectItem key={value} value={value}>
                         {label}
@@ -143,6 +171,7 @@ export function SortFilters({
                     ))}
                   </SelectContent>
                 </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -152,13 +181,16 @@ export function SortFilters({
             render={({ field }) => (
               <FormItem className="pb-1.5">
                 <FormLabel>wyrażenia</FormLabel>
-                <Input
-                  value={field.value}
-                  onChange={(event_) => {
-                    field.onChange(event_.target.value);
-                  }}
-                  placeholder="wpisz szukaną frazę"
-                />
+                <FormControl>
+                  <Input
+                    value={field.value}
+                    onChange={(event_) => {
+                      field.onChange(event_.target.value);
+                    }}
+                    placeholder="wpisz szukaną frazę"
+                  />
+                </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -168,27 +200,21 @@ export function SortFilters({
             type="reset"
             variant="ghost"
             onClick={() => {
-              form.reset();
+              form.reset(defaultValues);
+              handleSubmit(defaultValues);
             }}
           >
             Wyczyść filtry
           </Button>
           <Button
-            asChild
             type="submit"
             className={cn({
               "bg-muted! text-muted-foreground! cursor-not-allowed":
                 !form.formState.isDirty,
             })}
           >
-            <Link
-              href={{
-                query: form.formState.isDirty ? form.getValues() : {},
-              }}
-            >
-              Zatwierdź
-              <Check />
-            </Link>
+            Zatwierdź
+            <Check />
           </Button>
         </FieldGroup>
       </Form>
