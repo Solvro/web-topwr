@@ -66,9 +66,9 @@ export function SortFilters({
     updatedAt: "daty ostatniej aktualizacji",
   };
 
-  function handleSubmit(data: SortFiltersFormValues) {
+  function handleSubmit(values: SortFiltersFormValues) {
     const newParameters = new URLSearchParams(searchParameters);
-    for (const [key, value] of Object.entries(data)) {
+    for (const [key, value] of Object.entries(values)) {
       if (value === "") {
         newParameters.delete(key);
       } else {
@@ -76,6 +76,7 @@ export function SortFilters({
       }
     }
     router.push(`?${newParameters.toString()}`);
+    form.reset(values);
   }
 
   return (
