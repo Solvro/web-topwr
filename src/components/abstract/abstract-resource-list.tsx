@@ -108,7 +108,10 @@ export async function AbstractResourceList<T extends Resource>({
         sortableFields={sortableFields}
         searchableFields={searchableFields}
       />
-      <div className="grow basis-[0] space-y-4 overflow-y-auto pr-2">
+      <div
+        className="grow basis-[0] space-y-4 overflow-y-auto pr-2"
+        data-testid="abstract-resource-list"
+      >
         {listItems.map((item) => (
           <div
             key={item.id}
