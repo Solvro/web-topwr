@@ -9,10 +9,14 @@ import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { declineNoun } from "@/lib/polish";
-import type { ApiResponse } from "@/types/api";
-import type { ListItem, ResourceTypes } from "@/types/app";
+import type { ListItem, ResourceDataType } from "@/types/app";
 
 import { SortFilters } from "./sort-filters";
+
+interface ApiResponse<T extends Resource> {
+  data: ResourceDataType<T>[];
+  meta: { total: number };
+}
 
 async function fetchResources<T extends Resource>(
   resource: T,
@@ -58,7 +62,7 @@ export async function AbstractResourceList<T extends Resource>({
   sortFields?: Record<string, string>;
   searchFields?: Record<string, string>;
   searchParams: Promise<ListSearchParameters>;
-  mapItemToList: (item: ResourceTypes[T]) => ListItem;
+  mapItemToList: (item: ResourceDataType<T>) => ListItem;
 }) {
   const resolvedSearchParameters = await searchParams;
   const page = Number.parseInt(resolvedSearchParameters.page ?? "1", 10);
@@ -80,7 +84,7 @@ export async function AbstractResourceList<T extends Resource>({
 
   const totalPages = Math.ceil(meta.total / LIST_RESULTS_PER_PAGE);
   const resultsNumber = meta.total;
-  const listItems: ListItem[] = data.map((item: ResourceTypes[T]) =>
+  const listItems: ListItem[] = data.map((item: ResourceDataType<T>) =>
     mapItemToList(item),
   );
 

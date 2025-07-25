@@ -5,6 +5,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 
@@ -35,7 +36,11 @@ import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import { RESOURCE_SCHEMAS } from "@/schemas/resources";
 import type { MessageResponse } from "@/types/api";
-import type { AppZodObject } from "@/types/app";
+import type {
+  ResourceDataType,
+  ResourceFormValues,
+  ResourceSchema,
+} from "@/types/app";
 
 import type {
   AbstractResourceFormProps,
@@ -69,7 +74,7 @@ const getMutationConfig = <T extends z.ZodType>(
         method: "POST",
       } as const);
 
-export function AbstractResourceFormInternal<T extends AppZodObject>({
+export function AbstractResourceFormInternal<T extends Resource>({
   resource,
   defaultValues,
   formInputs: {
@@ -81,11 +86,12 @@ export function AbstractResourceFormInternal<T extends AppZodObject>({
   },
   existingImages,
 }: AbstractResourceFormProps<T> & { existingImages: ExistingImages<T> }) {
-  const schema = RESOURCE_SCHEMAS[resource];
+  const schema: ResourceSchema<T> = RESOURCE_SCHEMAS[resource];
   const router = useRouter();
-  const form = useForm<z.infer<T>>({
-    resolver: zodResolver(schema),
-    defaultValues,
+  const form = useForm<ResourceFormValues<T>>({
+    // @ts-expect-error TODO: the schema is compatible but for some reason the types don't match
+    resolver: zodResolver(schema) as Resolver<ResourceFormValues<T>>,
+    defaultValues: defaultValues as DefaultValues<ResourceFormValues<T>>,
   });
 
   const { mutationKey, endpoint, method } = getMutationConfig(
@@ -93,11 +99,11 @@ export function AbstractResourceFormInternal<T extends AppZodObject>({
     defaultValues,
   );
   type ResponseType = MessageResponse & {
-    data: z.infer<T> & { id: number };
+    data: ResourceDataType<T>;
   };
   const { mutateAsync, isPending } = useMutationWrapper<
     ResponseType,
-    z.infer<T>
+    ResourceFormValues<T>
   >(mutationKey, async (body) => {
     const response = await fetchMutation<ResponseType>(endpoint, {
       body,
@@ -157,7 +163,7 @@ export function AbstractResourceFormInternal<T extends AppZodObject>({
                           <Input
                             className="bg-background placeholder:text-foreground shadow-none"
                             {...field}
-                            value={field.value ?? ""}
+                            value={(field.value ?? "") as string}
                           />
                         </FormControl>
                         <FormMessage />
@@ -179,7 +185,9 @@ export function AbstractResourceFormInternal<T extends AppZodObject>({
                           <Input
                             className="bg-background placeholder:text-foreground h-20 shadow-none"
                             {...field}
-                            value={field.value ?? ""}
+                            // TODO: figure out why field.value is a union of all possible input types
+                            // these casts should not be necessary since AbstractResourceFormInputs specifies only the keys which have the correct type
+                            value={(field.value ?? "") as string}
                           />
                         </FormControl>
                         <FormMessage />
@@ -240,7 +248,7 @@ export function AbstractResourceFormInternal<T extends AppZodObject>({
                         <FormLabel>{input.label}</FormLabel>
                         <FormControl>
                           <Checkbox
-                            checked={field.value}
+                            checked={(field.value ?? false) as boolean}
                             className="bg-background"
                             onCheckedChange={(checked) => {
                               field.onChange(Boolean(checked));
