@@ -2,21 +2,29 @@
 
 import { Camera } from "lucide-react";
 import type { ReactNode } from "react";
+import type { Path } from "react-hook-form";
 import { toast } from "sonner";
+import type { z } from "zod";
 
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 
-import type { ImageInputProps, ImageInputPropsGeneric } from ".";
+import { Spinner } from "../spinner";
+import { ApiImage } from "./api/client";
 
-export function ImageInputClient<T extends ImageInputPropsGeneric>({
+export function ImageInput<T extends z.infer<z.ZodObject<z.ZodRawShape>>>({
   name,
   onChange,
   label,
   existingImage,
-}: ImageInputProps<T> & { existingImage: ReactNode }) {
-  const uploadMutation = useMutationWrapper(
+}: {
+  label: string;
+  name: Path<T>;
+  existingImage?: ReactNode;
+  onChange: (value: string) => void;
+}) {
+  const { mutateAsync, isSuccess, isPending, data } = useMutationWrapper(
     `create__files__image__${name}`,
     async (file: File) => {
       const formData = new FormData();
@@ -44,7 +52,7 @@ export function ImageInputClient<T extends ImageInputPropsGeneric>({
             if (file == null) {
               return;
             }
-            toast.promise(uploadMutation.mutateAsync(file), {
+            toast.promise(mutateAsync(file), {
               loading: "Trwa przesyłanie zdjęcia...",
               success: "Zdjęcie przesłano pomyślnie!",
               error: "Wystąpił błąd podczas przesyłania zdjęcia.",
@@ -54,13 +62,19 @@ export function ImageInputClient<T extends ImageInputPropsGeneric>({
         />
       </FormControl>
       <div className="bg-background border-input flex aspect-video w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border md:h-48 md:w-48">
-        {existingImage ?? (
-          <>
-            <Camera className="text-image-input-icon h-12 w-12" />
-            <span className="text-muted-foreground text-xs">
-              Kliknij, aby dodać zdjęcie
-            </span>
-          </>
+        {isPending ? (
+          <Spinner />
+        ) : isSuccess ? (
+          <ApiImage imageKey={data.key} alt={label} />
+        ) : (
+          (existingImage ?? (
+            <>
+              <Camera className="text-image-input-icon h-12 w-12" />
+              <span className="text-muted-foreground text-xs">
+                Kliknij, aby dodać zdjęcie
+              </span>
+            </>
+          ))
         )}
       </div>
     </FormLabel>

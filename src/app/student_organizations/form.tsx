@@ -1,6 +1,4 @@
-"use client";
-
-import { AbstractResourceForm } from "@/components/abstract/abstract-resource-form";
+import { AbstractResourceForm } from "@/components/abstract/resource-form";
 import { SELECT_OPTION_LABELS } from "@/config/constants";
 import {
   DepartmentIds,
@@ -10,7 +8,6 @@ import {
   Resource,
 } from "@/config/enums";
 import { enumToFormSelectOptions } from "@/lib/helpers";
-import { StudentOrganizationSchema } from "@/schemas";
 import type { StudentOrganization } from "@/types/app";
 import type {
   FormCheckboxInput,
@@ -116,7 +113,6 @@ export function Form({
   return (
     <AbstractResourceForm
       resource={Resource.StudentOrganizations}
-      schema={StudentOrganizationSchema}
       defaultValues={defaultValues}
       formInputs={{
         imageInputs,

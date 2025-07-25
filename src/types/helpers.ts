@@ -8,3 +8,5 @@ export type WithOptionalId<T> = T & { id?: number };
 export type SchemaWithOptionalId<T extends z.ZodType> = WithOptionalId<
   z.infer<T>
 >;
+
+export type AppZodObject = z.ZodObject<z.ZodRawShape>;
