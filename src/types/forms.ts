@@ -28,8 +28,6 @@ export interface FormImageInput<T extends FieldValues> {
 export interface FormTextInput<T extends FieldValues> {
   name: FieldPath<T>;
   label: string;
-  // TODO: temporarily hardcoding if field is required, but this should be derived from the zod schema
-  required?: boolean;
 }
 
 export interface FormRichTextInput<T extends FieldValues> {
