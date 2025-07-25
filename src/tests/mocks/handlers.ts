@@ -1,14 +1,18 @@
-import type { RequestHandler } from "msw";
+import type { PathParams, RequestHandler } from "msw";
 import { HttpResponse, http } from "msw";
 
+import { Resource } from "@/config/enums";
 import { env } from "@/config/env";
+import { RESOURCE_METADATA } from "@/config/resources";
 import type {
   ApiCalendarEvent,
   ErrorResponse,
   GetUserResponse,
   LogInResponse,
 } from "@/types/api";
+import type { ResourceFormValues } from "@/types/app";
 
+import { mockResourceResponse } from "../helpers/mocks";
 import {
   MOCK_AUTH_STATE,
   MOCK_FILES,
@@ -18,6 +22,7 @@ import {
 } from "./constants";
 
 const API_URL = env.NEXT_PUBLIC_API_URL;
+const EVENT_CALENDAR_URL = `${API_URL}/${RESOURCE_METADATA[Resource.CalendarEvents].apiPath}`;
 
 export const handlers = [
   http.get(`${API_URL}/auth/me`, () =>
@@ -51,7 +56,7 @@ export const handlers = [
   ),
 
   // Mock handler for event calendar endpoint
-  http.post(`${API_URL}/event_calendar`, async ({ request }) => {
+  http.post(EVENT_CALENDAR_URL, async ({ request }) => {
     const body = (await request.json()) as Record<string, unknown>;
 
     // Simulate validation - require name field
@@ -92,7 +97,7 @@ export const handlers = [
   }),
 
   // Mock handler for getting calendar events
-  http.get(`${API_URL}/event_calendar`, () => {
+  http.get(EVENT_CALENDAR_URL, () => {
     return HttpResponse.json([
       {
         id: "1",
@@ -143,7 +148,7 @@ export const handlers = [
   }),
 
   // Mock handler for updating calendar events (PATCH)
-  http.patch(`${API_URL}/event_calendar/:id`, async ({ request, params }) => {
+  http.patch(`${EVENT_CALENDAR_URL}/:id`, async ({ request, params }) => {
     const body = (await request.json()) as Record<string, unknown>;
     const { id } = params;
 
@@ -185,7 +190,7 @@ export const handlers = [
   }),
 
   // Mock handler for deleting calendar events (DELETE)
-  http.delete(`${API_URL}/event_calendar/:id`, ({ params }) => {
+  http.delete(`${EVENT_CALENDAR_URL}/:id`, ({ params }) => {
     const { id } = params;
 
     // Return successful deletion response
@@ -197,4 +202,9 @@ export const handlers = [
       { status: 200 },
     );
   }),
+  http.post<PathParams, ResourceFormValues<Resource.GuideArticles>>(
+    `${API_URL}/${RESOURCE_METADATA[Resource.GuideArticles].apiPath}`,
+    async ({ request }) =>
+      mockResourceResponse<Resource.GuideArticles>(request),
+  ),
 ] satisfies RequestHandler[];
