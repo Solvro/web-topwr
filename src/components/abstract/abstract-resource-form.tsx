@@ -123,7 +123,6 @@ export function AbstractResourceForm<T extends z.ZodObject<z.ZodRawShape>>({
         >
           <div className="grow basis-[0] overflow-y-auto">
             <div className="bg-background-secondary flex min-h-full flex-col space-y-4 space-x-4 rounded-xl p-4 md:flex-row">
-              {/* // TODO: include images in form data */}
               <div className="flex w-full flex-col space-y-4 md:w-48">
                 {imageInputs.map((input) => (
                   <FormField
