@@ -79,7 +79,6 @@ export function AbstractResourceFormInternal<T extends AppZodObject>({
     selectInputs = [],
     checkboxInputs = [],
   },
-  returnButtonPath,
   existingImages,
 }: AbstractResourceFormProps<T> & { existingImages: ExistingImages<T> }) {
   const schema = RESOURCE_SCHEMAS[resource];
@@ -263,7 +262,7 @@ export function AbstractResourceFormInternal<T extends AppZodObject>({
               className="text-primary hover:text-primary w-min"
               asChild
             >
-              <Link href={returnButtonPath} className="">
+              <Link href={`/${resource}`} className="">
                 <ChevronLeft />
                 Wróć do{" "}
                 {declineNoun(resource, {
