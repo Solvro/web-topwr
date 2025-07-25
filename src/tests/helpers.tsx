@@ -12,6 +12,7 @@ import type { Resource } from "@/config/enums";
 import type { DatedResource } from "@/types/api";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
 
+import { MOCK_API_RESOURCE_OPERATION } from "./mocks/functions";
 import { TestProviders } from "./test-providers";
 
 interface RenderResultWithStore extends RenderResult {
@@ -40,6 +41,7 @@ export function renderWithProviders(
 }
 
 export async function mockResourceResponse<T extends Resource>(
+  resource: T,
   request: StrictRequest<ResourceFormValues<T>>,
 ): Promise<HttpResponse<JsonBodyType>> {
   const body = await request.json();
@@ -51,5 +53,6 @@ export async function mockResourceResponse<T extends Resource>(
     updatedAt: new Date().toISOString(),
   };
   const responseBody: ResourceDataType<T> = { ...body, ...metadata };
+  MOCK_API_RESOURCE_OPERATION({ operation: "create", resource, body });
   return HttpResponse.json(responseBody, { status: 201 });
 }

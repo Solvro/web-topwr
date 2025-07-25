@@ -1,6 +1,9 @@
+import { faker } from "@faker-js/faker";
 import { HttpResponse } from "msw";
 
+import type { Resource } from "@/config/enums";
 import type { User } from "@/types/api";
+import type { ResourceFormValues } from "@/types/app";
 
 interface Mocked<T> {
   valid: T;
@@ -41,4 +44,17 @@ export const MOCK_RESPONSE = {
       },
       { status: 400 },
     ),
+};
+
+export const MOCK_IMAGE_FILE = new File(["test"], "test.png", {
+  type: "image/png",
+});
+
+export const MOCK_IMAGE_KEY = faker.string.uuid();
+
+export const MOCK_GUIDE_ARTICLE: ResourceFormValues<Resource.GuideArticles> = {
+  title: faker.lorem.sentence(5),
+  shortDesc: faker.lorem.sentence(10),
+  description: faker.lorem.paragraph(3),
+  imageKey: MOCK_IMAGE_KEY,
 };
