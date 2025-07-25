@@ -9,11 +9,12 @@ import type { z } from "zod";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
+import type { AppZodObject } from "@/types/app";
 
 import { Spinner } from "../spinner";
 import { ApiImage } from "./api/client";
 
-export function ImageInput<T extends z.infer<z.ZodObject<z.ZodRawShape>>>({
+export function ImageInput<T extends z.infer<AppZodObject>>({
   name,
   onChange,
   label,

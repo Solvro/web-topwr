@@ -35,13 +35,15 @@ import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import { RESOURCE_SCHEMAS } from "@/schemas/resources";
 import type { MessageResponse } from "@/types/api";
-import type { SchemaWithOptionalId } from "@/types/helpers";
+import type { AppZodObject } from "@/types/app";
 
 import type {
-  AbstractResourceFormGeneric,
   AbstractResourceFormProps,
   ExistingImages,
+  WithOptionalId,
 } from ".";
+
+type SchemaWithOptionalId<T extends z.ZodType> = WithOptionalId<z.infer<T>>;
 
 const isExistingResourceItem = <T extends z.ZodType>(
   defaultValues?: SchemaWithOptionalId<T>,
@@ -67,9 +69,7 @@ const getMutationConfig = <T extends z.ZodType>(
         method: "POST",
       } as const);
 
-export function AbstractResourceFormInternal<
-  T extends AbstractResourceFormGeneric,
->({
+export function AbstractResourceFormInternal<T extends AppZodObject>({
   resource,
   defaultValues,
   formInputs: {

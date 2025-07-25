@@ -8,7 +8,7 @@ import {
   Resource,
 } from "@/config/enums";
 import { requiredString } from "@/lib/helpers";
-import type { AppZodObject } from "@/types/helpers";
+import type { AppZodObject } from "@/types/app";
 
 const StudentOrganizationSchema = z.object({
   name: requiredString(),
