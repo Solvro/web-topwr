@@ -17,12 +17,10 @@ export async function login(page: Page) {
 export async function selectOptionByLabel(
   page: Page,
   label: string | RegExp,
-  value: string,
+  optionLabel: string,
 ) {
-  const selectTrigger = page.getByLabel(label);
+  const selectTrigger = page.getByRole("combobox", { name: label });
   await selectTrigger.click();
-  await selectTrigger
-    .locator("xpath=following-sibling::select")
-    .selectOption(value);
-  await expect(selectTrigger).toHaveText(value);
+  await page.getByRole("option", { name: optionLabel, exact: true }).click();
+  await expect(selectTrigger).toHaveText(optionLabel);
 }
