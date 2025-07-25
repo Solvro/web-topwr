@@ -11,9 +11,10 @@ import type {
   GuideArticleFormValues,
 } from "@/types/forms";
 
-const imageInputs: FormImageInput[] = [
+const imageInputs: FormImageInput<GuideArticleFormValues>[] = [
   {
     label: "Zdjęcie",
+    name: "imageKey",
   },
 ];
 
@@ -36,7 +37,7 @@ const richTextInput: FormRichTextInput<GuideArticleFormValues> = {
 export function Form({ initialData }: { initialData?: GuideArticle | null }) {
   const defaultValues: GuideArticleFormValues = initialData ?? {
     title: "",
-    imageKey: null,
+    imageKey: "",
     description: "",
     shortDesc: "",
   };

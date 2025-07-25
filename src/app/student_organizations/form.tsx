@@ -21,12 +21,14 @@ import type {
   StudentOrganizationFormValues,
 } from "@/types/forms";
 
-const imageInputs: FormImageInput[] = [
+const imageInputs: FormImageInput<StudentOrganizationFormValues>[] = [
   {
     label: "Logo",
+    name: "logoKey",
   },
   {
     label: "Baner",
+    name: "coverKey",
   },
 ];
 

@@ -6,24 +6,18 @@ import {
   OrganizationStatus,
   OrganizationType,
 } from "@/config/enums";
+import { requiredString } from "@/lib/helpers";
 
 export const LoginSchema = z.object({
   email: z.string({ required_error: FORM_ERROR_MESSAGES.REQUIRED }).email({
     message: FORM_ERROR_MESSAGES.INVALID_EMAIL,
   }),
-  password: z.string().trim().min(1, {
-    message: FORM_ERROR_MESSAGES.NONEMPTY,
-  }),
+  password: requiredString(),
   rememberMe: z.boolean(),
 });
 
 export const StudentOrganizationSchema = z.object({
-  name: z
-    .string({ required_error: FORM_ERROR_MESSAGES.REQUIRED })
-    .trim()
-    .min(1, {
-      message: FORM_ERROR_MESSAGES.NONEMPTY,
-    }),
+  name: requiredString(),
   departmentId: z.number().int().positive().nullable().optional(),
   logoKey: z.string().nullable().optional(),
   coverKey: z.string().nullable().optional(),
@@ -43,13 +37,27 @@ export const StudentOrganizationSchema = z.object({
 });
 
 export const GuideArticleSchema = z.object({
-  title: z
-    .string({ required_error: FORM_ERROR_MESSAGES.REQUIRED })
-    .trim()
-    .min(1, {
-      message: FORM_ERROR_MESSAGES.NONEMPTY,
-    }),
-  imageKey: z.string().nullable().optional(),
-  shortDesc: z.string().nullable().optional(),
-  description: z.string().nullable().optional(),
+  title: requiredString(),
+  imageKey: requiredString(),
+  shortDesc: requiredString(),
+  description: requiredString(),
 });
+
+export const SortFiltersSchema = z
+  .object({
+    sortBy: requiredString().default("id"),
+    sortDirection: z.enum(["asc", "desc"]).default("asc"),
+    searchTerm: z.string().default(""),
+    searchField: z.string().default(""),
+  })
+  .superRefine((data, context) => {
+    const searchTermIsEmpty = data.searchTerm.trim() === "";
+    const searchFieldIsEmpty = data.searchField.trim() === "";
+    if (searchTermIsEmpty !== searchFieldIsEmpty) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: [searchTermIsEmpty ? "searchTerm" : "searchField"],
+        message: FORM_ERROR_MESSAGES.CONDITIONALLY_REQUIRED,
+      });
+    }
+  });
