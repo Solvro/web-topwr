@@ -24,7 +24,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SORT_DIRECTIONS } from "@/config/constants";
+import {
+  IMPLICIT_SORT_BY_ATTRIBUTES,
+  SORT_DIRECTIONS,
+} from "@/config/constants";
 import { cn } from "@/lib/utils";
 import { SortFiltersSchema } from "@/schemas";
 import type { SortFiltersFormValues } from "@/types/forms";
@@ -60,10 +63,8 @@ export function SortFilters({
   });
 
   const sortOptions: Record<string, string> = {
-    id: "identyfikatora",
     ...sortFields,
-    createdAt: "daty utworzenia",
-    updatedAt: "daty ostatniej aktualizacji",
+    ...IMPLICIT_SORT_BY_ATTRIBUTES,
   };
 
   function handleSubmit(values: SortFiltersFormValues) {
