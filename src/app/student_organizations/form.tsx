@@ -36,7 +36,6 @@ const textInputs: FormTextInput<StudentOrganizationFormValues>[] = [
   {
     name: "name",
     label: "Nazwa",
-    required: true,
   },
   {
     name: "shortDescription",
