@@ -4,10 +4,15 @@ import type { Page } from "@playwright/test";
 
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import { Resource } from "@/config/enums";
-import { encodeQueryComponent } from "@/lib/helpers";
 import { MOCK_STUDENT_ORGANIZATION } from "@/tests/mocks/constants";
 
-import { login, selectOptionByLabel } from "../helpers";
+import {
+  login,
+  selectOptionByLabel,
+  setAbstractResourceListFilters,
+} from "../helpers";
+
+const resource = Resource.StudentOrganizations;
 
 const getOrganizationContainer = (page: Page) =>
   page
@@ -21,7 +26,7 @@ const getOrganizationContainer = (page: Page) =>
 
 async function returnFromAbstractResourceForm(page: Page) {
   await page.getByRole("link", { name: /wróć do organizacji/i }).click();
-  await page.waitForURL(`/${Resource.StudentOrganizations}`);
+  await page.waitForURL(`/${resource}`);
 }
 
 test.describe("Student Organizations CRUD", () => {
@@ -37,7 +42,7 @@ test.describe("Student Organizations CRUD", () => {
   }) => {
     await test.step("Create", async () => {
       await page.getByRole("link", { name: /dodaj organizację/i }).click();
-      await page.waitForURL(`/${Resource.StudentOrganizations}/create`);
+      await page.waitForURL(`/${resource}/create`);
 
       await page.getByLabel("Nazwa").fill(MOCK_STUDENT_ORGANIZATION.name);
       await page
@@ -71,15 +76,12 @@ test.describe("Student Organizations CRUD", () => {
         page.getByTestId("abstract-resource-list").locator(":scope > *"),
       ).toHaveCount(LIST_RESULTS_PER_PAGE); // assuming the database isn't empty (change this if using mocks)
 
-      await selectOptionByLabel(page, /szukaj w/i, "opisie");
-      await page
-        .getByLabel(/wyrażenia/i)
-        .fill(MOCK_STUDENT_ORGANIZATION.description);
-      await page.getByRole("button", { name: /zatwierdź/i }).click();
+      await setAbstractResourceListFilters(page, resource, {
+        searchField: "description",
+        searchFieldLabel: "opisie",
+        searchTerm: MOCK_STUDENT_ORGANIZATION.description,
+      });
 
-      await page.waitForURL(
-        `/${Resource.StudentOrganizations}?sortBy=id&sortDirection=asc&searchTerm=${encodeQueryComponent(MOCK_STUDENT_ORGANIZATION.description)}&searchField=description`,
-      );
       await expect(
         page.getByTestId("abstract-resource-list").locator(":scope > *"),
       ).toHaveCount(1);
@@ -89,7 +91,7 @@ test.describe("Student Organizations CRUD", () => {
 
     await test.step("Update", async () => {
       await getOrganizationContainer(page).locator("a").click();
-      await page.waitForURL(`/${Resource.StudentOrganizations}/edit/*`);
+      await page.waitForURL(`/${resource}/edit/*`);
       const newName = `${faker.company.name()} UPDATED TEST NAME`;
       await page.getByLabel("Nazwa").fill(newName);
       await page.getByRole("button", { name: /zapisz/i }).click();
@@ -99,12 +101,10 @@ test.describe("Student Organizations CRUD", () => {
     await test.step("Read (again)", async () => {
       await returnFromAbstractResourceForm(page);
 
-      await selectOptionByLabel(page, /sortuj według/i, "daty utworzenia");
-      await selectOptionByLabel(page, /w kolejności/i, "malejącej");
-      await page.getByRole("button", { name: /zatwierdź/i }).click();
-      await page.waitForURL(
-        `/${Resource.StudentOrganizations}?sortBy=createdAt&sortDirection=desc`,
-      );
+      await setAbstractResourceListFilters(page, resource, {
+        sortBy: "createdAt",
+        sortDirection: "desc",
+      });
     });
 
     await test.step("Delete", async () => {
