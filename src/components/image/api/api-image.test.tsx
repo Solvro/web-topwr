@@ -1,4 +1,4 @@
-import { screen, waitFor } from "@testing-library/dom";
+import { waitFor } from "@testing-library/dom";
 import { describe, expect, it } from "vitest";
 
 import { API_FILES_URL } from "@/config/constants";
@@ -13,7 +13,7 @@ const generateAltText = (key: number) =>
 
 describe("API Image component", () => {
   it("should render test images correctly", async () => {
-    renderWithProviders(
+    const screen = renderWithProviders(
       <>
         {TEST_IMAGE_KEYS.map((key, index) => (
           <ApiImage key={key} imageKey={key} alt={generateAltText(index)} />
