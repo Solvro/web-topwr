@@ -1,6 +1,15 @@
 import { expect } from "@playwright/test";
 import type { Page } from "@playwright/test";
 
+import {
+  IMPLICIT_SORT_BY_ATTRIBUTES,
+  SORT_DIRECTIONS,
+} from "@/config/constants";
+import type { Resource } from "@/config/enums";
+import { encodeQueryParameters } from "@/lib/helpers";
+import { SortFiltersSchema } from "@/schemas";
+import type { SortFiltersFormValues } from "@/types/forms";
+
 const { TEST_USER_EMAIL, TEST_USER_PASSWORD } = process.env;
 
 export async function login(page: Page) {
@@ -23,4 +32,53 @@ export async function selectOptionByLabel(
   await selectTrigger.click();
   await page.getByRole("option", { name: optionLabel, exact: true }).click();
   await expect(selectTrigger).toHaveText(optionLabel);
+}
+
+type SortKeys = "sortBy" | "sortDirection";
+type FilterKeys = "searchField" | "searchTerm";
+type Sort = Pick<SortFiltersFormValues, SortKeys> & {
+  sortBy: keyof typeof IMPLICIT_SORT_BY_ATTRIBUTES;
+};
+type Filter = Pick<SortFiltersFormValues, FilterKeys> & {
+  searchFieldLabel: string;
+};
+type SortOrFilter = Sort | Filter | (Sort & Filter);
+
+const defaultSortOptions = SortFiltersSchema.parse({});
+
+export async function setAbstractResourceListFilters(
+  page: Page,
+  resource: Resource,
+  options: SortOrFilter,
+): Promise<void>;
+export async function setAbstractResourceListFilters(
+  page: Page,
+  resource: Resource,
+  {
+    sortBy = defaultSortOptions.sortBy as keyof typeof IMPLICIT_SORT_BY_ATTRIBUTES,
+    sortDirection = defaultSortOptions.sortDirection,
+    searchField,
+    searchTerm,
+    searchFieldLabel,
+  }: Partial<Sort & Filter>,
+) {
+  await selectOptionByLabel(
+    page,
+    /sortuj według/i,
+    IMPLICIT_SORT_BY_ATTRIBUTES[sortBy],
+  );
+  await selectOptionByLabel(
+    page,
+    /w kolejności/i,
+    SORT_DIRECTIONS[sortDirection],
+  );
+
+  if (searchField != null && searchTerm != null && searchFieldLabel != null) {
+    await selectOptionByLabel(page, /szukaj w/i, searchFieldLabel);
+    await page.getByLabel(/wyrażenia/i).fill(searchTerm);
+  }
+  await page.getByRole("button", { name: /zatwierdź/i }).click();
+  await page.waitForURL(
+    `/${resource}?${encodeQueryParameters({ sortBy, sortDirection, searchField, searchTerm })}`,
+  );
 }
