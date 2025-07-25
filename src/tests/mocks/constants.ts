@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import { HttpResponse } from "msw";
 
 import {
+  DepartmentIds,
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
@@ -83,9 +84,11 @@ export const MOCK_GUIDE_ARTICLE = {
 
 export const MOCK_STUDENT_ORGANIZATION = {
   name: faker.company.name(),
+  shortDescription: faker.lorem.sentence(10),
   description: faker.lorem.paragraph(3),
   coverPreview: false,
   source: OrganizationSource.Manual,
+  departmentId: DepartmentIds.ComputerScienceAndTelecommunications,
   organizationType: OrganizationType.ScientificClub,
   organizationStatus: OrganizationStatus.Active,
   isStrategic: false as boolean, // so that TS doesn't complain that the type is always `false`
