@@ -15,8 +15,8 @@ export const SortFiltersSchema = z
   .object({
     sortBy: requiredString().default("id"),
     sortDirection: z.enum(["asc", "desc"]).default("asc"),
-    searchTerm: z.string().default(""),
     searchField: z.string().default(""),
+    searchTerm: z.string().default(""),
   })
   .superRefine((data, context) => {
     const searchTermIsEmpty = data.searchTerm.trim() === "";

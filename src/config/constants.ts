@@ -219,3 +219,9 @@ export const SORT_DIRECTIONS: Record<string, string> = {
   asc: "rosnącej",
   desc: "malejącej",
 };
+
+export const IMPLICIT_SORT_BY_ATTRIBUTES = {
+  id: "identyfikatora",
+  createdAt: "daty utworzenia",
+  updatedAt: "daty ostatniej aktualizacji",
+} as const;
