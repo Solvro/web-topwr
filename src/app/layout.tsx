@@ -31,7 +31,7 @@ export default function RootLayout({
           className={`${space_grotesk.variable} flex h-screen flex-col overflow-hidden font-sans antialiased`}
         >
           <Navbar />
-          <Toaster />
+          <Toaster position="top-right" />
           <div className="w-full grow">{children}</div>
         </body>
       </Providers>

@@ -5,11 +5,10 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import type { DefaultValues } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 
-import { ImageInput } from "@/components/image/input";
+import { ImageInput } from "@/components/image/image-input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -34,9 +33,15 @@ import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
+import { RESOURCE_SCHEMAS } from "@/schemas/resources";
 import type { MessageResponse } from "@/types/api";
-import type { AbstractResourceFormInputs } from "@/types/forms";
-import type { SchemaWithOptionalId, WithOptionalId } from "@/types/helpers";
+import type { SchemaWithOptionalId } from "@/types/helpers";
+
+import type {
+  AbstractResourceFormGeneric,
+  AbstractResourceFormProps,
+  ExistingImages,
+} from ".";
 
 const isExistingResourceItem = <T extends z.ZodType>(
   defaultValues?: SchemaWithOptionalId<T>,
@@ -62,9 +67,10 @@ const getMutationConfig = <T extends z.ZodType>(
         method: "POST",
       } as const);
 
-export function AbstractResourceForm<T extends z.ZodObject<z.ZodRawShape>>({
+export function AbstractResourceFormInternal<
+  T extends AbstractResourceFormGeneric,
+>({
   resource,
-  schema,
   defaultValues,
   formInputs: {
     imageInputs = [],
@@ -74,15 +80,10 @@ export function AbstractResourceForm<T extends z.ZodObject<z.ZodRawShape>>({
     checkboxInputs = [],
   },
   returnButtonPath,
-}: {
-  resource: Resource;
-  schema: "id" extends keyof z.infer<T> ? never : T; // ensure the schema does not include an 'id' field
-  defaultValues?: WithOptionalId<DefaultValues<z.infer<T>>>;
-  formInputs: AbstractResourceFormInputs<z.infer<T>>;
-  returnButtonPath: string;
-}) {
+  existingImages,
+}: AbstractResourceFormProps<T> & { existingImages: ExistingImages<T> }) {
+  const schema = RESOURCE_SCHEMAS[resource];
   const router = useRouter();
-
   const form = useForm<z.infer<T>>({
     resolver: zodResolver(schema),
     defaultValues,
@@ -95,7 +96,7 @@ export function AbstractResourceForm<T extends z.ZodObject<z.ZodRawShape>>({
   type ResponseType = MessageResponse & {
     data: z.infer<T> & { id: number };
   };
-  const { mutateAsync, isPending, isSuccess } = useMutationWrapper<
+  const { mutateAsync, isPending } = useMutationWrapper<
     ResponseType,
     z.infer<T>
   >(mutationKey, async (body) => {
@@ -105,6 +106,7 @@ export function AbstractResourceForm<T extends z.ZodObject<z.ZodRawShape>>({
       resource,
     });
     router.refresh();
+    form.reset(response.data);
     return response;
   });
 
@@ -131,7 +133,11 @@ export function AbstractResourceForm<T extends z.ZodObject<z.ZodRawShape>>({
                     name={input.name}
                     render={({ field }) => (
                       <FormItem>
-                        <ImageInput {...field} label={input.label} />
+                        <ImageInput
+                          {...field}
+                          label={input.label}
+                          existingImage={existingImages[field.name]}
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -266,7 +272,11 @@ export function AbstractResourceForm<T extends z.ZodObject<z.ZodRawShape>>({
                 })}
               </Link>
             </Button>
-            <Button type="submit" loading={isPending} disabled={isSuccess}>
+            <Button
+              type="submit"
+              loading={isPending}
+              disabled={!form.formState.isDirty}
+            >
               Zapisz
             </Button>
           </div>
