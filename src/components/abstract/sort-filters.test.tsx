@@ -4,18 +4,16 @@ import { ReadonlyURLSearchParams } from "next/navigation";
 import assert from "node:assert";
 import { describe, expect, it, vi } from "vitest";
 
-import { FORM_ERROR_MESSAGES, SORT_DIRECTIONS } from "@/config/constants";
+import {
+  FORM_ERROR_MESSAGES,
+  IMPLICIT_SORT_BY_ATTRIBUTES,
+  SORT_DIRECTIONS,
+} from "@/config/constants";
 import { isKeyOf, typedEntries } from "@/lib/helpers";
 import { MOCK_USE_SEARCH_PARAMS } from "@/tests/mocks/functions";
 import type { SortFiltersFormValues } from "@/types/forms";
 
 import { SortFilters } from "./sort-filters";
-
-const IMPLICIT_SORT_BY_ATTRIBUTES = {
-  id: "identyfikatora",
-  createdAt: "daty utworzenia",
-  updatedAt: "daty ostatniej aktualizacji",
-} as const;
 
 const MOCK_RESOURCE_ATTRIBUTE_LABELS = {
   sortBy: {
