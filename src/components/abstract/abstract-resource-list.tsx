@@ -86,11 +86,7 @@ export async function AbstractResourceList<T extends Resource>({
 
   return (
     <div className="flex h-full flex-col space-y-4">
-      <SortFilters
-        searchParams={resolvedSearchParameters}
-        sortFields={sortFields}
-        searchFields={searchFields}
-      />
+      <SortFilters sortFields={sortFields} searchFields={searchFields} />
       <div className="grow basis-[0] space-y-4 overflow-y-auto pr-2">
         {listItems.map((item) => (
           <div
