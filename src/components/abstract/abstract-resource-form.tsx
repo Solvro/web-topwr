@@ -36,9 +36,7 @@ import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { MessageResponse } from "@/types/api";
 import type { AbstractResourceFormInputs } from "@/types/forms";
-
-type WithOptionalId<T> = T & { id?: number };
-type SchemaWithOptionalId<T extends z.ZodType> = WithOptionalId<z.infer<T>>;
+import type { SchemaWithOptionalId, WithOptionalId } from "@/types/helpers";
 
 const isExistingResourceItem = <T extends z.ZodType>(
   defaultValues?: SchemaWithOptionalId<T>,
@@ -95,7 +93,7 @@ export function AbstractResourceForm<T extends z.ZodObject<z.ZodRawShape>>({
     defaultValues,
   );
   type ResponseType = MessageResponse & {
-    data: Omit<z.infer<T>, "id"> & { id: number };
+    data: z.infer<T> & { id: number };
   };
   const { mutateAsync, isPending, isSuccess } = useMutationWrapper<
     ResponseType,
@@ -128,7 +126,21 @@ export function AbstractResourceForm<T extends z.ZodObject<z.ZodRawShape>>({
               {/* // TODO: include images in form data */}
               <div className="flex w-full flex-col space-y-4 md:w-48">
                 {imageInputs.map((input) => (
-                  <ImageInput key={input.label} label={input.label} />
+                  <FormField
+                    key={input.label}
+                    control={form.control}
+                    name={input.name}
+                    render={({ field }) => (
+                      <FormItem>
+                        <ImageInput
+                          key={input.label}
+                          field={field}
+                          label={input.label}
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 ))}
               </div>
 

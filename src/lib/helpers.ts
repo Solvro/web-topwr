@@ -1,7 +1,8 @@
 import type { FieldPath } from "react-hook-form";
-import { ZodDefault, ZodNullable, ZodOptional } from "zod";
-import type { ZodObject, ZodRawShape, z } from "zod";
+import { z } from "zod";
+import type { ZodObject, ZodRawShape } from "zod";
 
+import { FORM_ERROR_MESSAGES } from "@/config/constants";
 import type { User } from "@/types/api";
 import type { SelectInputOption } from "@/types/forms";
 
@@ -36,8 +37,14 @@ export function isFieldRequired<T extends ZodRawShape>(
   const fieldSchema = shape[fieldName];
 
   const isOptional =
-    fieldSchema instanceof ZodOptional ||
-    fieldSchema instanceof ZodDefault ||
-    fieldSchema instanceof ZodNullable;
+    fieldSchema instanceof z.ZodOptional ||
+    fieldSchema instanceof z.ZodDefault ||
+    fieldSchema instanceof z.ZodNullable;
   return !isOptional;
 }
+
+export const requiredString = () =>
+  z
+    .string({ required_error: FORM_ERROR_MESSAGES.REQUIRED })
+    .trim()
+    .min(1, { message: FORM_ERROR_MESSAGES.NONEMPTY });
