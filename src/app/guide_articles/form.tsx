@@ -48,7 +48,6 @@ export function Form({ initialData }: { initialData?: GuideArticle | null }) {
         textInputs,
         richTextInput,
       }}
-      returnButtonPath={`/${Resource.GuideArticles}`}
     />
   );
 }

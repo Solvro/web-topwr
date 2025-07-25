@@ -121,7 +121,6 @@ export function Form({
         selectInputs,
         checkboxInputs,
       }}
-      returnButtonPath={`/${Resource.StudentOrganizations}`}
     />
   );
 }

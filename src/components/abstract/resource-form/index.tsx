@@ -15,7 +15,6 @@ export interface AbstractResourceFormProps<T extends AppZodObject> {
   resource: Resource;
   defaultValues?: WithOptionalId<DefaultValues<z.infer<T>>>;
   formInputs: AbstractResourceFormInputs<z.infer<T>>;
-  returnButtonPath: string;
 }
 
 export type ExistingImages<T extends AppZodObject> = Partial<
