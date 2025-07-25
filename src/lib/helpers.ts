@@ -41,3 +41,7 @@ export function isKeyOf<T extends object, K extends string | number | symbol>(
 ): key is K & keyof T {
   return key in parentObject;
 }
+
+/** This needs to be used instead of encodeURIComponent for requests made to the backend because it cannot parse '%20' as space, only the plus symbol. */
+export const encodeQueryComponent = (value: string) =>
+  encodeURIComponent(value).replaceAll("%20", "+");

@@ -8,6 +8,7 @@ import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
+import { encodeQueryComponent } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { ListItem, ResourceDataType } from "@/types/app";
 
@@ -30,7 +31,7 @@ async function fetchResources<T extends Resource>(
   const search =
     searchField == null || searchTerm == null
       ? ""
-      : `${encodeURIComponent(searchField)}=%${encodeURIComponent(searchTerm)}%&`;
+      : `${encodeQueryComponent(searchField)}=%${encodeQueryComponent(searchTerm)}%&`;
   try {
     const result = await fetchQuery<ApiResponse<T>>(
       `?${search}page=${String(page)}&limit=${String(resultsPerPage)}&sort=${sortDirection}${sortBy}`,
