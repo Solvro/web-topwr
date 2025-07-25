@@ -1,6 +1,4 @@
-import type { FieldPath } from "react-hook-form";
 import { z } from "zod";
-import type { ZodObject, ZodRawShape } from "zod";
 
 import { FORM_ERROR_MESSAGES } from "@/config/constants";
 import type { User } from "@/types/api";
@@ -27,20 +25,6 @@ export function sanitizeId(id: string | number): string {
 
 export function removeTrailingSlash(path: string): string {
   return path.replace(/\/+$/, "");
-}
-
-export function isFieldRequired<T extends ZodRawShape>(
-  schema: ZodObject<T>,
-  fieldName: FieldPath<z.infer<ZodObject<T>>>,
-): boolean {
-  const shape = schema.shape;
-  const fieldSchema = shape[fieldName];
-
-  const isOptional =
-    fieldSchema instanceof z.ZodOptional ||
-    fieldSchema instanceof z.ZodDefault ||
-    fieldSchema instanceof z.ZodNullable;
-  return !isOptional;
 }
 
 export const requiredString = () =>

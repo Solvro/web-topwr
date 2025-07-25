@@ -4,26 +4,24 @@ import type { z } from "zod";
 
 import { ApiImage } from "@/components/image/api/server";
 import type { Resource } from "@/config/enums";
+import type { AppZodObject } from "@/types/app";
 import type { AbstractResourceFormInputs } from "@/types/forms";
-import type { WithOptionalId } from "@/types/helpers";
 
 import { AbstractResourceFormInternal } from "./client";
 
-export type AbstractResourceFormGeneric = z.ZodObject<z.ZodRawShape>;
-export interface AbstractResourceFormProps<
-  T extends AbstractResourceFormGeneric,
-> {
+export type WithOptionalId<T> = T & { id?: number };
+
+export interface AbstractResourceFormProps<T extends AppZodObject> {
   resource: Resource;
   defaultValues?: WithOptionalId<DefaultValues<z.infer<T>>>;
   formInputs: AbstractResourceFormInputs<z.infer<T>>;
   returnButtonPath: string;
 }
 
-export type ExistingImages<T extends AbstractResourceFormGeneric> = Partial<
+export type ExistingImages<T extends AppZodObject> = Partial<
   Record<Path<z.infer<T>>, ReactNode>
 >;
-
-export function AbstractResourceForm<T extends z.ZodObject<z.ZodRawShape>>(
+export function AbstractResourceForm<T extends AppZodObject>(
   props: AbstractResourceFormProps<T>,
 ) {
   const existingImages: ExistingImages<T> = {};
