@@ -5,12 +5,8 @@ import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
 import {
   MOCK_NOT_FOUND,
-  MOCK_ROUTER_BACK,
-  MOCK_ROUTER_FORWARD,
-  MOCK_ROUTER_PREFETCH,
-  MOCK_ROUTER_PUSH,
-  MOCK_ROUTER_REFRESH,
-  MOCK_ROUTER_REPLACE,
+  MOCK_USE_ROUTER,
+  MOCK_USE_SEARCH_PARAMS,
 } from "./mocks/functions";
 import { MockImage } from "./mocks/image";
 import { server } from "./mocks/server";
@@ -33,14 +29,8 @@ vi.mock("next/navigation", async (importOriginal) => {
   return {
     ...original,
     notFound: MOCK_NOT_FOUND,
-    useRouter: () => ({
-      push: MOCK_ROUTER_PUSH,
-      replace: MOCK_ROUTER_REPLACE,
-      refresh: MOCK_ROUTER_REFRESH,
-      prefetch: MOCK_ROUTER_PREFETCH,
-      back: MOCK_ROUTER_BACK,
-      forward: MOCK_ROUTER_FORWARD,
-    }),
+    useRouter: () => MOCK_USE_ROUTER,
+    useSearchParams: MOCK_USE_SEARCH_PARAMS,
   } satisfies NextNavigationModule;
 });
 
@@ -52,6 +42,8 @@ globalThis.ResizeObserver = ResizeObserver as typeof globalThis.ResizeObserver;
 
 Element.prototype.scrollIntoView = vi.fn();
 Document.prototype.elementFromPoint = vi.fn();
+Element.prototype.hasPointerCapture = vi.fn(() => false);
+Element.prototype.releasePointerCapture = vi.fn();
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,
