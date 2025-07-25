@@ -52,6 +52,7 @@ globalThis.ResizeObserver = ResizeObserver as typeof globalThis.ResizeObserver;
 
 Element.prototype.scrollIntoView = vi.fn();
 Document.prototype.elementFromPoint = vi.fn();
+window.HTMLElement.prototype.hasPointerCapture = vi.fn();
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,

@@ -5,9 +5,7 @@ import { Resource } from "@/config/enums";
 import { GuideArticleSchema } from "@/schemas";
 import type { GuideArticle } from "@/types/app";
 import type {
-  FormImageInput,
-  FormRichTextInput,
-  FormTextInput,
+  AbstractResourceFormInputs,
   GuideArticleFormValues,
 } from "@/types/forms";
 
@@ -23,26 +21,26 @@ function editOnSubmit(id: number, data: GuideArticleFormValues) {
   console.log(`Updating article ${String(id)}:`, data);
 }
 
-const imageInputs: FormImageInput[] = [
-  {
-    label: "Zdjęcie",
+const formInputs: AbstractResourceFormInputs<GuideArticleFormValues> = {
+  imageInputs: [
+    {
+      label: "Zdjęcie",
+    },
+  ],
+  textInputs: [
+    {
+      name: "title",
+      label: "Tytuł",
+    },
+    {
+      name: "shortDesc",
+      label: "Krótki opis",
+    },
+  ],
+  richTextInput: {
+    name: "description",
+    label: "Opis",
   },
-];
-
-const textInputs: FormTextInput<GuideArticleFormValues>[] = [
-  {
-    name: "title",
-    label: "Tytuł",
-  },
-  {
-    name: "shortDesc",
-    label: "Krótki opis",
-  },
-];
-
-const richTextInput: FormRichTextInput<GuideArticleFormValues> = {
-  name: "description",
-  label: "Opis",
 };
 
 export function Form({ initialData }: { initialData?: GuideArticle | null }) {
@@ -59,11 +57,7 @@ export function Form({ initialData }: { initialData?: GuideArticle | null }) {
       defaultValues={defaultValues}
       createOnSubmit={createOnSubmit}
       editOnSubmit={editOnSubmit}
-      formInputs={{
-        imageInputs,
-        textInputs,
-        richTextInput,
-      }}
+      formInputs={formInputs}
       returnButtonPath={`/${Resource.GuideArticles}`}
       returnButtonLabel="Wróć do artykułów"
     />
