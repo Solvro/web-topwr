@@ -9,7 +9,7 @@ import type { DefaultValues } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 
-import { ImageInput } from "@/components/image-input";
+import { ImageInput } from "@/components/image/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -131,11 +131,7 @@ export function AbstractResourceForm<T extends z.ZodObject<z.ZodRawShape>>({
                     name={input.name}
                     render={({ field }) => (
                       <FormItem>
-                        <ImageInput
-                          key={input.label}
-                          field={field}
-                          label={input.label}
-                        />
+                        <ImageInput {...field} label={input.label} />
                         <FormMessage />
                       </FormItem>
                     )}
