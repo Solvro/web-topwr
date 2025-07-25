@@ -48,13 +48,16 @@ export interface ErrorResponse {
 
 export type SuccessResponse<T> = T & { success: boolean };
 
+interface DatedResource {
+  createdAt: string;
+  updatedAt: string;
+}
+
 /** As returned from GET /auth/me */
-export interface User {
+export interface User extends DatedResource {
   id: number;
   fullName: string | null;
   email: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 /** As returned from POST /auth/login */
@@ -66,4 +69,11 @@ export interface AuthState {
 export interface ApiResponse<T extends Resource> {
   data: ResourceTypes[T][];
   meta: { total: number };
+}
+
+/** As returned from GET /files/{id} */
+export interface FileEntry extends DatedResource {
+  id: string;
+  fileExtension: string;
+  url: string;
 }

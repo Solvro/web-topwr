@@ -10,10 +10,13 @@ import type { Declensions, Pluralized } from "@/types/app";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
-/** The URL to the base path of the external API, including the version, *without* a trailing slash. */
-export const API_URL = (
-  process.env.API_URL ?? "https://api.topwr.solvro.pl/api/v1"
+/** The URL to the base path of the external API, excluding the version, *without* a trailing slash. */
+export const API_URL_BASE = (
+  process.env.API_URL_BASE ?? "https://api.topwr.solvro.pl"
 ).replace(/\/+$/, "");
+
+/** The URL to the base path of the external API, including the version, *without* a trailing slash. */
+export const API_URL = `${API_URL_BASE}/api/v1`;
 
 /**
  * A mapping of the client-side resources to their paths in the backend API.
