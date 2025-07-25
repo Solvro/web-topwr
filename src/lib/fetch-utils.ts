@@ -75,22 +75,36 @@ function createRequest(
     ...options
   }: FetchRequestOptions | MutationRequestOptions,
 ): Request {
+  function setHeader(key: string, value?: string) {
+    if (value == null) {
+      delete options.headers?.[key];
+      return;
+    }
+    options.headers = {
+      ...options.headers,
+      [key]: value,
+    };
+  }
+
   const url = isAbsolutePath(endpoint)
     ? endpoint
     : `${API_URL}/${resource == null ? "" : `${RESOURCE_API_PATHS[resource]}/`}${endpoint.replace(/^\/+/, "")}`;
 
   const token = accessTokenOverride ?? getAccessToken();
+  const isMultipart = body instanceof FormData;
+  if (isMultipart) {
+    // This resolves a 400 response from the API
+    // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
+    setHeader("Content-Type");
+  }
 
   if (token != null && typeof token === "string") {
-    options.headers = {
-      ...options.headers,
-      Authorization: `Bearer ${token}`,
-    };
+    setHeader("Authorization", `Bearer ${token}`);
   }
   const requestInit: RequestInit = options;
 
   if (body != null && typeof body !== "string") {
-    requestInit.body = JSON.stringify(body);
+    requestInit.body = isMultipart ? body : JSON.stringify(body);
   }
   return new Request(url, requestInit);
 }
