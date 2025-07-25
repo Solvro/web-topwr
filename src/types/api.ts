@@ -1,7 +1,3 @@
-import type { Resource } from "@/config/enums";
-
-import type { ResourceTypes } from "./app";
-
 // Types Source: backend-topwr
 export interface MessageResponse {
   message: string;
@@ -48,7 +44,7 @@ export interface ErrorResponse {
 
 export type SuccessResponse<T> = T & { success: boolean };
 
-interface DatedResource {
+export interface DatedResource {
   createdAt: string;
   updatedAt: string;
 }
@@ -64,11 +60,6 @@ export interface User extends DatedResource {
 export interface AuthState {
   user: User;
   token: string;
-}
-
-export interface ApiResponse<T extends Resource> {
-  data: ResourceTypes[T][];
-  meta: { total: number };
 }
 
 /** As returned from GET /files/{id} */

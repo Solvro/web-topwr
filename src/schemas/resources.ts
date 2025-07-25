@@ -8,7 +8,6 @@ import {
   Resource,
 } from "@/config/enums";
 import { requiredString } from "@/lib/helpers";
-import type { AppZodObject } from "@/types/app";
 
 const StudentOrganizationSchema = z.object({
   name: requiredString(),
@@ -37,7 +36,7 @@ const GuideArticleSchema = z.object({
   description: requiredString(),
 });
 
-export const RESOURCE_SCHEMAS: Record<Resource, AppZodObject> = {
+export const RESOURCE_SCHEMAS = {
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
-};
+} satisfies Record<Resource, z.ZodSchema>;

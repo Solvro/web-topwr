@@ -1,6 +1,5 @@
 import { AbstractResourceList } from "@/components/abstract/abstract-resource-list";
 import { Resource } from "@/config/enums";
-import type { StudentOrganization } from "@/types/app";
 
 export default function StudentOrganizationsPage({
   searchParams,
@@ -13,7 +12,7 @@ export default function StudentOrganizationsPage({
       searchParams={searchParams}
       sortFields={{ name: "nazwy", shortDescription: "opisu" }}
       searchFields={{ name: "nazwie", description: "opisie" }}
-      mapItemToList={(item: StudentOrganization) => ({
+      mapItemToList={(item) => ({
         id: item.id,
         name: item.name,
         shortDescription: item.shortDescription,

@@ -8,95 +8,91 @@ import {
   Resource,
 } from "@/config/enums";
 import { enumToFormSelectOptions } from "@/lib/helpers";
-import type { StudentOrganization } from "@/types/app";
-import type {
-  FormCheckboxInput,
-  FormImageInput,
-  FormRichTextInput,
-  FormSelectInput,
-  FormTextInput,
-  StudentOrganizationFormValues,
-} from "@/types/forms";
+import type { ResourceDataType, ResourceFormValues } from "@/types/app";
+import type { AbstractResourceFormInputs } from "@/types/forms";
 
-const imageInputs: FormImageInput<StudentOrganizationFormValues>[] = [
-  {
-    label: "Logo",
-    name: "logoKey",
-  },
-  {
-    label: "Baner",
-    name: "coverKey",
-  },
-];
+const formInputs = {
+  imageInputs: [
+    {
+      label: "Logo",
+      name: "logoKey",
+    },
+    {
+      label: "Baner",
+      name: "coverKey",
+    },
+  ],
 
-const textInputs: FormTextInput<StudentOrganizationFormValues>[] = [
-  {
-    name: "name",
-    label: "Nazwa",
-  },
-  {
-    name: "shortDescription",
-    label: "Krótki opis",
-  },
-];
+  textInputs: [
+    {
+      name: "name",
+      label: "Nazwa",
+    },
+    {
+      name: "shortDescription",
+      label: "Krótki opis",
+    },
+  ],
 
-const richTextInput: FormRichTextInput<StudentOrganizationFormValues> = {
-  name: "description",
-  label: "Opis",
-};
+  richTextInput: {
+    name: "description",
+    label: "Opis",
+  },
 
-const selectInputs: FormSelectInput<StudentOrganizationFormValues>[] = [
-  {
-    name: "departmentId",
-    label: "Wydział",
-    placeholder: "Wybierz wydział",
-    options: enumToFormSelectOptions(
-      DepartmentIds,
-      SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.DEPARTMENT,
-    ),
-  },
-  {
-    name: "source",
-    label: "Źródło",
-    placeholder: "Wybierz źródło",
-    options: enumToFormSelectOptions(
-      OrganizationSource,
-      SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.SOURCE,
-    ),
-  },
-  {
-    name: "organizationType",
-    label: "Typ",
-    placeholder: "Wybierz typ",
-    options: enumToFormSelectOptions(
-      OrganizationType,
-      SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.TYPE,
-    ),
-  },
-  {
-    name: "organizationStatus",
-    label: "Status",
-    placeholder: "Wybierz status",
-    options: enumToFormSelectOptions(
-      OrganizationStatus,
-      SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
-    ),
-  },
-];
-
-const checkboxInputs: FormCheckboxInput<StudentOrganizationFormValues>[] = [
-  {
-    name: "isStrategic",
-    label: "Czy jest kołem strategicznym?",
-  },
-];
+  selectInputs: [
+    {
+      name: "departmentId",
+      label: "Wydział",
+      placeholder: "Wybierz wydział",
+      options: enumToFormSelectOptions(
+        DepartmentIds,
+        SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.DEPARTMENT,
+      ),
+    },
+    {
+      name: "source",
+      label: "Źródło",
+      placeholder: "Wybierz źródło",
+      options: enumToFormSelectOptions(
+        OrganizationSource,
+        SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.SOURCE,
+      ),
+    },
+    {
+      name: "organizationType",
+      label: "Typ",
+      placeholder: "Wybierz typ",
+      options: enumToFormSelectOptions(
+        OrganizationType,
+        SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.TYPE,
+      ),
+    },
+    {
+      name: "organizationStatus",
+      label: "Status",
+      placeholder: "Wybierz status",
+      options: enumToFormSelectOptions(
+        OrganizationStatus,
+        SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
+      ),
+    },
+  ],
+  checkboxInputs: [
+    {
+      name: "isStrategic",
+      label: "Czy jest kołem strategicznym?",
+    },
+  ],
+} satisfies AbstractResourceFormInputs<Resource.StudentOrganizations>;
 
 export function Form({
   initialData,
 }: {
-  initialData?: StudentOrganization | null;
+  initialData?: ResourceDataType<Resource.StudentOrganizations> | null;
 }) {
-  const defaultValues: StudentOrganizationFormValues = initialData ?? {
+  const defaultValues:
+    | ResourceFormValues<Resource.StudentOrganizations>
+    | ResourceDataType<Resource.StudentOrganizations> = initialData ?? {
     name: "",
     departmentId: null,
     logoKey: null,
@@ -114,13 +110,7 @@ export function Form({
     <AbstractResourceForm
       resource={Resource.StudentOrganizations}
       defaultValues={defaultValues}
-      formInputs={{
-        imageInputs,
-        textInputs,
-        richTextInput,
-        selectInputs,
-        checkboxInputs,
-      }}
+      formInputs={formInputs}
     />
   );
 }

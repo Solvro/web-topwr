@@ -3,14 +3,14 @@ import type { ComponentType } from "react";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
-import type { ResourceTypes } from "@/types/app";
+import type { ResourceDataType } from "@/types/app";
 
 async function fetchResource<T extends Resource>(
   resource: T,
   id: string,
-): Promise<ResourceTypes[T] | null> {
+): Promise<ResourceDataType<T> | null> {
   try {
-    const response = await fetchQuery<{ data: ResourceTypes[T] }>(
+    const response = await fetchQuery<{ data: ResourceDataType<T> }>(
       sanitizeId(id),
       { resource },
     );
@@ -28,7 +28,7 @@ export async function AbstractResourceEditPage<T extends Resource>({
 }: {
   resource: T;
   params: Promise<{ id: string }>;
-  FormComponent: ComponentType<{ initialData: ResourceTypes[T] | null }>;
+  FormComponent: ComponentType<{ initialData: ResourceDataType<T> | null }>;
 }) {
   const { id } = await params;
   const resourceData = await fetchResource(resource, id);
