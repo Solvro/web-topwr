@@ -6,12 +6,13 @@ import type { Path } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 
+import { Spinner } from "@/components/spinner";
 import { FormControl, FormLabel } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import type { AppZodObject } from "@/types/app";
 
-import { Spinner } from "../spinner";
 import { ApiImage } from "./api/client";
 
 export function ImageInput<T extends z.infer<AppZodObject>>({
@@ -45,7 +46,7 @@ export function ImageInput<T extends z.infer<AppZodObject>>({
     <FormLabel className="flex flex-col items-start space-y-1.5">
       {label}
       <FormControl>
-        <input
+        <Input
           type="file"
           accept="image/*"
           onChange={(event) => {

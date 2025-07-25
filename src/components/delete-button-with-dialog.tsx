@@ -28,7 +28,7 @@ export function DeleteButtonWithDialog({
   itemName,
 }: {
   resource: Resource;
-  id: number;
+  id: string | number;
   itemName?: string;
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
