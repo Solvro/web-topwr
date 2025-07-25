@@ -1,13 +1,16 @@
+import { waitFor } from "@testing-library/dom";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import assert from "node:assert";
 import { describe, expect, it } from "vitest";
 
 import { FORM_ERROR_MESSAGES } from "@/config/constants";
-import { renderWithProviders } from "@/tests/helpers/react";
+import { Resource } from "@/config/enums";
+import { getToaster, renderWithProviders } from "@/tests/helpers/react";
+import { MOCK_GUIDE_ARTICLE, MOCK_IMAGE_FILE } from "@/tests/mocks/constants";
+import { MOCK_API_RESOURCE_OPERATION } from "@/tests/mocks/functions";
 
 import CreatePage from "./page";
-
-const TEST_IMAGE_FILE = new File(["test"], "test.png", { type: "image/png" });
 
 function renderCreationForm() {
   const user = userEvent.setup();
@@ -42,10 +45,41 @@ describe("Create Guide Articles Page", () => {
     const form = renderCreationForm();
     expect(form.input.image.files).toHaveLength(0);
 
-    await form.user.upload(form.input.image, TEST_IMAGE_FILE);
+    await form.user.upload(form.input.image, MOCK_IMAGE_FILE);
 
     expect(form.input.image.files).toHaveLength(1);
     assert.ok(form.input.image.files != null);
-    expect(form.input.image.files[0]).toEqual(TEST_IMAGE_FILE);
+    expect(form.input.image.files[0]).toEqual(MOCK_IMAGE_FILE);
+  });
+
+  it("should allow me to submit the form with valid data", async () => {
+    const form = renderCreationForm();
+    expect(form.submitButton).toBeDisabled();
+
+    await form.user.type(form.input.title, MOCK_GUIDE_ARTICLE.title);
+    await form.user.type(
+      form.input.shortDescription,
+      MOCK_GUIDE_ARTICLE.shortDesc,
+    );
+    await form.user.type(
+      form.input.description,
+      MOCK_GUIDE_ARTICLE.description,
+    );
+    await form.user.upload(form.input.image, MOCK_IMAGE_FILE);
+
+    await waitFor(() => {
+      expect(getToaster()).not.toHaveTextContent(/trwa przesyłanie zdjęcia/i);
+      expect(
+        screen.queryByText(FORM_ERROR_MESSAGES.REQUIRED),
+      ).not.toBeInTheDocument();
+    });
+
+    await form.user.click(form.submitButton);
+
+    expect(MOCK_API_RESOURCE_OPERATION).toHaveBeenCalledExactlyOnceWith({
+      operation: "create",
+      resource: Resource.GuideArticles,
+      body: MOCK_GUIDE_ARTICLE,
+    });
   });
 });

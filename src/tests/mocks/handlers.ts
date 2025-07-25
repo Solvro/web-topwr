@@ -15,6 +15,7 @@ import { mockResourceResponse } from "../helpers/mocks";
 import {
   MOCK_AUTH_STATE,
   MOCK_FILES,
+  MOCK_IMAGE_KEY,
   MOCK_PASSWORD,
   MOCK_RESPONSE,
   MOCK_USER,
@@ -53,6 +54,11 @@ export const handlers = [
   http.post<PathParams, ResourceFormValues<Resource.GuideArticles>>(
     `${API_URL}/${RESOURCE_METADATA[Resource.GuideArticles].apiPath}`,
     async ({ request }) =>
-      mockResourceResponse<Resource.GuideArticles>(request),
+      mockResourceResponse(Resource.GuideArticles, request),
   ),
+  http.post(`${API_URL}/files`, () => {
+    return HttpResponse.json({
+      key: MOCK_IMAGE_KEY,
+    });
+  }),
 ] satisfies RequestHandler[];
