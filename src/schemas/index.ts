@@ -36,12 +36,15 @@ export const GuideArticleSchema = z.object({
 export const AddEventSchema = z
   .object({
     name: z.string().min(1, "Tytuł wydarzenia jest wymagany"),
-    description: z.string().min(1, "Opis wydarzenia jest wymagany"),
-    startTime: z
-      .date()
-      .min(new Date(), "Data rozpoczęcia musi być w przyszłości"),
+    description: z.string().nullable().optional(),
+    startTime: z.date(),
     endTime: z.date(),
-    location: z.string().min(1, "Lokalizacja jest wymagana"),
+    location: z.string().nullable().optional(),
+    googleCallId: z.string().nullable().optional(),
+  })
+  .refine((data) => data.startTime > new Date(), {
+    message: "Data rozpoczęcia musi być w przyszłości",
+    path: ["startTime"],
   })
   .refine((data) => data.endTime > data.startTime, {
     message: "Data zakończenia musi być późniejsza niż rozpoczęcia",

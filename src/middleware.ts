@@ -12,6 +12,7 @@ const REQUIRED_ROUTE_PERMISSIONS: Record<string, string[] | undefined> = {
   "/guide_articles": ["user", "admin"],
   "/student_organizations": ["user", "admin"],
   "/change_review": ["admin"],
+  "/calendar": ["user", "admin"],
 };
 
 async function verifyUserCookie(
