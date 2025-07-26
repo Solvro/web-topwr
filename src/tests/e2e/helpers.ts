@@ -82,3 +82,7 @@ export async function setAbstractResourceListFilters(
     `/${resource}?${encodeQueryParameters({ sortBy, sortDirection, searchField, searchTerm })}`,
   );
 }
+
+export async function expectAbstractResourceFormSuccess(page: Page) {
+  await expect(page.getByText(/pomyślnie zapisano/i)).toBeVisible();
+}
