@@ -18,9 +18,9 @@ export async function login(page: Page) {
   await page.goto("/login");
   expect(TEST_USER_EMAIL).toBeDefined();
   expect(TEST_USER_PASSWORD).toBeDefined();
-  await page.fill('input[name="email"]', TEST_USER_EMAIL ?? "");
-  await page.fill('input[name="password"]', TEST_USER_PASSWORD ?? "");
-  await page.click('button[type="submit"]');
+  await page.getByLabel(/email/i).fill(TEST_USER_EMAIL ?? "");
+  await page.getByLabel(/hasło/i).fill(TEST_USER_PASSWORD ?? "");
+  await page.getByRole("button", { name: /zaloguj się/i }).click();
   await expect(page).not.toHaveURL("/login");
 }
 
@@ -95,8 +95,12 @@ export async function setAbstractResourceListFilters(
   );
 }
 
-export async function expectAbstractResourceFormSuccess(page: Page) {
-  await expect(page.getByText(/pomyślnie zapisano/i)).toBeVisible();
+export async function expectAbstractResourceFormSuccess(page: Page, count = 1) {
+  const successMessages = page.getByText(/pomyślnie zapisano/i);
+  await expect(successMessages).toHaveCount(count);
+  for (let index = 0; index < count; index++) {
+    await expect(successMessages.nth(index)).toBeVisible();
+  }
 }
 
 export async function returnFromAbstractResourceForm(
