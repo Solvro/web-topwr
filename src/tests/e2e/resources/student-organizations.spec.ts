@@ -9,6 +9,8 @@ import { MOCK_STUDENT_ORGANIZATION } from "@/tests/mocks/constants";
 import {
   expectAbstractResourceFormSuccess,
   login,
+  logout,
+  returnFromAbstractResourceForm,
   selectOptionByLabel,
   setAbstractResourceListFilters,
 } from "../helpers";
@@ -29,17 +31,16 @@ const getOrganizationContainer = (
       has: page.getByText(organizationShortDescription),
     });
 
-async function returnFromAbstractResourceForm(page: Page) {
-  await page.getByRole("link", { name: /wróć do organizacji/i }).click();
-  await page.waitForURL(`/${resource}`);
-}
-
 test.describe("Student Organizations CRUD", () => {
   test.beforeEach(async ({ page }) => {
     await login(page);
     await page
       .getByRole("link", { name: /zarządzanie organizacjami/i })
       .click();
+  });
+
+  test.afterEach(async ({ page }) => {
+    await logout(page);
   });
 
   test("should create, read, update and delete an organization", async ({
@@ -76,7 +77,7 @@ test.describe("Student Organizations CRUD", () => {
     });
 
     await test.step("Read", async () => {
-      await returnFromAbstractResourceForm(page);
+      await returnFromAbstractResourceForm(page, resource);
       await expect(
         page.getByTestId("abstract-resource-list").locator(":scope > *"),
       ).toHaveCount(LIST_RESULTS_PER_PAGE); // assuming the database isn't empty (change this if using mocks)
@@ -108,8 +109,7 @@ test.describe("Student Organizations CRUD", () => {
     });
 
     await test.step("Read (again)", async () => {
-      await returnFromAbstractResourceForm(page);
-
+      await returnFromAbstractResourceForm(page, resource);
       await setAbstractResourceListFilters(page, resource, {
         sortBy: "createdAt",
         sortDirection: "desc",
