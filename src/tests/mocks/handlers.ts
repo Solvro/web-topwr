@@ -1,9 +1,13 @@
-import type { RequestHandler } from "msw";
+import type { PathParams, RequestHandler } from "msw";
 import { HttpResponse, http } from "msw";
 
-import { API_URL } from "@/config/constants";
+import { API_URL, RESOURCE_API_PATHS } from "@/config/constants";
+import { Resource } from "@/config/enums";
+import type { ResourceFormValues } from "@/types/app";
 
+import { mockResourceResponse } from "../helpers";
 import {
+  MOCK_IMAGE_KEY,
   MOCK_PASSWORD,
   MOCK_RESPONSE,
   MOCK_TOKEN,
@@ -30,5 +34,15 @@ export const handlers = [
             },
             { status: 400 },
           );
+  }),
+  http.post<PathParams, ResourceFormValues<Resource.GuideArticles>>(
+    `${API_URL}/${RESOURCE_API_PATHS[Resource.GuideArticles]}`,
+    async ({ request }) =>
+      mockResourceResponse(Resource.GuideArticles, request),
+  ),
+  http.post(`${API_URL}/files`, () => {
+    return HttpResponse.json({
+      key: MOCK_IMAGE_KEY,
+    });
   }),
 ] satisfies RequestHandler[];

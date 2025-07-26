@@ -1,10 +1,18 @@
+import { faker } from "@faker-js/faker";
 import { screen } from "@testing-library/dom";
 import { render } from "@testing-library/react";
 import type { RenderResult } from "@testing-library/react";
 import { createStore } from "jotai";
+import { HttpResponse } from "msw";
+import type { JsonBodyType, StrictRequest } from "msw";
 import type { ReactNode } from "react";
 import { expect } from "vitest";
 
+import type { Resource } from "@/config/enums";
+import type { DatedResource } from "@/types/api";
+import type { ResourceDataType, ResourceFormValues } from "@/types/app";
+
+import { MOCK_API_RESOURCE_OPERATION } from "./mocks/functions";
 import { TestProviders } from "./test-providers";
 
 interface RenderResultWithStore extends RenderResult {
@@ -30,4 +38,21 @@ export function renderWithProviders(
       </TestProviders>,
     ),
   };
+}
+
+export async function mockResourceResponse<T extends Resource>(
+  resource: T,
+  request: StrictRequest<ResourceFormValues<T>>,
+): Promise<HttpResponse<JsonBodyType>> {
+  const body = await request.json();
+  const metadata: {
+    id: string;
+  } & DatedResource = {
+    id: faker.number.int({ min: 5000, max: 10_000 }).toString(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  const responseBody: ResourceDataType<T> = { ...body, ...metadata };
+  MOCK_API_RESOURCE_OPERATION({ operation: "create", resource, body });
+  return HttpResponse.json(responseBody, { status: 201 });
 }
