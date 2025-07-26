@@ -21,7 +21,7 @@ export function Button({
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     loading?: boolean;
-    tooltip?: React.ReactNode;
+    tooltip?: string;
   }) {
   const Comp = asChild ? Slot : "button";
 
@@ -29,6 +29,7 @@ export function Button({
     <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
+      aria-label={tooltip ?? undefined}
       {...props}
       disabled={loading || props.disabled}
     >
