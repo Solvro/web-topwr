@@ -7,6 +7,7 @@ import { Resource } from "@/config/enums";
 import { MOCK_STUDENT_ORGANIZATION } from "@/tests/mocks/constants";
 
 import {
+  expectAbstractResourceFormSuccess,
   login,
   selectOptionByLabel,
   setAbstractResourceListFilters,
@@ -14,14 +15,18 @@ import {
 
 const resource = Resource.StudentOrganizations;
 
-const getOrganizationContainer = (page: Page) =>
+const getOrganizationContainer = (
+  page: Page,
+  organizationName: string = MOCK_STUDENT_ORGANIZATION.name,
+  organizationShortDescription = MOCK_STUDENT_ORGANIZATION.shortDescription,
+) =>
   page
     .getByTestId("abstract-resource-list")
     .locator("div", {
-      has: page.getByText(MOCK_STUDENT_ORGANIZATION.name),
+      has: page.getByText(organizationName),
     })
     .filter({
-      has: page.getByText(MOCK_STUDENT_ORGANIZATION.shortDescription),
+      has: page.getByText(organizationShortDescription),
     });
 
 async function returnFromAbstractResourceForm(page: Page) {
@@ -67,7 +72,7 @@ test.describe("Student Organizations CRUD", () => {
         [MOCK_STUDENT_ORGANIZATION.isStrategic ? "check" : "uncheck"]();
 
       await page.getByRole("button", { name: /zapisz/i }).click();
-      await expect(page.getByText(/pomyślnie zapisano/i)).toBeVisible();
+      await expectAbstractResourceFormSuccess(page);
     });
 
     await test.step("Read", async () => {
@@ -89,13 +94,17 @@ test.describe("Student Organizations CRUD", () => {
       await expect(getOrganizationContainer(page)).toBeVisible();
     });
 
+    const newName = `${faker.company.name()} UPDATED TEST NAME`;
+
     await test.step("Update", async () => {
       await getOrganizationContainer(page).locator("a").click();
       await page.waitForURL(`/${resource}/edit/*`);
-      const newName = `${faker.company.name()} UPDATED TEST NAME`;
-      await page.getByLabel("Nazwa").fill(newName);
+      const nameInput = page.getByLabel("Nazwa");
+      await nameInput.fill(newName);
       await page.getByRole("button", { name: /zapisz/i }).click();
-      MOCK_STUDENT_ORGANIZATION.name = newName;
+      await expectAbstractResourceFormSuccess(page);
+      await page.reload();
+      await expect(nameInput).toHaveValue(newName);
     });
 
     await test.step("Read (again)", async () => {
@@ -108,13 +117,13 @@ test.describe("Student Organizations CRUD", () => {
     });
 
     await test.step("Delete", async () => {
-      await getOrganizationContainer(page).locator("button").click();
+      await getOrganizationContainer(page, newName).locator("button").click();
       await page.getByRole("button", { name: /usuń/i }).click();
 
       await expect(
         page.getByText(/pomyślnie usunięto organizację/i),
       ).toBeVisible();
-      await expect(getOrganizationContainer(page)).not.toBeVisible();
+      await expect(getOrganizationContainer(page, newName)).not.toBeVisible();
     });
   });
 });
