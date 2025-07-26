@@ -100,9 +100,14 @@ test.describe("Student Organizations CRUD", () => {
     await test.step("Update", async () => {
       await getOrganizationContainer(page).locator("a").click();
       await page.waitForURL(`/${resource}/edit/*`);
+      const submitButton = page.getByRole("button", { name: /zapisz/i });
+      await expect(submitButton).toBeDisabled();
       const nameInput = page.getByLabel("Nazwa");
+      await expect(nameInput).toHaveValue(MOCK_STUDENT_ORGANIZATION.name);
+      await nameInput.clear();
       await nameInput.fill(newName);
-      await page.getByRole("button", { name: /zapisz/i }).click();
+      await expect(submitButton).toBeEnabled();
+      await submitButton.click();
       await expectAbstractResourceFormSuccess(page);
       await page.reload();
       await expect(nameInput).toHaveValue(newName);
