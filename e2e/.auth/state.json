@@ -1,0 +1,15 @@
+{
+  "cookies": [
+    {
+      "name": "topwr_auth",
+      "value": "%7B%22user%22%3A%7B%22id%22%3A1%2C%22fullName%22%3Anull%2C%22email%22%3A%22frontend%40solvro.pl%22%2C%22createdAt%22%3A%222025-03-16T19%3A50%3A32.299%2B00%3A00%22%2C%22updatedAt%22%3A%222025-03-16T19%3A50%3A32.299%2B00%3A00%22%7D%2C%22token%22%3A%22oat_NDg4.ZVN4Vl9vWTNpa3F5dm5pZjlfRnc4T1VkdXNvWDV2NVF5aWpscjBjUjM2OTU3MzM4%22%7D",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1756075975.202466,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": []
+}
