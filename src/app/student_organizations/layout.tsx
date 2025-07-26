@@ -12,11 +12,6 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <AbstractResourceLayout
       resource={Resource.StudentOrganizations}
-      titleMap={{
-        "/create": "Dodawanie organizacji",
-        "/edit": "Edycja organizacji",
-        "": "Zarządzanie organizacjami",
-      }}
       pathname={pathname}
     >
       {children}

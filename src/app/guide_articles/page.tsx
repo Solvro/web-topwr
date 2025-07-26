@@ -1,6 +1,5 @@
 import { AbstractResourceList } from "@/components/abstract/abstract-resource-list";
 import { Resource } from "@/config/enums";
-import type { GuideArticle } from "@/types/app";
 
 export default function GuideArticlesPage({
   searchParams,
@@ -11,12 +10,13 @@ export default function GuideArticlesPage({
     <AbstractResourceList
       resource={Resource.GuideArticles}
       searchParams={searchParams}
-      mapItemToList={(item: GuideArticle) => ({
+      sortFields={{ title: "tytułu", shortDesc: "opisu" }}
+      searchFields={{ title: "tytule", description: "opisie" }}
+      mapItemToList={(item) => ({
         id: item.id,
         name: item.title,
         shortDescription: item.shortDesc,
       })}
-      addButtonLabel="Dodaj artykuł"
     />
   );
 }

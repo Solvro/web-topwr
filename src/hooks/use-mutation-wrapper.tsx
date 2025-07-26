@@ -10,8 +10,8 @@ import type {
  * A wrapper around the `useMutation` hook from `@tanstack/react-query` to simplify its usage.
  *
  * @template TData - The type of the data returned by the mutation.
- * @template TError - The type of the error returned by the mutation.
  * @template TBody - The type of the variables passed to the mutation function.
+ * @template TError - The type of the error returned by the mutation. Defaults to `never`.
  *
  * @param {string} mutationKey - A unique key for the mutation.
  * @param {(variables: TBody) => Promise<TData>} mutationFunction - A function that performs the mutation.
@@ -19,7 +19,7 @@ import type {
  *
  * @returns {UseMutationResult<TData, TError, TBody>} The result of the mutation, including mutate function, status, and error.
  */
-export function useMutationWrapper<TData, TError, TBody>(
+export function useMutationWrapper<TData, TBody, TError = never>(
   mutationKey: string,
   mutationFunction: (body: TBody) => Promise<TData>,
   options?: Omit<

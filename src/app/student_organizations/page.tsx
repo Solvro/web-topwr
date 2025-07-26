@@ -1,6 +1,5 @@
 import { AbstractResourceList } from "@/components/abstract/abstract-resource-list";
 import { Resource } from "@/config/enums";
-import type { StudentOrganization } from "@/types/app";
 
 export default function StudentOrganizationsPage({
   searchParams,
@@ -11,12 +10,13 @@ export default function StudentOrganizationsPage({
     <AbstractResourceList
       resource={Resource.StudentOrganizations}
       searchParams={searchParams}
-      mapItemToList={(item: StudentOrganization) => ({
+      sortFields={{ name: "nazwy", shortDescription: "opisu" }}
+      searchFields={{ name: "nazwie", description: "opisie" }}
+      mapItemToList={(item) => ({
         id: item.id,
         name: item.name,
         shortDescription: item.shortDescription,
       })}
-      addButtonLabel="Dodaj organizację studencką"
     />
   );
 }

@@ -1,8 +1,8 @@
 import { Slot } from "@radix-ui/react-slot";
 import type { VariantProps } from "class-variance-authority";
-import { Loader } from "lucide-react";
 import * as React from "react";
 
+import { Spinner } from "@/components/spinner";
 import { cn } from "@/lib/utils";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "../tooltip";
@@ -21,7 +21,7 @@ export function Button({
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     loading?: boolean;
-    tooltip?: React.ReactNode;
+    tooltip?: string;
   }) {
   const Comp = asChild ? Slot : "button";
 
@@ -29,12 +29,13 @@ export function Button({
     <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
+      aria-label={tooltip ?? undefined}
       {...props}
       disabled={loading || props.disabled}
     >
       {loading ? (
         <>
-          <Loader className="size-4 animate-spin" />
+          <Spinner className="size-4" />
           {children}
         </>
       ) : (

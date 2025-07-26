@@ -1,3 +1,5 @@
+import type { UrlObject } from "node:url";
+
 import {
   Pagination,
   PaginationContent,
@@ -9,18 +11,12 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-function createPageHref(page: number): string {
-  if (typeof window === "undefined") {
-    return `?page=${String(page)}`;
-  }
-  const url = new URL(window.location.href);
-  url.searchParams.set("page", page.toString());
-  return url.search;
-}
+import type { ListSearchParameters } from "./abstract/abstract-resource-list";
 
 export function PaginationComponent({
   page,
   totalPages,
+  searchParams,
   //   currentResultsNumber,
   //   resultsNumber,
 }: {
@@ -28,7 +24,12 @@ export function PaginationComponent({
   totalPages: number;
   currentResultsNumber: number;
   resultsNumber: number;
+  searchParams: ListSearchParameters;
 }) {
+  const createPageHref = (newPage: number): UrlObject => ({
+    query: { ...searchParams, page: String(newPage) },
+  });
+
   return (
     <Pagination className="my-0 flex w-full flex-row items-center justify-center sm:mx-0 sm:w-min sm:justify-start">
       <PaginationContent>

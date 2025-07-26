@@ -4,24 +4,38 @@ import Link from "next/link";
 import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { PaginationComponent } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
-import { LIST_RESULTS_PER_PAGE, RESOURCE_API_PATHS } from "@/config/constants";
+import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
+import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
-import type { ListItem, ResourceTypes } from "@/types/app";
+import { encodeQueryComponent } from "@/lib/helpers";
+import { declineNoun } from "@/lib/polish";
+import type { ListItem, ResourceDataType } from "@/types/app";
+
+import { SortFilters } from "./sort-filters";
 
 interface ApiResponse<T extends Resource> {
-  data: ResourceTypes[T][];
+  data: ResourceDataType<T>[];
   meta: { total: number };
 }
 
-async function fetchResource<T extends Resource>(
+async function fetchResources<T extends Resource>(
   resource: T,
   page: number,
   resultsPerPage: number,
+  sortBy: string,
+  sortDirection: "+" | "-",
+  searchField?: string,
+  searchTerm?: string,
 ): Promise<ApiResponse<T>> {
+  const search =
+    searchField == null || searchTerm == null
+      ? ""
+      : `${encodeQueryComponent(searchField)}=%${encodeQueryComponent(searchTerm)}%&`;
   try {
     const result = await fetchQuery<ApiResponse<T>>(
-      `${RESOURCE_API_PATHS[resource]}?page=${String(page)}&limit=${String(resultsPerPage)}`,
+      `?${search}page=${String(page)}&limit=${String(resultsPerPage)}&sort=${sortDirection}${sortBy}`,
+      { resource },
     );
     return result;
   } catch (error) {
@@ -30,34 +44,54 @@ async function fetchResource<T extends Resource>(
   }
 }
 
+export interface ListSearchParameters {
+  page?: string;
+  sortBy?: string;
+  sortDirection?: "asc" | "desc";
+  searchField?: string;
+  searchTerm?: string;
+}
+
 export async function AbstractResourceList<T extends Resource>({
   resource,
   searchParams,
   mapItemToList,
-  addButtonLabel = "Dodaj",
+  sortFields = {},
+  searchFields = {},
 }: {
   resource: T;
-  searchParams: Promise<{ page?: string }>;
-  mapItemToList: (item: ResourceTypes[T]) => ListItem;
-  addButtonLabel?: string;
+  sortFields?: Record<string, string>;
+  searchFields?: Record<string, string>;
+  searchParams: Promise<ListSearchParameters>;
+  mapItemToList: (item: ResourceDataType<T>) => ListItem;
 }) {
   const resolvedSearchParameters = await searchParams;
   const page = Number.parseInt(resolvedSearchParameters.page ?? "1", 10);
+  const sortBy = resolvedSearchParameters.sortBy ?? "id";
+  const sortDirection =
+    resolvedSearchParameters.sortDirection === "desc" ? "-" : "+";
+  const searchField = resolvedSearchParameters.searchField;
+  const searchTerm = resolvedSearchParameters.searchTerm;
 
-  const { data, meta } = await fetchResource(
+  const { data, meta } = await fetchResources(
     resource,
     page,
     LIST_RESULTS_PER_PAGE,
+    sortBy,
+    sortDirection,
+    searchField,
+    searchTerm,
   );
 
   const totalPages = Math.ceil(meta.total / LIST_RESULTS_PER_PAGE);
   const resultsNumber = meta.total;
-  const listItems: ListItem[] = data.map((item: ResourceTypes[T]) =>
+  const listItems: ListItem[] = data.map((item: ResourceDataType<T>) =>
     mapItemToList(item),
   );
 
   return (
     <div className="flex h-full flex-col space-y-4">
+      <SortFilters sortFields={sortFields} searchFields={searchFields} />
       <div className="grow basis-[0] space-y-4 overflow-y-auto pr-2">
         {listItems.map((item) => (
           <div
@@ -78,7 +112,11 @@ export async function AbstractResourceList<T extends Resource>({
                 </Link>
               </Button>
 
-              <DeleteButtonWithDialog resource={resource} id={item.id} />
+              <DeleteButtonWithDialog
+                resource={resource}
+                id={item.id}
+                itemName={item.name}
+              />
             </div>
           </div>
         ))}
@@ -89,11 +127,12 @@ export async function AbstractResourceList<T extends Resource>({
           totalPages={totalPages}
           currentResultsNumber={listItems.length}
           resultsNumber={resultsNumber}
+          searchParams={resolvedSearchParameters}
         />
 
         <Button asChild>
           <Link href={`/${resource}/create`}>
-            {addButtonLabel}
+            Dodaj {declineNoun(resource, { case: DeclensionCase.Accusative })}
             <Plus />
           </Link>
         </Button>

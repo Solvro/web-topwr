@@ -6,7 +6,7 @@ import { API_ERROR_MESSAGES, API_URL } from "@/config/constants";
 import { getErrorMessage } from "@/lib/error-handling";
 import { getToaster, renderWithProviders } from "@/tests/helpers";
 import { MOCK_PASSWORD, MOCK_TOKEN, MOCK_USER } from "@/tests/mocks/constants";
-import { MOCK_ROUTER_PUSH } from "@/tests/mocks/functions";
+import { MOCK_USE_ROUTER } from "@/tests/mocks/functions";
 import { server } from "@/tests/mocks/server";
 
 import LoginPage from "./page";
@@ -38,7 +38,10 @@ async function enterValidCredentials() {
   await form.user.click(form.submitButton);
 
   expect(getErrorMessage).not.toHaveBeenCalled();
-  expect(MOCK_ROUTER_PUSH).toHaveBeenCalledExactlyOnceWith("/");
+
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  expect(MOCK_USE_ROUTER.push).toHaveBeenCalledExactlyOnceWith("/");
+
   expect(getToaster()).toHaveTextContent("Pomyślnie zalogowano");
 }
 

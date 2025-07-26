@@ -74,7 +74,9 @@ export function useAuth(): AuthContext {
         `Cannot log in: already authenticated as ${getUserDisplayName(authState.user)}`,
       );
     }
-    const response = await fetchMutation<AuthState>("/auth/login", data);
+    const response = await fetchMutation<AuthState>("/auth/login", {
+      body: data,
+    });
     Cookies.set(AUTH_STATE_COOKIE_NAME, ...getCookieOptions(response));
     setAuthState(response);
     return response;

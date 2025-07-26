@@ -12,7 +12,7 @@ export default defineConfig({
       reportOnFailure: true,
       reporter: ["text", "json-summary", "json"],
       include: ["src/**/*.{ts,tsx}"],
-      exclude: ["src/components/ui"],
+      exclude: ["src/components/ui", "src/tests"],
     },
   },
 });

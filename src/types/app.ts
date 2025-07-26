@@ -1,47 +1,29 @@
+import type { z } from "zod";
+
 import type { ERROR_CODES } from "@/config/constants";
-import type {
-  OrganizationSource,
-  OrganizationStatus,
-  OrganizationType,
-  Resource,
-} from "@/config/enums";
+import type { DeclensionCase, Resource } from "@/config/enums";
+import type { RESOURCE_SCHEMAS } from "@/schemas/resources";
 
-export interface StudentOrganization {
-  id: number;
-  name: string;
-  departmentId: number | null;
-  logoKey: string | null;
-  coverKey: string | null;
-  description: string | null;
-  shortDescription: string | null;
-  coverPreview: boolean;
-  source: OrganizationSource;
-  organizationType: OrganizationType;
-  organizationStatus: OrganizationStatus;
-  isStrategic: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+import type { DatedResource } from "./api";
 
-export interface GuideArticle {
-  id: number;
-  title: string;
-  shortDesc: string;
-  description: string;
-  imageKey: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface ResourceTypes {
-  [Resource.GuideArticles]: GuideArticle;
-  [Resource.StudentOrganizations]: StudentOrganization;
-}
+export type ResourceSchema<T extends Resource> = (typeof RESOURCE_SCHEMAS)[T];
+export type ResourceFormValues<T extends Resource> = z.infer<ResourceSchema<T>>;
+export type ResourceDataType<T extends Resource> = DatedResource & {
+  id: string;
+} & ResourceFormValues<T>;
 
 export interface ListItem {
-  id: number;
+  id: string;
   name?: string;
   shortDescription?: string | null;
 }
 
 export type ErrorCode = keyof typeof ERROR_CODES;
+
+export interface Pluralized<T> {
+  singular: T;
+  plural: T;
+}
+export type Declensions = Record<DeclensionCase, string>;
+
+export type AppZodObject = z.ZodObject<z.ZodRawShape>;
