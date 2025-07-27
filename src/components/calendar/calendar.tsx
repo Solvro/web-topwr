@@ -9,7 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useCalendarEvents } from "@/hooks/use-calendar-events";
 import { getCurrentDate } from "@/lib/date-utils";
+import type { CalendarEvent } from "@/types/calendar";
 
 import { AddEventForm } from "./add-event-form";
 import { DayButton } from "./day-button";
@@ -19,9 +21,15 @@ interface Props {
 }
 
 export function Calendar({ clickable = false }: Props) {
+  const { events, loading, error, refetch } = useCalendarEvents();
   const today = getCurrentDate();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null,
+  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const hasError = Boolean(error);
 
   // Calculate the first day of the month and what day of week it falls on
   const firstDayOfMonth = new Date(today.year, today.month.value - 1, 1);
@@ -46,26 +54,75 @@ export function Calendar({ clickable = false }: Props) {
 
   const handleDayClick = (day: number) => {
     setSelectedDay(day);
+    setSelectedEvent(null); // Clear any selected event
     setIsDialogOpen(true);
   };
 
+  const handleEventClick = (event: CalendarEvent) => {
+    setSelectedEvent(event);
+    setSelectedDay(null); // Clear any selected day
+    setIsDialogOpen(true);
+  };
+
+  const getEventsForDay = (day: number) => {
+    return events.filter((event) => {
+      const eventDate = new Date(event.startTime);
+      return (
+        eventDate.getDate() === day &&
+        eventDate.getMonth() + 1 === today.month.value &&
+        eventDate.getFullYear() === today.year
+      );
+    });
+  };
+
+  const getSelectedDate = () => {
+    if (selectedDay === null) {
+      return;
+    }
+    return new Date(today.year, today.month.value - 1, selectedDay);
+  };
+
+  const getDialogTitle = () => {
+    if (selectedEvent !== null) {
+      return `Edytuj wydarzenie`;
+    }
+    if (selectedDay !== null) {
+      return `${String(selectedDay)} ${today.month.name} ${String(today.year)}`;
+    }
+    return "";
+  };
+
   return (
-    <div className="mx-auto mt-10 grid w-[85%] grid-cols-7 md:max-w-7xl">
-      <div className="col-span-7 text-center text-lg font-bold">
+    <div className="mx-auto mt-4 grid w-[95%] grid-cols-7 sm:mt-6 sm:w-[90%] md:mt-10 md:max-w-7xl lg:w-[85%]">
+      <div className="col-span-7 text-center text-base font-bold sm:text-lg">
         {today.month.name} {today.year}
       </div>
-      <div className="col-span-7 text-center text-sm text-gray-500">
+      <div className="col-span-7 text-center text-xs text-gray-500 sm:text-sm">
         {today.month.daysInMonth} dni
       </div>
-      <div className="col-span-7 text-center text-sm text-gray-500">
+      <div className="col-span-7 text-center text-xs text-gray-500 sm:text-sm">
         Dzisiaj jest {today.day} {today.month.name} {today.year}
       </div>
-      <div className="col-span-7 text-center text-sm text-gray-500">
+      <div className="col-span-7 text-center text-xs text-gray-500 sm:text-sm">
         {clickable ? "Kliknij, aby wybrać dzień" : "Dni nie są klikalne"}
       </div>
-      <div className="col-span-7 grid grid-cols-7 gap-2">
+
+      {loading ? (
+        <div className="col-span-7 text-center text-sm text-gray-500">
+          Ładowanie wydarzeń...
+        </div>
+      ) : hasError ? (
+        <div className="col-span-7 text-center text-sm text-red-500">
+          Błąd ładowania wydarzeń: {error}
+        </div>
+      ) : null}
+
+      <div className="col-span-7 grid grid-cols-7 gap-1 sm:gap-2">
         {["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"].map((day) => (
-          <div key={day} className="text-center font-semibold">
+          <div
+            key={day}
+            className="text-center text-xs font-semibold sm:text-sm"
+          >
             {day}
           </div>
         ))}
@@ -73,17 +130,22 @@ export function Calendar({ clickable = false }: Props) {
       {calendarDays.map((cell) => {
         if (cell.type === "empty") {
           // Empty cell for days before month starts
-          return <div key={cell.id} className="h-20"></div>;
+          return (
+            <div key={cell.id} className="h-16 sm:h-24 md:h-28 lg:h-32"></div>
+          );
         }
 
         if (cell.type === "day" && cell.day !== undefined) {
+          const dayEvents = getEventsForDay(cell.day);
           return (
             <DayButton
               key={cell.id}
               day={cell.day}
               today={today}
               clickable={clickable}
+              events={dayEvents}
               onDayClick={handleDayClick}
+              onEventClick={handleEventClick}
             />
           );
         }
@@ -94,13 +156,19 @@ export function Calendar({ clickable = false }: Props) {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-h-[80vh] w-max">
           <DialogHeader>
-            <DialogTitle>
-              {selectedDay} {today.month.name} {today.year}
-            </DialogTitle>
+            <DialogTitle>{getDialogTitle()}</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <div className="mx-auto w-full">
-            <AddEventForm />
+            <AddEventForm
+              existingEvent={selectedEvent ?? undefined}
+              selectedDate={getSelectedDate()}
+              onSuccess={() => {
+                void refetch();
+                setIsDialogOpen(false);
+                setSelectedEvent(null);
+              }}
+            />
           </div>
         </DialogContent>
       </Dialog>
