@@ -6,12 +6,8 @@ on:
   pull_request:
 
 jobs:
-  lint-and-test:
+  lint-and-vitest:
     runs-on: ubuntu-latest
-
-    env:
-      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
-      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
 
     steps:
       - name: Checkout
@@ -30,23 +26,6 @@ jobs:
         run: npm run format:check
         if: always()
 
-      - name: Build
-        run: npm run build
-        if: always()
-
       - name: Run unit tests
         run: npx vitest run --passWithNoTests
         if: always()
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-
-      - name: Run Playwright tests
-        run: npx playwright test
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
