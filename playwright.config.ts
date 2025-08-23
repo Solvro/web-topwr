@@ -1,18 +1,8 @@
+import nextEnv from "@next/env";
 import { defineConfig, devices } from "@playwright/test";
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-import dotenv from "dotenv";
-import path from "node:path";
 
-const DOTENV_FILENAMES = [".env", ".env.local"];
-
-dotenv.config({
-  path: DOTENV_FILENAMES.map((filename) =>
-    path.resolve(import.meta.dirname, filename),
-  ),
-});
+// For some reason using the named export fails at runtime, so we have to import the whole module
+nextEnv.loadEnvConfig(process.cwd());
 
 /**
  * See https://playwright.dev/docs/test-configuration.
