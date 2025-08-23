@@ -2,11 +2,7 @@ import { faker } from "@faker-js/faker";
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
 
-import {
-  API_URL,
-  LIST_RESULTS_PER_PAGE,
-  RESOURCE_API_PATHS,
-} from "@/config/constants";
+import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import { Resource } from "@/config/enums";
 import { MOCK_STUDENT_ORGANIZATION } from "@/tests/mocks/constants";
 
@@ -74,7 +70,7 @@ test.describe("Student Organizations CRUD", () => {
 
       await page
         .getByRole("checkbox", { name: /czy jest kołem strategicznym/i })
-        [MOCK_STUDENT_ORGANIZATION.isStrategic ? "check" : "uncheck"]();
+        .setChecked(MOCK_STUDENT_ORGANIZATION.isStrategic);
 
       await page.getByRole("button", { name: /zapisz/i }).click();
       await expectAbstractResourceFormSuccess(page);
@@ -113,12 +109,8 @@ test.describe("Student Organizations CRUD", () => {
       await nameInput.clear();
       await nameInput.fill(newName);
       await expect(submitButton).toBeEnabled();
-      const waitPromise = page.waitForResponse(
-        `${API_URL}/${RESOURCE_API_PATHS[resource]}/*`,
-      );
       await submitButton.click();
       await expectAbstractResourceFormSuccess(page, 2);
-      await waitPromise;
       await page.reload();
       await expect(nameInput).toHaveValue(newName);
     });
