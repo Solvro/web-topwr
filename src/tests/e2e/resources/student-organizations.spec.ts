@@ -102,7 +102,9 @@ test.describe("Student Organizations CRUD", () => {
     const newName = `${faker.company.name()} UPDATED TEST NAME`;
 
     await test.step("Update", async () => {
-      await getOrganizationContainer(page).locator("a").click();
+      await getOrganizationContainer(page)
+        .getByLabel(/edytuj organizację studencką/i)
+        .click();
       await page.waitForURL(`/${resource}/edit/*`);
       const submitButton = page.getByRole("button", { name: /zapisz/i });
       await expect(submitButton).toBeDisabled();
@@ -130,7 +132,9 @@ test.describe("Student Organizations CRUD", () => {
     });
 
     await test.step("Delete", async () => {
-      await getOrganizationContainer(page, newName).locator("button").click();
+      await getOrganizationContainer(page, newName)
+        .getByLabel(/usuń organizację studencką/i)
+        .click();
       await page.getByRole("button", { name: /usuń/i }).click();
 
       await expect(
