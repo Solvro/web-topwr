@@ -64,6 +64,7 @@ export function DeleteButtonWithDialog({
         <Button
           variant="ghost"
           className="text-destructive hover:text-destructive h-10 w-10"
+          aria-label={`Usuń ${declensions.accusative}`}
         >
           <Trash2 />
         </Button>
