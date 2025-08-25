@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "@playwright/test";
-import type { Page } from "@playwright/test";
+import type { Page, Response } from "@playwright/test";
 
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import {
@@ -10,10 +10,11 @@ import {
   Resource,
   UniversityBranch,
 } from "@/config/enums";
+import { RESOURCE_METADATA } from "@/config/resources";
 import { FetchError, fetchMutation } from "@/lib/fetch-utils";
 import { deleteAccessToken, generateAccessToken } from "@/tests/helpers/auth";
 import type { MessageResponse } from "@/types/api";
-import type { ResourceDataType, ResourceFormValues } from "@/types/app";
+import type { Id, ResourceDataType, ResourceFormValues } from "@/types/app";
 
 import {
   expectAbstractResourceFormSuccess,
@@ -27,16 +28,19 @@ import {
 const resource = Resource.StudentOrganizations;
 type ResourceType = typeof resource;
 
-type PartialStudentOrganization = Partial<ResourceFormValues<ResourceType>>;
-
 type NonNullablePartialStudentOrganization = {
-  [K in keyof PartialStudentOrganization]?: NonNullable<
-    PartialStudentOrganization[K]
+  [K in keyof ResourceFormValues<ResourceType>]?: NonNullable<
+    ResourceFormValues<ResourceType>[K]
   >;
 };
 
 let accessTokenOverride: string;
 let refreshToken: string;
+type MockStudentOrganization = ReturnType<typeof generateTestOrganization>;
+
+interface CreateOrganizationResponse extends MessageResponse {
+  data: ResourceDataType<ResourceType> & MockStudentOrganization;
+}
 
 const generateTestOrganization = (
   propertyOverrides: NonNullablePartialStudentOrganization = {},
@@ -59,11 +63,7 @@ async function createTestOrganization(
   propertyOverrides: NonNullablePartialStudentOrganization = {},
 ) {
   const body = generateTestOrganization(propertyOverrides);
-  const response = await fetchMutation<
-    MessageResponse & {
-      data: ResourceDataType<ResourceType> & typeof body;
-    }
-  >("/", {
+  const response = await fetchMutation<CreateOrganizationResponse>("/", {
     resource,
     body,
     accessTokenOverride,
@@ -71,9 +71,11 @@ async function createTestOrganization(
   return response.data;
 }
 
-async function deleteTestOrganization(
-  id: ResourceDataType<ResourceType>["id"],
-) {
+/** Deletes the student organization with the given id from the backend.
+ * @param id The id of the organization to delete.
+ * @param strict Causes an error to be raised if the request returns a non-200 response. Defaults to false.
+ */
+async function deleteTestOrganization(id?: Id, strict = false) {
   try {
     await fetchMutation<MessageResponse>(String(id), {
       resource,
@@ -90,6 +92,10 @@ async function deleteTestOrganization(
     if (error.errorReport?.error.validationIssues?.[0].field !== "params.id") {
       throw error;
     }
+    if (strict) {
+      console.error("deleting organization with id", id, "failed:", error);
+      throw error;
+    }
   }
 }
 
@@ -100,7 +106,7 @@ async function navigateToOrganizations(page: Page) {
 /** Sets the abstract resource list filters such that the only displayed organization is the provided one. */
 async function filterSpecificOrganization(
   page: Page,
-  organization: Awaited<ReturnType<typeof createTestOrganization>>,
+  organization: MockStudentOrganization,
 ) {
   await setAbstractResourceListFilters(page, resource, {
     searchField: "description",
@@ -143,7 +149,7 @@ test.describe("Student Organizations CRUD", () => {
     await deleteAccessToken(accessTokenOverride, refreshToken);
   });
 
-  test.skip("should create an organization", async ({ page }) => {
+  test("should create an organization", async ({ page }) => {
     await navigateToOrganizations(page);
     const testOrganization = generateTestOrganization();
 
@@ -172,12 +178,20 @@ test.describe("Student Organizations CRUD", () => {
       .getByRole("checkbox", { name: /czy jest kołem strategicznym/i })
       .setChecked(testOrganization.isStrategic);
 
-    await page.getByRole("button", { name: /zapisz/i }).click();
-    const testOrganizationId = ""; // TODO: obtain this
+    const responsePromise = page.waitForResponse(
+      (response: Response) =>
+        response.url().split("/").at(-2) ===
+          RESOURCE_METADATA[resource].apiPath &&
+        response.request().method() === "POST",
+    );
+
     try {
+      await page.getByRole("button", { name: /zapisz/i }).click();
       await expectAbstractResourceFormSuccess(page);
     } finally {
-      await deleteTestOrganization(testOrganizationId);
+      const response = await responsePromise;
+      const json = (await response.json()) as CreateOrganizationResponse;
+      await deleteTestOrganization(json.data.id, true);
     }
   });
 
