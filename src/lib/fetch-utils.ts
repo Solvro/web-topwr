@@ -33,6 +33,12 @@ export class FetchError extends Error {
     super(message);
     this.errorReport = errorReport;
     this.responseStatus = responseStatus;
+
+    // Adjust the stack trace to remove this constructor
+    if (typeof this.stack === "string" && this.stack.trim() !== "") {
+      const stackLines = this.stack.split("\n");
+      this.stack = [stackLines[0], ...stackLines.slice(2)].join("\n");
+    }
   }
 }
 
