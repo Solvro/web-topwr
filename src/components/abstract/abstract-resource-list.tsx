@@ -120,7 +120,6 @@ export async function AbstractResourceList<T extends Resource>({
                   <SquarePen />
                 </Link>
               </Button>
-
               <DeleteButtonWithDialog
                 resource={resource}
                 id={item.id}

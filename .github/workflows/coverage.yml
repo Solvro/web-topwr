@@ -42,3 +42,7 @@ jobs:
 
       - name: Compare coverage
         run: node .github/scripts/check-coverage-diff.js
+
+      - name: Return to previous branch
+        run: git checkout -
+        if: always()
