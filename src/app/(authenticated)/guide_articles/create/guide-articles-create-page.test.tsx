@@ -77,6 +77,8 @@ describe("Create Guide Articles Page", () => {
 
     await form.user.click(form.submitButton);
 
-    expect(getToaster()).toHaveTextContent(/pomyślnie zapisano/i);
+    await waitFor(() => {
+      expect(getToaster()).toHaveTextContent(/pomyślnie zapisano/i);
+    });
   });
 });
