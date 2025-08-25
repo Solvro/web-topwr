@@ -23,16 +23,16 @@ const isAbsolutePath = (url: string) => /^https?:\/\//.test(url);
 
 export class FetchError extends Error {
   public errorReport: ErrorResponse | null;
+  public responseStatus: number;
 
-  constructor(message: string, errorReport: ErrorResponse | null = null) {
+  constructor(
+    message: string,
+    errorReport: ErrorResponse | null = null,
+    responseStatus: number,
+  ) {
     super(message);
     this.errorReport = errorReport;
-
-    // Adjust the stack trace to remove this constructor
-    if (typeof this.stack === "string" && this.stack.trim() !== "") {
-      const stackLines = this.stack.split("\n");
-      this.stack = [stackLines[0], ...stackLines.slice(2)].join("\n");
-    }
+    this.responseStatus = responseStatus;
   }
 }
 
@@ -58,6 +58,7 @@ async function handleResponse<T>(response: Response): Promise<NonNullable<T>> {
     throw new FetchError(
       `Error ${String(response.status)}: ${response.statusText}`,
       errorReport,
+      response.status,
     );
   }
 

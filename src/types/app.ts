@@ -6,14 +6,16 @@ import type { RESOURCE_SCHEMAS } from "@/schemas/resources";
 
 import type { DatedResource } from "./api";
 
+export type Id = string | number;
+
 export type ResourceSchema<T extends Resource> = (typeof RESOURCE_SCHEMAS)[T];
 export type ResourceFormValues<T extends Resource> = z.infer<ResourceSchema<T>>;
 export type ResourceDataType<T extends Resource> = DatedResource & {
-  id: string;
+  id: Id;
 } & ResourceFormValues<T>;
 
 export interface ListItem {
-  id: string;
+  id: Id;
   name?: string;
   shortDescription?: string | null;
 }

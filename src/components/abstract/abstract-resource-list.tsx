@@ -89,6 +89,10 @@ export async function AbstractResourceList<T extends Resource>({
     mapItemToList(item),
   );
 
+  const resourceAccusative = declineNoun(resource, {
+    case: DeclensionCase.Accusative,
+  });
+
   return (
     <div className="flex h-full flex-col space-y-4">
       <SortFilters sortFields={sortFields} searchFields={searchFields} />
@@ -106,7 +110,12 @@ export async function AbstractResourceList<T extends Resource>({
                 : item.shortDescription}
             </span>
             <div className="space-x-0.5 sm:space-x-2">
-              <Button variant="ghost" className="h-10 w-10" asChild>
+              <Button
+                variant="ghost"
+                className="h-10 w-10"
+                asChild
+                aria-label={`Edytuj ${resourceAccusative}`}
+              >
                 <Link href={`/${resource}/edit/${String(item.id)}`}>
                   <SquarePen />
                 </Link>
@@ -132,7 +141,7 @@ export async function AbstractResourceList<T extends Resource>({
 
         <Button asChild>
           <Link href={`/${resource}/create`}>
-            Dodaj {declineNoun(resource, { case: DeclensionCase.Accusative })}
+            Dodaj {resourceAccusative}
             <Plus />
           </Link>
         </Button>
