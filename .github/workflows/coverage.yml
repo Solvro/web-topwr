@@ -17,8 +17,8 @@ jobs:
       - name: Checkout current branch
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install
+        uses: ./.github/composite-actions/install
 
       - name: Run tests with coverage
         run: npm run test:coverage

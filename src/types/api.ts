@@ -19,7 +19,7 @@ export interface SerializedErrorReport {
   /**
    * List of validation errors for 'E_VALIDATION_ERROR' errors.
    */
-  validationIssues?: MessageResponse[];
+  validationIssues?: Record<string, string | undefined>[];
   /**
    * Error message of each error cause in the error stack, ordered from top to bottom of the stack
    *
