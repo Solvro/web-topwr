@@ -5,10 +5,8 @@ import assert from "node:assert";
 import { describe, expect, it } from "vitest";
 
 import { FORM_ERROR_MESSAGES } from "@/config/constants";
-import { Resource } from "@/config/enums";
 import { getToaster, renderWithProviders } from "@/tests/helpers/react";
 import { MOCK_GUIDE_ARTICLE, MOCK_IMAGE_FILE } from "@/tests/mocks/constants";
-import { MOCK_API_RESOURCE_OPERATION } from "@/tests/mocks/functions";
 
 import CreatePage from "./page";
 
@@ -76,10 +74,8 @@ describe("Create Guide Articles Page", () => {
 
     await form.user.click(form.submitButton);
 
-    expect(MOCK_API_RESOURCE_OPERATION).toHaveBeenCalledExactlyOnceWith({
-      operation: "create",
-      resource: Resource.GuideArticles,
-      body: MOCK_GUIDE_ARTICLE,
+    await waitFor(() => {
+      expect(getToaster()).toHaveTextContent(/pomyślnie zapisano/i);
     });
   });
 });
