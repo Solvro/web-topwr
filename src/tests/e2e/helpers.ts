@@ -10,7 +10,7 @@ import { encodeQueryParameters } from "@/lib/helpers";
 import { SortFiltersSchema } from "@/schemas";
 import type { SortFiltersFormValues } from "@/types/forms";
 
-const { TEST_USER_EMAIL, TEST_USER_PASSWORD } = process.env;
+import { TEST_USER_EMAIL, TEST_USER_PASSWORD } from "../mocks/constants";
 
 export async function login(page: Page) {
   await page.goto("/login");
