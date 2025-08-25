@@ -7,19 +7,18 @@ import {
   SORT_FILTER_LABEL_DECLENSION_CASES,
 } from "@/config/constants";
 import type { Resource } from "@/config/enums";
+import { env } from "@/config/env";
 import { encodeQueryParameters } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import { SortFiltersSchema } from "@/schemas";
 import type { SortFiltersFormValues } from "@/types/forms";
 
-const { TEST_USER_EMAIL, TEST_USER_PASSWORD } = process.env;
-
 export async function login(page: Page) {
   await page.goto("/login");
-  expect(TEST_USER_EMAIL).toBeDefined();
-  expect(TEST_USER_PASSWORD).toBeDefined();
-  await page.getByLabel(/email/i).fill(TEST_USER_EMAIL ?? "");
-  await page.getByLabel(/hasło/i).fill(TEST_USER_PASSWORD ?? "");
+  expect(env.TEST_USER_EMAIL).toBeDefined();
+  expect(env.TEST_USER_PASSWORD).toBeDefined();
+  await page.getByLabel(/email/i).fill(env.TEST_USER_EMAIL ?? "");
+  await page.getByLabel(/hasło/i).fill(env.TEST_USER_PASSWORD ?? "");
   await page.getByRole("button", { name: /zaloguj się/i }).click();
   await expect(page).not.toHaveURL("/login");
 }
