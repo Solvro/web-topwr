@@ -23,7 +23,7 @@ function renderCreationForm() {
   return { screen: form, user, input, submitButton };
 }
 
-describe("Create Guide Articles Page", () => {
+describe("guide articles creation page", () => {
   it("should require all fields to be filled", async () => {
     const form = renderCreationForm();
     expect(form.submitButton).toBeDisabled();

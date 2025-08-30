@@ -16,7 +16,7 @@ const MOCK_IMAGES = MOCK_FILES.map((file) => ({
   alt: faker.lorem.sentence(),
 }));
 
-describe("API Image component", () => {
+describe("api image component", () => {
   it("should render test images correctly", async () => {
     const screen = renderWithProviders(
       <>
