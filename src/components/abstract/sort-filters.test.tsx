@@ -113,7 +113,7 @@ function expectFormValues(
   expect(form.input.searchTerm).toHaveValue(searchTerm);
 }
 
-describe("Abstract list sort filters", () => {
+describe("abstract list sort filters", () => {
   it("should render the appropriate sort filter select options", async () => {
     const form = renderSortFilters();
     await form.user.click(form.input.sortBy);
@@ -141,12 +141,14 @@ describe("Abstract list sort filters", () => {
     ).toBeInTheDocument();
   });
 
+  // eslint-disable-next-line vitest/expect-expect
   it("should populate initial values from search params", () => {
     useMockedSearchParameters();
     const form = renderSortFilters();
     expectFormValues(form, { ...MOCK_SEARCH_PARAMS, searchTerm: "" });
   });
 
+  // eslint-disable-next-line vitest/expect-expect
   it("should reset to initial values beyond search params", async () => {
     useMockedSearchParameters();
 
