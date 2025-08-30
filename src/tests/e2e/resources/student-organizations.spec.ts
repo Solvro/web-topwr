@@ -124,7 +124,7 @@ async function filterSpecificOrganization(
   });
 }
 
-test.describe("Student Organizations CRUD", () => {
+test.describe("student organizations CRUD pages", () => {
   test.beforeAll(async () => {
     ({ accessToken: accessTokenOverride, refreshToken } =
       await generateAccessToken());

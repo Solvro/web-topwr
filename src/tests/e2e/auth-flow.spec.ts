@@ -2,7 +2,7 @@ import test, { expect } from "@playwright/test";
 
 import { login, logout } from "./helpers";
 
-test.describe("Authentication flow", () => {
+test.describe("authentication flow", () => {
   test("should redirect to login page when not authenticated", async ({
     page,
   }) => {

@@ -60,7 +60,7 @@
     "@next/env": "^15.5.0",
     "@next/eslint-plugin-next": "^15.2.4",
     "@playwright/test": "^1.54.1",
-    "@solvro/config": "^2.0.7",
+    "@solvro/config": "https://pkg.pr.new/Solvro/lib-web-solvro-config/@solvro/config@492",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",

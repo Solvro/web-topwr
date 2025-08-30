@@ -29,7 +29,7 @@ const now = new Date();
 now.setHours(0, 0, 0, 0);
 const today = now.getDate().toString();
 
-describe("DatePicker Component", () => {
+describe("date picker component", () => {
   it("should allow date selection", async () => {
     const { screen, user, trigger } = renderDatePicker();
     await user.click(trigger);

@@ -23,7 +23,7 @@ function renderColorInput(initialValue: string | null = null) {
   return { screen, user, trigger };
 }
 
-describe("ColorInput Component", () => {
+describe("color input component", () => {
   it("should prompt color selection", () => {
     const { trigger } = renderColorInput();
     expect(trigger).toHaveTextContent("Wybierz kolor");
