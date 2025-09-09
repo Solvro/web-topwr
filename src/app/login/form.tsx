@@ -17,8 +17,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { TOAST_MESSAGES } from "@/config/constants";
 import { useAuth } from "@/hooks/use-auth";
-import { getErrorMessage } from "@/lib/error-handling";
 import { LoginSchema } from "@/schemas";
 import type { LoginFormValues } from "@/types/forms";
 
@@ -46,13 +46,7 @@ export function LoginForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((data) =>
-          toast.promise(mutateAsync(data), {
-            loading: "Trwa logowanie...",
-            success: (response) =>
-              `Pomyślnie zalogowano jako ${response.user.fullName ?? response.user.email}!`,
-            error: (error) =>
-              getErrorMessage(error, "Nastąpił błąd podczas logowania"),
-          }),
+          toast.promise(mutateAsync(data), TOAST_MESSAGES.login),
         )}
         className="bg-background w-full space-y-4 rounded-xl px-6 py-8"
       >

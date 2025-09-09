@@ -1,13 +1,8 @@
-import {
-  DepartmentIds,
-  GrammaticalGender,
-  OrganizationSource,
-  OrganizationStatus,
-  OrganizationType,
-  Resource,
-} from "@/config/enums";
+import { GrammaticalGender, Resource } from "@/config/enums";
+import { getErrorMessage } from "@/lib/error-handling";
 import { removeTrailingSlash } from "@/lib/helpers";
-import type { Declensions, Pluralized } from "@/types/app";
+import type { AuthState } from "@/types/api";
+import type { Declensions, Pluralized, RecordIntersection } from "@/types/app";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
@@ -21,15 +16,6 @@ export const API_FILES_URL = removeTrailingSlash(
   // TODO: add test. prefix to default value once backend fixes it
   process.env.API_FILES_URL ?? "https://api.topwr.solvro.pl/uploads",
 );
-
-/**
- * A mapping of the client-side resources to their paths in the backend API.
- * Currently they are the same, but this allows for flexibility in the website paths.
- */
-export const RESOURCE_API_PATHS = {
-  [Resource.GuideArticles]: "guide_articles",
-  [Resource.StudentOrganizations]: "student_organizations",
-} as const;
 
 export const LIST_RESULTS_PER_PAGE = 10;
 
@@ -56,58 +42,11 @@ export const FORM_ERROR_MESSAGES = {
   CONDITIONALLY_REQUIRED: "Należy wypełnić oba pola lub żadne z nich",
 };
 
-export const SELECT_OPTION_LABELS = {
-  STUDENT_ORGANIZATIONS: {
-    DEPARTMENT: {
-      [DepartmentIds.Architecture]: "Wydział Architektury",
-      [DepartmentIds.CivilEngineering]:
-        "Wydział Budownictwa Lądowego i Wodnego",
-      [DepartmentIds.Chemistry]: "Wydział Chemiczny",
-      [DepartmentIds.ComputerScienceAndTelecommunications]:
-        "Wydział Informatyki i Telekomunikacji",
-      [DepartmentIds.ElectricalEngineering]: "Wydział Elektryczny",
-      [DepartmentIds.GeoengineeringMiningAndGeology]:
-        "Wydział Geoinżynierii, Górnictwa i Geologii",
-      [DepartmentIds.EnvironmentalEngineering]: "Wydział Inżynierii Środowiska",
-      [DepartmentIds.Management]: "Wydział Zarządzania",
-      [DepartmentIds.MechanicalAndPowerEngineering]:
-        "Wydział Mechaniczno-Energetyczny",
-      [DepartmentIds.Mechanical]: "Wydział Mechaniczny",
-      [DepartmentIds.FundamentalProblemsOfTechnology]:
-        "Wydział Podstawowych Problemów Techniki",
-      [DepartmentIds.ElectronicsPhotonicsAndMicrosystems]:
-        "Wydział Elektroniki, Fotoniki i Mikrosystemów",
-      [DepartmentIds.Mathematics]: "Wydział Matematyki",
-      [DepartmentIds.Medical]: "Wydział Medyczny",
-    },
-    SOURCE: {
-      [OrganizationSource.StudentDepartment]: "Dział Studencki",
-      [OrganizationSource.Manual]: "Ręcznie",
-      [OrganizationSource.PwrActive]: "PWR Active",
-    },
-    TYPE: {
-      [OrganizationType.ScientificClub]: "Koło naukowe",
-      [OrganizationType.StudentOrganization]: "Organizacja studencka",
-      [OrganizationType.StudentMedium]: "Organizacja medialna",
-      [OrganizationType.CultureAgenda]: "Organizacja kulturalna",
-      [OrganizationType.StudentCouncil]: "Samorząd studencki",
-    },
-    STATUS: {
-      [OrganizationStatus.Active]: "Aktywna",
-      [OrganizationStatus.Inactive]: "Nieaktywna",
-      [OrganizationStatus.Dissolved]: "Rozwiązana",
-      [OrganizationStatus.Unknown]: "Nieznany",
-    },
-  },
-};
-
-/** A dictionary of Polish language declensions of all resource names, as well as their genders for use with determiners. */
-export const RESOURCE_DECLENSIONS: Pluralized<
-  Record<Resource, { gender: GrammaticalGender } & Declensions>
-> = {
-  singular: {
-    [Resource.GuideArticles]: {
-      gender: GrammaticalGender.Masculine,
+/** A dictionary of Polish language declensions of all resource names & other nouns, as well as their genders for use with determiners. */
+export const NOUN_DECLENSIONS = {
+  [Resource.GuideArticles]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
       nominative: "artykuł",
       genitive: "artykułu",
       dative: "artykułowi",
@@ -116,20 +55,7 @@ export const RESOURCE_DECLENSIONS: Pluralized<
       locative: "artykule",
       vocative: "artykule",
     },
-    [Resource.StudentOrganizations]: {
-      gender: GrammaticalGender.Feminine,
-      nominative: "organizacja studencka",
-      genitive: "organizacji studenckiej",
-      dative: "organizacji studenckiej",
-      accusative: "organizację studencką",
-      instrumental: "organizacją studencką",
-      locative: "organizacji studenckiej",
-      vocative: "organizacjo studencka",
-    },
-  },
-  plural: {
-    [Resource.GuideArticles]: {
-      gender: GrammaticalGender.Masculine,
+    plural: {
       nominative: "artykuły",
       genitive: "artykułów",
       dative: "artykułom",
@@ -138,8 +64,19 @@ export const RESOURCE_DECLENSIONS: Pluralized<
       locative: "artykułach",
       vocative: "artykuły",
     },
-    [Resource.StudentOrganizations]: {
-      gender: GrammaticalGender.Feminine,
+  },
+  [Resource.StudentOrganizations]: {
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "organizacja studencka",
+      genitive: "organizacji studenckiej",
+      dative: "organizacji studenckiej",
+      accusative: "organizację studencką",
+      instrumental: "organizacją studencką",
+      locative: "organizacji studenckiej",
+      vocative: "organizacjo studencka",
+    },
+    plural: {
       nominative: "organizacje studenckie",
       genitive: "organizacji studenckich",
       dative: "organizacjom studenckim",
@@ -149,14 +86,40 @@ export const RESOURCE_DECLENSIONS: Pluralized<
       vocative: "organizacje studenckie",
     },
   },
-};
+  zdjęcie: {
+    gender: GrammaticalGender.Neuter,
+    singular: {
+      nominative: "zdjęcie",
+      genitive: "zdjęcia",
+      dative: "zdjęciu",
+      accusative: "zdjęcie",
+      instrumental: "zdjęciem",
+      locative: "zdjęciu",
+      vocative: "zdjęcie",
+    },
+    plural: {
+      nominative: "zdjęcia",
+      genitive: "zdjęć",
+      dative: "zdjęciom",
+      accusative: "zdjęcia",
+      instrumental: "zdjęciami",
+      locative: "zdjęciach",
+      vocative: "zdjęcia",
+    },
+  },
+} satisfies RecordIntersection<
+  Resource,
+  string,
+  { gender: GrammaticalGender } & Pluralized<Declensions>
+>;
 
 /** A static dictionary of declensions for determiners in the Polish language. */
-export const DETERMINER_DECLENSIONS: Pluralized<
-  Record<GrammaticalGender, Declensions>
+export const DETERMINER_DECLENSIONS: Record<
+  GrammaticalGender,
+  Pluralized<Declensions>
 > = {
-  singular: {
-    [GrammaticalGender.Masculine]: {
+  [GrammaticalGender.Masculine]: {
+    singular: {
       nominative: "ten",
       genitive: "tego",
       dative: "temu",
@@ -165,27 +128,7 @@ export const DETERMINER_DECLENSIONS: Pluralized<
       locative: "tym",
       vocative: "ten",
     },
-    [GrammaticalGender.Feminine]: {
-      nominative: "ta",
-      genitive: "tej",
-      dative: "tej",
-      accusative: "tę",
-      instrumental: "tą",
-      locative: "tej",
-      vocative: "ta",
-    },
-    [GrammaticalGender.Neuter]: {
-      nominative: "to",
-      genitive: "tego",
-      dative: "temu",
-      accusative: "to",
-      instrumental: "tym",
-      locative: "tym",
-      vocative: "to",
-    },
-  },
-  plural: {
-    [GrammaticalGender.Masculine]: {
+    plural: {
       nominative: "ci",
       genitive: "tych",
       dative: "tym",
@@ -194,7 +137,18 @@ export const DETERMINER_DECLENSIONS: Pluralized<
       locative: "tych",
       vocative: "ci",
     },
-    [GrammaticalGender.Feminine]: {
+  },
+  [GrammaticalGender.Feminine]: {
+    singular: {
+      nominative: "ta",
+      genitive: "tej",
+      dative: "tej",
+      accusative: "tę",
+      instrumental: "tą",
+      locative: "tej",
+      vocative: "ta",
+    },
+    plural: {
       nominative: "te",
       genitive: "tych",
       dative: "tym",
@@ -203,7 +157,18 @@ export const DETERMINER_DECLENSIONS: Pluralized<
       locative: "tych",
       vocative: "te",
     },
-    [GrammaticalGender.Neuter]: {
+  },
+  [GrammaticalGender.Neuter]: {
+    singular: {
+      nominative: "to",
+      genitive: "tego",
+      dative: "temu",
+      accusative: "to",
+      instrumental: "tym",
+      locative: "tym",
+      vocative: "to",
+    },
+    plural: {
       nominative: "te",
       genitive: "tych",
       dative: "tym",
@@ -225,3 +190,30 @@ export const IMPLICIT_SORT_BY_ATTRIBUTES = {
   createdAt: "daty utworzenia",
   updatedAt: "daty ostatniej aktualizacji",
 } as const;
+
+export const TOAST_MESSAGES = {
+  login: {
+    loading: "Trwa logowanie...",
+    success: (response: AuthState) =>
+      `Pomyślnie zalogowano jako ${response.user.fullName ?? response.user.email}!`,
+    error: (error: unknown) =>
+      getErrorMessage(error, "Nastąpił błąd podczas logowania"),
+  },
+  object: (declensions: Declensions) => ({
+    modify: {
+      loading: "Trwa przetwarzanie...",
+      success: "Pomyślnie zapisano!",
+      error: "Wystąpił błąd podczas zapisywania.",
+    },
+    delete: {
+      loading: `Trwa usuwanie ${declensions.genitive}...`,
+      success: `Pomyślnie usunięto ${declensions.accusative}`,
+      error: `Wystąpił błąd podczas usuwania ${declensions.genitive}`,
+    },
+    upload: {
+      loading: `Trwa przesyłanie ${declensions.genitive}...`,
+      success: `Pomyślnie przesłano ${declensions.accusative}!`,
+      error: `Wystąpił błąd podczas przesyłania ${declensions.genitive}`,
+    },
+  }),
+};

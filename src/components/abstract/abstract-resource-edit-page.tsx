@@ -1,9 +1,9 @@
-import type { ComponentType } from "react";
-
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import type { ResourceDataType } from "@/types/app";
+
+import { AbstractResourceForm } from "./resource-form";
 
 async function fetchResource<T extends Resource>(
   resource: T,
@@ -21,17 +21,17 @@ async function fetchResource<T extends Resource>(
   }
 }
 
-export async function AbstractResourceEditPage<T extends Resource>({
+export async function AbstractResourceEditPage({
   resource,
   params,
-  FormComponent,
 }: {
-  resource: T;
+  resource: Resource;
   params: Promise<{ id: string }>;
-  FormComponent: ComponentType<{ initialData: ResourceDataType<T> | null }>;
 }) {
   const { id } = await params;
   const resourceData = await fetchResource(resource, id);
 
-  return <FormComponent initialData={resourceData} />;
+  return (
+    <AbstractResourceForm resource={resource} defaultValues={resourceData} />
+  );
 }

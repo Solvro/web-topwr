@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
@@ -36,18 +37,12 @@ import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import { RESOURCE_SCHEMAS } from "@/schemas/resources";
 import type { MessageResponse } from "@/types/api";
-import type {
-  ResourceDataType,
-  ResourceFormValues,
-  ResourceSchema,
-} from "@/types/app";
+import type { ResourceDataType, ResourceFormValues } from "@/types/app";
+import type { AbstractResourceFormInputs } from "@/types/forms";
 
-import type {
-  AbstractResourceFormProps,
-  ExistingImages,
-  WithOptionalId,
-} from ".";
+import type { AbstractResourceFormProps, ExistingImages } from ".";
 
+type WithOptionalId<T> = T & { id?: number };
 type SchemaWithOptionalId<T extends z.ZodType> = WithOptionalId<z.infer<T>>;
 
 const isExistingResourceItem = <T extends z.ZodType>(
@@ -85,10 +80,14 @@ export function AbstractResourceFormInternal<T extends Resource>({
     checkboxInputs = [],
   },
   existingImages,
-}: AbstractResourceFormProps<T> & { existingImages: ExistingImages<T> }) {
-  const schema: ResourceSchema<T> = RESOURCE_SCHEMAS[resource];
+}: AbstractResourceFormProps<T> & {
+  formInputs: AbstractResourceFormInputs<T>;
+  existingImages: ExistingImages<T>;
+}) {
+  const schema = RESOURCE_SCHEMAS[resource];
   const router = useRouter();
   const form = useForm<ResourceFormValues<T>>({
+    // Maybe try extracting the id from the defaultValues and passing it as an editedResourceId prop?
     // @ts-expect-error TODO: the schema is compatible but for some reason the types don't match
     resolver: zodResolver(schema) as Resolver<ResourceFormValues<T>>,
     defaultValues: defaultValues as DefaultValues<ResourceFormValues<T>>,
@@ -115,16 +114,17 @@ export function AbstractResourceFormInternal<T extends Resource>({
     return response;
   });
 
+  const declensions = declineNoun(resource);
+
   return (
     <div className="mx-auto flex h-full flex-col">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((values) =>
-            toast.promise(mutateAsync(values), {
-              loading: "Trwa przetwarzanie...",
-              success: "Pomyślnie zapisano!",
-              error: "Wystąpił błąd podczas zapisywania.",
-            }),
+            toast.promise(
+              mutateAsync(values),
+              TOAST_MESSAGES.object(declensions).modify,
+            ),
           )}
           className="flex grow flex-col space-y-4"
         >
