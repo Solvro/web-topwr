@@ -1,5 +1,6 @@
-import { API_URL, RESOURCE_API_PATHS } from "@/config/constants";
+import { API_URL } from "@/config/constants";
 import type { Resource } from "@/config/enums";
+import { RESOURCE_METADATA } from "@/config/resources";
 import { getAuthState } from "@/stores/auth";
 import type { ErrorResponse, SuccessResponse } from "@/types/api";
 
@@ -95,7 +96,7 @@ function createRequest(
 
   const url = isAbsolutePath(endpoint)
     ? endpoint
-    : `${API_URL}/${resource == null ? "" : `${RESOURCE_API_PATHS[resource]}/`}${endpoint.replace(/^\/+/, "")}`;
+    : `${API_URL}/${resource == null ? "" : `${RESOURCE_METADATA[resource].apiPath}/`}${endpoint.replace(/^\/+/, "")}`;
 
   const token = accessTokenOverride ?? getAccessToken();
   const isMultipart = body instanceof FormData;

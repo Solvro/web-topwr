@@ -3,7 +3,7 @@ export interface MessageResponse {
   message: string;
 }
 
-export interface SerializedErrorReport {
+interface SerializedErrorReport {
   /**
    * Message of the top-level error
    */

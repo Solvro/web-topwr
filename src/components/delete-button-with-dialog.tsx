@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
@@ -51,11 +52,7 @@ export function DeleteButtonWithDialog({
   const declensions = declineNoun(resource);
 
   function handleDelete() {
-    toast.promise(mutateAsync(null), {
-      loading: `Trwa usuwanie ${declensions.genitive}...`,
-      success: `Pomyślnie usunięto ${declensions.accusative}`,
-      error: `Wystąpił błąd podczas usuwania ${declensions.genitive}`,
-    });
+    toast.promise(mutateAsync(null), TOAST_MESSAGES.object(declensions).delete);
   }
 
   return (

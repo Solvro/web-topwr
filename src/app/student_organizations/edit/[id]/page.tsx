@@ -1,8 +1,6 @@
 import { AbstractResourceEditPage } from "@/components/abstract/abstract-resource-edit-page";
 import { Resource } from "@/config/enums";
 
-import { Form } from "../../form";
-
 export default function EditStudentOrganizationPage({
   params,
 }: {
@@ -12,7 +10,6 @@ export default function EditStudentOrganizationPage({
     <AbstractResourceEditPage
       resource={Resource.StudentOrganizations}
       params={params}
-      FormComponent={Form}
     />
   );
 }

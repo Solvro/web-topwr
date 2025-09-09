@@ -9,8 +9,10 @@ import type { z } from "zod";
 import { Spinner } from "@/components/spinner";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { TOAST_MESSAGES } from "@/config/constants";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
+import { declineNoun } from "@/lib/polish";
 import type { AppZodObject } from "@/types/app";
 
 import { ApiImage } from "./api/client";
@@ -42,6 +44,8 @@ export function ImageInput<T extends z.infer<AppZodObject>>({
     },
   );
 
+  const declensions = declineNoun("zdjęcie");
+
   return (
     <FormLabel className="flex flex-col items-start space-y-1.5">
       {label}
@@ -54,11 +58,10 @@ export function ImageInput<T extends z.infer<AppZodObject>>({
             if (file == null) {
               return;
             }
-            toast.promise(mutateAsync(file), {
-              loading: "Trwa przesyłanie zdjęcia...",
-              success: "Zdjęcie przesłano pomyślnie!",
-              error: "Wystąpił błąd podczas przesyłania zdjęcia.",
-            });
+            toast.promise(
+              mutateAsync(file),
+              TOAST_MESSAGES.object(declensions).upload,
+            );
           }}
           className="hidden"
         />
@@ -73,7 +76,7 @@ export function ImageInput<T extends z.infer<AppZodObject>>({
             <>
               <Camera className="text-image-input-icon h-12 w-12" />
               <span className="text-muted-foreground text-xs">
-                Kliknij, aby dodać zdjęcie
+                Kliknij, aby dodać {declensions.nominative}
               </span>
             </>
           ))
