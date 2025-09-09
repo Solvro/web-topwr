@@ -31,6 +31,7 @@ import {
 import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { RESOURCE_METADATA } from "@/config/resources";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
@@ -38,9 +39,8 @@ import { declineNoun } from "@/lib/polish";
 import { RESOURCE_SCHEMAS } from "@/schemas/resources";
 import type { MessageResponse } from "@/types/api";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
-import type { AbstractResourceFormInputs } from "@/types/forms";
 
-import type { AbstractResourceFormProps, ExistingImages } from ".";
+import type { ExistingImages } from ".";
 
 type WithOptionalId<T> = T & { id?: number };
 type SchemaWithOptionalId<T extends z.ZodType> = WithOptionalId<z.infer<T>>;
@@ -72,16 +72,10 @@ const getMutationConfig = <T extends z.ZodType>(
 export function AbstractResourceFormInternal<T extends Resource>({
   resource,
   defaultValues,
-  formInputs: {
-    imageInputs = [],
-    textInputs = [],
-    richTextInput,
-    selectInputs = [],
-    checkboxInputs = [],
-  },
   existingImages,
-}: AbstractResourceFormProps<T> & {
-  formInputs: AbstractResourceFormInputs<T>;
+}: {
+  resource: T;
+  defaultValues: DefaultValues<ResourceDataType<T> | ResourceFormValues<T>>;
   existingImages: ExistingImages<T>;
 }) {
   const schema = RESOURCE_SCHEMAS[resource];
@@ -115,6 +109,15 @@ export function AbstractResourceFormInternal<T extends Resource>({
   });
 
   const declensions = declineNoun(resource);
+
+  const metadata = RESOURCE_METADATA[resource];
+  const {
+    imageInputs = [],
+    textInputs = [],
+    richTextInput,
+    selectInputs = [],
+    checkboxInputs = [],
+  } = metadata.form.inputs;
 
   return (
     <div className="mx-auto flex h-full flex-col">
