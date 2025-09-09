@@ -1,4 +1,3 @@
-// import "./styles/index.css"
 "use client";
 
 import type { Content, Editor } from "@tiptap/react";
@@ -17,8 +16,7 @@ import { SectionThree } from "./components/section/three";
 import { SectionTwo } from "./components/section/two";
 import type { UseMinimalTiptapEditorProps } from "./hooks/use-minimal-tiptap";
 import { useMinimalTiptapEditor } from "./hooks/use-minimal-tiptap";
-
-// import "./styles/index.css"
+import "./styles/index.css";
 
 export interface MinimalTiptapProps
   extends Omit<UseMinimalTiptapEditorProps, "onUpdate"> {
@@ -31,7 +29,7 @@ export interface MinimalTiptapProps
 const Toolbar = ({ editor }: { editor: Editor }) => (
   <div className="border-border shrink-0 overflow-x-auto border-b p-2">
     <div className="flex w-max items-center gap-px">
-      <SectionOne editor={editor} activeLevels={[1, 2, 3, 4, 5, 6]} />
+      <SectionOne editor={editor} activeLevels={[1, 2, 3, 4, 5]} />
 
       <Separator orientation="vertical" className="mx-2 h-7" />
 
@@ -96,10 +94,13 @@ export const MinimalTiptapEditor = React.forwardRef<
       )}
     >
       <Toolbar editor={editor} />
-      {/* here i replaced the styles with tailwind styles because it didnt work otherwise */}
       <EditorContent
         editor={editor}
-        className="border-input bg-background max-h-[500px] min-h-[150px] overflow-y-auto rounded-md border p-3 shadow-sm [&>.ProseMirror]:min-h-[inherit]"
+        className={cn(
+          "minimal-tiptap-editor",
+          "bg-background rounded-md p-3",
+          editorContentClassName,
+        )}
       />
       <LinkBubbleMenu editor={editor} />
     </MeasuredContainer>
