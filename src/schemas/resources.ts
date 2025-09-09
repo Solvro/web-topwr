@@ -27,6 +27,7 @@ const StudentOrganizationSchema = z.object({
     required_error: FORM_ERROR_MESSAGES.REQUIRED,
   }),
   isStrategic: z.boolean({ required_error: FORM_ERROR_MESSAGES.REQUIRED }),
+  branch: z.enum(["main"]),
 });
 
 const GuideArticleSchema = z.object({

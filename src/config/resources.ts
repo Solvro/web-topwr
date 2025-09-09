@@ -200,6 +200,7 @@ export const RESOURCE_METADATA: {
         organizationType: OrganizationType.ScientificClub,
         organizationStatus: OrganizationStatus.Active,
         isStrategic: false,
+        branch: "main", // ????? wymagane ale w bazie jest zawsze 'main'
       },
     },
   },
