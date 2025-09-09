@@ -54,7 +54,7 @@ const generateTestOrganization = (
     departmentId: DepartmentIds.ComputerScienceAndTelecommunications,
     organizationType: OrganizationType.ScientificClub,
     organizationStatus: OrganizationStatus.Active,
-    isStrategic: false as boolean,
+    isStrategic: false,
     branch: "main",
     ...propertyOverrides,
   }) satisfies ResourceFormValues<ResourceType>;
