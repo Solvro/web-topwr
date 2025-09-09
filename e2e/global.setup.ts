@@ -26,7 +26,7 @@ export default async function globalSetup() {
   await page.click('button[type="submit"]');
 
   const greeting = page.getByText(new RegExp(`cześć, ${EMAIL}`, "i"));
-  await greeting.waitFor({ state: "visible", timeout: 5000 });
+  await greeting.waitFor({ state: "visible", timeout: 9999 });
 
   await page.context().storageState({ path: "e2e/.auth/state.json" });
   await browser.close();

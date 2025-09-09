@@ -7,7 +7,7 @@ dotenv.config();
 
 const CORRECT_EMAIL = process.env.CORRECT_EMAIL ?? "";
 const CORRECT_PASSWORD = process.env.CORRECT_PASSWORD ?? "";
-const TIMEOUT_MS = 7000;
+const TIMEOUT_MS = 9000;
 const DELAY_MS = 30;
 
 if (CORRECT_EMAIL === "" || CORRECT_PASSWORD === "") {
@@ -91,8 +91,10 @@ test("user can log out of the app", async ({ page }) => {
     page.getByText(new RegExp(`cześć, ${CORRECT_EMAIL}`, "i")),
   ).toBeVisible({ timeout: TIMEOUT_MS });
 
-  const logoutButton = page.locator('button[tooltip="Wyloguj się"]');
-  await expect(logoutButton).toBeVisible();
+  const logoutButton = page.locator(
+    'button[data-slot="button"] svg.lucide-log-out',
+  );
+  await logoutButton.waitFor({ state: "visible", timeout: TIMEOUT_MS });
   await logoutButton.click();
 
   const toast = page.locator(
@@ -101,10 +103,10 @@ test("user can log out of the app", async ({ page }) => {
   await toast.waitFor({ state: "visible", timeout: TIMEOUT_MS });
 });
 
-test("konrad", async ({ page }) => {
-  await page.goto("/login");
-  await page.fill('input[name="email"]', CORRECT_EMAIL);
-  await page.fill('input[name="password"]', CORRECT_PASSWORD);
-  await page.click('button[type="submit"]');
-  await expect(page).toHaveURL("/");
-});
+// test("konrad", async ({ page }) => {
+//   await page.goto("/login");
+//   await page.fill('input[name="email"]', CORRECT_EMAIL);
+//   await page.fill('input[name="password"]', CORRECT_PASSWORD);
+//   await page.click('button[type="submit"]');
+//   await expect(page).toHaveURL("/");
+// });

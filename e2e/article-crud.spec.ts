@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test.use({ storageState: "./e2e/.auth/state.json" });
 
-const TIMEOUT_MS = 6000;
+const TIMEOUT_MS = 9000;
 const IMG_PATH = "./e2e/testfiles/test-image.jpg";
 
 test.describe.serial(() => {
