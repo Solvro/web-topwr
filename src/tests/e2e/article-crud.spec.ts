@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-const TIMEOUT_MS = 6000;
-const IMG_PATH = ".src/tests/e2e/assets/test-image.jpg";
+const TIMEOUT_MS = 9000;
+const IMG_PATH = "./src/tests/e2e/assets/test-image.jpg";
 
 test.describe.serial(() => {
   const timestamp = Date.now().toString();

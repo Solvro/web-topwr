@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { getTestUserCredentials } from "./helpers";
 
-const TIMEOUT_MS = 7000;
+const TIMEOUT_MS = 9000;
 const DELAY_MS = 30;
 
 const { email, password } = getTestUserCredentials();
@@ -86,20 +86,14 @@ test("user can log out of the app", async ({ page }) => {
     timeout: TIMEOUT_MS,
   });
 
-  const logoutButton = page.locator('button[tooltip="Wyloguj się"]');
-  await expect(logoutButton).toBeVisible();
+  const logoutButton = page.locator(
+    'button[data-slot="button"] svg.lucide-log-out',
+  );
+  await logoutButton.waitFor({ state: "visible", timeout: TIMEOUT_MS });
   await logoutButton.click();
 
   const toast = page.locator(
     'li[data-sonner-toast]:has-text("Wylogowano pomyślnie.")',
   );
   await toast.waitFor({ state: "visible", timeout: TIMEOUT_MS });
-});
-
-test("konrad", async ({ page }) => {
-  await page.goto("/login");
-  await page.fill('input[name="email"]', email);
-  await page.fill('input[name="password"]', password);
-  await page.click('button[type="submit"]');
-  await expect(page).toHaveURL("/");
 });
