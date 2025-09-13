@@ -45,7 +45,7 @@ async function handleResponse<T>(response: Response): Promise<NonNullable<T>> {
     // console.error("Error response body:", JSON.stringify(errorReport, null, 2));
 
     throw new FetchError(
-      `Error ${String(response.status)}: ${String(response.statusText)}`,
+      `Error ${String(response.status)}: ${response.statusText}`,
       errorReport,
     );
   }

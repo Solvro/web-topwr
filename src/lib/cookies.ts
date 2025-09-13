@@ -11,7 +11,7 @@ export function parseAuthCookie(
 
   try {
     // TODO: add validation for the cookie content
-    return JSON.parse(String(cookie)) as AuthState;
+    return JSON.parse(cookie) as AuthState;
   } catch {
     return null;
   }

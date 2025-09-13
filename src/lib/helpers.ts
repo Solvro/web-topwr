@@ -16,6 +16,6 @@ export const enumToFormSelectOptions = <T extends string | number>(
       label: labels[value],
     }));
 
-export function sanitizeId(id: string): string {
+export function sanitizeId(id: string | number): string {
   return String(id).trim().replaceAll(/[^\d]/g, "");
 }
