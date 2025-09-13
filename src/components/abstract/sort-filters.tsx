@@ -73,7 +73,7 @@ export function SortFilters({
       if (value === "") {
         newParameters.delete(key);
       } else {
-        newParameters.set(key, String(value));
+        newParameters.set(key, value);
       }
     }
     router.push(`?${newParameters.toString()}`);
