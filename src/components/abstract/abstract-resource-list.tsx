@@ -1,10 +1,11 @@
 import { Plus, SquarePen } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { PaginationComponent } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
-import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
+import { LIST_RESULTS_PER_PAGE, TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
@@ -28,6 +29,8 @@ async function fetchResources<T extends Resource>(
   searchField?: string,
   searchTerm?: string,
 ): Promise<ApiResponse<T>> {
+  const declensions = declineNoun(resource, { plural: true });
+
   const search =
     searchField == null || searchTerm == null
       ? ""
@@ -38,8 +41,8 @@ async function fetchResources<T extends Resource>(
       { resource },
     );
     return result;
-  } catch (error) {
-    console.error(`Error fetching ${resource}:`, error);
+  } catch {
+    toast.error(TOAST_MESSAGES.object(declensions).read.error);
     return { data: [], meta: { total: 0 } };
   }
 }
