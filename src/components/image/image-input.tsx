@@ -11,7 +11,7 @@ import { FormControl, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { TOAST_MESSAGES } from "@/config/constants";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
-import { fetchMutation } from "@/lib/fetch-utils";
+import { uploadFile } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { AppZodObject } from "@/types/app";
 
@@ -31,14 +31,7 @@ export function ImageInput<T extends z.infer<AppZodObject>>({
   const { mutateAsync, isSuccess, isPending, data } = useMutationWrapper(
     `create__files__image__${name}`,
     async (file: File) => {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetchMutation<{ key: string }>("files", {
-        method: "POST",
-        body: formData,
-      });
-      const [uuid, _fileExtension] = response.key.split(".");
+      const { uuid, response } = await uploadFile(file);
       onChange(uuid);
       return response;
     },
