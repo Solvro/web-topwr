@@ -204,4 +204,25 @@ export const RESOURCE_METADATA: {
       },
     },
   },
+  [Resource.Banners]: {
+    apiPath: "banners",
+    form: {
+      inputs: {
+        textInputs: [
+          { name: "title", label: "Tytuł" },
+          { name: "description", label: "Opis" },
+          { name: "url", label: "URL" },
+        ],
+        checkboxInputs: [
+          { name: "draft", label: "Wersja robocza" },
+          { name: "shouldRender", label: "Wyświetlaj użytkownikom" },
+        ],
+      },
+      defaultValues: {
+        title: "",
+        description: "",
+        draft: true,
+      },
+    },
+  },
 };

@@ -106,6 +106,27 @@ export const NOUN_DECLENSIONS = {
       vocative: "zdjęcia",
     },
   },
+  banners: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "baner",
+      genitive: "baneru",
+      dative: "banerowi",
+      accusative: "baner",
+      instrumental: "banerem",
+      locative: "banerze",
+      vocative: "banerze",
+    },
+    plural: {
+      nominative: "banery",
+      genitive: "banerów",
+      dative: "banerom",
+      accusative: "banery",
+      instrumental: "banerami",
+      locative: "banerach",
+      vocative: "banery",
+    },
+  },
 } satisfies RecordIntersection<
   Resource,
   string,
