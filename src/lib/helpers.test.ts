@@ -1,6 +1,14 @@
+import { faker } from "@faker-js/faker";
 import { describe, expect, it } from "vitest";
 
-import { enumToFormSelectOptions, sanitizeId } from "./helpers";
+import type { User } from "@/types/api";
+
+import {
+  enumToFormSelectOptions,
+  getUserDisplayName,
+  removeTrailingSlash,
+  sanitizeId,
+} from "./helpers";
 
 describe("sanitizeId function", () => {
   it("should sanitize IDs correctly", () => {
@@ -54,5 +62,40 @@ describe("enumToFormSelectOptions function", () => {
       { value: 2, label: "Nieaktywna" },
       { value: 3, label: "W trakcie" },
     ]);
+  });
+});
+
+describe("getUserDisplayName function", () => {
+  const user: User = {
+    id: 0,
+    createdAt: faker.date.past().toISOString(),
+    updatedAt: faker.date.recent().toISOString(),
+    fullName: faker.person.fullName(),
+    email: "john.doe@example.com",
+  };
+
+  it("should return full name if available", () => {
+    expect(getUserDisplayName(user)).toBe(user.fullName);
+  });
+
+  it("should return email if full name is not available", () => {
+    const userWithoutFullName = { ...user, fullName: null };
+    expect(getUserDisplayName(userWithoutFullName)).toBe(user.email);
+  });
+});
+
+describe("removeTrailingSlash function", () => {
+  const exampleUrl = "http://example.com";
+
+  it("should remove trailing slashes from URLs", () => {
+    expect(removeTrailingSlash(`${exampleUrl}/`)).toBe(exampleUrl);
+    expect(removeTrailingSlash("")).toBe("");
+  });
+
+  it("should not modify URLs without trailing slashes", () => {
+    expect(removeTrailingSlash(exampleUrl)).toBe(exampleUrl);
+    expect(removeTrailingSlash(`${exampleUrl}/path`)).toBe(
+      `${exampleUrl}/path`,
+    );
   });
 });

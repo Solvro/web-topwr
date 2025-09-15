@@ -5,13 +5,20 @@ import {
   OrganizationType,
   Resource,
 } from "@/config/enums";
+import { removeTrailingSlash } from "@/lib/helpers";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
 /** The URL to the base path of the external API, including the version, *without* a trailing slash. */
-export const API_URL = (
-  process.env.API_URL ?? "https://api.topwr.solvro.pl/api/v1"
-).replace(/\/+$/, "");
+export const API_URL = removeTrailingSlash(
+  process.env.API_URL ?? "https://test.api.topwr.solvro.pl/api/v1",
+);
+
+/** The URL to the base path of the external API file uploads directory, *without* a trailing slash. */
+export const API_FILES_URL = removeTrailingSlash(
+  // TODO: add test. prefix to default value once backend fixes it
+  process.env.API_FILES_URL ?? "https://api.topwr.solvro.pl/uploads",
+);
 
 /**
  * A mapping of the client-side resources to their paths in the backend API.

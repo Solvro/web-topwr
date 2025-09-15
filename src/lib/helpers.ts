@@ -19,3 +19,7 @@ export const enumToFormSelectOptions = <T extends string | number>(
 export function sanitizeId(id: string | number): string {
   return String(id).trim().replaceAll(/[^\d]/g, "");
 }
+
+export function removeTrailingSlash(path: string): string {
+  return path.replace(/\/+$/, "");
+}
