@@ -4,7 +4,7 @@ import { FORM_ERROR_MESSAGES } from "@/config/constants";
 import type { User } from "@/types/api";
 import type { SelectInputOption } from "@/types/forms";
 
-import { fetchQuery } from "./fetch-utils";
+import { fetchMutation, fetchQuery } from "./fetch-utils";
 
 /** Prefers the user's full name, falling back to their email. */
 export const getUserDisplayName = (user: User): string =>
@@ -74,4 +74,16 @@ export async function getCurrentUser(accessTokenOverride?: string) {
     accessTokenOverride,
   });
   return user;
+}
+
+export async function uploadFile(file: string | Blob) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetchMutation<{ key: string }>("files", {
+    method: "POST",
+    body: formData,
+  });
+  const [uuid, fileExtension] = response.key.split(".");
+  return { response, uuid, fileExtension };
 }

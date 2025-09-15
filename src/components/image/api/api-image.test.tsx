@@ -1,32 +1,57 @@
 import { waitFor } from "@testing-library/dom";
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { API_FILES_URL } from "@/config/constants";
+import { fetchMutation } from "@/lib/fetch-utils";
+import { uploadFile } from "@/lib/helpers";
 import { renderWithProviders } from "@/tests/helpers/react";
 
 import { ApiImage } from "./client";
 
-const TEST_IMAGE_KEYS = ["8b1e3069-1ec1-4735-b39d-e173a35d3a58"]; // TODO: ensure this file is created before tests
+interface ImageFile {
+  filename: string;
+  alt: string;
+}
 
-const generateAltText = (key: number) =>
-  `Test image for key ${String(key + 1)}`;
+const TEST_IMAGES: ImageFile[] = [
+  { filename: "lenna.png", alt: "Lenna test image" },
+];
 
 describe("API Image component", () => {
+  let testImages: (ImageFile & { uuid: string })[] = [];
+
+  beforeAll(async () => {
+    testImages = await Promise.all(
+      TEST_IMAGES.map(async (image) => {
+        const { uuid, response } = await uploadFile(image.filename);
+        return { uuid, filename: response.key, alt: image.alt };
+      }),
+    );
+  });
+
+  afterAll(async () => {
+    await Promise.all(
+      testImages.map(async (image) => {
+        await fetchMutation(`files/${image.uuid}`, { method: "DELETE" });
+      }),
+    );
+  });
+
   it("should render test images correctly", async () => {
     const screen = renderWithProviders(
       <>
-        {TEST_IMAGE_KEYS.map((key, index) => (
-          <ApiImage key={key} imageKey={key} alt={generateAltText(index)} />
+        {testImages.map((image) => (
+          <ApiImage key={image.uuid} imageKey={image.uuid} alt={image.alt} />
         ))}
       </>,
     );
     await waitFor(() => {
-      for (const [index, imageKey] of TEST_IMAGE_KEYS.entries()) {
-        const image = screen.getByAltText(generateAltText(index));
-        expect(image).toBeInTheDocument();
-        expect(image).toHaveAttribute(
+      for (const image of testImages) {
+        const imageElement = screen.getByAltText(image.alt);
+        expect(imageElement).toBeInTheDocument();
+        expect(imageElement).toHaveAttribute(
           "src",
-          `${API_FILES_URL}/${imageKey}.png`,
+          `${API_FILES_URL}/${image.filename}`,
         );
       }
     });
