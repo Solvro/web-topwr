@@ -14,12 +14,12 @@ type KeysOfType<T extends z.ZodRawShape, U extends z.ZodTypeAny> = {
   [K in keyof T]: BaseZodType<T[K]> extends U ? K : never;
 }[keyof T];
 
-type BaseZodType<T extends z.ZodTypeAny> =
-  T extends z.ZodNullable<infer U>
-    ? BaseZodType<U>
-    : T extends z.ZodOptional<infer U>
-      ? BaseZodType<U>
-      : T;
+type BaseZodType<T extends z.ZodTypeAny> = T extends
+  | z.ZodNullable<infer U>
+  | z.ZodDefault<infer U>
+  | z.ZodOptional<infer U>
+  ? BaseZodType<U>
+  : T;
 
 /** Extracts all paths to the form values of T, such that the type of the value at that path extends Y.
  *

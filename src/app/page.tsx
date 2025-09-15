@@ -1,7 +1,7 @@
 "use client";
 
 import type { VariantProps } from "class-variance-authority";
-import { BookOpen, Building, RefreshCcw, Send } from "lucide-react";
+import { BookOpen, Building, Megaphone, RefreshCcw } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -43,9 +43,9 @@ export default function Home() {
           className="order-3 md:order-2"
         />
         <DashboardButton
-          href="/"
-          icon={Send}
-          label="Wyślij powiadomienie"
+          href={`/${Resource.Banners}`}
+          icon={Megaphone}
+          label="Zarządzanie banerami"
           variant="outline"
           className="order-4"
         />

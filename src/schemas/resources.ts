@@ -8,7 +8,7 @@ import {
   OrganizationType,
   Resource,
 } from "@/config/enums";
-import { requiredString } from "@/lib/helpers";
+import { colorField, isoTimestamp, requiredString } from "@/lib/helpers";
 
 const StudentOrganizationSchema = z.object({
   name: requiredString(),
@@ -42,7 +42,21 @@ const GuideArticleSchema = z.object({
   description: requiredString(),
 });
 
+const BannerSchema = z.object({
+  title: requiredString(),
+  description: requiredString(),
+  url: z.string().url().nullish(),
+  draft: z.boolean().default(true),
+  textColor: colorField().nullish(),
+  backgroundColor: colorField().nullish(),
+  titleColor: colorField().nullish(),
+  visibleFrom: isoTimestamp().nullish(),
+  visibleUntil: isoTimestamp().nullish(),
+  shouldRender: z.boolean().default(false),
+});
+
 export const RESOURCE_SCHEMAS = {
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
+  [Resource.Banners]: BannerSchema,
 } satisfies Record<Resource, z.ZodSchema>;
