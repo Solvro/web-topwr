@@ -12,6 +12,8 @@ jobs:
     env:
       TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
       TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      API_URL: https://test.api.topwr.solvro.pl/api/v1
+      API_FILES_URL: https://api.topwr.solvro.pl/uploads # TODO: update when available
 
     steps:
       - name: Checkout
