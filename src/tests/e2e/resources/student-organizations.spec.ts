@@ -86,10 +86,10 @@ async function deleteTestOrganization(id?: Id, strict = false) {
     if (!(error instanceof FetchError)) {
       throw error;
     }
-    if (error.responseStatus !== 422) {
+    if (error.responseStatus !== 404) {
       throw error;
     }
-    if (error.errorReport?.error.validationIssues?.[0].field !== "params.id") {
+    if (error.errorReport?.error.code !== "E_NOT_FOUND") {
       throw error;
     }
     if (strict) {
