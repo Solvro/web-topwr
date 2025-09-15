@@ -200,6 +200,9 @@ export const TOAST_MESSAGES = {
       getErrorMessage(error, "Nastąpił błąd podczas logowania"),
   },
   object: (declensions: Declensions) => ({
+    read: {
+      error: `Wystąpił nieoczekiwany błąd podczas wczytywania ${declensions.genitive}. Spróbuj ponownie później.`,
+    },
     modify: {
       loading: "Trwa przetwarzanie...",
       success: "Pomyślnie zapisano!",
