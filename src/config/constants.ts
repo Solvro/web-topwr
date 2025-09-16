@@ -13,8 +13,7 @@ export const API_URL = removeTrailingSlash(
 
 /** The URL to the base path of the external API file uploads directory, *without* a trailing slash. */
 export const API_FILES_URL = removeTrailingSlash(
-  // TODO: add test. prefix to default value once backend fixes it
-  process.env.API_FILES_URL ?? "https://api.topwr.solvro.pl/uploads",
+  process.env.API_FILES_URL ?? "https://test.api.topwr.solvro.pl/uploads",
 );
 
 export const LIST_RESULTS_PER_PAGE = 10;
