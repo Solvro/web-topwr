@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/uploads/**",
       },
+      {
+        protocol: "https",
+        hostname: "test.api.topwr.solvro.pl",
+        port: "",
+        pathname: "/uploads/**",
+      },
     ],
   },
 };
