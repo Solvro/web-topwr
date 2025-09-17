@@ -1,3 +1,6 @@
+import { http, passthrough } from "msw";
+
+import { API_URL } from "@/config/constants";
 import { fetchMutation } from "@/lib/fetch-utils";
 import type {
   LogInResponse,
@@ -7,6 +10,11 @@ import type {
 import type { LoginFormValues } from "@/types/forms";
 
 import { TEST_USER_EMAIL, TEST_USER_PASSWORD } from "../mocks/constants";
+import { server } from "../mocks/server";
+
+function bypassMockServer(endpoint: string) {
+  server.use(http.post(`${API_URL}/${endpoint}`, () => passthrough()));
+}
 
 export async function generateAccessToken(): Promise<string> {
   if (TEST_USER_EMAIL == null || TEST_USER_PASSWORD == null) {
@@ -19,6 +27,8 @@ export async function generateAccessToken(): Promise<string> {
     password: TEST_USER_PASSWORD,
     rememberMe: false,
   };
+
+  bypassMockServer("auth/login");
   const response = await fetchMutation<LogInResponse>("auth/login", {
     body,
   });
@@ -26,6 +36,7 @@ export async function generateAccessToken(): Promise<string> {
 }
 
 export async function deleteAccessToken(accessToken: string) {
+  bypassMockServer("auth/logout");
   await fetchMutation<SuccessResponse<MessageResponse>>("auth/logout", {
     accessTokenOverride: accessToken,
   });
