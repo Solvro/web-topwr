@@ -2,7 +2,7 @@ import { waitFor } from "@testing-library/dom";
 import { describe, expect, it } from "vitest";
 
 import { API_FILES_URL } from "@/config/constants";
-import { renderWithProviders } from "@/tests/helpers";
+import { renderWithProviders } from "@/tests/helpers/react";
 
 import { ApiImage } from "./client";
 

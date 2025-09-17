@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { API_ERROR_MESSAGES, API_URL } from "@/config/constants";
 import { getErrorMessage } from "@/lib/error-handling";
-import { getToaster, renderWithProviders } from "@/tests/helpers";
+import { getToaster, renderWithProviders } from "@/tests/helpers/react";
 import { MOCK_PASSWORD, MOCK_TOKEN, MOCK_USER } from "@/tests/mocks/constants";
 import { MOCK_USE_ROUTER } from "@/tests/mocks/functions";
 import { server } from "@/tests/mocks/server";

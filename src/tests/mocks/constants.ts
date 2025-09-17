@@ -7,6 +7,9 @@ interface Mocked<T> {
   invalid?: T;
 }
 
+export const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL;
+export const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD;
+
 export const MOCK_USER = {
   valid: {
     id: 1,
@@ -37,7 +40,7 @@ export const MOCK_RESPONSE = {
   unexpectedError: () =>
     HttpResponse.json(
       {
-        error: { message: "Unexpected error", code: " E_UNEXPECTED_ERROR" },
+        error: { message: "Unexpected error", code: "E_UNEXPECTED_ERROR" },
       },
       { status: 400 },
     ),
