@@ -2,6 +2,8 @@ import { HttpResponse } from "msw";
 
 import type { User } from "@/types/api";
 
+import "../helpers/dotenv";
+
 interface Mocked<T> {
   valid: T;
   invalid?: T;
