@@ -1,8 +1,6 @@
-import nextEnv from "@next/env";
 import { defineConfig, devices } from "@playwright/test";
 
-// For some reason using the named export fails at runtime, so we have to import the whole module
-nextEnv.loadEnvConfig(process.cwd());
+import "./src/tests/helpers/dotenv";
 
 /**
  * See https://playwright.dev/docs/test-configuration.
