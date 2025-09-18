@@ -26,8 +26,9 @@ export const MOCK_PASSWORD = {
 } satisfies Mocked<string>;
 
 export const MOCK_TOKEN = {
-  valid: "exp.validJwtToken.1234567890",
-} satisfies Mocked<string>;
+  access: { valid: "exp.validJwtToken.1234567890" },
+  refresh: { valid: "exp.validRefreshToken.0000000000" },
+} satisfies { access: Mocked<string>; refresh: Mocked<string> };
 
 export const MOCK_RESPONSE = {
   validationFailure: () =>

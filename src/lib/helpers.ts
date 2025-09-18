@@ -4,6 +4,8 @@ import { FORM_ERROR_MESSAGES } from "@/config/constants";
 import type { User } from "@/types/api";
 import type { SelectInputOption } from "@/types/forms";
 
+import { fetchQuery } from "./fetch-utils";
+
 /** Prefers the user's full name, falling back to their email. */
 export const getUserDisplayName = (user: User): string =>
   user.fullName ?? user.email;
@@ -66,3 +68,10 @@ export const encodeQueryParameters = (
   );
   return pairArray.join("&");
 };
+
+export async function getCurrentUser(accessTokenOverride?: string) {
+  const { user } = await fetchQuery<{ user: User }>("auth/me", {
+    accessTokenOverride,
+  });
+  return user;
+}

@@ -1,5 +1,9 @@
 import { fetchMutation } from "@/lib/fetch-utils";
-import type { AuthState, MessageResponse, SuccessResponse } from "@/types/api";
+import type {
+  LogInResponse,
+  MessageResponse,
+  SuccessResponse,
+} from "@/types/api";
 import type { LoginFormValues } from "@/types/forms";
 
 import { TEST_USER_EMAIL, TEST_USER_PASSWORD } from "../mocks/constants";
@@ -15,14 +19,14 @@ export async function generateAccessToken(): Promise<string> {
     password: TEST_USER_PASSWORD,
     rememberMe: false,
   };
-  const response = await fetchMutation<AuthState>("/auth/login", {
+  const response = await fetchMutation<LogInResponse>("auth/login", {
     body,
   });
-  return response.token;
+  return response.accessToken;
 }
 
 export async function deleteAccessToken(accessToken: string) {
-  await fetchMutation<SuccessResponse<MessageResponse>>("/auth/logout", {
+  await fetchMutation<SuccessResponse<MessageResponse>>("auth/logout", {
     accessTokenOverride: accessToken,
   });
 }
