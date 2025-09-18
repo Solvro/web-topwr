@@ -30,7 +30,7 @@ export function ImageInput<T extends z.infer<AppZodObject>>({
 }) {
   const { mutateAsync, isSuccess, isPending, data } = useMutationWrapper(
     `create__files__image__${name}`,
-    async (metadata: { file: File; extension: string }) => {
+    async (metadata: { file: File }) => {
       const { uuid, response } = await uploadFile(metadata);
       onChange(uuid);
       return response;
@@ -51,15 +51,8 @@ export function ImageInput<T extends z.infer<AppZodObject>>({
             if (file == null) {
               return;
             }
-            const extension = file.name.split(".").pop()?.toLowerCase();
-            if (extension == null) {
-              toast.error(
-                TOAST_MESSAGES.object(declensions).upload.missingExtension,
-              );
-              return;
-            }
             toast.promise(
-              mutateAsync({ file, extension }),
+              mutateAsync({ file }),
               TOAST_MESSAGES.object(declensions).upload,
             );
           }}
