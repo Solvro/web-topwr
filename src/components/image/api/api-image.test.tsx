@@ -1,6 +1,5 @@
+import { faker } from "@faker-js/faker";
 import { waitFor } from "@testing-library/dom";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { API_FILES_URL } from "@/config/constants";
@@ -14,34 +13,46 @@ import { ApiImage } from "./client";
 interface ImageFile {
   filename: string;
   alt: string;
+  uuid: string;
 }
 
-const TEST_IMAGES_DIRECTORY = "src/tests/assets/images";
+const TEST_IMAGE_COUNT = 3;
 
-const TEST_IMAGES: ImageFile[] = [
-  // { filename: "lenna.png", alt: "Lenna test image" },
-  { filename: "blue.png", alt: "Tiny blue test image" },
-];
+function generateTestImage(): { file: File; extension: string; alt: string } {
+  const name = faker.lorem.slug();
+  const extension = faker.helpers.arrayElement(["png", "jpg", "jpeg"]);
+  const filename = `${name}.${extension}`;
+  const alt = faker.lorem.sentence();
+  const data = faker.image.dataUri();
+  return {
+    file: new File([data], filename, { type: `image/${extension}` }),
+    extension,
+    alt,
+  };
+}
 
 let accessTokenOverride: string;
 
 describe("API Image component", () => {
-  let testImages: (ImageFile & { uuid: string })[] = [];
+  let testImages: ImageFile[] = [];
 
   beforeAll(async () => {
     accessTokenOverride = await generateAccessToken();
 
     testImages = await Promise.all(
-      TEST_IMAGES.map(async (image) => {
-        const filepath = path.join(TEST_IMAGES_DIRECTORY, image.filename);
-        const { uuid, response } = await uploadFile(
-          filepath, // TODO: actually read the file
-          accessTokenOverride,
-        );
-        return { uuid, filename: response.key, alt: image.alt };
-      }),
+      Array.from({ length: TEST_IMAGE_COUNT }).map(
+        async (): Promise<ImageFile> => {
+          const { file, alt, extension } = generateTestImage();
+          const { uuid, response } = await uploadFile({
+            file,
+            extension,
+            accessTokenOverride,
+          });
+          return { uuid, filename: response.key, alt };
+        },
+      ),
     );
-  });
+  }, 15_000);
 
   afterAll(async () => {
     await Promise.all(
