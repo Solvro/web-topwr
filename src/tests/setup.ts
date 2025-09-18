@@ -3,11 +3,7 @@ import { cleanup } from "@testing-library/react";
 import ResizeObserver from "resize-observer-polyfill";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
-import {
-  MOCK_NOT_FOUND,
-  MOCK_USE_ROUTER,
-  MOCK_USE_SEARCH_PARAMS,
-} from "./mocks/functions";
+import { MOCK_USE_SEARCH_PARAMS } from "./mocks/functions";
 import { MockImage } from "./mocks/image";
 import { server } from "./mocks/server";
 
@@ -28,8 +24,15 @@ vi.mock("next/navigation", async (importOriginal) => {
   const original = await importOriginal<NextNavigationModule>();
   return {
     ...original,
-    notFound: MOCK_NOT_FOUND,
-    useRouter: () => MOCK_USE_ROUTER,
+    notFound: vi.fn(() => null as never),
+    useRouter: vi.fn(() => ({
+      back: vi.fn(),
+      forward: vi.fn(),
+      prefetch: vi.fn(),
+      push: vi.fn(),
+      replace: vi.fn(),
+      refresh: vi.fn(),
+    })),
     useSearchParams: MOCK_USE_SEARCH_PARAMS,
   } satisfies NextNavigationModule;
 });
