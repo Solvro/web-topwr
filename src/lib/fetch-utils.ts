@@ -71,7 +71,7 @@ async function handleResponse<T>(response: Response): Promise<NonNullable<T>> {
   return responseBody;
 }
 
-const getAccessToken = () => getAuthState()?.token;
+const getAccessToken = () => getAuthState()?.accessToken;
 
 function createRequest(
   endpoint: string,

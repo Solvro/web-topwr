@@ -57,9 +57,19 @@ export interface User extends DatedResource {
 }
 
 /** As returned from POST /auth/login */
+export interface LogInResponse {
+  type: "bearer";
+  accessToken: string;
+  refreshToken: string;
+  accessExpiresInMs: number;
+  refreshExpiresInMs: number;
+}
+
+/** As returned from POST /auth/login */
 export interface AuthState {
+  accessToken: string;
+  refreshToken: string;
   user: User;
-  token: string;
 }
 
 /** As returned from GET /files/{id} */

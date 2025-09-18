@@ -5,9 +5,10 @@ import { describe, expect, it } from "vitest";
 import { API_ERROR_MESSAGES, API_URL } from "@/config/constants";
 import { getErrorMessage } from "@/lib/error-handling";
 import { getToaster, renderWithProviders } from "@/tests/helpers/react";
-import { MOCK_PASSWORD, MOCK_TOKEN, MOCK_USER } from "@/tests/mocks/constants";
+import { MOCK_PASSWORD, MOCK_USER } from "@/tests/mocks/constants";
 import { MOCK_USE_ROUTER } from "@/tests/mocks/functions";
 import { server } from "@/tests/mocks/server";
+import type { User } from "@/types/api";
 
 import LoginPage from "./page";
 
@@ -80,16 +81,17 @@ describe("Login page", () => {
   it("should accept valid credentials", enterValidCredentials);
 
   it("should fall back to email if user has no full name", async () => {
-    const { fullName, ...user } = MOCK_USER.valid;
     server.use(
-      http.post(`${API_URL}/auth/login`, () =>
-        HttpResponse.json({ user, token: MOCK_TOKEN.valid }),
+      http.get(`${API_URL}/auth/me`, () =>
+        HttpResponse.json({
+          user: { ...MOCK_USER.valid, fullName: null } satisfies User,
+        }),
       ),
     );
 
     await enterValidCredentials();
     expect(getToaster()).toHaveTextContent(
-      `Pomyślnie zalogowano jako ${user.email}`,
+      `Pomyślnie zalogowano jako ${MOCK_USER.valid.email}`,
     );
   });
 });
