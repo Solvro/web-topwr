@@ -1,8 +1,9 @@
 import { HttpResponse } from "msw";
 
-import type { User } from "@/types/api";
+import type { FileEntry, User } from "@/types/api";
 
 import "../helpers/dotenv";
+import { generateFileEntry } from "../helpers/mocks";
 
 interface Mocked<T> {
   valid: T;
@@ -48,3 +49,9 @@ export const MOCK_RESPONSE = {
       { status: 400 },
     ),
 };
+
+const MOCK_FILE_COUNT = 3;
+
+export const MOCK_FILES = Array.from({ length: MOCK_FILE_COUNT }, () =>
+  generateFileEntry(),
+) satisfies FileEntry[];

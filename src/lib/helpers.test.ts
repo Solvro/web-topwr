@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { describe, expect, it } from "vitest";
 
+import { mockDatedResource } from "@/tests/helpers/mocks";
 import type { User } from "@/types/api";
 
 import {
@@ -68,8 +69,7 @@ describe("enumToFormSelectOptions function", () => {
 describe("getUserDisplayName function", () => {
   const user: User = {
     id: 0,
-    createdAt: faker.date.past().toISOString(),
-    updatedAt: faker.date.recent().toISOString(),
+    ...mockDatedResource(),
     fullName: faker.person.fullName(),
     email: "john.doe@example.com",
   };
