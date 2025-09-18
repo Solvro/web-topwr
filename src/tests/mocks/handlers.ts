@@ -53,8 +53,7 @@ export const handlers = [
   ),
   http.post<PathParams, ResourceFormValues<Resource.GuideArticles>>(
     `${API_URL}/${RESOURCE_METADATA[Resource.GuideArticles].apiPath}`,
-    async ({ request }) =>
-      mockResourceResponse(Resource.GuideArticles, request),
+    async ({ request }) => mockResourceResponse(request),
   ),
   http.post(`${API_URL}/files`, () => {
     return HttpResponse.json({
