@@ -3,7 +3,6 @@ import { waitFor } from "@testing-library/dom";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { API_FILES_URL } from "@/config/constants";
-import { fetchMutation } from "@/lib/fetch-utils";
 import { uploadFile } from "@/lib/helpers";
 import { deleteAccessToken, generateAccessToken } from "@/tests/helpers/auth";
 import { renderWithProviders } from "@/tests/helpers/react";
@@ -31,13 +30,14 @@ function generateTestImage(): { file: File; extension: string; alt: string } {
   };
 }
 
-let accessTokenOverride: string;
+let accessToken: string;
+let refreshToken: string;
 
 describe("API Image component", () => {
   let testImages: ImageFile[] = [];
 
   beforeAll(async () => {
-    accessTokenOverride = await generateAccessToken();
+    ({ accessToken, refreshToken } = await generateAccessToken());
 
     testImages = await Promise.all(
       Array.from({ length: TEST_IMAGE_COUNT }).map(
@@ -46,7 +46,7 @@ describe("API Image component", () => {
           const { uuid, response } = await uploadFile({
             file,
             extension,
-            accessTokenOverride,
+            accessTokenOverride: accessToken,
           });
           return { uuid, filename: response.key, alt };
         },
@@ -55,16 +55,17 @@ describe("API Image component", () => {
   }, 15_000);
 
   afterAll(async () => {
-    await Promise.all(
-      testImages.map(async (image) => {
-        await fetchMutation(`files/${image.uuid}`, {
-          method: "DELETE",
-          accessTokenOverride,
-        });
-      }),
-    );
+    // This code won't work because the backend hasn't implemented DELETE /api/v1/files/:uuid yet
+    // await Promise.all(
+    //   testImages.map(async (image) => {
+    //     await fetchMutation(`files/${image.uuid}`, {
+    //       method: "DELETE",
+    //       accessTokenOverride,
+    //     });
+    //   }),
+    // );
 
-    await deleteAccessToken(accessTokenOverride);
+    await deleteAccessToken(accessToken, refreshToken);
   });
 
   it("should render test images correctly", async () => {
