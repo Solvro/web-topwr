@@ -5,6 +5,7 @@ import { API_URL } from "@/config/constants";
 import type { ErrorResponse, LogInResponse } from "@/types/api";
 
 import {
+  MOCK_FILES,
   MOCK_PASSWORD,
   MOCK_RESPONSE,
   MOCK_TOKEN,
@@ -38,4 +39,7 @@ export const handlers = [
             { status: 400 },
           );
   }),
+  ...MOCK_FILES.map((file) =>
+    http.get(`${API_URL}/files/${file.id}`, () => HttpResponse.json(file)),
+  ),
 ] satisfies RequestHandler[];
