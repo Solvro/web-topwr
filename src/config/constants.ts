@@ -213,7 +213,6 @@ export const TOAST_MESSAGES = {
       error: `Wystąpił błąd podczas usuwania ${declensions.genitive}`,
     },
     upload: {
-      missingExtension: `Nie udało się przesłać ${declensions.genitive} ponieważ plik nie zawiera rozszerzenia.`,
       loading: `Trwa przesyłanie ${declensions.genitive}...`,
       success: `Pomyślnie przesłano ${declensions.accusative}!`,
       error: `Wystąpił błąd podczas przesyłania ${declensions.genitive}`,

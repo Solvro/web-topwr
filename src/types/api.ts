@@ -65,7 +65,6 @@ export interface LogInResponse {
   refreshExpiresInMs: number;
 }
 
-/** As returned from POST /auth/login */
 export interface AuthState {
   accessToken: string;
   refreshToken: string;
