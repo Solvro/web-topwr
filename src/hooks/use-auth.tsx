@@ -75,7 +75,7 @@ export function useAuth(): AuthContext {
       );
     }
     const { accessToken, refreshToken } = await fetchMutation<LogInResponse>(
-      "/auth/login",
+      "auth/login",
       {
         body: data,
       },
@@ -99,7 +99,7 @@ export function useAuth(): AuthContext {
       throw new Error("Cannot log out when not authenticated");
     }
     const result = await fetchMutation<MessageResponse>(
-      `/auth/logout?all=${all ? "true" : "false"}`,
+      `auth/logout?all=${all ? "true" : "false"}`,
       {
         body: { refreshToken: authState.refreshToken },
       },
