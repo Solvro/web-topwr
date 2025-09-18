@@ -147,6 +147,8 @@ test.describe("Student Organizations CRUD", () => {
 
   test.afterAll(async () => {
     await deleteAccessToken(accessTokenOverride, refreshToken);
+    accessTokenOverride = "";
+    refreshToken = "";
   });
 
   test("should create an organization", async ({ page }) => {
