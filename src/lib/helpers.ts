@@ -76,18 +76,26 @@ export async function getCurrentUser(accessTokenOverride?: string) {
   return user;
 }
 
-export async function uploadFile(
-  file: string | Blob,
-  accessTokenOverride?: string,
-) {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  const response = await fetchMutation<{ key: string }>("files", {
-    method: "POST",
-    body: formData,
-    accessTokenOverride,
-  });
+export async function uploadFile({
+  file,
+  extension,
+  accessTokenOverride,
+}: {
+  file: File;
+  extension: string;
+  accessTokenOverride?: string;
+}) {
+  const response = await fetchMutation<{ key: string }>(
+    `files?ext=${extension}`,
+    {
+      method: "POST",
+      body: file,
+      headers: {
+        "Content-Type": file.type,
+      },
+      accessTokenOverride,
+    },
+  );
   const [uuid, fileExtension] = response.key.split(".");
   return { response, uuid, fileExtension };
 }
