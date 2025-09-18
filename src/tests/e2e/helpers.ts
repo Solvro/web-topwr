@@ -6,6 +6,7 @@ import {
   SORT_DIRECTIONS,
   SORT_FILTER_LABEL_DECLENSION_CASES,
 } from "@/config/constants";
+import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
 import { encodeQueryParameters } from "@/lib/helpers";
@@ -106,6 +107,13 @@ export async function returnFromAbstractResourceForm(
   page: Page,
   resource: Resource,
 ) {
-  await page.getByRole("link", { name: /wróć do organizacji/i }).click();
+  await page
+    .getByRole("link", {
+      name: new RegExp(
+        `wróć do ${declineNoun(resource, { case: DeclensionCase.Genitive, plural: true })})}`,
+        "i",
+      ),
+    })
+    .click();
   await page.waitForURL(`/${resource}`);
 }
