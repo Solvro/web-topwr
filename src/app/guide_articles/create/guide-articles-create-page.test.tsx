@@ -4,7 +4,7 @@ import assert from "node:assert";
 import { describe, expect, it } from "vitest";
 
 import { FORM_ERROR_MESSAGES } from "@/config/constants";
-import { getToaster, renderWithProviders } from "@/tests/helpers";
+import { getToaster, renderWithProviders } from "@/tests/helpers/react";
 import { MOCK_GUIDE_ARTICLE, MOCK_IMAGE_FILE } from "@/tests/mocks/constants";
 
 import CreatePage from "./page";
