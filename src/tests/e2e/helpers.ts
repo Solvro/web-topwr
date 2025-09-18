@@ -5,8 +5,10 @@ import {
   IMPLICIT_SORT_BY_ATTRIBUTES,
   SORT_DIRECTIONS,
 } from "@/config/constants";
+import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { encodeQueryParameters } from "@/lib/helpers";
+import { declineNoun } from "@/lib/polish";
 import { SortFiltersSchema } from "@/schemas";
 import type { SortFiltersFormValues } from "@/types/forms";
 
@@ -102,6 +104,13 @@ export async function returnFromAbstractResourceForm(
   page: Page,
   resource: Resource,
 ) {
-  await page.getByRole("link", { name: /wróć do organizacji/i }).click();
+  await page
+    .getByRole("link", {
+      name: new RegExp(
+        `wróć do ${declineNoun(resource, { case: DeclensionCase.Genitive, plural: true })})}`,
+        "i",
+      ),
+    })
+    .click();
   await page.waitForURL(`/${resource}`);
 }

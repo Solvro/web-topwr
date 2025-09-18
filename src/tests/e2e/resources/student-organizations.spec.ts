@@ -93,7 +93,6 @@ async function deleteTestOrganization(id?: Id, strict = false) {
       throw error;
     }
     if (strict) {
-      console.error("deleting organization with id", id, "failed:", error);
       throw error;
     }
   }
