@@ -9,7 +9,7 @@ import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 
-import { ImageInput } from "@/components/image/image-input";
+import { ImageUpload } from "@/components/inputs/image-upload";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -141,7 +141,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     name={input.name}
                     render={({ field }) => (
                       <FormItem>
-                        <ImageInput
+                        <ImageUpload
                           {...field}
                           label={input.label}
                           existingImage={existingImages[field.name]}

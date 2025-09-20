@@ -15,9 +15,9 @@ import { uploadFile } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { AppZodObject } from "@/types/app";
 
-import { ApiImage } from "./api/client";
+import { ApiImage } from "../api-image/client";
 
-export function ImageInput<T extends z.infer<AppZodObject>>({
+export function ImageUpload<T extends z.infer<AppZodObject>>({
   name,
   onChange,
   label,
@@ -40,8 +40,26 @@ export function ImageInput<T extends z.infer<AppZodObject>>({
   const declensions = declineNoun("zdjęcie");
 
   return (
-    <FormLabel className="flex flex-col items-start space-y-1.5">
-      {label}
+    <>
+      <FormLabel className="flex flex-col items-start space-y-1.5">
+        {label}
+        <div className="bg-background border-input flex aspect-video w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border md:h-48 md:w-48">
+          {isPending ? (
+            <Spinner />
+          ) : isSuccess ? (
+            <ApiImage imageKey={data.key} alt={label} />
+          ) : (
+            (existingImage ?? (
+              <>
+                <Camera className="text-image-input-icon h-12 w-12" />
+                <span className="text-muted-foreground text-xs">
+                  Kliknij, aby dodać {declensions.nominative}
+                </span>
+              </>
+            ))
+          )}
+        </div>
+      </FormLabel>
       <FormControl>
         <Input
           type="file"
@@ -59,22 +77,6 @@ export function ImageInput<T extends z.infer<AppZodObject>>({
           className="hidden"
         />
       </FormControl>
-      <div className="bg-background border-input flex aspect-video w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border md:h-48 md:w-48">
-        {isPending ? (
-          <Spinner />
-        ) : isSuccess ? (
-          <ApiImage imageKey={data.key} alt={label} />
-        ) : (
-          (existingImage ?? (
-            <>
-              <Camera className="text-image-input-icon h-12 w-12" />
-              <span className="text-muted-foreground text-xs">
-                Kliknij, aby dodać {declensions.nominative}
-              </span>
-            </>
-          ))
-        )}
-      </div>
-    </FormLabel>
+    </>
   );
 }

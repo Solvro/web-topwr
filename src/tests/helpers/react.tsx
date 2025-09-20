@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import type { RenderResult } from "@testing-library/react";
 import { createStore } from "jotai";
-import type { ReactNode } from "react";
+import { useState } from "react";
+import type { ComponentType, ReactNode } from "react";
 import { expect } from "vitest";
 
 import { TestProviders } from "../test-providers";
@@ -33,3 +34,14 @@ export function getToaster() {
 
 export const getLoadingIndicator = () =>
   screen.queryByLabelText(/trwa ładowanie zasobu/i);
+
+export function InputComponentWrapper<T>({
+  component: Comp,
+  initialValue,
+}: {
+  component: ComponentType<{ value: T; onChange: (value: T) => void }>;
+  initialValue: T;
+}) {
+  const [value, setValue] = useState(initialValue);
+  return <Comp value={value} onChange={setValue} />;
+}

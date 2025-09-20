@@ -60,3 +60,7 @@ const MOCK_FILE_COUNT = 3;
 export const MOCK_FILES = Array.from({ length: MOCK_FILE_COUNT }, () =>
   generateFileEntry(),
 ) satisfies FileEntry[];
+
+export const MOCK_IMAGE_FILE = new File(["test"], "test.png", {
+  type: "image/png",
+});

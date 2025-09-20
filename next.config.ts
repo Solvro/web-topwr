@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "api.topwr.solvro.pl",
+        hostname: "**.topwr.solvro.pl",
         port: "",
         pathname: "/uploads/**",
       },
