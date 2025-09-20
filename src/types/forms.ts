@@ -31,37 +31,36 @@ export type ResourceSchemaKey<T extends Resource, Y = Optional<string>> = {
     : never;
 }[Path<ResourceFormValues<T>>];
 
-interface FormImageInput<T extends Resource> {
-  name: ResourceSchemaKey<T>;
+interface FormInputBase<T extends Resource, Y = Optional<string>> {
+  name: ResourceSchemaKey<T, Y>;
   label: string;
 }
 
-interface FormTextInput<T extends Resource> {
-  name: ResourceSchemaKey<T>;
-  label: string;
-}
+interface FormImageInput<T extends Resource> extends FormInputBase<T> {}
 
-interface FormRichTextInput<T extends Resource> {
-  name: ResourceSchemaKey<T>;
-  label: string;
-}
+interface FormTextInput<T extends Resource> extends FormInputBase<T> {}
 
-interface FormSelectInput<T extends Resource> {
-  name: ResourceSchemaKey<T, Optional<SelectInputOption["value"]>>;
-  label: string;
+interface FormDateInput<T extends Resource> extends FormInputBase<T> {}
+
+interface FormRichTextInput<T extends Resource> extends FormInputBase<T> {}
+
+interface FormSelectInput<T extends Resource>
+  extends FormInputBase<T, Optional<SelectInputOption["value"]>> {
   placeholder: string;
   options: SelectInputOption[];
 }
 
-interface FormCheckboxInput<T extends Resource> {
-  name: ResourceSchemaKey<T, boolean>;
-  label: string;
-}
+interface FormColorInput<T extends Resource> extends FormInputBase<T> {}
+
+interface FormCheckboxInput<T extends Resource>
+  extends FormInputBase<T, boolean> {}
 
 export interface AbstractResourceFormInputs<T extends Resource> {
   imageInputs?: FormImageInput<T>[];
   textInputs?: FormTextInput<T>[];
+  dateInputs?: FormDateInput<T>[];
   richTextInput?: FormRichTextInput<T>;
+  colorInputs?: FormColorInput<T>[];
   selectInputs?: FormSelectInput<T>[];
   checkboxInputs?: FormCheckboxInput<T>[];
 }

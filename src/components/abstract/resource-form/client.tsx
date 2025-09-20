@@ -9,7 +9,9 @@ import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 
-import { ImageInput } from "@/components/image/image-input";
+import { ColorInput } from "@/components/inputs/color-input";
+import { DatePicker } from "@/components/inputs/date-picker";
+import { ImageUpload } from "@/components/inputs/image-upload";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -114,7 +116,9 @@ export function AbstractResourceFormInternal<T extends Resource>({
   const {
     imageInputs = [],
     textInputs = [],
+    dateInputs = [],
     richTextInput,
+    colorInputs = [],
     selectInputs = [],
     checkboxInputs = [],
   } = metadata.form.inputs;
@@ -141,7 +145,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     name={input.name}
                     render={({ field }) => (
                       <FormItem>
-                        <ImageInput
+                        <ImageUpload
                           {...field}
                           label={input.label}
                           existingImage={existingImages[field.name]}
@@ -175,6 +179,28 @@ export function AbstractResourceFormInternal<T extends Resource>({
                   />
                 ))}
 
+                <div className="flex flex-wrap gap-4">
+                  {dateInputs.map((input) => (
+                    <FormField
+                      key={input.name}
+                      control={form.control}
+                      name={input.name}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{input.label}</FormLabel>
+                          <FormControl>
+                            <DatePicker
+                              {...field}
+                              value={field.value as string | null}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ))}
+                </div>
+
                 {/* // TODO: rich text editor */}
                 {richTextInput != null && (
                   <FormField
@@ -198,6 +224,28 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     )}
                   />
                 )}
+
+                <div className="flex flex-wrap gap-4">
+                  {colorInputs.map((input) => (
+                    <FormField
+                      key={input.name}
+                      control={form.control}
+                      name={input.name}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{input.label}</FormLabel>
+                          <FormControl>
+                            <ColorInput
+                              {...field}
+                              value={field.value as string | null}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ))}
+                </div>
 
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                   {selectInputs.map((input) => (
