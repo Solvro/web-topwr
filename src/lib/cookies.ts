@@ -1,17 +1,20 @@
 import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
+import { AuthStateSchema } from "@/schemas";
 import type { AuthState, User } from "@/types/api";
 
+/**
+ * Attempts to read and parse the auth state from cookies.
+ * Returns an `AuthState` object on success, and `null` on failure.
+ */
 export function parseAuthCookie(
   cookie: string | undefined | null,
 ): AuthState | null {
   if (cookie == null) {
     return null;
   }
-
   try {
-    // TODO: add validation for the cookie content
-    return JSON.parse(cookie) as AuthState;
+    return AuthStateSchema.parse(JSON.parse(cookie));
   } catch {
     return null;
   }

@@ -9,3 +9,5 @@ export const requiredString = () =>
     .min(1, { message: FORM_ERROR_MESSAGES.NONEMPTY });
 
 export const timestampNumber = () => z.number().int().positive();
+
+export const isoTimestamp = () => z.string().datetime({ offset: true });

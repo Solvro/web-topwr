@@ -36,7 +36,7 @@ import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import { RESOURCE_SCHEMAS } from "@/schemas/resources";
+import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { MessageResponse } from "@/types/api";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
 

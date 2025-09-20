@@ -10,7 +10,7 @@ interface BaseRequestOptions
   accessTokenOverride?: string;
   resource?: Resource;
 }
-interface FetchRequestOptions extends BaseRequestOptions {
+interface QueryRequestOptions extends BaseRequestOptions {
   method?: "GET";
   body?: never;
 }
@@ -19,6 +19,8 @@ interface MutationRequestOptions extends BaseRequestOptions {
   method?: "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
 }
+
+type FetchRequestOptions = QueryRequestOptions | MutationRequestOptions;
 
 const isAbsolutePath = (url: string) => /^https?:\/\//.test(url);
 
@@ -75,12 +77,7 @@ const getAccessToken = () => getAuthState()?.accessToken;
 
 function createRequest(
   endpoint: string,
-  {
-    accessTokenOverride,
-    resource,
-    body,
-    ...options
-  }: FetchRequestOptions | MutationRequestOptions,
+  { accessTokenOverride, resource, body, ...options }: FetchRequestOptions,
 ): Request {
   function setHeader(key: string, value?: string) {
     if (value == null) {
@@ -116,29 +113,34 @@ function createRequest(
   return new Request(url, requestInit);
 }
 
-export async function fetchQuery<T>(
+/** Prepares, sends and handles a fetch request based on the provided options. */
+const executeFetch = async <T>(
   endpoint: string,
-  options: FetchRequestOptions = {},
-): Promise<NonNullable<T>> {
-  const response = await fetch(
-    createRequest(endpoint, {
-      ...options,
-      method: "GET",
-      next: { revalidate: 60 },
-    }),
-  );
-  return handleResponse<T>(response);
-}
+  options: FetchRequestOptions,
+): Promise<NonNullable<T>> =>
+  handleResponse<T>(await fetch(createRequest(endpoint, options)));
 
-export async function fetchMutation<T>(
+/** Performs a cached GET request on the API. */
+export const fetchQuery = async <T>(
+  endpoint: string,
+  options: QueryRequestOptions = {},
+): Promise<NonNullable<T>> =>
+  executeFetch(endpoint, {
+    next: { revalidate: 60 },
+    ...options,
+    method: "GET",
+  });
+
+/** Performs a non-GET request on the API. */
+export const fetchMutation = async <T>(
   endpoint: string,
   options: MutationRequestOptions = {},
-): Promise<NonNullable<T>> {
-  const method = options.method ?? "POST";
-  options.headers = {
-    "Content-Type": "application/json",
-    ...options.headers,
-  };
-  const response = await fetch(createRequest(endpoint, { ...options, method }));
-  return handleResponse<T>(response);
-}
+): Promise<NonNullable<T>> =>
+  executeFetch(endpoint, {
+    method: "POST",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
