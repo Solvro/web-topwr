@@ -37,41 +37,42 @@ export type ResourceSchemaKey<
     : never;
 }[Path<ResourceFormValues<T>>];
 
-interface FormImageInput<T extends Resource> {
-  name: ResourceSchemaKey<T>;
+interface FormInputBase<
+  T extends Resource,
+  Y extends z.ZodTypeAny = z.ZodString,
+> {
+  name: ResourceSchemaKey<T, Y>;
   label: string;
 }
 
-interface FormTextInput<T extends Resource> {
-  name: ResourceSchemaKey<T>;
-  label: string;
-}
+interface FormImageInput<T extends Resource> extends FormInputBase<T> {}
 
-interface FormRichTextInput<T extends Resource> {
-  name: ResourceSchemaKey<T>;
-  label: string;
-}
+interface FormTextInput<T extends Resource> extends FormInputBase<T> {}
+
+interface FormDateInput<T extends Resource> extends FormInputBase<T> {}
+
+interface FormRichTextInput<T extends Resource> extends FormInputBase<T> {}
 
 interface FormSelectInput<
   T extends Resource,
   Y extends string | number = string | number,
-> {
-  name: ResourceSchemaKey<T, z.ZodNativeEnum<any> | z.ZodEnum<any>>; // eslint-disable-line @typescript-eslint/no-explicit-any
-  label: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+> extends FormInputBase<T, z.ZodNativeEnum<any> | z.ZodEnum<any>> {
   placeholder: string;
   optionEnum: Record<string, Y>;
   optionLabels: Record<Y, string>;
 }
 
-interface FormCheckboxInput<T extends Resource> {
-  name: ResourceSchemaKey<T, z.ZodBoolean>;
-  label: string;
-}
+interface FormColorInput<T extends Resource> extends FormInputBase<T> {}
 
+interface FormCheckboxInput<T extends Resource>
+  extends FormInputBase<T, z.ZodBoolean> {}
 export interface AbstractResourceFormInputs<T extends Resource> {
   imageInputs?: FormImageInput<T>[];
   textInputs?: FormTextInput<T>[];
+  dateInputs?: FormDateInput<T>[];
   richTextInputs?: FormRichTextInput<T>[];
+  colorInputs?: FormColorInput<T>[];
   selectInputs?: FormSelectInput<T>[];
   checkboxInputs?: FormCheckboxInput<T>[];
 }

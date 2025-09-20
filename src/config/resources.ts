@@ -72,7 +72,8 @@ export const RESOURCE_METADATA: {
     apiPath: string;
     form: {
       inputs: AbstractResourceFormInputs<R>;
-      defaultValues: DefaultValues<ResourceFormValues<R> | ResourceDataType<R>>;
+      defaultValues: ResourceFormValues<R> &
+        DefaultValues<ResourceFormValues<R> | ResourceDataType<R>>;
     };
   };
 } = {
@@ -172,6 +173,15 @@ export const RESOURCE_METADATA: {
           { name: "description", label: "Opis" },
           { name: "url", label: "URL" },
         ],
+        dateInputs: [
+          { name: "visibleFrom", label: "Data rozpoczęcia" },
+          { name: "visibleUntil", label: "Data zakończenia" },
+        ],
+        colorInputs: [
+          { name: "titleColor", label: "Kolor tytułu" },
+          { name: "textColor", label: "Kolor tekstu" },
+          { name: "backgroundColor", label: "Kolor tła" },
+        ],
         checkboxInputs: [
           { name: "draft", label: "Wersja robocza" },
           { name: "shouldRender", label: "Wyświetlaj użytkownikom" },
@@ -180,7 +190,14 @@ export const RESOURCE_METADATA: {
       defaultValues: {
         title: "",
         description: "",
+        url: "",
+        visibleFrom: null,
+        visibleUntil: null,
+        titleColor: null,
+        textColor: null,
+        backgroundColor: null,
         draft: true,
+        shouldRender: false,
       },
     },
   },
