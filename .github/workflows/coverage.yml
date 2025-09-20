@@ -41,7 +41,7 @@ jobs:
         run: cp coverage/coverage-summary.json base-coverage.json
 
       - name: Compare coverage
-        run: node .github/scripts/check-coverage-diff.js
+        run: node .github/scripts/compare-coverage-reports.js
 
       - name: Return to previous branch
         run: git checkout -
