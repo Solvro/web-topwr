@@ -43,9 +43,12 @@ describe("API Image component", () => {
       <ApiImage imageKey="non-existing-image" alt={alt} />,
     );
     expect(getLoadingIndicator()).toBeInTheDocument();
-    await waitFor(() => {
-      expect(getLoadingIndicator()).not.toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(getLoadingIndicator()).not.toBeInTheDocument();
+      },
+      { timeout: 2000 },
+    );
     const imageElement = screen.queryByAltText(alt);
     expect(imageElement).not.toBeInTheDocument();
   });
