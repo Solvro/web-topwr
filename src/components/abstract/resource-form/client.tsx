@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import type { z } from "zod";
 
 import { ImageInput } from "@/components/image/image-input";
+// import { ImageInput } from "@/components/image-input";
+import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -185,12 +187,12 @@ export function AbstractResourceFormInternal<T extends Resource>({
                       <FormItem>
                         <FormLabel>{richTextInput.label}</FormLabel>
                         <FormControl>
-                          <Input
-                            className="bg-background placeholder:text-foreground h-20 shadow-none"
-                            {...field}
-                            // TODO: figure out why field.value is a union of all possible input types
-                            // these casts should not be necessary since AbstractResourceFormInputs specifies only the keys which have the correct type
-                            value={(field.value ?? "") as string}
+                          <MinimalTiptapEditor
+                            value={field.value ?? ""}
+                            onChange={field.onChange}
+                            output="html"
+                            placeholder="Wpisz opis..."
+                            editable={true}
                           />
                         </FormControl>
                         <FormMessage />
