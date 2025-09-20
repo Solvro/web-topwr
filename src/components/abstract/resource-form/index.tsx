@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { get } from "react-hook-form";
 import type { DefaultValues } from "react-hook-form";
 
-import { ApiImage } from "@/components/image/api/server";
+import { ApiImage } from "@/components/api-image/server";
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resources";
 import type { ResourceDataType } from "@/types/app";

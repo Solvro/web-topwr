@@ -5,7 +5,7 @@ import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import type { ResourceDataType } from "@/types/app";
+import type { ResourceDataType, ResourceEditPageProps } from "@/types/app";
 
 import { AbstractResourceForm } from "./resource-form";
 
@@ -29,9 +29,8 @@ async function fetchResource<T extends Resource>(
 export async function AbstractResourceEditPage({
   resource,
   params,
-}: {
+}: ResourceEditPageProps & {
   resource: Resource;
-  params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
   const resourceData = await fetchResource(resource, id);

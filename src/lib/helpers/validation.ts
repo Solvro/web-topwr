@@ -11,3 +11,5 @@ export const requiredString = () =>
 export const timestampNumber = () => z.number().int().positive();
 
 export const isoTimestamp = () => z.string().datetime({ offset: true });
+
+export const colorField = () => z.string().regex(/^#([0-9a-fA-F]{3}){1,2}$/);
