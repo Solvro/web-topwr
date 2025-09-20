@@ -110,7 +110,7 @@ export async function returnFromAbstractResourceForm(
   await page
     .getByRole("link", {
       name: new RegExp(
-        `wróć do ${declineNoun(resource, { case: DeclensionCase.Genitive, plural: true })})}`,
+        `wróć do ${declineNoun(resource, { case: DeclensionCase.Genitive, plural: true })}`,
         "i",
       ),
     })
