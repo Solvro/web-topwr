@@ -31,7 +31,7 @@ describe("Create Guide Articles Page", () => {
     await form.user.click(form.submitButton);
 
     await form.user.type(form.input.title, "Test Title");
-    expect(form.submitButton).not.toBeDisabled();
+    expect(form.submitButton).toBeEnabled();
 
     await form.user.click(form.submitButton);
     const formMessages = form.screen.getAllByText(FORM_ERROR_MESSAGES.REQUIRED);

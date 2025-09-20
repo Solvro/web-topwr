@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "@playwright/test";
-import type { Page, Response } from "@playwright/test";
+import type { Locator, Page, Response } from "@playwright/test";
 
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import {
@@ -41,6 +41,14 @@ type MockStudentOrganization = ReturnType<typeof generateTestOrganization>;
 interface CreateOrganizationResponse extends MessageResponse {
   data: ResourceDataType<ResourceType> & MockStudentOrganization;
 }
+
+/** Gets the 'delete organization' button on the current page or within the given locator. */
+const getDeleteButton = (page: Page | Locator) =>
+  page.getByRole("button", { name: /usuń organizację studencką/i });
+
+/** Gets the 'edit organization' link on the current page or within the given locator. */
+const getEditButton = (page: Page | Locator) =>
+  page.getByRole("link", { name: /edytuj organizację studencką/i });
 
 const generateTestOrganization = (
   propertyOverrides: NonNullablePartialStudentOrganization = {},
@@ -116,20 +124,6 @@ async function filterSpecificOrganization(
   });
 }
 
-const getOrganizationContainer = (
-  page: Page,
-  organization: Pick<
-    ResourceFormValues<ResourceType>,
-    "name" | "shortDescription"
-  >,
-) =>
-  // TODO: cleaner locator
-  page
-    .getByTestId("abstract-resource-list")
-    .locator("div")
-    .filter({ hasText: organization.name })
-    .filter({ hasText: organization.shortDescription ?? "" });
-
 test.describe("Student Organizations CRUD", () => {
   test.beforeAll(async () => {
     ({ accessToken: accessTokenOverride, refreshToken } =
@@ -151,33 +145,36 @@ test.describe("Student Organizations CRUD", () => {
   });
 
   test("should create an organization", async ({ page }) => {
-    await navigateToOrganizations(page);
     const testOrganization = generateTestOrganization();
 
-    await page.getByRole("link", { name: /dodaj organizację/i }).click();
-    await page.waitForURL(`/${resource}/create`);
+    await test.step("Fill create organization form", async () => {
+      await navigateToOrganizations(page);
 
-    await page.getByLabel("Nazwa").fill(testOrganization.name);
-    await page
-      .getByLabel("Krótki opis")
-      .fill(testOrganization.shortDescription);
-    await page
-      .getByLabel("Opis", { exact: true })
-      .fill(testOrganization.description);
+      await page.getByRole("link", { name: /dodaj organizację/i }).click();
+      await page.waitForURL(`/${resource}/create`);
 
-    await selectOptionByLabel(
-      page,
-      "Wydział",
-      // TODO: extract the labels from the `testOrganization` properties
-      "Wydział Informatyki i Telekomunikacji",
-    );
-    await selectOptionByLabel(page, "Źródło", "Ręcznie");
-    await selectOptionByLabel(page, "Typ", "Organizacja studencka");
-    await selectOptionByLabel(page, "Status", "Aktywna");
+      await page.getByLabel("Nazwa").fill(testOrganization.name);
+      await page
+        .getByLabel("Krótki opis")
+        .fill(testOrganization.shortDescription);
+      await page
+        .getByLabel("Opis", { exact: true })
+        .fill(testOrganization.description);
 
-    await page
-      .getByRole("checkbox", { name: /czy jest kołem strategicznym/i })
-      .setChecked(testOrganization.isStrategic);
+      await selectOptionByLabel(
+        page,
+        "Wydział",
+        // TODO: extract the labels from the `testOrganization` properties
+        "Wydział Informatyki i Telekomunikacji",
+      );
+      await selectOptionByLabel(page, "Źródło", "Ręcznie");
+      await selectOptionByLabel(page, "Typ", "Organizacja studencka");
+      await selectOptionByLabel(page, "Status", "Aktywna");
+
+      await page
+        .getByRole("checkbox", { name: /czy jest kołem strategicznym/i })
+        .setChecked(testOrganization.isStrategic);
+    });
 
     const responsePromise = page.waitForResponse(
       (response: Response) =>
@@ -185,10 +182,22 @@ test.describe("Student Organizations CRUD", () => {
           RESOURCE_METADATA[resource].apiPath &&
         response.request().method() === "POST",
     );
-
     try {
-      await page.getByRole("button", { name: /zapisz/i }).click();
-      await expectAbstractResourceFormSuccess(page);
+      await test.step("Submit create organization form", async () => {
+        const button = page.getByRole("button", { name: /zapisz/i });
+        await expect(button).toBeEnabled();
+        await button.click();
+        await expectAbstractResourceFormSuccess(page);
+      });
+
+      await test.step("Ensure creation is persisted", async () => {
+        await returnFromAbstractResourceForm(page, resource);
+        await filterSpecificOrganization(page, testOrganization);
+        await expect(page.getByText(testOrganization.name)).toBeVisible();
+        await expect(
+          page.getByText(testOrganization.shortDescription),
+        ).toBeVisible();
+      });
     } finally {
       const response = await responsePromise;
       const json = (await response.json()) as CreateOrganizationResponse;
@@ -200,19 +209,15 @@ test.describe("Student Organizations CRUD", () => {
     const testOrganization = await createTestOrganization();
     try {
       await navigateToOrganizations(page);
-      await expect(
-        // TODO: cleaner locator
-        page.getByTestId("abstract-resource-list").locator(":scope > *"),
-      ).toHaveCount(LIST_RESULTS_PER_PAGE); // assuming the database isn't empty (change this if using mocks)
+      await expect(getDeleteButton(page)).toHaveCount(LIST_RESULTS_PER_PAGE); // assuming the database isn't empty (change this if using mocks)
       await filterSpecificOrganization(page, testOrganization);
 
-      await expect(
-        // TODO: cleaner locator
-        page.getByTestId("abstract-resource-list").locator(":scope > *"),
-      ).toHaveCount(1);
+      await expect(getDeleteButton(page)).toHaveCount(1);
+      await expect(getEditButton(page)).toHaveCount(1);
 
+      await expect(page.getByText(testOrganization.name)).toBeVisible();
       await expect(
-        getOrganizationContainer(page, testOrganization),
+        page.getByText(testOrganization.shortDescription),
       ).toBeVisible();
     } finally {
       await deleteTestOrganization(testOrganization.id);
@@ -227,9 +232,7 @@ test.describe("Student Organizations CRUD", () => {
       await test.step("Change organization name", async () => {
         await navigateToOrganizations(page);
         await filterSpecificOrganization(page, testOrganization);
-        await getOrganizationContainer(page, testOrganization)
-          .getByLabel(/edytuj organizację studencką/i)
-          .click();
+        await getEditButton(page).click();
         await page.waitForURL(`/${resource}/edit/*`);
         const submitButton = page.getByRole("button", { name: /zapisz/i });
         await expect(submitButton).toBeDisabled();
@@ -252,8 +255,9 @@ test.describe("Student Organizations CRUD", () => {
       await test.step("Ensure update is persisted", async () => {
         await returnFromAbstractResourceForm(page, resource);
         await filterSpecificOrganization(page, newOrganization);
+        await expect(page.getByText(newOrganization.name)).toBeVisible();
         await expect(
-          getOrganizationContainer(page, newOrganization),
+          page.getByText(newOrganization.shortDescription),
         ).toBeVisible();
       });
     } finally {
@@ -266,17 +270,14 @@ test.describe("Student Organizations CRUD", () => {
     try {
       await navigateToOrganizations(page);
       await filterSpecificOrganization(page, testOrganization);
-      await getOrganizationContainer(page, testOrganization)
-        .getByLabel(/usuń organizację studencką/i)
-        .click();
-      await page.getByRole("button", { name: /usuń/i }).click();
+      await getDeleteButton(page).click();
+      await page.getByRole("button", { name: /^usuń$/i }).click();
 
       await expect(
         page.getByText(/pomyślnie usunięto organizację/i),
       ).toBeVisible();
-      await expect(
-        getOrganizationContainer(page, testOrganization),
-      ).not.toBeVisible();
+      await expect(getEditButton(page)).toBeHidden();
+      await expect(getDeleteButton(page)).toBeHidden();
     } finally {
       await deleteTestOrganization(testOrganization.id);
     }
