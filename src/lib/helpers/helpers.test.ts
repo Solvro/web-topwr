@@ -9,7 +9,7 @@ import {
   getUserDisplayName,
   removeTrailingSlash,
   sanitizeId,
-} from "./helpers";
+} from ".";
 
 describe("sanitizeId function", () => {
   it("should sanitize IDs correctly", () => {
