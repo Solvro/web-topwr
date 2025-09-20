@@ -2,13 +2,8 @@ import { AbstractResourceEditPage } from "@/components/abstract/abstract-resourc
 import { Resource } from "@/config/enums";
 import type { ResourceEditPageProps } from "@/types/app";
 
-export default function EditGuideArticlePage({
-  params,
-}: ResourceEditPageProps) {
+export default function EditBannerPage({ params }: ResourceEditPageProps) {
   return (
-    <AbstractResourceEditPage
-      resource={Resource.GuideArticles}
-      params={params}
-    />
+    <AbstractResourceEditPage resource={Resource.Banners} params={params} />
   );
 }
