@@ -43,3 +43,7 @@ export type RecordIntersection<
   J extends string | number | symbol,
   V,
 > = Record<K, V> & Record<J, V>;
+
+export interface ResourceEditPageProps {
+  params: Promise<{ id: string }>;
+}
