@@ -6,9 +6,10 @@ import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { Resource } from "@/config/enums";
+import { DeclensionCase, Resource } from "@/config/enums";
 import { useAuth } from "@/hooks/use-auth";
 import { getUserDisplayName } from "@/lib/helpers";
+import { declineNoun } from "@/lib/polish";
 
 export default function Home() {
   const auth = useAuth();
@@ -22,51 +23,61 @@ export default function Home() {
       <span className="mt-4 w-full text-2xl md:mt-16">
         Cześć, {getUserDisplayName(auth.user)}!
       </span>
-      <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
+      <div className="w-full columns-1 space-y-4 md:columns-2">
         <DashboardButton
-          href={`/${Resource.StudentOrganizations}`}
+          resource={Resource.StudentOrganizations}
           icon={Building}
-          label="Zarządzanie organizacjami"
-          className="order-1"
         />
-        <DashboardButton
-          href={`/${Resource.GuideArticles}`}
-          icon={BookOpen}
-          label="Zarządzanie artykułami"
-          className="order-2 md:order-3"
-        />
+        <DashboardButton resource={Resource.GuideArticles} icon={BookOpen} />
         <DashboardButton
           href="/"
           icon={RefreshCcw}
           label="Review zmian"
           variant="outline"
-          className="order-3 md:order-2"
         />
         <DashboardButton
-          href={`/${Resource.Banners}`}
+          resource={Resource.Banners}
           icon={Megaphone}
-          label="Zarządzanie banerami"
           variant="outline"
-          className="order-4"
         />
       </div>
     </div>
   );
 }
 
+/**
+ * Declines the resource name correctly and uses its first word only.
+ * Used to ensure the label isn't too long for the dashboard buttons.
+ *
+ * @example getLabelFromResource(Resource.StudentOrganizations) === 'Zarządzanie organizacjami'
+ */
+function getLabelFromResource(resource: Resource) {
+  const declined = declineNoun(resource, {
+    case: DeclensionCase.Instrumental,
+    plural: true,
+  });
+  const firstWord = declined.split(" ")[0];
+  return `Zarządzanie ${firstWord}`;
+}
+
 function DashboardButton({
-  href,
   icon: Icon,
-  label,
   variant = "default",
   className = "",
-}: {
-  href: string;
+  href: hrefOverride,
+  label: labelOverride,
+  resource,
+}: VariantProps<typeof Button> & {
   icon: LucideIcon;
-  label: string;
-  variant?: VariantProps<typeof Button>["variant"];
   className?: string;
-}) {
+} & (
+    | { href?: never; label?: never; resource: Resource }
+    | { href: string; label: string; resource?: never }
+  )) {
+  const [href, label] =
+    resource == null
+      ? [hrefOverride, labelOverride]
+      : [`/${resource}`, getLabelFromResource(resource)];
   return (
     <Button
       className={`h-20 w-full justify-start space-x-2 rounded-xl ${className}`}

@@ -62,3 +62,7 @@ export type RecordIntersection<
 /** Extracts from the fields of a resource only those which have defined translations and declinations in Polish. */
 export type ResourceDeclinableField<T extends Resource> =
   keyof ResourceDataType<T> & DeclinableNoun;
+
+export interface ResourceEditPageProps {
+  params: Promise<{ id: string }>;
+}
