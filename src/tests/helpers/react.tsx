@@ -30,3 +30,6 @@ export function getToaster() {
   expect(toaster).toBeInTheDocument();
   return toaster;
 }
+
+export const getLoadingIndicator = () =>
+  screen.queryByLabelText(/trwa ładowanie zasobu/i);

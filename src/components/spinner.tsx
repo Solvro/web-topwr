@@ -3,5 +3,10 @@ import { LoaderCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Spinner({ className = "" }: { className?: string }) {
-  return <LoaderCircle className={cn("animate-spin", className)} />;
+  return (
+    <LoaderCircle
+      className={cn("animate-spin", className)}
+      aria-label="trwa ładowanie zasobu"
+    />
+  );
 }

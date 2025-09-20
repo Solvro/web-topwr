@@ -9,13 +9,12 @@ export const mockDatedResource = (): DatedResource => ({
 });
 
 export function generateFileEntry(): FileEntry {
-  const entry = {
-    id: faker.string.uuid(),
+  const id = faker.string.uuid();
+  const fileExtension = faker.helpers.arrayElement(["png", "jpg", "jpeg"]);
+  return {
     ...mockDatedResource(),
-    fileExtension: faker.helpers.arrayElement(["png", "jpg", "jpeg"]),
+    id,
+    fileExtension,
+    url: `${API_FILES_URL}/${id}.${fileExtension}`,
   };
-
-  const url = `${API_FILES_URL}/${entry.id}.${entry.fileExtension}`;
-
-  return { ...entry, url };
 }

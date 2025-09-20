@@ -12,7 +12,7 @@ import { MockImage } from "./mocks/image";
 import { server } from "./mocks/server";
 
 beforeAll(() => {
-  server.listen();
+  server.listen({ onUnhandledRequest: "bypass" });
 });
 afterEach(() => {
   server.resetHandlers();

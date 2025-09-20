@@ -3,7 +3,10 @@ import { waitFor } from "@testing-library/dom";
 import { describe, expect, it } from "vitest";
 
 import { API_FILES_URL } from "@/config/constants";
-import { renderWithProviders } from "@/tests/helpers/react";
+import {
+  getLoadingIndicator,
+  renderWithProviders,
+} from "@/tests/helpers/react";
 import { MOCK_FILES } from "@/tests/mocks/constants";
 
 import { ApiImage } from "./client";
@@ -32,5 +35,18 @@ describe("API Image component", () => {
         );
       }
     });
+  });
+
+  it("should render nothing for non-existing image", async () => {
+    const alt = faker.lorem.sentence();
+    const screen = renderWithProviders(
+      <ApiImage imageKey="non-existing-image" alt={alt} />,
+    );
+    expect(getLoadingIndicator()).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getLoadingIndicator()).not.toBeInTheDocument();
+    });
+    const imageElement = screen.queryByAltText(alt);
+    expect(imageElement).not.toBeInTheDocument();
   });
 });
