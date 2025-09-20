@@ -2,7 +2,7 @@ import type { z } from "zod";
 
 import type { ERROR_CODES, NOUN_DECLENSIONS } from "@/config/constants";
 import type { DeclensionCase, Resource } from "@/config/enums";
-import type { RESOURCE_SCHEMAS } from "@/schemas/resources";
+import type { RESOURCE_SCHEMAS } from "@/schemas";
 
 import type { DatedResource } from "./api";
 

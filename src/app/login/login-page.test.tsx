@@ -8,7 +8,7 @@ import { getToaster, renderWithProviders } from "@/tests/helpers/react";
 import { MOCK_PASSWORD, MOCK_USER } from "@/tests/mocks/constants";
 import { MOCK_USE_ROUTER } from "@/tests/mocks/functions";
 import { server } from "@/tests/mocks/server";
-import type { User } from "@/types/api";
+import type { GetUserResponse } from "@/types/api";
 
 import LoginPage from "./page";
 
@@ -83,8 +83,9 @@ describe("Login page", () => {
   it("should fall back to email if user has no full name", async () => {
     server.use(
       http.get(`${API_URL}/auth/me`, () =>
-        HttpResponse.json({
-          user: { ...MOCK_USER.valid, fullName: null } satisfies User,
+        HttpResponse.json<GetUserResponse>({
+          ...MOCK_USER.valid,
+          fullName: null,
         }),
       ),
     );

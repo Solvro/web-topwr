@@ -1,3 +1,7 @@
+import type { z } from "zod";
+
+import type { AuthStateSchema, UserSchema } from "@/schemas";
+
 // Types Source: backend-topwr
 export interface MessageResponse {
   message: string;
@@ -49,12 +53,11 @@ export interface DatedResource {
   updatedAt: string;
 }
 
+export type User = z.infer<typeof UserSchema>;
+export type AuthState = z.infer<typeof AuthStateSchema>;
+
 /** As returned from GET /auth/me */
-export interface User extends DatedResource {
-  id: number;
-  fullName: string | null;
-  email: string;
-}
+export type GetUserResponse = User; // separating the types in case response signature changes (e.g. { user: { ... } })
 
 /** As returned from POST /auth/login */
 export interface LogInResponse {
@@ -63,12 +66,6 @@ export interface LogInResponse {
   refreshToken: string;
   accessExpiresInMs: number;
   refreshExpiresInMs: number;
-}
-
-export interface AuthState {
-  accessToken: string;
-  refreshToken: string;
-  user: User;
 }
 
 /** As returned from GET /files/{id} */

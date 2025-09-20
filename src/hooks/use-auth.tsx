@@ -7,6 +7,7 @@ import { AUTH_STATE_COOKIE_NAME } from "@/config/constants";
 import { getCookieOptions, parseAuthCookie } from "@/lib/cookies";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { getCurrentUser, getUserDisplayName } from "@/lib/helpers";
+import { AuthStateSchema } from "@/schemas";
 import { authStateAtom } from "@/stores/auth";
 import type {
   AuthState,
@@ -74,17 +75,18 @@ export function useAuth(): AuthContext {
         `Cannot log in: already authenticated as ${getUserDisplayName(authState.user)}`,
       );
     }
-    const { accessToken, refreshToken } = await fetchMutation<LogInResponse>(
-      "auth/login",
-      {
+    const { accessToken, refreshToken, accessExpiresInMs, refreshExpiresInMs } =
+      await fetchMutation<LogInResponse>("auth/login", {
         body: data,
-      },
-    );
-    const newState: AuthState = {
+      });
+    const user: User = await getCurrentUser(accessToken);
+    const newState = AuthStateSchema.parse({
       accessToken,
       refreshToken,
-      user: await getCurrentUser(accessToken),
-    };
+      accessTokenExpiresAt: Date.now() + accessExpiresInMs,
+      refreshTokenExpiresAt: Date.now() + refreshExpiresInMs,
+      user,
+    });
     Cookies.set(AUTH_STATE_COOKIE_NAME, ...getCookieOptions(newState));
     setAuthState(newState);
     return newState;
