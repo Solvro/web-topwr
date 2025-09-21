@@ -10,6 +10,8 @@ import type {
   DeclinableSimpleNoun,
 } from "@/types/app";
 
+import { typedEntries } from "./helpers";
+
 interface DeclensionOptions {
   prependDeterminer?: boolean;
   plural?: boolean;
@@ -61,9 +63,8 @@ export function declineNoun(
   } = SIMPLE_NOUN_DECLENSIONS[base];
   if (!isSimple) {
     const transform = NOUN_PHRASE_TRANSFORMATIONS[noun].transform;
-    for (const key in declensions) {
-      const currentCase = key as DeclensionCase;
-      declensions[currentCase] = transform(declensions[currentCase]);
+    for (const [key, value] of typedEntries(declensions)) {
+      declensions[key] = transform(value);
     }
   }
   if (declensionCase == null) {

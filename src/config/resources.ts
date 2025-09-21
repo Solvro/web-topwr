@@ -1,6 +1,5 @@
 import type { DefaultValues } from "react-hook-form";
 
-import { enumToFormSelectOptions } from "@/lib/helpers";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 
@@ -81,28 +80,14 @@ export const RESOURCE_METADATA: {
     apiPath: "guide_articles",
     form: {
       inputs: {
-        imageInputs: [
-          {
-            label: "Zdjęcie",
-            name: "imageKey",
-          },
-        ],
+        imageInputs: [{ label: "Zdjęcie", name: "imageKey" }],
 
         textInputs: [
-          {
-            name: "title",
-            label: "Tytuł",
-          },
-          {
-            name: "shortDesc",
-            label: "Krótki opis",
-          },
+          { name: "title", label: "Tytuł" },
+          { name: "shortDesc", label: "Krótki opis" },
         ],
 
-        richTextInput: {
-          name: "description",
-          label: "Opis",
-        },
+        richTextInputs: [{ name: "description", label: "Opis" }],
       },
       defaultValues: {
         title: "",
@@ -117,75 +102,49 @@ export const RESOURCE_METADATA: {
     form: {
       inputs: {
         imageInputs: [
-          {
-            label: "Logo",
-            name: "logoKey",
-          },
-          {
-            label: "Baner",
-            name: "coverKey",
-          },
+          { label: "Logo", name: "logoKey" },
+          { label: "Baner", name: "coverKey" },
         ],
 
         textInputs: [
-          {
-            name: "name",
-            label: "Nazwa",
-          },
-          {
-            name: "shortDescription",
-            label: "Krótki opis",
-          },
+          { name: "name", label: "Nazwa" },
+          { name: "shortDescription", label: "Krótki opis" },
         ],
 
-        richTextInput: {
-          name: "description",
-          label: "Opis",
-        },
+        richTextInputs: [{ name: "description", label: "Opis" }],
 
         selectInputs: [
           {
             name: "departmentId",
             label: "Wydział",
             placeholder: "Wybierz wydział",
-            options: enumToFormSelectOptions(
-              DepartmentIds,
-              SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.DEPARTMENT,
-            ),
+            optionEnum: DepartmentIds,
+            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.DEPARTMENT,
           },
           {
             name: "source",
             label: "Źródło",
             placeholder: "Wybierz źródło",
-            options: enumToFormSelectOptions(
-              OrganizationSource,
-              SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.SOURCE,
-            ),
+            optionEnum: OrganizationSource,
+            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.SOURCE,
           },
           {
             name: "organizationType",
             label: "Typ",
             placeholder: "Wybierz typ",
-            options: enumToFormSelectOptions(
-              OrganizationType,
-              SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.TYPE,
-            ),
+            optionEnum: OrganizationType,
+            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.TYPE,
           },
           {
             name: "organizationStatus",
             label: "Status",
             placeholder: "Wybierz status",
-            options: enumToFormSelectOptions(
-              OrganizationStatus,
-              SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
-            ),
+            optionEnum: OrganizationStatus,
+            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
           },
         ],
         checkboxInputs: [
-          {
-            name: "isStrategic",
-            label: "Czy jest kołem strategicznym?",
-          },
+          { name: "isStrategic", label: "Czy jest kołem strategicznym?" },
         ],
       },
       defaultValues: {

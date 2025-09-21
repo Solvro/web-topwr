@@ -140,7 +140,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
     singular: {
       nominative: "krótki opis",
       genitive: "krótkiego opisu",
-      dative: "krótkiego opisowi",
+      dative: "krótkiemu opisowi",
       accusative: "krótki opis",
       instrumental: "krótkim opisem",
       locative: "krótkim opisie",
