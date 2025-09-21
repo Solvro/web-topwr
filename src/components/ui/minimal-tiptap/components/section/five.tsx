@@ -71,7 +71,7 @@ export const SectionFive: React.FC<SectionFiveProps> = ({
   return (
     <>
       <LinkEditPopover editor={editor} size={size} variant={variant} />
-      <ImageEditDialog editor={editor} size={size} variant={variant} />
+      {/* <ImageEditDialog editor={editor} size={size} variant={variant} /> */}
       <ToolbarSection
         editor={editor}
         actions={formatActions}

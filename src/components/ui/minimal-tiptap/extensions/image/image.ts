@@ -351,17 +351,15 @@ export const Image = TiptapImage.extend<CustomImageOptions>({
       if (step instanceof ReplaceStep && step.slice.size === 0) {
         const deletedPages = transaction.before.content.cut(step.from, step.to);
 
-        for (const node of deletedPages) {
+        deletedPages.content?.forEach((node) => {
           if (node.type.name === "image") {
             const attributes = node.attrs;
-
-            if (attributes.src.startsWith("blob:")) {
+            if (attributes.src?.startsWith("blob:")) {
               URL.revokeObjectURL(attributes.src);
             }
-
             this.options.onImageRemoved?.(attributes);
           }
-        }
+        });
       }
     }
   },
