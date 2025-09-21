@@ -27,9 +27,14 @@ import {
 import {
   IMPLICIT_SORT_BY_ATTRIBUTES,
   SORT_DIRECTIONS,
+  SORT_FILTER_LABEL_DECLENSION_CASES,
+  SORT_FILTER_PLACEHOLDER,
 } from "@/config/constants";
+import type { Resource } from "@/config/enums";
+import { declineNoun } from "@/lib/polish";
 import { cn } from "@/lib/utils";
 import { SortFiltersSchema } from "@/schemas";
+import type { ResourceDeclinableField } from "@/types/app";
 import type { SortFiltersFormValues } from "@/types/forms";
 
 import { SelectClear } from "../select-clear";
@@ -44,12 +49,12 @@ function FieldGroup({
   return <div className={cn("flex gap-[inherit]", className)}>{children}</div>;
 }
 
-export function SortFilters({
-  sortFields = {},
-  searchFields = {},
+export function SortFilters<T extends Resource>({
+  sortableFields = [],
+  searchableFields = [],
 }: {
-  sortFields?: Record<string, string>;
-  searchFields?: Record<string, string>;
+  sortableFields?: readonly ResourceDeclinableField<T>[];
+  searchableFields?: readonly ResourceDeclinableField<T>[];
 }) {
   const router = useRouter();
   const searchParameters = useSearchParams();
@@ -62,10 +67,20 @@ export function SortFilters({
     },
   });
 
-  const sortOptions: Record<string, string> = {
-    ...sortFields,
+  const sortLabels: [string, string][] = [
     ...IMPLICIT_SORT_BY_ATTRIBUTES,
-  };
+    ...sortableFields,
+  ].map((field) => [
+    field,
+    declineNoun(field, { case: SORT_FILTER_LABEL_DECLENSION_CASES.sortBy }),
+  ]);
+
+  const searchLabels: [string, string][] = searchableFields.map((field) => [
+    field,
+    declineNoun(field, {
+      case: SORT_FILTER_LABEL_DECLENSION_CASES.searchField,
+    }),
+  ]);
 
   function handleSubmit(values: SortFiltersFormValues) {
     const newParameters = new URLSearchParams(searchParameters);
@@ -101,11 +116,11 @@ export function SortFilters({
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="wybierz pole" />
+                      <SelectValue placeholder={SORT_FILTER_PLACEHOLDER} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.entries(sortOptions).map(([value, label]) => (
+                    {sortLabels.map(([value, label]) => (
                       <SelectItem key={value} value={value}>
                         {label}
                       </SelectItem>
@@ -161,12 +176,12 @@ export function SortFilters({
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="wybierz pole" />
+                      <SelectValue placeholder={SORT_FILTER_PLACEHOLDER} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     <SelectClear field={field} />
-                    {Object.entries(searchFields).map(([value, label]) => (
+                    {searchLabels.map(([value, label]) => (
                       <SelectItem key={value} value={value}>
                         {label}
                       </SelectItem>

@@ -6,62 +6,38 @@ import { describe, expect, it, vi } from "vitest";
 
 import {
   FORM_ERROR_MESSAGES,
-  IMPLICIT_SORT_BY_ATTRIBUTES,
   SORT_DIRECTIONS,
+  SORT_FILTER_DEFAULT_VALUES,
+  SORT_FILTER_LABEL_DECLENSION_CASES,
+  SORT_FILTER_PLACEHOLDER,
 } from "@/config/constants";
-import { isKeyOf, typedEntries } from "@/lib/helpers";
+import { declineNoun } from "@/lib/polish";
 import { MOCK_USE_SEARCH_PARAMS } from "@/tests/mocks/functions";
-import type { SortFiltersFormValues } from "@/types/forms";
+import type { DeclinableNoun, SortFiltersOptions } from "@/types/app";
 
 import { SortFilters } from "./sort-filters";
 
-const MOCK_RESOURCE_ATTRIBUTE_LABELS = {
-  sortBy: {
-    width: "szerokości",
-    height: "wysokości",
-    length: "długości",
-    weight: "wagi",
-    ...IMPLICIT_SORT_BY_ATTRIBUTES,
-  },
-  searchField: {
-    width: "szerokości",
-    height: "wysokości",
-    length: "długości",
-    weight: "wadze",
-  },
-  sortDirection: SORT_DIRECTIONS,
+const SEARCH_FILTERS_OPTIONS = {
+  sortBy: ["description"],
+  searchField: ["description"],
 } satisfies {
-  [key in keyof SortFiltersFormValues]?: Record<string, string>;
-};
-
-type MockedSortFilterAttribute = keyof typeof MOCK_RESOURCE_ATTRIBUTE_LABELS;
-
-const OPTIONAL_ATTRIBUTE_PLACEHOLDERS = {
-  searchField: "wybierz pole",
-} satisfies Partial<Record<MockedSortFilterAttribute, string>>;
-type OptionalAttributes = keyof typeof OPTIONAL_ATTRIBUTE_PLACEHOLDERS;
-
-type MockedAttribute<K extends MockedSortFilterAttribute> =
-  keyof (typeof MOCK_RESOURCE_ATTRIBUTE_LABELS)[K];
-
-type MockedSortFiltersFormValues = SortFiltersFormValues & {
-  [key in MockedSortFilterAttribute]: key extends OptionalAttributes
-    ? MockedAttribute<key> | (typeof OPTIONAL_ATTRIBUTE_PLACEHOLDERS)[key]
-    : MockedAttribute<key>;
+  sortBy: DeclinableNoun[];
+  searchField: DeclinableNoun[];
 };
 
 const MOCK_SEARCH_PARAMS = {
-  sortBy: "createdAt",
+  sortBy: "description",
   sortDirection: "desc",
-  searchField: "length",
-} satisfies Partial<MockedSortFiltersFormValues>;
+  searchField: "description",
+  searchTerm: "test",
+} satisfies SortFiltersOptions;
 
 function renderSortFilters() {
   const user = userEvent.setup();
   const screen = render(
     <SortFilters
-      sortFields={MOCK_RESOURCE_ATTRIBUTE_LABELS.sortBy}
-      searchFields={MOCK_RESOURCE_ATTRIBUTE_LABELS.searchField}
+      sortableFields={SEARCH_FILTERS_OPTIONS.sortBy}
+      searchableFields={SEARCH_FILTERS_OPTIONS.searchField}
     />,
   );
   const input = {
@@ -97,20 +73,25 @@ function useMockedSearchParameters() {
 
 function expectFormValues(
   form: ReturnType<typeof renderSortFilters>,
-  values: MockedSortFiltersFormValues,
+  values: SortFiltersOptions,
 ) {
-  const { searchTerm, ...restValues } = values;
-  for (const [key, value] of typedEntries(restValues)) {
+  for (const key of ["sortBy", "searchField"] as const) {
     const input = form.input[key];
-    const labels = MOCK_RESOURCE_ATTRIBUTE_LABELS[key];
-    const expectedValue = isKeyOf(value, labels)
-      ? labels[value]
-      : isKeyOf(key, OPTIONAL_ATTRIBUTE_PLACEHOLDERS)
-        ? OPTIONAL_ATTRIBUTE_PLACEHOLDERS[key]
-        : value;
-    expect(input).toHaveTextContent(expectedValue);
+    const value = values[key];
+    if (value === "") {
+      expect(input).toHaveTextContent(SORT_FILTER_PLACEHOLDER);
+    } else {
+      const label = declineNoun(value, {
+        case: SORT_FILTER_LABEL_DECLENSION_CASES[key],
+      });
+      expect(input).toHaveTextContent(label);
+    }
   }
-  expect(form.input.searchTerm).toHaveValue(searchTerm);
+
+  expect(form.input.sortDirection).toHaveTextContent(
+    SORT_DIRECTIONS[values.sortDirection],
+  );
+  expect(form.input.searchTerm).toHaveValue(values.searchTerm);
 }
 
 describe("Abstract list sort filters", () => {
@@ -121,14 +102,15 @@ describe("Abstract list sort filters", () => {
     const siblingSelect = parent?.querySelector("select");
     expect(siblingSelect).toBeInTheDocument();
     assert.ok(siblingSelect != null); // so that TS knows siblingSelect is not null, despite the previous expect
-    for (const [key, value] of Object.entries(
-      MOCK_RESOURCE_ATTRIBUTE_LABELS.sortBy,
-    )) {
-      const option = within(siblingSelect).getByText(value, {
+    for (const sortByOption of SEARCH_FILTERS_OPTIONS.sortBy) {
+      const label = declineNoun(sortByOption, {
+        case: SORT_FILTER_LABEL_DECLENSION_CASES.sortBy,
+      });
+      const option = within(siblingSelect).getByText(label, {
         selector: "option",
       });
       expect(option).toBeInTheDocument();
-      expect(option.getAttribute("value")).toBe(key);
+      expect(option).toHaveValue(sortByOption);
     }
   });
 
@@ -144,7 +126,7 @@ describe("Abstract list sort filters", () => {
   it("should populate initial values from search params", () => {
     useMockedSearchParameters();
     const form = renderSortFilters();
-    expectFormValues(form, { ...MOCK_SEARCH_PARAMS, searchTerm: "" });
+    expectFormValues(form, MOCK_SEARCH_PARAMS);
   });
 
   it("should reset to initial values beyond search params", async () => {
@@ -153,11 +135,6 @@ describe("Abstract list sort filters", () => {
     const form = renderSortFilters();
     await form.user.click(form.buttonReset);
 
-    expectFormValues(form, {
-      ...OPTIONAL_ATTRIBUTE_PLACEHOLDERS,
-      sortBy: "id",
-      sortDirection: "asc",
-      searchTerm: "",
-    });
+    expectFormValues(form, SORT_FILTER_DEFAULT_VALUES);
   });
 });

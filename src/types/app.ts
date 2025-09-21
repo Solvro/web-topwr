@@ -1,7 +1,11 @@
 import type { z } from "zod";
 
-import type { ERROR_CODES, NOUN_DECLENSIONS } from "@/config/constants";
+import type { ERROR_CODES } from "@/config/constants";
 import type { DeclensionCase, Resource } from "@/config/enums";
+import type {
+  NOUN_PHRASE_TRANSFORMATIONS,
+  SIMPLE_NOUN_DECLENSIONS,
+} from "@/config/polish";
 import type { RESOURCE_SCHEMAS } from "@/schemas";
 
 import type { DatedResource } from "./api";
@@ -15,12 +19,20 @@ export type ResourceDataType<T extends Resource> = DatedResource & {
 } & ResourceFormValues<T>;
 
 export interface ListItem {
-  id: Id;
   name?: string;
   shortDescription?: string | null;
 }
 
 export type ErrorCode = keyof typeof ERROR_CODES;
+
+export type SortDirection = "asc" | "desc";
+
+export interface SortFiltersOptions {
+  sortBy: DeclinableNoun;
+  sortDirection: SortDirection;
+  searchField: DeclinableNoun | "";
+  searchTerm: string;
+}
 
 export interface Pluralized<T extends Record<string, unknown>> {
   singular: T;
@@ -28,7 +40,9 @@ export interface Pluralized<T extends Record<string, unknown>> {
 }
 export type Declensions = Record<DeclensionCase, string>;
 
-export type DeclinableNoun = keyof typeof NOUN_DECLENSIONS;
+export type DeclinableSimpleNoun = keyof typeof SIMPLE_NOUN_DECLENSIONS;
+export type DeclinableNounPhrase = keyof typeof NOUN_PHRASE_TRANSFORMATIONS;
+export type DeclinableNoun = DeclinableSimpleNoun | DeclinableNounPhrase;
 
 export type AppZodObject = z.ZodObject<z.ZodRawShape>;
 
@@ -43,3 +57,7 @@ export type RecordIntersection<
   J extends string | number | symbol,
   V,
 > = Record<K, V> & Record<J, V>;
+
+/** Extracts from the fields of a resource only those which have defined translations and declinations in Polish. */
+export type ResourceDeclinableField<T extends Resource> =
+  keyof ResourceDataType<T> & DeclinableNoun;
