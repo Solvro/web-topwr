@@ -6,7 +6,7 @@ import type { DeclinableNounPhrase } from "@/types/app";
 
 import { declineNoun } from "./polish";
 
-describe("Polish language utilities", () => {
+describe("polish language utilities", () => {
   it("should decline 'organizacja studencka' correctly in genitive case", () => {
     const result = declineNoun(Resource.StudentOrganizations, {
       case: DeclensionCase.Genitive,

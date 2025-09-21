@@ -23,7 +23,7 @@ const INVALID_AUTH_STATES = [
   },
 ];
 
-describe("Cookies module", () => {
+describe("cookies module", () => {
   it("should return auth state for valid cookie", () => {
     const cookie = JSON.stringify(MOCK_AUTH_STATE.valid);
     const result = parseAuthCookie(cookie);
