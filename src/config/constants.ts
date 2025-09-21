@@ -1,8 +1,14 @@
-import { GrammaticalGender, Resource } from "@/config/enums";
 import { getErrorMessage } from "@/lib/error-handling";
 import { removeTrailingSlash } from "@/lib/helpers";
 import type { AuthState } from "@/types/api";
-import type { Declensions, Pluralized, RecordIntersection } from "@/types/app";
+import type {
+  Declensions,
+  DeclinableNoun,
+  SortDirection,
+  SortFiltersOptions,
+} from "@/types/app";
+
+import { DeclensionCase } from "./enums";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
@@ -41,154 +47,30 @@ export const FORM_ERROR_MESSAGES = {
   CONDITIONALLY_REQUIRED: "Należy wypełnić oba pola lub żadne z nich",
 };
 
-/** A dictionary of Polish language declensions of all resource names & other nouns, as well as their genders for use with determiners. */
-export const NOUN_DECLENSIONS = {
-  [Resource.GuideArticles]: {
-    gender: GrammaticalGender.Masculine,
-    singular: {
-      nominative: "artykuł",
-      genitive: "artykułu",
-      dative: "artykułowi",
-      accusative: "artykuł",
-      instrumental: "artykułem",
-      locative: "artykule",
-      vocative: "artykule",
-    },
-    plural: {
-      nominative: "artykuły",
-      genitive: "artykułów",
-      dative: "artykułom",
-      accusative: "artykuły",
-      instrumental: "artykułami",
-      locative: "artykułach",
-      vocative: "artykuły",
-    },
-  },
-  [Resource.StudentOrganizations]: {
-    gender: GrammaticalGender.Feminine,
-    singular: {
-      nominative: "organizacja studencka",
-      genitive: "organizacji studenckiej",
-      dative: "organizacji studenckiej",
-      accusative: "organizację studencką",
-      instrumental: "organizacją studencką",
-      locative: "organizacji studenckiej",
-      vocative: "organizacjo studencka",
-    },
-    plural: {
-      nominative: "organizacje studenckie",
-      genitive: "organizacji studenckich",
-      dative: "organizacjom studenckim",
-      accusative: "organizacje studenckie",
-      instrumental: "organizacjami studenckimi",
-      locative: "organizacjach studenckich",
-      vocative: "organizacje studenckie",
-    },
-  },
-  zdjęcie: {
-    gender: GrammaticalGender.Neuter,
-    singular: {
-      nominative: "zdjęcie",
-      genitive: "zdjęcia",
-      dative: "zdjęciu",
-      accusative: "zdjęcie",
-      instrumental: "zdjęciem",
-      locative: "zdjęciu",
-      vocative: "zdjęcie",
-    },
-    plural: {
-      nominative: "zdjęcia",
-      genitive: "zdjęć",
-      dative: "zdjęciom",
-      accusative: "zdjęcia",
-      instrumental: "zdjęciami",
-      locative: "zdjęciach",
-      vocative: "zdjęcia",
-    },
-  },
-} satisfies RecordIntersection<
-  Resource,
-  string,
-  { gender: GrammaticalGender } & Pluralized<Declensions>
->;
-
-/** A static dictionary of declensions for determiners in the Polish language. */
-export const DETERMINER_DECLENSIONS: Record<
-  GrammaticalGender,
-  Pluralized<Declensions>
-> = {
-  [GrammaticalGender.Masculine]: {
-    singular: {
-      nominative: "ten",
-      genitive: "tego",
-      dative: "temu",
-      accusative: "ten",
-      instrumental: "tym",
-      locative: "tym",
-      vocative: "ten",
-    },
-    plural: {
-      nominative: "ci",
-      genitive: "tych",
-      dative: "tym",
-      accusative: "tych",
-      instrumental: "tymi",
-      locative: "tych",
-      vocative: "ci",
-    },
-  },
-  [GrammaticalGender.Feminine]: {
-    singular: {
-      nominative: "ta",
-      genitive: "tej",
-      dative: "tej",
-      accusative: "tę",
-      instrumental: "tą",
-      locative: "tej",
-      vocative: "ta",
-    },
-    plural: {
-      nominative: "te",
-      genitive: "tych",
-      dative: "tym",
-      accusative: "te",
-      instrumental: "tymi",
-      locative: "tych",
-      vocative: "te",
-    },
-  },
-  [GrammaticalGender.Neuter]: {
-    singular: {
-      nominative: "to",
-      genitive: "tego",
-      dative: "temu",
-      accusative: "to",
-      instrumental: "tym",
-      locative: "tym",
-      vocative: "to",
-    },
-    plural: {
-      nominative: "te",
-      genitive: "tych",
-      dative: "tym",
-      accusative: "te",
-      instrumental: "tymi",
-      locative: "tych",
-      vocative: "te",
-    },
-  },
-};
-
-export const SORT_DIRECTIONS: Record<string, string> = {
+export const SORT_DIRECTIONS = {
   asc: "rosnącej",
   desc: "malejącej",
+} satisfies Record<SortDirection, string>;
+
+export const IMPLICIT_SORT_BY_ATTRIBUTES = [
+  "id",
+  "createdAt",
+  "updatedAt",
+] satisfies DeclinableNoun[];
+
+export const SORT_FILTER_LABEL_DECLENSION_CASES = {
+  sortBy: DeclensionCase.Genitive,
+  searchField: DeclensionCase.Locative,
 };
 
-export const IMPLICIT_SORT_BY_ATTRIBUTES = {
-  id: "identyfikatora",
-  createdAt: "daty utworzenia",
-  updatedAt: "daty ostatniej aktualizacji",
-} as const;
+export const SORT_FILTER_DEFAULT_VALUES = {
+  sortBy: "id",
+  sortDirection: "asc",
+  searchField: "",
+  searchTerm: "",
+} satisfies SortFiltersOptions;
+
+export const SORT_FILTER_PLACEHOLDER = "wybierz pole";
 
 export const TOAST_MESSAGES = {
   login: {

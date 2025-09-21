@@ -11,7 +11,12 @@ import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { encodeQueryComponent } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import type { ListItem, ResourceDataType } from "@/types/app";
+import type {
+  ListItem,
+  ResourceDataType,
+  ResourceDeclinableField,
+  SortDirection,
+} from "@/types/app";
 
 import { SortFilters } from "./sort-filters";
 
@@ -50,7 +55,7 @@ async function fetchResources<T extends Resource>(
 export interface ListSearchParameters {
   page?: string;
   sortBy?: string;
-  sortDirection?: "asc" | "desc";
+  sortDirection?: SortDirection;
   searchField?: string;
   searchTerm?: string;
 }
@@ -58,15 +63,15 @@ export interface ListSearchParameters {
 export async function AbstractResourceList<T extends Resource>({
   resource,
   searchParams,
-  mapItemToList,
-  sortFields = {},
-  searchFields = {},
+  sortableFields = [],
+  searchableFields = [],
+  resourceMapper,
 }: {
   resource: T;
-  sortFields?: Record<string, string>;
-  searchFields?: Record<string, string>;
   searchParams: Promise<ListSearchParameters>;
-  mapItemToList: (item: ResourceDataType<T>) => ListItem;
+  sortableFields?: ResourceDeclinableField<T>[];
+  searchableFields?: ResourceDeclinableField<T>[];
+  resourceMapper: (item: ResourceDataType<T>) => Omit<ListItem, "id">;
 }) {
   const resolvedSearchParameters = await searchParams;
   const page = Number.parseInt(resolvedSearchParameters.page ?? "1", 10);
@@ -88,9 +93,10 @@ export async function AbstractResourceList<T extends Resource>({
 
   const totalPages = Math.ceil(meta.total / LIST_RESULTS_PER_PAGE);
   const resultsNumber = meta.total;
-  const listItems: ListItem[] = data.map((item: ResourceDataType<T>) =>
-    mapItemToList(item),
-  );
+  const listItems = data.map((item: ResourceDataType<T>) => ({
+    id: item.id,
+    ...resourceMapper(item),
+  }));
 
   const resourceAccusative = declineNoun(resource, {
     case: DeclensionCase.Accusative,
@@ -98,7 +104,10 @@ export async function AbstractResourceList<T extends Resource>({
 
   return (
     <div className="flex h-full flex-col space-y-4">
-      <SortFilters sortFields={sortFields} searchFields={searchFields} />
+      <SortFilters
+        sortableFields={sortableFields}
+        searchableFields={searchableFields}
+      />
       <div className="grow basis-[0] space-y-4 overflow-y-auto pr-2">
         {listItems.map((item) => (
           <div

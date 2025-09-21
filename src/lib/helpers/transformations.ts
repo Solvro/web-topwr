@@ -1,17 +1,3 @@
-import type { SelectInputOption } from "@/types/forms";
-
-/** Converts a TypeScript enum into an array of form select options. */
-export const enumToFormSelectOptions = <T extends string | number>(
-  enumObject: Record<string, T>,
-  labels: Record<T, string>,
-): SelectInputOption[] =>
-  Object.entries(enumObject)
-    .filter(([key]) => Number.isNaN(Number(key)))
-    .map(([, value]) => ({
-      value,
-      label: labels[value],
-    }));
-
 export function sanitizeId(id: string | number): string {
   return String(id).trim().replaceAll(/[^\d]/g, "");
 }

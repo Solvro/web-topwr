@@ -5,7 +5,7 @@ import { mockDatedResource } from "@/tests/helpers/mocks";
 import type { User } from "@/types/api";
 
 import {
-  enumToFormSelectOptions,
+  encodeQueryParameters,
   getUserDisplayName,
   removeTrailingSlash,
   sanitizeId,
@@ -19,50 +19,6 @@ describe("sanitizeId function", () => {
     expect(sanitizeId("!@#$%^&*() 321")).toBe("321");
     expect(sanitizeId("")).toBe("");
     expect(sanitizeId("  ")).toBe("");
-  });
-});
-
-describe("enumToFormSelectOptions function", () => {
-  it("should map string values with labels", () => {
-    enum Status {
-      Active = "active",
-      Inactive = "inactive",
-      Pending = "pending",
-    }
-    const labels = {
-      [Status.Active]: "Aktywna",
-      [Status.Inactive]: "Nieaktywna",
-      [Status.Pending]: "W trakcie",
-    };
-
-    const result = enumToFormSelectOptions(Status, labels);
-
-    expect(result).toEqual([
-      { value: "active", label: "Aktywna" },
-      { value: "inactive", label: "Nieaktywna" },
-      { value: "pending", label: "W trakcie" },
-    ]);
-  });
-
-  it("should map numeric values with labels", () => {
-    enum Status {
-      Active = 1,
-      Inactive = 2,
-      Pending = 3,
-    }
-    const labels = {
-      [Status.Active]: "Aktywna",
-      [Status.Inactive]: "Nieaktywna",
-      [Status.Pending]: "W trakcie",
-    };
-
-    const result = enumToFormSelectOptions(Status, labels);
-
-    expect(result).toEqual([
-      { value: 1, label: "Aktywna" },
-      { value: 2, label: "Nieaktywna" },
-      { value: 3, label: "W trakcie" },
-    ]);
   });
 });
 
@@ -97,5 +53,18 @@ describe("removeTrailingSlash function", () => {
     expect(removeTrailingSlash(`${exampleUrl}/path`)).toBe(
       `${exampleUrl}/path`,
     );
+  });
+});
+
+describe("encodeQueryParameters function", () => {
+  it("should encode parameters correctly", () => {
+    const decoded = {
+      key1: "value 1",
+      key2: "value&2",
+      key3: null,
+      key4: undefined,
+    };
+    const encoded = "key1=value+1&key2=value%262";
+    expect(encodeQueryParameters(decoded)).toBe(encoded);
   });
 });

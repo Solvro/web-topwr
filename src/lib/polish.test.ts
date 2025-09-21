@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { DeclensionCase, GrammaticalGender, Resource } from "@/config/enums";
+import { NOUN_PHRASE_TRANSFORMATIONS } from "@/config/polish";
+import type { DeclinableNounPhrase } from "@/types/app";
 
 import { declineNoun } from "./polish";
 
@@ -40,5 +42,17 @@ describe("Polish language utilities", () => {
       plural: true,
     });
     expect(result).toBe("organizacjami studenckimi");
+  });
+
+  it("should decline compound nouns correctly", () => {
+    const compoundNoun: DeclinableNounPhrase = "createdAt";
+    const { base, transform } = NOUN_PHRASE_TRANSFORMATIONS[compoundNoun];
+    const baseDeclensions = declineNoun(base);
+    const { gender, ...compoundDeclensions } = declineNoun(compoundNoun);
+    for (const [key, declinedForm] of Object.entries(compoundDeclensions)) {
+      const declensionCase = key as DeclensionCase;
+      const baseTransformation = transform(baseDeclensions[declensionCase]);
+      expect(declinedForm).toBe(baseTransformation);
+    }
   });
 });

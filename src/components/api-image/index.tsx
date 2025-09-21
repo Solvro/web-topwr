@@ -2,18 +2,18 @@ import Image from "next/image";
 
 import type { FileEntry } from "@/types/api";
 
-interface ApiImageInternalProps {
+interface ApiImagePropsBase {
   alt: string;
 }
 
-export interface ApiImageProps extends ApiImageInternalProps {
+export interface ApiImageProps extends ApiImagePropsBase {
   imageKey: string;
 }
 
 export function ApiImageInternal({
   fileEntry,
   alt,
-}: { fileEntry: FileEntry } & ApiImageInternalProps) {
+}: { fileEntry: FileEntry } & ApiImagePropsBase) {
   return (
     <Image
       src={fileEntry.url}

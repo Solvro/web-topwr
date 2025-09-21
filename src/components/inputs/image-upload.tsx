@@ -37,7 +37,7 @@ export function ImageUpload<T extends z.infer<AppZodObject>>({
     },
   );
 
-  const declensions = declineNoun("zdjęcie");
+  const declensions = declineNoun("image");
 
   return (
     <>

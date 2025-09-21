@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { FORM_ERROR_MESSAGES } from "@/config/constants";
 import {
+  DepartmentIds,
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
@@ -11,11 +12,15 @@ import { requiredString } from "@/lib/helpers";
 
 const StudentOrganizationSchema = z.object({
   name: requiredString(),
-  departmentId: z.number().int().positive().nullable().optional(),
-  logoKey: z.string().nullable().optional(),
-  coverKey: z.string().nullable().optional(),
-  description: z.string().nullable().optional(),
-  shortDescription: z.string().nullable().optional(),
+  departmentId: z
+    .nativeEnum(DepartmentIds, {
+      required_error: FORM_ERROR_MESSAGES.REQUIRED,
+    })
+    .nullish(),
+  logoKey: z.string().nullish(),
+  coverKey: z.string().nullish(),
+  description: z.string().nullish(),
+  shortDescription: z.string().nullish(),
   coverPreview: z.boolean({ required_error: FORM_ERROR_MESSAGES.REQUIRED }),
   source: z.nativeEnum(OrganizationSource, {
     required_error: FORM_ERROR_MESSAGES.REQUIRED,

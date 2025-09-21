@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-import { FORM_ERROR_MESSAGES } from "@/config/constants";
+import {
+  FORM_ERROR_MESSAGES,
+  SORT_FILTER_DEFAULT_VALUES,
+} from "@/config/constants";
 import { requiredString } from "@/lib/helpers";
 
 export const LoginSchema = z.object({
@@ -13,10 +16,12 @@ export const LoginSchema = z.object({
 
 export const SortFiltersSchema = z
   .object({
-    sortBy: requiredString().default("id"),
-    sortDirection: z.enum(["asc", "desc"]).default("asc"),
-    searchField: z.string().default(""),
-    searchTerm: z.string().default(""),
+    sortBy: requiredString().default(SORT_FILTER_DEFAULT_VALUES.sortBy),
+    sortDirection: z
+      .enum(["asc", "desc"])
+      .default(SORT_FILTER_DEFAULT_VALUES.sortDirection),
+    searchField: z.string().default(SORT_FILTER_DEFAULT_VALUES.searchField),
+    searchTerm: z.string().default(SORT_FILTER_DEFAULT_VALUES.searchTerm),
   })
   .superRefine((data, context) => {
     const searchTermIsEmpty = data.searchTerm.trim() === "";

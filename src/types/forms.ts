@@ -1,32 +1,38 @@
-import type { Path, PathValue } from "react-hook-form";
+import type { Path } from "react-hook-form";
 import type { z } from "zod";
 
 import type { Resource } from "@/config/enums";
 import type { LoginSchema, SortFiltersSchema } from "@/schemas";
 
-import type { ResourceFormValues } from "./app";
+import type { ResourceFormValues, ResourceSchema } from "./app";
 
 export type LoginFormValues = z.infer<typeof LoginSchema>;
 export type SortFiltersFormValues = z.infer<typeof SortFiltersSchema>;
 
-type Optional<T> = T | null | undefined;
+/** Picks from the T only those fields which are assignable to U. */
+type KeysOfType<T extends z.ZodRawShape, U extends z.ZodTypeAny> = {
+  [K in keyof T]: BaseZodType<T[K]> extends U ? K : never;
+}[keyof T];
 
-export interface SelectInputOption {
-  value: string | number;
-  label: string;
-}
+type BaseZodType<T extends z.ZodTypeAny> =
+  T extends z.ZodNullable<infer U>
+    ? BaseZodType<U>
+    : T extends z.ZodOptional<infer U>
+      ? BaseZodType<U>
+      : T;
 
 /** Extracts all paths to the form values of T, such that the type of the value at that path extends Y.
  *
- * @example type BooleanPaths = ResourceSchemaKey<Resource.StudentOrganizations, boolean> // yields 'isStrategic' as that is the only boolean field defined in the schema
+ * @example type BooleanPaths = ResourceSchemaKey<Resource.StudentOrganizations, z.ZodBoolean> // yields 'isStrategic' | 'coverPreview' as those are the only boolean fields defined in the schema
  */
-export type ResourceSchemaKey<T extends Resource, Y = Optional<string>> = {
-  // TODO: extract the paths using the Zod schema instead of the types, because then we can be more specific
-  // Currently selects can use keys whose values are of type string | number, but ideally they should only use those keys whose schema type uses a z.nativeEnum
-  [K in Path<ResourceFormValues<T>>]: PathValue<
-    ResourceFormValues<T>,
-    K
-  > extends Y
+export type ResourceSchemaKey<
+  T extends Resource,
+  Y extends z.ZodTypeAny = z.ZodString,
+> = {
+  [K in Path<ResourceFormValues<T>>]: K extends KeysOfType<
+    ResourceSchema<T>["shape"],
+    Y
+  >
     ? K
     : never;
 }[Path<ResourceFormValues<T>>];
@@ -46,22 +52,26 @@ interface FormRichTextInput<T extends Resource> {
   label: string;
 }
 
-interface FormSelectInput<T extends Resource> {
-  name: ResourceSchemaKey<T, Optional<SelectInputOption["value"]>>;
+interface FormSelectInput<
+  T extends Resource,
+  Y extends string | number = string | number,
+> {
+  name: ResourceSchemaKey<T, z.ZodNativeEnum<any> | z.ZodEnum<any>>; // eslint-disable-line @typescript-eslint/no-explicit-any
   label: string;
   placeholder: string;
-  options: SelectInputOption[];
+  optionEnum: Record<string, Y>;
+  optionLabels: Record<Y, string>;
 }
 
 interface FormCheckboxInput<T extends Resource> {
-  name: ResourceSchemaKey<T, boolean>;
+  name: ResourceSchemaKey<T, z.ZodBoolean>;
   label: string;
 }
 
 export interface AbstractResourceFormInputs<T extends Resource> {
   imageInputs?: FormImageInput<T>[];
   textInputs?: FormTextInput<T>[];
-  richTextInput?: FormRichTextInput<T>;
+  richTextInputs?: FormRichTextInput<T>[];
   selectInputs?: FormSelectInput<T>[];
   checkboxInputs?: FormCheckboxInput<T>[];
 }

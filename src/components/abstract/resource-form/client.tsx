@@ -114,7 +114,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
   const {
     imageInputs = [],
     textInputs = [],
-    richTextInput,
+    richTextInputs = [],
     selectInputs = [],
     checkboxInputs = [],
   } = metadata.form.inputs;
@@ -176,14 +176,14 @@ export function AbstractResourceFormInternal<T extends Resource>({
                 ))}
 
                 {/* // TODO: rich text editor */}
-                {richTextInput != null && (
+                {richTextInputs.map((input) => (
                   <FormField
-                    key={richTextInput.name}
+                    key={input.name}
                     control={form.control}
-                    name={richTextInput.name}
+                    name={input.name}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{richTextInput.label}</FormLabel>
+                        <FormLabel>{input.label}</FormLabel>
                         <FormControl>
                           <Input
                             className="bg-background placeholder:text-foreground h-20 shadow-none"
@@ -197,7 +197,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                       </FormItem>
                     )}
                   />
-                )}
+                ))}
 
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                   {selectInputs.map((input) => (
@@ -224,12 +224,9 @@ export function AbstractResourceFormInternal<T extends Resource>({
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent className="border-input">
-                              {input.options.map((option) => (
-                                <SelectItem
-                                  key={option.value}
-                                  value={String(option.value)}
-                                >
-                                  {option.label}
+                              {Object.values(input.optionEnum).map((option) => (
+                                <SelectItem key={option} value={String(option)}>
+                                  {input.optionLabels[option]}
                                 </SelectItem>
                               ))}
                             </SelectContent>
