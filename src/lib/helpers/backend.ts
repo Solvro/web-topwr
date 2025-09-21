@@ -1,3 +1,10 @@
+import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
+import type { Resource } from "@/config/enums";
+import { fetchQuery } from "@/lib/fetch-utils";
+import { encodeQueryComponent } from "@/lib/helpers";
+import type { GetResourcesResponse } from "@/types/api";
+import type { ListSearchParameters } from "@/types/app";
+
 import { fetchMutation } from "../fetch-utils";
 
 /**
@@ -51,4 +58,25 @@ export async function uploadFile({
   );
   const [uuid, fileExtension] = response.key.split(".");
   return { response, uuid, fileExtension };
+}
+
+export async function fetchResources<T extends Resource>(
+  resource: T,
+  page = 1,
+  searchParameters: ListSearchParameters = {},
+): Promise<GetResourcesResponse<T>> {
+  const sortBy = searchParameters.sortBy ?? "id";
+  const sortDirection = searchParameters.sortDirection === "desc" ? "-" : "+";
+  const searchField = searchParameters.searchField;
+  const searchTerm = searchParameters.searchTerm;
+
+  const search =
+    searchField == null || searchTerm == null
+      ? ""
+      : `${encodeQueryComponent(searchField)}=%${encodeQueryComponent(searchTerm)}%&`;
+  const result = await fetchQuery<GetResourcesResponse<T>>(
+    `?${search}page=${String(page)}&limit=${String(LIST_RESULTS_PER_PAGE)}&sort=${sortDirection}${sortBy}`,
+    { resource },
+  );
+  return result;
 }

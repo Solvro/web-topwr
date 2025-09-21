@@ -1,5 +1,5 @@
 import { getErrorMessage } from "@/lib/error-handling";
-import { removeTrailingSlash } from "@/lib/helpers";
+import { removeTrailingSlash } from "@/lib/helpers/transformations";
 import type { AuthState } from "@/types/api";
 import type {
   Declensions,
