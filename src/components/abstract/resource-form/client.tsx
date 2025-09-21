@@ -188,12 +188,10 @@ export function AbstractResourceFormInternal<T extends Resource>({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>{input.label}</FormLabel>
-                          <FormControl>
-                            <DatePicker
-                              {...field}
-                              value={field.value as string | null}
-                            />
-                          </FormControl>
+                          <DatePicker
+                            {...field}
+                            value={field.value as string | null}
+                          />
                           <FormMessage />
                         </FormItem>
                       )}

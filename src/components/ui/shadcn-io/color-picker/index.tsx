@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DEFAULT_COLOR } from "@/config/constants";
 import { cn } from "@/lib/utils";
 
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -75,7 +76,7 @@ export type ColorPickerProps = Omit<
 
 export function ColorPicker({
   value,
-  defaultValue = "#000000",
+  defaultValue = DEFAULT_COLOR,
   onChange,
   className,
   ...props
@@ -87,7 +88,7 @@ export function ColorPicker({
     selectedColor.hue() || defaultColor.hue() || 0,
   );
   const [saturation, setSaturation] = useState(
-    selectedColor.saturationl() || defaultColor.saturationl() || 100,
+    selectedColor.saturationl() || defaultColor.saturationl() || 0,
   );
   const [lightness, setLightness] = useState(
     selectedColor.lightness() || defaultColor.lightness() || 100,
