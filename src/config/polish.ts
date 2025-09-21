@@ -51,6 +51,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "organizacje studenckie",
     },
   },
+  [Resource.Banners]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "baner",
+      genitive: "baneru",
+      dative: "banerowi",
+      accusative: "baner",
+      instrumental: "banerem",
+      locative: "banerze",
+      vocative: "banerze",
+    },
+    plural: {
+      nominative: "banery",
+      genitive: "banerów",
+      dative: "banerom",
+      accusative: "banery",
+      instrumental: "banerami",
+      locative: "banerach",
+      vocative: "banery",
+    },
+  },
   image: {
     gender: GrammaticalGender.Neuter,
     singular: {

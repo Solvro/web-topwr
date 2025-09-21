@@ -6,6 +6,7 @@ import type { Path } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 
+import { ApiImage } from "@/components/api-image/client";
 import { Spinner } from "@/components/spinner";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -14,8 +15,6 @@ import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { uploadFile } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { AppZodObject } from "@/types/app";
-
-import { ApiImage } from "../api-image/client";
 
 export function ImageUpload<T extends z.infer<AppZodObject>>({
   name,
