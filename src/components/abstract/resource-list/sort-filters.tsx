@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 
+import { SelectClear } from "@/components/select-clear";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -36,8 +37,6 @@ import { cn } from "@/lib/utils";
 import { SortFiltersSchema } from "@/schemas";
 import type { ResourceDeclinableField } from "@/types/app";
 import type { SortFiltersFormValues } from "@/types/forms";
-
-import { SelectClear } from "../select-clear";
 
 function FieldGroup({
   children,

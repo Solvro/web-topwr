@@ -35,6 +35,15 @@ export interface SortFiltersOptions {
   searchTerm: string;
 }
 
+/** The accepted search parameters for the abstract resource list. */
+export interface ListSearchParameters {
+  page?: string;
+  sortBy?: string;
+  sortDirection?: SortDirection;
+  searchField?: string;
+  searchTerm?: string;
+}
+
 export interface Pluralized<T extends Record<string, unknown>> {
   singular: T;
   plural: { [K in keyof T]: T[K] };

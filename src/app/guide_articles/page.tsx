@@ -1,4 +1,4 @@
-import { AbstractResourceList } from "@/components/abstract/abstract-resource-list";
+import { AbstractResourceList } from "@/components/abstract/resource-list";
 import { Resource } from "@/config/enums";
 
 export default function GuideArticlesPage({
@@ -12,10 +12,6 @@ export default function GuideArticlesPage({
       searchParams={searchParams}
       sortableFields={["title", "description"]}
       searchableFields={["title", "description"]}
-      resourceMapper={(item) => ({
-        name: item.title,
-        shortDescription: item.shortDesc,
-      })}
       orderable
     />
   );

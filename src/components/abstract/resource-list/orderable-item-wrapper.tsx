@@ -20,19 +20,47 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { useEffect, useState } from "react";
 
-import { AbstractResourceListItem } from "@/components/abstract/abstract-resource-list";
 import type { Resource } from "@/config/enums";
-import type { ListItem } from "@/types/app";
+import type { ResourceDataType } from "@/types/app";
 
-export function OrderableItemWrapper({
-  items: initialItems,
+import { AbstractResourceListItem } from "./item";
+
+interface Sortable {
+  id: UniqueIdentifier;
+  sort: number;
+}
+
+/**
+ * Given the indices of an item's old and new position, calculate its new sort value using the average of its neighbours' sort values.
+ * TODO: this is for future use when the backend supports sorting, currently unused
+ */
+export function calculateNewSortValue(
+  items: Sortable[],
+  oldIndex: number,
+  newIndex: number,
+): number {
+  if (newIndex === 0) {
+    return items[0].sort - 1;
+  }
+  if (newIndex === items.length - 1) {
+    // arbitrary large-ish number which facilitates inserting new items, 64 is a power of 2 so easy to halve
+    return (items.at(-1)?.sort ?? 63) + 1;
+  }
+  const first = items[newIndex];
+  const second =
+    oldIndex < newIndex ? items[newIndex + 1] : items[newIndex - 1];
+  return (first.sort + second.sort) / 2;
+}
+
+export function OrderableItemWrapper<T extends Resource>({
   resource,
+  data,
 }: {
-  items: ListItem[];
-  resource: Resource;
+  resource: T;
+  data: ResourceDataType<T>[];
 }) {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-  const [items, setItems] = useState<ListItem[]>([]);
+  const [items, setItems] = useState<ResourceDataType<T>[]>(data);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -41,9 +69,8 @@ export function OrderableItemWrapper({
   );
 
   useEffect(() => {
-    // update each time the base items change, e.g. when switching pages
-    setItems(initialItems);
-  }, [initialItems]);
+    setItems(data);
+  }, [data]);
 
   function getActiveItem() {
     const activeItem = items.find((item) => item.id === activeId);
@@ -57,9 +84,21 @@ export function OrderableItemWrapper({
     eventActiveId: UniqueIdentifier,
     overId?: UniqueIdentifier,
   ) {
-    const ids: UniqueIdentifier[] = items.map((item) => item.id);
-    const oldIndex = ids.indexOf(eventActiveId);
-    const newIndex = overId == null ? -1 : ids.indexOf(overId);
+    let oldIndex = -1;
+    let newIndex = -1;
+    for (const [index, item] of items.entries()) {
+      if (item.id === eventActiveId) {
+        oldIndex = index;
+        if (newIndex !== -1) {
+          break;
+        }
+      } else if (item.id === overId) {
+        newIndex = index;
+        if (oldIndex !== -1) {
+          break;
+        }
+      }
+    }
     const newItems = arrayMove(items, oldIndex, newIndex);
     // TODO: update the items on the backend
     // currently this is only updated on the client side
@@ -83,9 +122,11 @@ export function OrderableItemWrapper({
       }}
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
-        {items.map((item) => (
-          <SortableItem key={item.id} item={item} resource={resource} />
-        ))}
+        <ul>
+          {items.map((item) => (
+            <SortableItem key={item.id} item={item} resource={resource} />
+          ))}
+        </ul>
       </SortableContext>
       <DragOverlay>
         {activeId == null ? null : (
@@ -102,12 +143,12 @@ export function OrderableItemWrapper({
   );
 }
 
-function SortableItem({
+function SortableItem<T extends Resource>({
   item,
   resource,
 }: {
-  item: ListItem;
-  resource: Resource;
+  item: ResourceDataType<T>;
+  resource: T;
 }) {
   const { setNodeRef, transform, transition } = useSortable({ id: item.id });
 
@@ -117,8 +158,13 @@ function SortableItem({
   };
 
   return (
-    <div ref={setNodeRef} style={style}>
-      <AbstractResourceListItem item={item} resource={resource} orderable />
+    <div style={style}>
+      <AbstractResourceListItem
+        ref={setNodeRef}
+        item={item}
+        resource={resource}
+        orderable
+      />
     </div>
   );
 }
