@@ -1,9 +1,7 @@
 import userEvent from "@testing-library/user-event";
 import { HttpResponse, http } from "msw";
-import { useForm } from "react-hook-form";
 import { describe, expect, it } from "vitest";
 
-import { Form } from "@/components/ui/form";
 import { API_URL } from "@/config/constants";
 import {
   InputComponentWrapper,
@@ -21,21 +19,16 @@ function ImageUploadMapper({
   value,
   onChange,
 }: {
-  value?: string;
-  onChange: (value: string) => void;
+  value?: string | null;
+  onChange: (value: string | null) => void;
 }) {
-  const form = useForm();
   return (
-    <Form {...form}>
-      <form>
-        <ImageUpload
-          label={IMAGE_UPLOAD_LABEL}
-          name="test_name"
-          onChange={onChange}
-          existingImage={value}
-        />
-      </form>
-    </Form>
+    <ImageUpload
+      label={IMAGE_UPLOAD_LABEL}
+      name="data"
+      onChange={onChange}
+      existingImage={value}
+    />
   );
 }
 

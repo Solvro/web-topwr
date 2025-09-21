@@ -101,3 +101,6 @@ export const TOAST_MESSAGES = {
     },
   }),
 };
+
+/** Used as the initially-selected color in the color picker input. */
+export const DEFAULT_COLOR = "#ffffff";

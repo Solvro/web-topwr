@@ -1,9 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import type { RenderResult } from "@testing-library/react";
 import { createStore } from "jotai";
-import { useState } from "react";
 import type { ComponentType, ReactNode } from "react";
+import { useForm } from "react-hook-form";
 import { expect } from "vitest";
+
+import { Form, FormField, FormItem } from "@/components/ui/form";
 
 import { TestProviders } from "../test-providers";
 
@@ -35,13 +37,47 @@ export function getToaster() {
 export const getLoadingIndicator = () =>
   screen.queryByLabelText(/trwa ładowanie zasobu/i);
 
-export function InputComponentWrapper<T>({
+export function InputComponentWrapper({
   component: Comp,
   initialValue,
 }: {
-  component: ComponentType<{ value: T; onChange: (value: T) => void }>;
-  initialValue: T;
+  component: ComponentType<{
+    value: string | null;
+    onChange: (value: string | null) => void;
+  }>;
+  initialValue?: string | null;
 }) {
-  const [value, setValue] = useState(initialValue);
-  return <Comp value={value} onChange={setValue} />;
+  const form = useForm<{ data: string | null }>({
+    defaultValues: { data: initialValue },
+  });
+  return (
+    <Form {...form}>
+      <form>
+        <FormField
+          control={form.control}
+          name="data"
+          render={({ field }) => (
+            <FormItem>
+              <Comp {...field} />
+            </FormItem>
+          )}
+        />
+      </form>
+    </Form>
+  );
+}
+
+export function expectInputValue(
+  inputElement: HTMLElement,
+  value?: string | boolean | null,
+) {
+  if (typeof value === "boolean") {
+    if (value) {
+      expect(inputElement).toBeChecked();
+    } else {
+      expect(inputElement).not.toBeChecked();
+    }
+  } else {
+    expect(inputElement).toHaveValue(value ?? "");
+  }
 }
