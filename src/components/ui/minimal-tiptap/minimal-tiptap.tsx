@@ -28,7 +28,7 @@ function Toolbar({ editor }: { editor: Editor }) {
   return (
     <div className="border-border flex h-12 shrink-0 overflow-x-auto border-b p-2">
       <div className="flex w-max items-center gap-px">
-        <SectionOne editor={editor} activeLevels={[1, 2, 3, 4, 5, 6]} />
+        <SectionOne editor={editor} activeLevels={[1, 2, 3, 4, 5]} />
 
         <Separator orientation="vertical" className="mx-2" />
 
@@ -91,7 +91,7 @@ export function MinimalTiptapEditor({
       as="div"
       name="editor"
       className={cn(
-        "border-input min-data-[orientation=vertical]:h-72 flex h-auto w-full flex-col rounded-md border shadow-xs",
+        "border-input min-data-[orientation=vertical]:h-72 flex h-auto w-full flex-col rounded-md border bg-white shadow-xs",
         "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
         className,
       )}
