@@ -1,3 +1,4 @@
-import { loadEnvConfig } from "@next/env";
+import nextEnv from "@next/env";
 
-loadEnvConfig(process.cwd());
+// For some reason using the named export fails at runtime, so we have to import the whole module
+nextEnv.loadEnvConfig(process.cwd());

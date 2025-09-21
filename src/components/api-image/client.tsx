@@ -2,16 +2,15 @@
 
 import { Spinner } from "@/components/spinner";
 import { useQueryWrapper } from "@/hooks/use-query-wrapper";
-import { fetchQuery } from "@/lib/fetch-utils";
-import type { FileEntry } from "@/types/api";
 
 import { ApiImageInternal } from ".";
 import type { ApiImageProps } from ".";
+import { fetchFileEntry } from "./fetch-file-entry";
 
 export function ApiImage({ imageKey, ...props }: ApiImageProps) {
   const { data, isSuccess, isLoading } = useQueryWrapper(
     `read__files__image__${imageKey}`,
-    async () => await fetchQuery<FileEntry>(`/files/${imageKey}`),
+    async () => await fetchFileEntry(imageKey),
     { staleTime: Infinity },
   );
 
