@@ -7,7 +7,6 @@ import type { ControllerRenderProps } from "react-hook-form";
 import type { z } from "zod";
 
 import { fetchMutation } from "@/lib/fetch-utils";
-import { AddEventSchema } from "@/schemas";
 import type { CalendarEvent } from "@/types/calendar";
 
 import { Button } from "../ui/button";
@@ -29,6 +28,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { AddEventSchema } from '@/schemas';
 
 type AddEventFormData = z.infer<typeof AddEventSchema>;
 

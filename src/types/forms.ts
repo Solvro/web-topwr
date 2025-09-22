@@ -65,6 +65,11 @@ interface FormSelectInput<
 
 interface FormColorInput<T extends Resource> extends FormInputBase<T> {}
 
+interface FormTimeInput<T extends Resource> {
+  name: ResourceSchemaKey<T, z.ZodDate>;
+  label: string;
+}
+
 interface FormCheckboxInput<T extends Resource>
   extends FormInputBase<T, z.ZodBoolean> {}
 export interface AbstractResourceFormInputs<T extends Resource> {
@@ -75,4 +80,5 @@ export interface AbstractResourceFormInputs<T extends Resource> {
   colorInputs?: FormColorInput<T>[];
   selectInputs?: FormSelectInput<T>[];
   checkboxInputs?: FormCheckboxInput<T>[];
+  timeInputs?: FormTimeInput<T>[];
 }
