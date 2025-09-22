@@ -5,7 +5,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import type { ControllerRenderProps, DefaultValues, Resolver } from "react-hook-form";
+import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 
@@ -41,7 +41,6 @@ import type { MessageResponse } from "@/types/api";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
 
 import type { ExistingImages } from ".";
-import { AddEventFormData } from "@/types/calendar";
 
 type WithOptionalId<T> = T & { id?: number };
 type SchemaWithOptionalId<T extends z.ZodType> = WithOptionalId<z.infer<T>>;
@@ -69,6 +68,21 @@ const getMutationConfig = <T extends z.ZodType>(
         endpoint: "/",
         method: "POST",
       } as const);
+
+function handleTimeChange(
+  event: React.ChangeEvent<HTMLInputElement>,
+  field: { value: Date | undefined | null; onChange: (value: Date) => void },
+) {
+  const timeValue = event.target.value;
+  const [hours, minutes, seconds = "00"] = timeValue.split(":");
+  const existingDate = new Date(field.value ?? new Date());
+  existingDate.setHours(
+    Number.parseInt(hours, 10),
+    Number.parseInt(minutes, 10),
+    Number.parseInt(seconds, 10),
+  );
+  field.onChange(existingDate);
+}
 
 export function AbstractResourceFormInternal<T extends Resource>({
   resource,
@@ -121,21 +135,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
     timeInputs = [],
   } = metadata.form.inputs;
 
-    function handleTimeChange(
-      event: React.ChangeEvent<HTMLInputElement>,
-      field: ControllerRenderProps<AddEventFormData>,
-    ) {
-      const timeValue = event.target.value;
-      const [hours, minutes, seconds = "00"] = timeValue.split(":");
-      const existingDate = new Date(field.value ?? new Date());
-      existingDate.setHours(
-        Number.parseInt(hours, 10),
-        Number.parseInt(minutes, 10),
-        Number.parseInt(seconds, 10),
-      );
-      field.onChange(existingDate);
-    }
-
   return (
     <div className="mx-auto flex h-full flex-col">
       <Form {...form}>
@@ -150,10 +149,12 @@ export function AbstractResourceFormInternal<T extends Resource>({
         >
           <div className="grow basis-[0] overflow-y-auto">
             <div className="bg-background-secondary flex min-h-full flex-col space-y-4 space-x-4 rounded-xl p-4 md:flex-row">
-              <div className="flex w-full flex-col space-y-4 md:w-48">
-                {imageInputs.map((input) => (
+              {imageInputs.map((input) => (
+                <div
+                  key={input.label}
+                  className="flex w-full flex-col space-y-4 md:w-48"
+                >
                   <FormField
-                    key={input.label}
                     control={form.control}
                     name={input.name}
                     render={({ field }) => (
@@ -167,8 +168,8 @@ export function AbstractResourceFormInternal<T extends Resource>({
                       </FormItem>
                     )}
                   />
-                ))}
-              </div>
+                </div>
+              ))}
 
               <div className="flex w-full flex-col space-y-4">
                 {textInputs.map((input) => (
@@ -291,22 +292,26 @@ export function AbstractResourceFormInternal<T extends Resource>({
                             type="time"
                             step="1"
                             defaultValue={
-                              field.value && field.value instanceof Date
+                              field.value instanceof Date
                                 ? `${field.value.getHours().toString().padStart(2, "0")}:${field.value.getMinutes().toString().padStart(2, "0")}:${field.value.getSeconds().toString().padStart(2, "0")}`
                                 : "00:00:00"
                             }
                             className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                             onChange={(event) => {
-                              handleTimeChange(event, field);
+                              handleTimeChange(event, {
+                                value: field.value as Date | undefined | null,
+                                onChange: (value: Date) => {
+                                  field.onChange(value);
+                                },
+                              });
                             }}
-                            />
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 ))}
-
               </div>
             </div>
           </div>

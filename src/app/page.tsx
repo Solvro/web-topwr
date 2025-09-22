@@ -50,7 +50,7 @@ export default function Home() {
           className="order-5"
         />
         <DashboardButton
-          href="/calendar"
+          href={`/${Resource.EventCalendar}`}
           icon={Calendar}
           label="Zarządzanie kalendarzem akademickim"
           className="order-3 md:order-5"

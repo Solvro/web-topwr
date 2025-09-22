@@ -168,23 +168,26 @@ export const RESOURCE_METADATA: {
     form: {
       inputs: {
         textInputs: [
-          { name: "title", label: "Tytuł" },
+          { name: "name", label: "Nazwa wydarzenia" },
           { name: "location", label: "Lokalizacja" },
-          { name: "description", label: "Opis wydarzenia" }
+          { name: "description", label: "Opis wydarzenia" },
         ],
         timeInputs: [
           { name: "startTime", label: "Czas rozpoczęcia" },
-          { name: "endTime", label: "Czas zakończenia" }
+          { name: "endTime", label: "Czas zakończenia" },
         ],
-
       },
       defaultValues: {
-        title: "",
+        name: "",
         location: "",
         description: "",
-        startTime: new Date(new Date().setHours(new Date().getHours() + 1, 0, 0, 0)),
-        endTime: new Date(new Date().setHours(new Date().getHours() + 2, 0, 0, 0)),
+        startTime: new Date(
+          new Date().setHours(new Date().getHours() + 1, 0, 0, 0),
+        ),
+        endTime: new Date(
+          new Date().setHours(new Date().getHours() + 2, 0, 0, 0),
+        ),
       },
     },
-  }
+  },
 };

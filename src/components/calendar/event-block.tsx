@@ -17,7 +17,7 @@ const truncateName = (name: string) => {
 
 export function EventBlock({ event, onClick, className }: Props) {
   const handleClick = (clickEvent: React.MouseEvent) => {
-    clickEvent.stopPropagation(); // Prevent day click
+    clickEvent.stopPropagation();
     onClick(event);
   };
 

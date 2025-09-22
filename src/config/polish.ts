@@ -51,6 +51,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "organizacje studenckie",
     },
   },
+  [Resource.EventCalendar]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "kalendarz wydarzeń",
+      genitive: "kalendarza wydarzeń",
+      dative: "kalendarzowi wydarzeń",
+      accusative: "kalendarz wydarzeń",
+      instrumental: "kalendarzem wydarzeń",
+      locative: "kalendarzu wydarzeń",
+      vocative: "kalendarzu wydarzeń",
+    },
+    plural: {
+      nominative: "kalendarze wydarzeń",
+      genitive: "kalendarzy wydarzeń",
+      dative: "kalendarzom wydarzeń",
+      accusative: "kalendarze wydarzeń",
+      instrumental: "kalendarzami wydarzeń",
+      locative: "kalendarzach wydarzeń",
+      vocative: "kalendarze wydarzeń",
+    },
+  },
   image: {
     gender: GrammaticalGender.Neuter,
     singular: {

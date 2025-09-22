@@ -194,12 +194,11 @@ function CalendarDayButton({
       variant="ghost"
       size="icon"
       data-day={day.date.toLocaleDateString()}
-      data-selected-single={Boolean(
-        modifiers.selected &&
-          !modifiers.range_start &&
-          !modifiers.range_end &&
-          !modifiers.range_middle,
-      )}
+      data-selected-single={
+        modifiers.selected && !modifiers.range_start && !modifiers.range_end
+          ? !modifiers.range_middle
+          : null
+      }
       data-range-start={modifiers.range_start}
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
