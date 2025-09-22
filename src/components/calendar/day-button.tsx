@@ -70,29 +70,15 @@ export function DayButton({
 
         {/* Events container in bottom half */}
         <div className="mt-4 flex min-h-0 flex-1 flex-col gap-0.5 overflow-hidden sm:mt-6 md:mt-8">
-          {/* Mobile version - show 1 event + more button if needed */}
+          {/* Mobile version - show 1 event using EventBlock + more button if needed */}
           <div className="flex flex-wrap gap-1 sm:hidden">
             {events.slice(0, 1).map((event) => (
-              <div
+              <EventBlock
                 key={event.id}
-                role="button"
-                tabIndex={0}
-                onClick={(clickEvent) => {
-                  clickEvent.stopPropagation();
-                  handleEventClick(event);
-                }}
-                onKeyDown={(keyEvent) => {
-                  if (keyEvent.key === "Enter" || keyEvent.key === " ") {
-                    keyEvent.preventDefault();
-                    keyEvent.stopPropagation();
-                    handleEventClick(event);
-                  }
-                }}
-                className="inline-block cursor-pointer rounded bg-blue-100 px-1 py-0.5 text-xs text-blue-800 hover:bg-blue-200"
-                title={event.name}
-              >
-                {event.name.slice(0, 6) + (event.name.length > 6 ? "..." : "")}
-              </div>
+                event={event}
+                onClick={handleEventClick}
+                className="inline-block"
+              />
             ))}
 
             {events.length > 1 ? (
@@ -116,7 +102,7 @@ export function DayButton({
             ) : null}
           </div>
 
-          {/* Desktop version - show 2 events + more button */}
+          {/* Desktop version - show 2 events using EventBlock + more button */}
           <div className="hidden flex-col gap-0.5 sm:flex">
             {visibleEvents.map((event) => (
               <EventBlock

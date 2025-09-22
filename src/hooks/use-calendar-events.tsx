@@ -10,7 +10,6 @@ interface UseCalendarEventsResult {
   events: CalendarEvent[];
   loading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
 }
 
 export function useCalendarEvents(): UseCalendarEventsResult {
@@ -48,6 +47,5 @@ export function useCalendarEvents(): UseCalendarEventsResult {
     events,
     loading,
     error,
-    refetch: fetchEvents,
   };
 }
