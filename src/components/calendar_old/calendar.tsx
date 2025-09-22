@@ -15,8 +15,6 @@ import type { CalendarEvent } from "@/types/calendar";
 
 import { AddEventForm } from "./add-event-form";
 import { DayButton } from "./day-button";
-import { AbstractResourceForm } from "../abstract/resource-form";
-import { Resource } from "@/config/enums";
 
 interface Props {
   readonly clickable?: boolean;
@@ -33,9 +31,12 @@ export function Calendar({ clickable = false }: Props) {
 
   const hasError = Boolean(error);
 
+  // Calculate the first day of the month and what day of week it falls on
   const firstDayOfMonth = new Date(today.year, today.month.value - 1, 1);
+  // Get day of week (0 = Sunday, 1 = Monday, etc.) and convert to Polish calendar (Monday = 0)
   const startDayOfWeek = (firstDayOfMonth.getDay() + 6) % 7;
 
+  // Create array of all calendar cells (empty + actual days)
   const totalCells = startDayOfWeek + today.month.daysInMonth;
   const calendarDays = Array.from({ length: totalCells }, (_, index) => {
     if (index < startDayOfWeek) {
@@ -53,13 +54,13 @@ export function Calendar({ clickable = false }: Props) {
 
   const handleDayClick = (day: number) => {
     setSelectedDay(day);
-    setSelectedEvent(null);
+    setSelectedEvent(null); // Clear any selected event
     setIsDialogOpen(true);
   };
 
   const handleEventClick = (event: CalendarEvent) => {
     setSelectedEvent(event);
-    setSelectedDay(null);
+    setSelectedDay(null); // Clear any selected day
     setIsDialogOpen(true);
   };
 
@@ -159,8 +160,7 @@ export function Calendar({ clickable = false }: Props) {
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <div className="mx-auto w-full">
-            <AbstractResourceForm resource={Resource.EventCalendar} />
-            {/* <AddEventForm
+            <AddEventForm
               existingEvent={selectedEvent ?? undefined}
               selectedDate={getSelectedDate()}
               onSuccess={() => {
@@ -168,7 +168,7 @@ export function Calendar({ clickable = false }: Props) {
                 setIsDialogOpen(false);
                 setSelectedEvent(null);
               }}
-            /> */}
+            />
           </div>
         </DialogContent>
       </Dialog>

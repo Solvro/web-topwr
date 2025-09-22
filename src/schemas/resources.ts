@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { string, z } from "zod";
 
 import { FORM_ERROR_MESSAGES } from "@/config/constants";
 import {
@@ -42,6 +42,15 @@ const GuideArticleSchema = z.object({
   description: requiredString(),
 });
 
+const EventCalendarSchema = z.object({
+  title: requiredString(),
+  startTime: z.date({ required_error: FORM_ERROR_MESSAGES.REQUIRED }),
+  endTime: z.date({ required_error: FORM_ERROR_MESSAGES.REQUIRED }),
+  description: string(),
+  location: requiredString(),
+});
+
+
 const BannerSchema = z.object({
   title: requiredString(),
   description: requiredString(),
@@ -58,5 +67,6 @@ const BannerSchema = z.object({
 export const RESOURCE_SCHEMAS = {
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
+  [Resource.EventCalendar]: EventCalendarSchema,
   [Resource.Banners]: BannerSchema,
 } satisfies Record<Resource, z.ZodSchema>;
