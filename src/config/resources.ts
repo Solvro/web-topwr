@@ -163,4 +163,28 @@ export const RESOURCE_METADATA: {
       },
     },
   },
+  [Resource.EventCalendar]: {
+    apiPath: "event_calendar",
+    form: {
+      inputs: {
+        textInputs: [
+          { name: "title", label: "Tytuł" },
+          { name: "location", label: "Lokalizacja" },
+          { name: "description", label: "Opis wydarzenia" }
+        ],
+        timeInputs: [
+          { name: "startTime", label: "Czas rozpoczęcia" },
+          { name: "endTime", label: "Czas zakończenia" }
+        ],
+
+      },
+      defaultValues: {
+        title: "",
+        location: "",
+        description: "",
+        startTime: new Date(new Date().setHours(new Date().getHours() + 1, 0, 0, 0)),
+        endTime: new Date(new Date().setHours(new Date().getHours() + 2, 0, 0, 0)),
+      },
+    },
+  }
 };

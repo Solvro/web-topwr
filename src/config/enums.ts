@@ -1,6 +1,7 @@
 export enum Resource {
   GuideArticles = "guide_articles",
   StudentOrganizations = "student_organizations",
+  EventCalendar = "event_calendar",
 }
 
 export enum OrganizationType {
