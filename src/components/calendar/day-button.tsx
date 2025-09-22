@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 
 import { cn } from "@/lib/utils";
 import type { CalendarEvent, DateObject } from "@/types/calendar";
+import type { DaySwap } from "@/types/dayswap";
 
 import { AllEventsModal } from "./all-events-modal";
 import { EventBlock } from "./event-block";
@@ -11,6 +12,7 @@ interface Props {
   today: DateObject;
   clickable: boolean;
   events?: CalendarEvent[];
+  swap?: DaySwap | null;
   onDayClick?: (day: number) => void;
   onEventClick?: (event: CalendarEvent) => void;
 }
@@ -20,6 +22,7 @@ export function DayButton({
   today,
   clickable,
   events = [],
+  swap = null,
   onDayClick,
   onEventClick,
 }: Props) {
@@ -67,7 +70,14 @@ export function DayButton({
         <div className="absolute top-1 left-1 text-xs font-semibold sm:text-sm">
           {day}
         </div>
-
+        {swap === null ? null : (
+          <div
+            className="absolute top-1 right-1 h-3 w-3 rounded-full bg-blue-600"
+            title={`${swap.changedWeekday} / ${swap.changedDayIsEven ? "parzysty" : "nieparzysty"}`}
+          >
+            {" "}
+          </div>
+        )}
         {/* Events container in bottom half */}
         <div className="mt-4 flex min-h-0 flex-1 flex-col gap-0.5 overflow-hidden sm:mt-6 md:mt-8">
           {/* Mobile version - show 1 event using EventBlock + more button if needed */}

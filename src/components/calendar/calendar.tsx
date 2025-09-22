@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Dialog,
@@ -9,16 +9,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { API_URL } from "@/config/constants";
 import { Resource } from "@/config/enums";
+import { useAuth } from "@/hooks/use-auth";
 import { useCalendarEvents } from "@/hooks/use-calendar-events";
 import { getCurrentDate } from "@/lib/date-utils";
 import type { CalendarEvent } from "@/types/calendar";
+import type { DaySwap } from "@/types/dayswap";
 
 import { AbstractResourceForm } from "../abstract/resource-form";
+import { DaySwapForm } from "./add-dayswamp-form";
 import { DayButton } from "./day-button";
 
 interface Props {
   readonly clickable?: boolean;
+}
+interface DaySwapResponse {
+  data: DaySwap[];
 }
 
 export function Calendar({ clickable = false }: Props) {
@@ -31,6 +38,9 @@ export function Calendar({ clickable = false }: Props) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const hasError = Boolean(error);
+
+  const { accessToken } = useAuth();
+  const [daySwaps, setDaySwaps] = useState<DaySwap[]>([]);
 
   const firstDayOfMonth = new Date(today.year, today.month.value - 1, 1);
   const startDayOfWeek = (firstDayOfMonth.getDay() + 6) % 7;
@@ -49,6 +59,28 @@ export function Calendar({ clickable = false }: Props) {
       day: index - startDayOfWeek + 1,
     }; // Actual day number
   });
+  //added for day swap
+
+  useEffect(() => {
+    async function fetchDaySwaps() {
+      try {
+        const response = await fetch(`${API_URL}/day_swaps`, {
+          headers: {
+            Authorization: `Bearer ${accessToken ?? ""}`,
+          },
+        });
+        if (response.ok) {
+          const payload = (await response.json()) as DaySwapResponse;
+          setDaySwaps(Array.isArray(payload.data) ? payload.data : []);
+        } else {
+          console.error("Błąd pobierania day_swaps:", response.status);
+        }
+      } catch (fetchError) {
+        console.error("Błąd:", fetchError);
+      }
+    }
+    void fetchDaySwaps();
+  }, [accessToken]);
 
   const handleDayClick = (day: number) => {
     setSelectedDay(day);
@@ -72,6 +104,12 @@ export function Calendar({ clickable = false }: Props) {
       );
     });
   };
+  const getSelectedDate = () => {
+    if (selectedDay === null) {
+      return;
+    }
+    return new Date(today.year, today.month.value - 1, selectedDay);
+  };
 
   const getDialogTitle = () => {
     if (selectedEvent !== null) {
@@ -82,7 +120,7 @@ export function Calendar({ clickable = false }: Props) {
     }
     return "";
   };
-
+  const selectedDate = getSelectedDate();
   return (
     <div className="mx-auto mt-4 grid w-[95%] grid-cols-7 sm:mt-6 sm:w-[90%] md:mt-10 md:max-w-7xl lg:w-[85%]">
       <div className="col-span-7 text-center text-base font-bold sm:text-lg">
@@ -128,6 +166,11 @@ export function Calendar({ clickable = false }: Props) {
 
         if (cell.type === "day" && cell.day !== undefined) {
           const dayEvents = getEventsForDay(cell.day);
+          const dateKey = new Date(today.year, today.month.value - 1, cell.day)
+            .toISOString()
+            .split("T")[0];
+
+          const swap = daySwaps.find((item) => item.date === dateKey);
           return (
             <DayButton
               key={cell.id}
@@ -135,6 +178,7 @@ export function Calendar({ clickable = false }: Props) {
               today={today}
               clickable={clickable}
               events={dayEvents}
+              swap={swap}
               onDayClick={handleDayClick}
               onEventClick={handleEventClick}
             />
@@ -151,10 +195,15 @@ export function Calendar({ clickable = false }: Props) {
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <div className="h-[75vh] w-[90vw] overflow-auto sm:w-[70vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw] 2xl:w-[30vw]">
-            <AbstractResourceForm
-              resource={Resource.EventCalendar}
-              defaultValues={selectedEvent}
-            />
+            {selectedDay === null && selectedEvent !== null && (
+              <AbstractResourceForm
+                resource={Resource.EventCalendar}
+                defaultValues={selectedEvent}
+              />
+            )}
+            {selectedDay !== null && selectedDate !== undefined && (
+              <DaySwapForm selectedDate={selectedDate} />
+            )}
           </div>
         </DialogContent>
       </Dialog>
