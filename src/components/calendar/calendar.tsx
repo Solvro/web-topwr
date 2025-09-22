@@ -9,21 +9,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Resource } from "@/config/enums";
 import { useCalendarEvents } from "@/hooks/use-calendar-events";
 import { getCurrentDate } from "@/lib/date-utils";
 import type { CalendarEvent } from "@/types/calendar";
 
-import { AddEventForm } from "./add-event-form";
-import { DayButton } from "./day-button";
 import { AbstractResourceForm } from "../abstract/resource-form";
-import { Resource } from "@/config/enums";
+import { DayButton } from "./day-button";
 
 interface Props {
   readonly clickable?: boolean;
 }
 
 export function Calendar({ clickable = false }: Props) {
-  const { events, loading, error, refetch } = useCalendarEvents();
+  const { events, loading, error } = useCalendarEvents();
   const today = getCurrentDate();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
@@ -72,13 +71,6 @@ export function Calendar({ clickable = false }: Props) {
         eventDate.getFullYear() === today.year
       );
     });
-  };
-
-  const getSelectedDate = () => {
-    if (selectedDay === null) {
-      return;
-    }
-    return new Date(today.year, today.month.value - 1, selectedDay);
   };
 
   const getDialogTitle = () => {
@@ -158,17 +150,11 @@ export function Calendar({ clickable = false }: Props) {
             <DialogTitle>{getDialogTitle()}</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          <div className="mx-auto w-full">
-            <AbstractResourceForm resource={Resource.EventCalendar} />
-            {/* <AddEventForm
-              existingEvent={selectedEvent ?? undefined}
-              selectedDate={getSelectedDate()}
-              onSuccess={() => {
-                void refetch();
-                setIsDialogOpen(false);
-                setSelectedEvent(null);
-              }}
-            /> */}
+          <div className="h-[75vh] w-[90vw] overflow-auto sm:w-[70vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw] 2xl:w-[30vw]">
+            <AbstractResourceForm
+              resource={Resource.EventCalendar}
+              defaultValues={selectedEvent}
+            />
           </div>
         </DialogContent>
       </Dialog>

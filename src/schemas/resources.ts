@@ -43,13 +43,12 @@ const GuideArticleSchema = z.object({
 });
 
 const EventCalendarSchema = z.object({
-  title: requiredString(),
+  name: requiredString(),
   startTime: z.date({ required_error: FORM_ERROR_MESSAGES.REQUIRED }),
   endTime: z.date({ required_error: FORM_ERROR_MESSAGES.REQUIRED }),
   description: string(),
   location: requiredString(),
 });
-
 
 const BannerSchema = z.object({
   title: requiredString(),
