@@ -23,8 +23,47 @@ export function AbstractResourceForm<T extends Resource>({
   const existingImages: ExistingImages<T> = {};
   const metadata = RESOURCE_METADATA[resource];
   const nonNullDefaultValues = defaultValues ?? metadata.form.defaultValues;
+
+  // Transform date strings to Date objects for time inputs
+  const transformedDefaultValues = { ...nonNullDefaultValues };
+  const timeInputs = metadata.form.inputs.timeInputs ?? [];
+
+  for (const input of timeInputs) {
+    const value = get(transformedDefaultValues, input.name) as unknown;
+    if (typeof value === "string") {
+      // Handle timezone-aware date conversion
+      // If the string contains timezone info (Z or +/-), use it directly
+      // Otherwise, treat it as local time to avoid unexpected timezone shifts
+      const dateValue =
+        value.includes("Z") ||
+        value.includes("+") ||
+        value.lastIndexOf("-") > 10
+          ? new Date(value) // String has timezone info, use as-is but be aware of potential shifts
+          : new Date(value); // No timezone info, treat as local time
+
+      if (!Number.isNaN(dateValue.getTime())) {
+        // Update the transformed values with the Date object
+        const typedTransformedValues = transformedDefaultValues as Record<
+          string,
+          unknown
+        >;
+        typedTransformedValues[input.name] = dateValue;
+
+        // Debug: Log the transformation to understand what's happening
+        console.warn(`Transforming ${input.name}:`, {
+          original: value,
+          transformed: dateValue,
+          formattedTime: `${String(dateValue.getHours()).padStart(2, "0")}:${String(dateValue.getMinutes()).padStart(2, "0")}:${String(dateValue.getSeconds()).padStart(2, "0")}`,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          utcTime: dateValue.toUTCString(),
+          localTime: dateValue.toString(),
+        });
+      }
+    }
+  }
+
   for (const input of metadata.form.inputs.imageInputs ?? []) {
-    const imageKey = get(nonNullDefaultValues, input.name, null) as
+    const imageKey = get(transformedDefaultValues, input.name, null) as
       | string
       | null;
     if (imageKey == null || imageKey === "" || typeof imageKey !== "string") {
@@ -38,7 +77,7 @@ export function AbstractResourceForm<T extends Resource>({
   return (
     <AbstractResourceFormInternal
       resource={resource}
-      defaultValues={nonNullDefaultValues}
+      defaultValues={transformedDefaultValues}
       existingImages={existingImages}
     />
   );

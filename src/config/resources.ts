@@ -163,7 +163,7 @@ export const RESOURCE_METADATA: {
       },
     },
   },
-  [Resource.EventCalendar]: {
+  [Resource.CalendarEvents]: {
     apiPath: "event_calendar",
     form: {
       inputs: {

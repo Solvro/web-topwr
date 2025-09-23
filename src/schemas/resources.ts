@@ -53,5 +53,5 @@ const EventCalendarSchema = z.object({
 export const RESOURCE_SCHEMAS = {
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
-  [Resource.EventCalendar]: EventCalendarSchema,
+  [Resource.CalendarEvents]: EventCalendarSchema,
 } satisfies Record<Resource, z.ZodSchema>;
