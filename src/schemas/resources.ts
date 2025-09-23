@@ -66,6 +66,6 @@ const BannerSchema = z.object({
 export const RESOURCE_SCHEMAS = {
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
-  [Resource.EventCalendar]: EventCalendarSchema,
+  [Resource.CalendarEvents]: EventCalendarSchema,
   [Resource.Banners]: BannerSchema,
 } satisfies Record<Resource, z.ZodSchema>;

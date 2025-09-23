@@ -42,9 +42,9 @@ export default function Home() {
           className="order-5"
         />
         <DashboardButton
-          href={`/${Resource.EventCalendar}`}
+          href={`/${Resource.CalendarEvents}`}
           icon={Calendar}
-          label="Zarządzanie kalendarzem akademickim"
+          label="Zarządzanie kalendarzem wydarzeń"
           className="order-3 md:order-5"
         />
       </div>

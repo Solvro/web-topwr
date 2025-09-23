@@ -11,7 +11,7 @@ interface Props {
   today: DateObject;
   clickable: boolean;
   events?: CalendarEvent[];
-  onDayClick?: (day: number) => void;
+  onDayClick?: () => void;
   onEventClick?: (event: CalendarEvent) => void;
 }
 
@@ -29,12 +29,6 @@ export function DayButton({
     day === currentDate.getDate() &&
     today.month.value === currentDate.getMonth() + 1 &&
     today.year === currentDate.getFullYear();
-
-  const handleDayClick = () => {
-    if (clickable) {
-      onDayClick?.(day);
-    }
-  };
 
   const handleEventClick = (event: CalendarEvent) => {
     onEventClick?.(event);
@@ -58,7 +52,7 @@ export function DayButton({
           clickable ? "cursor-pointer hover:bg-gray-100" : "cursor-default",
           isCurrentDay ? "bg-blue-500 text-white" : "bg-white text-black",
         )}
-        onClick={handleDayClick}
+        onClick={clickable ? onDayClick : undefined}
         disabled={!clickable}
         tabIndex={clickable ? 0 : -1}
         aria-disabled={!clickable}

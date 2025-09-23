@@ -17,3 +17,20 @@ export function getCurrentDate(locale = "pl"): DateObject {
     day,
   };
 }
+
+export function getMonthByNumberAndYear(
+  month: number,
+  year: number,
+  locale = "pl",
+): { value: number; name: string; daysInMonth: number } {
+  const monthName = new Date(year, month - 1).toLocaleString(locale, {
+    month: "long",
+  });
+  const daysInMonth = new Date(year, month, 0).getDate();
+
+  return {
+    value: month,
+    name: monthName,
+    daysInMonth,
+  };
+}

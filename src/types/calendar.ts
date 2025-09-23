@@ -1,7 +1,3 @@
-import type * as z from "zod";
-
-import type { RESOURCE_SCHEMAS } from "@/schemas";
-
 export interface DateObject {
   year: number;
   month: {
@@ -32,7 +28,3 @@ export interface ApiCalendarEvent {
   location: string | null;
   googleCallId: string | null;
 }
-
-export type AddEventFormData = z.infer<
-  (typeof RESOURCE_SCHEMAS)["event_calendar"]
->;

@@ -77,13 +77,37 @@ function handleTimeChange(
 ) {
   const timeValue = event.target.value;
   const [hours, minutes, seconds = "00"] = timeValue.split(":");
-  const existingDate = new Date(field.value ?? new Date());
-  existingDate.setHours(
+
+  // Create a base date - ALWAYS try to preserve the original date from field.value
+  // Only fall back to current date if absolutely necessary
+  let baseDate: Date;
+
+  if (field.value instanceof Date && !Number.isNaN(field.value.getTime())) {
+    // Use the existing date, preserving the original date portion
+    baseDate = new Date(field.value);
+  } else {
+    baseDate = new Date();
+    baseDate.setHours(0, 0, 0, 0);
+  }
+
+  // Set only the time portion, preserving the date
+  baseDate.setHours(
     Number.parseInt(hours, 10),
     Number.parseInt(minutes, 10),
     Number.parseInt(seconds, 10),
+    0,
   );
-  field.onChange(existingDate);
+  field.onChange(baseDate);
+}
+
+function formatTimeValue(value: unknown): string {
+  if (value instanceof Date) {
+    const hours = String(value.getHours()).padStart(2, "0");
+    const minutes = String(value.getMinutes()).padStart(2, "0");
+    const seconds = String(value.getSeconds()).padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+  }
+  return "00:00:00";
 }
 
 export function AbstractResourceFormInternal<T extends Resource>({
@@ -337,11 +361,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           <Input
                             type="time"
                             step="1"
-                            defaultValue={
-                              field.value instanceof Date
-                                ? `${field.value.getHours().toString().padStart(2, "0")}:${field.value.getMinutes().toString().padStart(2, "0")}:${field.value.getSeconds().toString().padStart(2, "0")}`
-                                : "00:00:00"
-                            }
+                            value={formatTimeValue(field.value)}
                             className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                             onChange={(event) => {
                               handleTimeChange(event, {
