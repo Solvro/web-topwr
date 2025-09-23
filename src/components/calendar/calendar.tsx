@@ -1,20 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useAtom } from "jotai";
+import { useRouter } from "next/navigation";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Resource } from "@/config/enums";
 import { useCalendarEvents } from "@/hooks/use-calendar-events";
-import { getCurrentDate } from "@/lib/date-utils";
+import { getMonthByNumberAndYear } from "@/lib/date-utils";
+import { calendarStateAtom } from "@/stores/calendar";
 import type { CalendarEvent } from "@/types/calendar";
 
-import { AbstractResourceForm } from "../abstract/resource-form";
 import { DayButton } from "./day-button";
 
 interface Props {
@@ -22,25 +17,59 @@ interface Props {
 }
 
 export function Calendar({ clickable = false }: Props) {
+  const router = useRouter();
   const { events, loading, error } = useCalendarEvents();
-  const today = getCurrentDate();
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
-    null,
+
+  // Use Jotai atom for calendar state persistence
+  const [calendarState, setCalendarState] = useAtom(calendarStateAtom);
+  const { displayedYear, displayedMonth } = calendarState;
+
+  // Get the month object for the currently displayed month
+  const currentDisplayedMonth = getMonthByNumberAndYear(
+    displayedMonth,
+    displayedYear,
   );
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const hasError = Boolean(error);
 
-  const firstDayOfMonth = new Date(today.year, today.month.value - 1, 1);
+  // Navigation functions
+  const goToPreviousMonth = () => {
+    if (displayedMonth === 1) {
+      setCalendarState({
+        displayedMonth: 12,
+        displayedYear: displayedYear - 1,
+      });
+    } else {
+      setCalendarState({
+        displayedMonth: displayedMonth - 1,
+        displayedYear,
+      });
+    }
+  };
+
+  const goToNextMonth = () => {
+    if (displayedMonth === 12) {
+      setCalendarState({
+        displayedMonth: 1,
+        displayedYear: displayedYear + 1,
+      });
+    } else {
+      setCalendarState({
+        displayedMonth: displayedMonth + 1,
+        displayedYear,
+      });
+    }
+  };
+
+  const firstDayOfMonth = new Date(displayedYear, displayedMonth - 1, 1);
   const startDayOfWeek = (firstDayOfMonth.getDay() + 6) % 7;
 
-  const totalCells = startDayOfWeek + today.month.daysInMonth;
+  const totalCells = startDayOfWeek + currentDisplayedMonth.daysInMonth;
   const calendarDays = Array.from({ length: totalCells }, (_, index) => {
     if (index < startDayOfWeek) {
       return {
         type: "empty",
-        id: `empty-${today.year.toString()}-${today.month.value.toString()}-${index.toString()}`,
+        id: `empty-${displayedYear.toString()}-${displayedMonth.toString()}-${index.toString()}`,
       }; // Empty cell before month starts
     }
     return {
@@ -50,45 +79,43 @@ export function Calendar({ clickable = false }: Props) {
     }; // Actual day number
   });
 
-  const handleDayClick = (day: number) => {
-    setSelectedDay(day);
-    setSelectedEvent(null);
-    setIsDialogOpen(true);
-  };
-
-  const handleEventClick = (event: CalendarEvent) => {
-    setSelectedEvent(event);
-    setSelectedDay(null);
-    setIsDialogOpen(true);
-  };
-
   const getEventsForDay = (day: number) => {
     return events.filter((event) => {
       const eventDate = new Date(event.startTime);
       return (
         eventDate.getDate() === day &&
-        eventDate.getMonth() + 1 === today.month.value &&
-        eventDate.getFullYear() === today.year
+        eventDate.getMonth() + 1 === displayedMonth &&
+        eventDate.getFullYear() === displayedYear
       );
     });
   };
 
-  const getDialogTitle = () => {
-    if (selectedEvent !== null) {
-      return `Edytuj wydarzenie`;
-    }
-    if (selectedDay !== null) {
-      return `${String(selectedDay)} ${today.month.name} ${String(today.year)}`;
-    }
-    return "";
-  };
-
   return (
-    <div className="mx-auto mt-4 grid w-[95%] grid-cols-7 sm:mt-6 sm:w-[90%] md:mt-10 md:max-w-7xl lg:w-[85%]">
-      <div className="col-span-7 text-center text-base font-bold sm:text-lg">
-        {today.month.name} {today.year}
+    <div className="mx-auto mt-4 grid h-fit w-[95%] grid-cols-7 overflow-y-auto sm:mt-6 sm:w-[90%] md:mt-10 md:max-w-7xl lg:w-[85%]">
+      <div className="col-span-7 flex items-center justify-center gap-4 text-center text-base font-bold sm:text-lg">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={goToPreviousMonth}
+          className="h-8 w-8 p-0"
+          aria-label="Previous month"
+        >
+          ←
+        </Button>
+        <span className="min-w-[200px]">
+          {currentDisplayedMonth.name} {displayedYear}
+        </span>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={goToNextMonth}
+          className="h-8 w-8 p-0"
+          aria-label="Next month"
+        >
+          →
+        </Button>
       </div>
-      <div className="col-span-7 text-center text-xs text-gray-500 sm:text-sm">
+      {/* <div className="col-span-7 text-center text-xs text-gray-500 sm:text-sm">
         {today.month.daysInMonth} dni
       </div>
       <div className="col-span-7 text-center text-xs text-gray-500 sm:text-sm">
@@ -96,7 +123,7 @@ export function Calendar({ clickable = false }: Props) {
       </div>
       <div className="col-span-7 text-center text-xs text-gray-500 sm:text-sm">
         {clickable ? "Kliknij, aby wybrać dzień" : "Dni nie są klikalne"}
-      </div>
+      </div> */}
 
       {loading ? (
         <div className="col-span-7 text-center text-sm text-gray-500">
@@ -128,36 +155,30 @@ export function Calendar({ clickable = false }: Props) {
 
         if (cell.type === "day" && cell.day !== undefined) {
           const dayEvents = getEventsForDay(cell.day);
+          // Create a DateObject for the displayed month/year to pass to DayButton
+          const displayedDateObject = {
+            year: displayedYear,
+            month: currentDisplayedMonth,
+            day: cell.day,
+          };
           return (
             <DayButton
               key={cell.id}
               day={cell.day}
-              today={today}
+              today={displayedDateObject}
               clickable={clickable}
               events={dayEvents}
-              onDayClick={handleDayClick}
-              onEventClick={handleEventClick}
+              onDayClick={() => {
+                router.push(`/${Resource.CalendarEvents}/create`);
+              }}
+              onEventClick={(event: CalendarEvent) => {
+                router.push(`/${Resource.CalendarEvents}/edit/${event.id}`);
+              }}
             />
           );
         }
-
         return null;
       })}
-
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-h-[80vh] w-max">
-          <DialogHeader>
-            <DialogTitle>{getDialogTitle()}</DialogTitle>
-            <DialogDescription></DialogDescription>
-          </DialogHeader>
-          <div className="h-[75vh] w-[90vw] overflow-auto sm:w-[70vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw] 2xl:w-[30vw]">
-            <AbstractResourceForm
-              resource={Resource.EventCalendar}
-              defaultValues={selectedEvent}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
