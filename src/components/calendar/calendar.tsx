@@ -4,21 +4,28 @@ import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { Resource } from "@/config/enums";
-import { useCalendarEvents } from "@/hooks/use-calendar-events";
+import type { Resource } from "@/config/enums";
+import { useGenericCalendarEvents } from "@/hooks/use-calendar-events";
+import { transformApiEventsToCalendarEvents } from "@/lib/calendar-utils";
 import { getMonthByNumberAndYear } from "@/lib/date-utils";
 import { calendarStateAtom } from "@/stores/calendar";
-import type { CalendarEvent } from "@/types/calendar";
+import type { ApiCalendarEvent, CalendarEvent } from "@/types/calendar";
 
 import { DayButton } from "./day-button";
 
 interface Props {
   readonly clickable?: boolean;
+  readonly resource: Resource;
 }
 
-export function Calendar({ clickable = false }: Props) {
+export function Calendar({ clickable = false, resource }: Props) {
   const router = useRouter();
-  const { events, loading, error } = useCalendarEvents();
+  const { events, loading, error } = useGenericCalendarEvents<ApiCalendarEvent>(
+    {
+      resource,
+      transformFunction: transformApiEventsToCalendarEvents,
+    },
+  );
 
   // Use Jotai atom for calendar state persistence
   const [calendarState, setCalendarState] = useAtom(calendarStateAtom);
@@ -115,15 +122,6 @@ export function Calendar({ clickable = false }: Props) {
           →
         </Button>
       </div>
-      {/* <div className="col-span-7 text-center text-xs text-gray-500 sm:text-sm">
-        {today.month.daysInMonth} dni
-      </div>
-      <div className="col-span-7 text-center text-xs text-gray-500 sm:text-sm">
-        Dzisiaj jest {today.day} {today.month.name} {today.year}
-      </div>
-      <div className="col-span-7 text-center text-xs text-gray-500 sm:text-sm">
-        {clickable ? "Kliknij, aby wybrać dzień" : "Dni nie są klikalne"}
-      </div> */}
 
       {loading ? (
         <div className="col-span-7 text-center text-sm text-gray-500">
@@ -169,10 +167,10 @@ export function Calendar({ clickable = false }: Props) {
               clickable={clickable}
               events={dayEvents}
               onDayClick={() => {
-                router.push(`/${Resource.CalendarEvents}/create`);
+                router.push(`/${resource}/create`);
               }}
               onEventClick={(event: CalendarEvent) => {
-                router.push(`/${Resource.CalendarEvents}/edit/${event.id}`);
+                router.push(`/${resource}/edit/${event.id}`);
               }}
             />
           );
