@@ -43,19 +43,33 @@ export function DayButton({
   const hasMoreThanThree = events.length > 3;
   const shouldShowThirdSlot = events.length > 2;
 
+  const handleDayClick = () => {
+    if (clickable && onDayClick != null) {
+      onDayClick();
+    }
+  };
+
   return (
     <>
-      <button
-        type="button"
+      <div
         className={cn(
           "relative flex h-16 flex-col border p-1 sm:h-24 md:h-28 lg:h-32",
           clickable ? "cursor-pointer hover:bg-gray-100" : "cursor-default",
           isCurrentDay ? "bg-blue-500 text-white" : "bg-white text-black",
         )}
-        onClick={clickable ? onDayClick : undefined}
-        disabled={!clickable}
+        onClick={handleDayClick}
+        role={clickable ? "button" : undefined}
         tabIndex={clickable ? 0 : -1}
-        aria-disabled={!clickable}
+        onKeyDown={
+          clickable
+            ? (keyEvent) => {
+                if (keyEvent.key === "Enter" || keyEvent.key === " ") {
+                  keyEvent.preventDefault();
+                  handleDayClick();
+                }
+              }
+            : undefined
+        }
       >
         {/* Day number in top left corner */}
         <div className="absolute top-1 left-1 text-xs font-semibold sm:text-sm">
@@ -133,7 +147,7 @@ export function DayButton({
             ) : null}
           </div>
         </div>
-      </button>
+      </div>
 
       <AllEventsModal
         isOpen={isAllEventsModalOpen}
