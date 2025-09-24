@@ -50,6 +50,7 @@ export function AllEventsModal({
               type="button"
               onClick={() => {
                 onEventClick(event);
+                onOpenChange(false); // Close the modal after clicking an event
               }}
               className="w-full rounded bg-blue-100 p-3 text-left text-sm text-blue-800 hover:bg-blue-200"
               title={event.description ?? ""}

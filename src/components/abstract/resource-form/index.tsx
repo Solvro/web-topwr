@@ -48,16 +48,6 @@ export function AbstractResourceForm<T extends Resource>({
           unknown
         >;
         typedTransformedValues[input.name] = dateValue;
-
-        // Debug: Log the transformation to understand what's happening
-        console.warn(`Transforming ${input.name}:`, {
-          original: value,
-          transformed: dateValue,
-          formattedTime: `${String(dateValue.getHours()).padStart(2, "0")}:${String(dateValue.getMinutes()).padStart(2, "0")}:${String(dateValue.getSeconds()).padStart(2, "0")}`,
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          utcTime: dateValue.toUTCString(),
-          localTime: dateValue.toString(),
-        });
       }
     }
   }

@@ -2,9 +2,10 @@
 
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import type { Resource } from "@/config/enums";
+import type { CalendarEventTypes, Resource } from "@/config/enums";
 import { useGenericCalendarEvents } from "@/hooks/use-calendar-events";
 import { transformApiEventsToCalendarEvents } from "@/lib/calendar-utils";
 import { getMonthByNumberAndYear } from "@/lib/date-utils";
@@ -12,6 +13,7 @@ import { calendarStateAtom } from "@/stores/calendar";
 import type { ApiCalendarEvent, CalendarEvent } from "@/types/calendar";
 
 import { DayButton } from "./day-button";
+import { EventDetailsModal } from "./event-details-modal";
 
 interface Props {
   readonly clickable?: boolean;
@@ -20,6 +22,11 @@ interface Props {
 
 export function Calendar({ clickable = false, resource }: Props) {
   const router = useRouter();
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null,
+  );
+  const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
+
   const { events, loading, error } = useGenericCalendarEvents<ApiCalendarEvent>(
     {
       resource,
@@ -97,6 +104,17 @@ export function Calendar({ clickable = false, resource }: Props) {
     });
   };
 
+  const handleEventClick = (event: CalendarEvent) => {
+    if (clickable) {
+      // When clickable is true, navigate to edit page
+      router.push(`/${resource}/edit/${event.id}`);
+    } else {
+      // When clickable is false, show event details modal
+      setSelectedEvent(event);
+      setIsEventDetailsModalOpen(true);
+    }
+  };
+
   return (
     <div className="mx-auto mt-4 grid h-fit w-[95%] grid-cols-7 overflow-y-auto sm:mt-6 sm:w-[90%] md:mt-10 md:max-w-7xl lg:w-[85%]">
       <div className="col-span-7 flex items-center justify-center gap-4 text-center text-base font-bold sm:text-lg">
@@ -169,14 +187,18 @@ export function Calendar({ clickable = false, resource }: Props) {
               onDayClick={() => {
                 router.push(`/${resource}/create`);
               }}
-              onEventClick={(event: CalendarEvent) => {
-                router.push(`/${resource}/edit/${event.id}`);
-              }}
+              onEventClick={handleEventClick}
             />
           );
         }
         return null;
       })}
+      <EventDetailsModal
+        isOpen={isEventDetailsModalOpen}
+        onOpenChange={setIsEventDetailsModalOpen}
+        event={selectedEvent}
+        resource={resource as unknown as CalendarEventTypes}
+      />
     </div>
   );
 }
