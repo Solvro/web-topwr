@@ -1,33 +1,50 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { transformApiEventsToCalendarEvents } from "@/lib/calendar-utils";
+import type { Resource } from "@/config/enums";
+import { RESOURCE_METADATA } from "@/config/resources";
 import { fetchQuery } from "@/lib/fetch-utils";
-import type { ApiCalendarEvent, CalendarEvent } from "@/types/calendar";
+import type { CalendarEvent } from "@/types/calendar";
 
-interface UseCalendarEventsResult {
+interface UseGenericCalendarEventsOptions<TApiEvent> {
+  resource?: Resource;
+  endpoint?: string;
+  transformFunction: (apiEvents: TApiEvent[]) => CalendarEvent[];
+}
+
+interface UseGenericCalendarEventsResult {
   events: CalendarEvent[];
   loading: boolean;
   error: string | null;
 }
 
-export function useCalendarEvents(): UseCalendarEventsResult {
+export function useGenericCalendarEvents<TApiEvent>(
+  options: UseGenericCalendarEventsOptions<TApiEvent>,
+): UseGenericCalendarEventsResult {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await fetchQuery<{ data: ApiCalendarEvent[] }>(
-        "/event_calendar",
-      );
-      const transformedEvents = transformApiEventsToCalendarEvents(
-        response.data,
-      );
+      let apiPath: string;
+      if (options.endpoint != null && options.endpoint !== "") {
+        apiPath = options.endpoint;
+      } else {
+        // Use resource if endpoint is not provided
+        if (options.resource === undefined) {
+          throw new TypeError("Either endpoint or resource must be provided");
+        }
+        const resourceMetadata = RESOURCE_METADATA[options.resource];
+        apiPath = `/${resourceMetadata.apiPath}`;
+      }
+
+      const response = await fetchQuery<{ data: TApiEvent[] }>(apiPath);
+      const transformedEvents = options.transformFunction(response.data);
       setEvents(transformedEvents);
     } catch (error_) {
       console.error("Failed to fetch calendar events:", error_);
@@ -37,7 +54,7 @@ export function useCalendarEvents(): UseCalendarEventsResult {
     } finally {
       setLoading(false);
     }
-  };
+  }, [options]);
 
   useEffect(() => {
     void fetchEvents();
