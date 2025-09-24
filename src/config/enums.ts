@@ -5,6 +5,10 @@ export enum Resource {
   CalendarEvents = "calendar_events",
 }
 
+export enum CalendarEventTypes {
+  CalendarEvent = "calendar_events",
+}
+
 export enum OrganizationType {
   ScientificClub = "scientific_club",
   StudentOrganization = "student_organization",
