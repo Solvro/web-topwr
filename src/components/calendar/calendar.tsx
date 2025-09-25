@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import type { CalendarEventTypes, Resource } from "@/config/enums";
+import type { Resource } from "@/config/enums";
 import { useGenericCalendarEvents } from "@/hooks/use-calendar-events";
 import { transformApiEventsToCalendarEvents } from "@/lib/calendar-utils";
 import { getMonthByNumberAndYear } from "@/lib/date-utils";
@@ -197,7 +197,7 @@ export function Calendar({ clickable = false, resource }: Props) {
         isOpen={isEventDetailsModalOpen}
         onOpenChange={setIsEventDetailsModalOpen}
         event={selectedEvent}
-        resource={resource as unknown as CalendarEventTypes}
+        resource={resource}
       />
     </div>
   );
