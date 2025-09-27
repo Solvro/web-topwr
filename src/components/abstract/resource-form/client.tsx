@@ -69,6 +69,42 @@ const getMutationConfig = <T extends z.ZodType>(
         method: "POST",
       } as const);
 
+function handleTimeChange(
+  event: React.ChangeEvent<HTMLInputElement>,
+  field: { value: Date | undefined | null; onChange: (value: Date) => void },
+) {
+  const timeValue = event.target.value;
+  const [hours, minutes, seconds = "00"] = timeValue.split(":");
+
+  // Create a base date - ALWAYS try to preserve the original date from field.value
+  // Only fall back to current date if absolutely necessary
+  let baseDate: Date;
+
+  if (field.value instanceof Date && !Number.isNaN(field.value.getTime())) {
+    // Use the existing date, preserving the original date portion
+    baseDate = new Date(field.value);
+  } else {
+    baseDate = new Date();
+    baseDate.setHours(0, 0, 0, 0);
+  }
+
+  // Set only the time portion, preserving the date
+  baseDate.setHours(
+    Number.parseInt(hours, 10),
+    Number.parseInt(minutes, 10),
+    Number.parseInt(seconds, 10),
+    0,
+  );
+  field.onChange(baseDate);
+}
+
+function formatTimeValue(value: Date): string {
+  const hours = String(value.getHours()).padStart(2, "0");
+  const minutes = String(value.getMinutes()).padStart(2, "0");
+  const seconds = String(value.getSeconds()).padStart(2, "0");
+  return `${hours}:${minutes}:${seconds}`;
+}
+
 export function AbstractResourceFormInternal<T extends Resource>({
   resource,
   defaultValues,
@@ -117,6 +153,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
     richTextInputs = [],
     selectInputs = [],
     checkboxInputs = [],
+    timeInputs = [],
   } = metadata.form.inputs;
 
   return (
@@ -133,10 +170,12 @@ export function AbstractResourceFormInternal<T extends Resource>({
         >
           <div className="grow basis-[0] overflow-y-auto">
             <div className="bg-background-secondary flex min-h-full flex-col space-y-4 space-x-4 rounded-xl p-4 md:flex-row">
-              <div className="flex w-full flex-col space-y-4 md:w-48">
-                {imageInputs.map((input) => (
+              {imageInputs.map((input) => (
+                <div
+                  key={input.label}
+                  className="flex w-full flex-col space-y-4 md:w-48"
+                >
                   <FormField
-                    key={input.label}
                     control={form.control}
                     name={input.name}
                     render={({ field }) => (
@@ -150,8 +189,8 @@ export function AbstractResourceFormInternal<T extends Resource>({
                       </FormItem>
                     )}
                   />
-                ))}
-              </div>
+                </div>
+              ))}
 
               <div className="flex w-full flex-col space-y-4">
                 {textInputs.map((input) => (
@@ -252,6 +291,38 @@ export function AbstractResourceFormInternal<T extends Resource>({
                             className="bg-background"
                             onCheckedChange={(checked) => {
                               field.onChange(Boolean(checked));
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
+
+                {timeInputs.map((input) => (
+                  <FormField
+                    key={input.name}
+                    control={form.control}
+                    name={input.name}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{input.label}</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="time"
+                            step="1"
+                            value={formatTimeValue(
+                              new Date(field.value as string),
+                            )}
+                            className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                            onChange={(event) => {
+                              handleTimeChange(event, {
+                                value: field.value as Date | undefined | null,
+                                onChange: (value: Date) => {
+                                  field.onChange(value);
+                                },
+                              });
                             }}
                           />
                         </FormControl>

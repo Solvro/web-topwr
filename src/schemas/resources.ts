@@ -42,7 +42,16 @@ const GuideArticleSchema = z.object({
   description: requiredString(),
 });
 
+const EventCalendarSchema = z.object({
+  name: requiredString(),
+  startTime: z.date({ required_error: FORM_ERROR_MESSAGES.REQUIRED }),
+  endTime: z.date({ required_error: FORM_ERROR_MESSAGES.REQUIRED }),
+  description: z.string(),
+  location: requiredString(),
+});
+
 export const RESOURCE_SCHEMAS = {
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
+  [Resource.CalendarEvents]: EventCalendarSchema,
 } satisfies Record<Resource, z.ZodSchema>;

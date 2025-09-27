@@ -68,10 +68,16 @@ interface FormCheckboxInput<T extends Resource> {
   label: string;
 }
 
+interface FormTimeInput<T extends Resource> {
+  name: ResourceSchemaKey<T, z.ZodDate>;
+  label: string;
+}
+
 export interface AbstractResourceFormInputs<T extends Resource> {
   imageInputs?: FormImageInput<T>[];
   textInputs?: FormTextInput<T>[];
   richTextInputs?: FormRichTextInput<T>[];
   selectInputs?: FormSelectInput<T>[];
   checkboxInputs?: FormCheckboxInput<T>[];
+  timeInputs?: FormTimeInput<T>[];
 }
