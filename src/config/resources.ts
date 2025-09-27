@@ -1,5 +1,6 @@
 import type { DefaultValues } from "react-hook-form";
 
+import { getFutureDate } from "@/lib/date-utils";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 
@@ -219,12 +220,8 @@ export const RESOURCE_METADATA: {
         name: "",
         location: "",
         description: "",
-        startTime: new Date(
-          new Date().setHours(new Date().getHours() + 1, 0, 0, 0),
-        ),
-        endTime: new Date(
-          new Date().setHours(new Date().getHours() + 2, 0, 0, 0),
-        ),
+        startTime: getFutureDate(1),
+        endTime: getFutureDate(2),
       },
     },
   },

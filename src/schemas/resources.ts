@@ -1,4 +1,4 @@
-import { string, z } from "zod";
+import { z } from "zod";
 
 import { FORM_ERROR_MESSAGES } from "@/config/constants";
 import {
@@ -46,7 +46,7 @@ const EventCalendarSchema = z.object({
   name: requiredString(),
   startTime: z.date({ required_error: FORM_ERROR_MESSAGES.REQUIRED }),
   endTime: z.date({ required_error: FORM_ERROR_MESSAGES.REQUIRED }),
-  description: string(),
+  description: z.string(),
   location: requiredString(),
 });
 

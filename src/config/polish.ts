@@ -54,7 +54,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
   [Resource.CalendarEvents]: {
     gender: GrammaticalGender.Masculine,
     singular: {
-      nominative: "Wydarzenie kalendarzowe",
+      nominative: "wydarzenie kalendarzowe",
       genitive: "wydarzenia kalendarzowego",
       dative: "wydarzeniu kalendarzowemu",
       accusative: "wydarzenie kalendarzowe",
@@ -63,7 +63,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "wydarzenie kalendarzowe",
     },
     plural: {
-      nominative: "Wydarzenia kalendarzowe",
+      nominative: "wydarzenia kalendarzowe",
       genitive: "wydarzeń kalendarzowych",
       dative: "wydarzeniom kalendarzowym",
       accusative: "wydarzenia kalendarzowe",

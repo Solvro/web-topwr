@@ -17,14 +17,3 @@ export interface CalendarEvent {
   location?: string;
   googleCallId?: string;
 }
-
-// API response type from the event_calendar endpoint
-export interface ApiCalendarEvent {
-  id: string;
-  name: string;
-  description: string | null;
-  startTime: string; // ISO string
-  endTime: string; // ISO string
-  location: string | null;
-  googleCallId: string | null;
-}
