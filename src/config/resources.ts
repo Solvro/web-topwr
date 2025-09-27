@@ -1,6 +1,10 @@
 import type { DefaultValues } from "react-hook-form";
 
-import type { ResourceDataType, ResourceFormValues } from "@/types/app";
+import type {
+  ListItem,
+  ResourceDataType,
+  ResourceFormValues,
+} from "@/types/app";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 
 import {
@@ -70,6 +74,7 @@ const SELECT_OPTION_LABELS = {
 export const RESOURCE_METADATA: {
   [R in Resource]: {
     apiPath: string;
+    itemMapper: (item: ResourceDataType<R>) => Omit<ListItem, "id">;
     form: {
       inputs: AbstractResourceFormInputs<R>;
       defaultValues: DefaultValues<ResourceFormValues<R> | ResourceDataType<R>>;
@@ -78,6 +83,10 @@ export const RESOURCE_METADATA: {
 } = {
   [Resource.GuideArticles]: {
     apiPath: "guide_articles",
+    itemMapper: (item) => ({
+      name: item.title,
+      shortDescription: item.shortDesc,
+    }),
     form: {
       inputs: {
         imageInputs: [{ label: "Zdjęcie", name: "imageKey" }],
@@ -99,6 +108,10 @@ export const RESOURCE_METADATA: {
   },
   [Resource.StudentOrganizations]: {
     apiPath: "student_organizations",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.shortDescription,
+    }),
     form: {
       inputs: {
         imageInputs: [

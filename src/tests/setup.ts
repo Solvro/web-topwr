@@ -4,6 +4,7 @@ import ResizeObserver from "resize-observer-polyfill";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
 import {
+  MOCK_INTERSECTION_OBSERVER,
   MOCK_NOT_FOUND,
   MOCK_USE_ROUTER,
   MOCK_USE_SEARCH_PARAMS,
@@ -39,6 +40,7 @@ vi.mock("@/lib/error-handling", { spy: true });
 vi.mock("js-cookie");
 
 globalThis.ResizeObserver = ResizeObserver as typeof globalThis.ResizeObserver;
+globalThis.IntersectionObserver = MOCK_INTERSECTION_OBSERVER;
 
 Element.prototype.scrollIntoView = vi.fn();
 Document.prototype.elementFromPoint = vi.fn();
