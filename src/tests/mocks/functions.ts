@@ -20,3 +20,10 @@ export const MOCK_USE_SEARCH_PARAMS = vi.fn(() => {
 });
 
 export const MOCK_NOT_FOUND = vi.fn(() => null as never);
+
+export const MOCK_INTERSECTION_OBSERVER = vi.fn();
+MOCK_INTERSECTION_OBSERVER.mockReturnValue({
+  observe: () => null,
+  unobserve: () => null,
+  disconnect: () => null,
+});
