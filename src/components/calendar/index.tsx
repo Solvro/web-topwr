@@ -5,19 +5,21 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import type { Resource } from "@/config/enums";
+import { WEEKDAYS } from "@/config/constants";
+import type { CalendarEventTypes } from "@/config/enums";
 import { useGenericCalendarEvents } from "@/hooks/use-calendar-events";
 import { transformApiEventsToCalendarEvents } from "@/lib/calendar-utils";
 import { getMonthByNumberAndYear } from "@/lib/date-utils";
 import { calendarStateAtom } from "@/stores/calendar";
-import type { ApiCalendarEvent, CalendarEvent } from "@/types/calendar";
+import type { ApiCalendarEvent } from "@/types/api";
+import type { CalendarEvent } from "@/types/calendar";
 
 import { DayButton } from "./day-button";
 import { EventDetailsModal } from "./event-details-modal";
 
 interface Props {
   readonly clickable?: boolean;
-  readonly resource: Resource;
+  readonly resource: CalendarEventTypes;
 }
 
 export function Calendar({ clickable = false, resource }: Props) {
@@ -27,12 +29,10 @@ export function Calendar({ clickable = false, resource }: Props) {
   );
   const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
 
-  const { events, loading, error } = useGenericCalendarEvents<ApiCalendarEvent>(
-    {
-      resource,
-      transformFunction: transformApiEventsToCalendarEvents,
-    },
-  );
+  const { events } = useGenericCalendarEvents<ApiCalendarEvent>({
+    resource,
+    transformFunction: transformApiEventsToCalendarEvents,
+  });
 
   // Use Jotai atom for calendar state persistence
   const [calendarState, setCalendarState] = useAtom(calendarStateAtom);
@@ -43,9 +43,6 @@ export function Calendar({ clickable = false, resource }: Props) {
     displayedMonth,
     displayedYear,
   );
-
-  const hasError = Boolean(error);
-
   // Navigation functions
   const goToPreviousMonth = () => {
     if (displayedMonth === 1) {
@@ -141,18 +138,8 @@ export function Calendar({ clickable = false, resource }: Props) {
         </Button>
       </div>
 
-      {loading ? (
-        <div className="col-span-7 text-center text-sm text-gray-500">
-          Ładowanie wydarzeń...
-        </div>
-      ) : hasError ? (
-        <div className="col-span-7 text-center text-sm text-red-500">
-          Błąd ładowania wydarzeń: {error}
-        </div>
-      ) : null}
-
       <div className="col-span-7 grid grid-cols-7 gap-1 sm:gap-2">
-        {["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"].map((day) => (
+        {WEEKDAYS.map((day) => (
           <div
             key={day}
             className="text-center text-xs font-semibold sm:text-sm"
@@ -171,7 +158,6 @@ export function Calendar({ clickable = false, resource }: Props) {
 
         if (cell.type === "day" && cell.day !== undefined) {
           const dayEvents = getEventsForDay(cell.day);
-          // Create a DateObject for the displayed month/year to pass to DayButton
           const displayedDateObject = {
             year: displayedYear,
             month: currentDisplayedMonth,

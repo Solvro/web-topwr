@@ -2,20 +2,19 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import type { Resource } from "@/config/enums";
+import type { CalendarEventTypes } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resources";
 import { fetchQuery } from "@/lib/fetch-utils";
 import type { CalendarEvent } from "@/types/calendar";
 
 interface UseGenericCalendarEventsOptions<TApiEvent> {
-  resource?: Resource;
+  resource?: CalendarEventTypes;
   endpoint?: string;
   transformFunction: (apiEvents: TApiEvent[]) => CalendarEvent[];
 }
 
 interface UseGenericCalendarEventsResult {
   events: CalendarEvent[];
-  loading: boolean;
   error: string | null;
 }
 
@@ -23,12 +22,10 @@ export function useGenericCalendarEvents<TApiEvent>(
   options: UseGenericCalendarEventsOptions<TApiEvent>,
 ): UseGenericCalendarEventsResult {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchEvents = useCallback(async () => {
     try {
-      setLoading(true);
       setError(null);
 
       let apiPath: string;
@@ -51,8 +48,6 @@ export function useGenericCalendarEvents<TApiEvent>(
       setError(
         error_ instanceof Error ? error_.message : "Failed to fetch events",
       );
-    } finally {
-      setLoading(false);
     }
   }, [options]);
 
@@ -62,7 +57,6 @@ export function useGenericCalendarEvents<TApiEvent>(
 
   return {
     events,
-    loading,
     error,
   };
 }

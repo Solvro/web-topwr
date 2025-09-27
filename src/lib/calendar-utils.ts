@@ -1,4 +1,5 @@
-import type { ApiCalendarEvent, CalendarEvent } from "@/types/calendar";
+import type { ApiCalendarEvent } from "@/types/api";
+import type { CalendarEvent } from "@/types/calendar";
 
 export function transformApiEventToCalendarEvent(
   apiEvent: ApiCalendarEvent,

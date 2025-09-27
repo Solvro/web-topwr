@@ -6,7 +6,7 @@ export enum Resource {
 }
 
 export enum CalendarEventTypes {
-  CalendarEvent = "calendar_events",
+  CalendarEvents = "calendar_events",
 }
 
 export enum OrganizationType {

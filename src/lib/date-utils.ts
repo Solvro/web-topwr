@@ -34,3 +34,10 @@ export function getMonthByNumberAndYear(
     daysInMonth,
   };
 }
+
+export function getFutureDate(hoursAhead: number): Date {
+  const now = new Date();
+  now.setHours(now.getHours() + hoursAhead);
+  now.setMinutes(0, 0, 0);
+  return now;
+}

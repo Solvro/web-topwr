@@ -100,14 +100,11 @@ function handleTimeChange(
   field.onChange(baseDate);
 }
 
-function formatTimeValue(value: unknown): string {
-  if (value instanceof Date) {
-    const hours = String(value.getHours()).padStart(2, "0");
-    const minutes = String(value.getMinutes()).padStart(2, "0");
-    const seconds = String(value.getSeconds()).padStart(2, "0");
-    return `${hours}:${minutes}:${seconds}`;
-  }
-  return "00:00:00";
+function formatTimeValue(value: Date): string {
+  const hours = String(value.getHours()).padStart(2, "0");
+  const minutes = String(value.getMinutes()).padStart(2, "0");
+  const seconds = String(value.getSeconds()).padStart(2, "0");
+  return `${hours}:${minutes}:${seconds}`;
 }
 
 export function AbstractResourceFormInternal<T extends Resource>({
@@ -361,7 +358,9 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           <Input
                             type="time"
                             step="1"
-                            value={formatTimeValue(field.value)}
+                            value={formatTimeValue(
+                              new Date(field.value as string),
+                            )}
                             className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                             onChange={(event) => {
                               handleTimeChange(event, {
