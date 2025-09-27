@@ -9,19 +9,12 @@ import {
 } from "@/components/ui/dialog";
 
 export interface DetailField<T> {
-  /** Unique key for the field */
   key: string;
-  /** Field label to display */
-  label: string;
-  /** Icon to show next to the label */
+  label: ReactNode;
   icon?: string;
-  /** Function to get the value from the data object */
   getValue: (data: T) => unknown;
-  /** Function to format the value for display */
   formatter?: (value: unknown) => ReactNode;
-  /** Function to determine if the field should be displayed */
   isVisible?: (data: T) => boolean;
-  /** Additional CSS classes for the field container */
   className?: string;
 }
 
@@ -69,14 +62,12 @@ export function AbstractDetailsModal<T>({
         </DialogHeader>
         <div className="space-y-4">
           {fields.map((field) => {
-            // Check if field should be visible
             if (field.isVisible != null && !field.isVisible(data)) {
               return null;
             }
 
             const value = field.getValue(data);
 
-            // Skip rendering if value is null/undefined and no custom formatter
             if (value == null && field.formatter == null) {
               return null;
             }
@@ -84,7 +75,6 @@ export function AbstractDetailsModal<T>({
             const formatter = field.formatter ?? defaultFormatter;
             const formattedValue = formatter(value);
 
-            // Skip rendering if formatted value is null
             if (formattedValue == null) {
               return null;
             }

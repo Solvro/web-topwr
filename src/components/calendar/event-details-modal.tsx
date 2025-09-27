@@ -1,13 +1,13 @@
 import { AbstractDetailsModal } from "@/components/abstract/abstract-details-modal";
 import { CALENDAR_EVENT_METADATA } from "@/config/calendar-events";
-import type { CalendarEventTypes, Resource } from "@/config/enums";
+import type { CalendarEventTypes } from "@/config/enums";
 import type { CalendarEvent } from "@/types/calendar";
 
 interface Props {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   event: CalendarEvent | null;
-  resource: Resource;
+  resource: CalendarEventTypes;
 }
 
 export function EventDetailsModal({

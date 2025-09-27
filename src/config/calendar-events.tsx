@@ -54,7 +54,7 @@ export const CALENDAR_EVENT_METADATA: Record<
     fields: DetailField<CalendarEvent>[];
   }
 > = {
-  [CalendarEventTypes.CalendarEvent]: {
+  [CalendarEventTypes.CalendarEvents]: {
     title: (eventData: CalendarEvent): string => eventData.name,
     description: "Szczegóły wydarzenia",
     fields: [
