@@ -7,16 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-export interface DetailField<T> {
-  key: string;
-  label: ReactNode;
-  icon?: string;
-  getValue: (data: T) => unknown;
-  formatter?: (value: unknown) => ReactNode;
-  isVisible?: (data: T) => boolean;
-  className?: string;
-}
+import type { DetailField } from "@/types/calendar";
 
 interface Props<T> {
   isOpen: boolean;
@@ -84,10 +75,10 @@ export function AbstractDetailsModal<T>({
                 key={field.key}
                 className={`space-y-2 ${field.className ?? ""}`}
               >
-                <div className="text-sm font-medium text-gray-700">
-                  {field.icon != null && field.icon.trim() !== ""
-                    ? `${field.icon} `
-                    : ""}
+                <div className="flex text-sm font-medium text-gray-700">
+                  {field.icon !== null && (
+                    <span className="mr-1">{field.icon}</span>
+                  )}
                   {field.label}
                 </div>
                 <div className="text-sm text-gray-600">{formattedValue}</div>

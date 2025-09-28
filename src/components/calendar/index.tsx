@@ -1,15 +1,15 @@
 "use client";
 
 import { useAtom } from "jotai";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { WEEKDAYS } from "@/config/constants";
 import type { CalendarEventTypes } from "@/config/enums";
-import { useGenericCalendarEvents } from "@/hooks/use-calendar-events";
-import { transformApiEventsToCalendarEvents } from "@/lib/calendar-utils";
+import { RESOURCE_METADATA } from "@/config/resources";
+import { useQueryWrapper } from "@/hooks/use-query-wrapper";
 import { getMonthByNumberAndYear } from "@/lib/date-utils";
+import { fetchQuery } from "@/lib/fetch-utils";
 import { calendarStateAtom } from "@/stores/calendar";
 import type { ApiCalendarEvent } from "@/types/api";
 import type { CalendarEvent } from "@/types/calendar";
@@ -23,27 +23,42 @@ interface Props {
 }
 
 export function Calendar({ clickable = false, resource }: Props) {
-  const router = useRouter();
+  const metadata = RESOURCE_METADATA[resource];
+  const { data, isError: _isError } = useQueryWrapper(
+    `calendarEvents-${resource}`,
+    async () =>
+      fetchQuery<{ data: ApiCalendarEvent[] }>(`/${metadata.apiPath}`),
+  );
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null,
   );
   const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
 
-  const { events } = useGenericCalendarEvents<ApiCalendarEvent>({
-    resource,
-    transformFunction: transformApiEventsToCalendarEvents,
-  });
+  useEffect(() => {
+    if (data?.data != null) {
+      const transformedEvents = data.data.map((apiEvent) => {
+        return {
+          id: apiEvent.id,
+          name: apiEvent.name,
+          description: apiEvent.description ?? undefined,
+          startTime: new Date(apiEvent.startTime),
+          endTime: new Date(apiEvent.endTime),
+          location: apiEvent.location ?? undefined,
+          googleCallId: apiEvent.googleCallId ?? undefined,
+        };
+      });
+      setEvents(transformedEvents);
+    }
+  }, [data]);
 
-  // Use Jotai atom for calendar state persistence
   const [calendarState, setCalendarState] = useAtom(calendarStateAtom);
   const { displayedYear, displayedMonth } = calendarState;
 
-  // Get the month object for the currently displayed month
   const currentDisplayedMonth = getMonthByNumberAndYear(
     displayedMonth,
     displayedYear,
   );
-  // Navigation functions
   const goToPreviousMonth = () => {
     if (displayedMonth === 1) {
       setCalendarState({
@@ -87,7 +102,7 @@ export function Calendar({ clickable = false, resource }: Props) {
       type: "day",
       id: index - startDayOfWeek + 1,
       day: index - startDayOfWeek + 1,
-    }; // Actual day number
+    }; // Current day number
   });
 
   const getEventsForDay = (day: number) => {
@@ -102,11 +117,7 @@ export function Calendar({ clickable = false, resource }: Props) {
   };
 
   const handleEventClick = (event: CalendarEvent) => {
-    if (clickable) {
-      // When clickable is true, navigate to edit page
-      router.push(`/${resource}/edit/${event.id}`);
-    } else {
-      // When clickable is false, show event details modal
+    if (!clickable) {
       setSelectedEvent(event);
       setIsEventDetailsModalOpen(true);
     }
@@ -170,9 +181,7 @@ export function Calendar({ clickable = false, resource }: Props) {
               today={displayedDateObject}
               clickable={clickable}
               events={dayEvents}
-              onDayClick={() => {
-                router.push(`/${resource}/create`);
-              }}
+              resource={resource}
               onEventClick={handleEventClick}
             />
           );

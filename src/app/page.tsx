@@ -44,7 +44,7 @@ export default function Home() {
         <DashboardButton
           href={`/${Resource.CalendarEvents}`}
           icon={Calendar}
-          label="Zarządzanie kalendarzem wydarzeń"
+          label="Zarządzanie wydarzeniami kalendarzowymi"
           className="order-3 md:order-5"
         />
       </div>

@@ -3,6 +3,6 @@ import { CalendarEventTypes } from "@/config/enums";
 
 export default function CalendarPage() {
   return (
-    <Calendar clickable={true} resource={CalendarEventTypes.CalendarEvents} />
+    <Calendar clickable={false} resource={CalendarEventTypes.CalendarEvents} />
   );
 }
