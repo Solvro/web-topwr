@@ -1,7 +1,7 @@
+import { BookOpenText, Calendar, Pin } from "lucide-react";
 import type { ReactNode } from "react";
 
-import type { DetailField } from "@/components/abstract/abstract-details-modal";
-import type { CalendarEvent } from "@/types/calendar";
+import type { CalendarEvent, DetailField } from "@/types/calendar";
 
 import { CalendarEventTypes } from "./enums";
 
@@ -61,7 +61,7 @@ export const CALENDAR_EVENT_METADATA: Record<
       {
         key: "dateTime",
         label: "Data i godzina",
-        icon: "📅",
+        icon: <Calendar />,
         getValue: (event: CalendarEvent) => ({
           startTime: event.startTime,
           endTime: event.endTime,
@@ -77,14 +77,14 @@ export const CALENDAR_EVENT_METADATA: Record<
       {
         key: "location",
         label: "Miejsce",
-        icon: "📍",
+        icon: <Pin />,
         getValue: (event: CalendarEvent) => event.location,
         isVisible: (event: CalendarEvent) => hasValue(event.location),
       },
       {
         key: "description",
         label: "Opis",
-        icon: "📝",
+        icon: <BookOpenText />,
         getValue: (event: CalendarEvent) => event.description,
         isVisible: (event: CalendarEvent) => hasValue(event.description),
       },
