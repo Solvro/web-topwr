@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import type { ReactNode } from "react";
 
 import {
@@ -79,7 +80,7 @@ export function AbstractDetailsModal<T>({
                   {field.icon !== null && (
                     <span className="mr-1">{field.icon}</span>
                   )}
-                  {field.label}
+                  <>{field.label}</>
                 </div>
                 <div className="text-sm text-gray-600">{formattedValue}</div>
               </div>
