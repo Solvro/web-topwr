@@ -6,7 +6,7 @@ import { Resource } from "@/config/enums";
 
 import { AbstractResourceLayout } from "./abstract-resource-layout";
 
-describe("Abstract Resource Layout", () => {
+describe("abstract resource layout", () => {
   function renderLayout(pathname: string) {
     render(
       <AbstractResourceLayout

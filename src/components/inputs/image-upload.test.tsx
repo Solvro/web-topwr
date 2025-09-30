@@ -48,7 +48,7 @@ function renderImageUpload(initialValue?: string) {
   return { screen, user, trigger };
 }
 
-describe("ImageUpload Component", () => {
+describe("image upload component", () => {
   it("should prompt file selection", () => {
     const { screen, trigger } = renderImageUpload();
     const triggerByPrompt = screen.getByLabelText(

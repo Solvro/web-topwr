@@ -45,7 +45,7 @@ async function enterValidCredentials() {
   expect(getToaster()).toHaveTextContent("Pomyślnie zalogowano");
 }
 
-describe("Login page", () => {
+describe("login page", () => {
   it("should render the login form", () => {
     const form = renderLoginPage();
     expect(form.inputEmail).toBeInTheDocument();
@@ -77,6 +77,7 @@ describe("Login page", () => {
     expect(await form.screen.findByText(/wymagane/i)).toBeInTheDocument();
   });
 
+  // eslint-disable-next-line vitest/expect-expect
   it("should accept valid credentials", enterValidCredentials);
 
   it("should fall back to email if user has no full name", async () => {
