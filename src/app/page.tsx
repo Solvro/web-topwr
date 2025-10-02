@@ -1,7 +1,13 @@
 "use client";
 
 import type { VariantProps } from "class-variance-authority";
-import { BookOpen, Building, Megaphone, Calendar, RefreshCcw } from "lucide-react";
+import {
+  BookOpen,
+  Building,
+  Calendar,
+  Megaphone,
+  RefreshCcw,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 
