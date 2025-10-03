@@ -23,6 +23,7 @@ export function AbstractResourceForm<T extends Resource>({
   const existingImages: ExistingImages<T> = {};
   const metadata = RESOURCE_METADATA[resource];
   const nonNullDefaultValues = defaultValues ?? metadata.form.defaultValues;
+
   for (const input of metadata.form.inputs.imageInputs ?? []) {
     const imageKey = get(nonNullDefaultValues, input.name, null) as
       | string

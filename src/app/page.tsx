@@ -1,7 +1,13 @@
 "use client";
 
 import type { VariantProps } from "class-variance-authority";
-import { BookOpen, Building, Megaphone, RefreshCcw } from "lucide-react";
+import {
+  BookOpen,
+  Building,
+  Calendar,
+  Megaphone,
+  RefreshCcw,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -39,6 +45,13 @@ export default function Home() {
           resource={Resource.Banners}
           icon={Megaphone}
           variant="outline"
+          className="order-5"
+        />
+        <DashboardButton
+          href={`/${Resource.CalendarEvents}`}
+          icon={Calendar}
+          label="Zarządzanie wydarzeniami kalendarzowymi"
+          className="order-3 md:order-5"
         />
       </div>
     </div>
