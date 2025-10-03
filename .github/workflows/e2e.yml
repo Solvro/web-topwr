@@ -1,0 +1,56 @@
+name: E2E
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  playwright-tests:
+    runs-on: ubuntu-latest
+
+    env:
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      API_URL: https://test.api.topwr.solvro.pl/api/v1
+      API_FILES_URL: https://test.api.topwr.solvro.pl/uploads
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install
+        uses: ./.github/composite-actions/install
+
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
+      - name: Cache playwright binaries
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+
+      - name: Install Playwright Browsers + Dependencies
+        run: npx playwright install --with-deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+      - name: Install Playwright Dependencies
+        run: npx playwright install-deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+
+      - name: Build
+        run: npm run build
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
