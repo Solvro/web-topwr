@@ -65,7 +65,7 @@ export async function fetchResources<T extends Resource>(
   page = 1,
   searchParameters: ListSearchParameters = {},
 ): Promise<GetResourcesResponse<T>> {
-  const sortBy = searchParameters.sortBy ?? "id";
+  const sortBy = searchParameters.sortBy ?? "order";
   const sortDirection = searchParameters.sortDirection === "desc" ? "-" : "+";
   const searchField = searchParameters.searchField;
   const searchTerm = searchParameters.searchTerm;

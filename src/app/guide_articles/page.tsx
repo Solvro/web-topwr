@@ -12,7 +12,6 @@ export default function GuideArticlesPage({
       searchParams={searchParams}
       sortableFields={["title", "description"]}
       searchableFields={["title", "description"]}
-      orderable
     />
   );
 }

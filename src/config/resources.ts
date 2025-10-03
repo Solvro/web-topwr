@@ -61,6 +61,11 @@ const SELECT_OPTION_LABELS = {
   },
 };
 
+/** A list of all resources which define an `order` field in the database. */
+export const ORDERABLE_RESOURCES = [
+  Resource.GuideArticles,
+] satisfies Resource[];
+
 /**
  * Metadata for each resource.
  *

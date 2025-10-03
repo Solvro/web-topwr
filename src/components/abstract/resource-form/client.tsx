@@ -40,7 +40,7 @@ import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import { RESOURCE_SCHEMAS } from "@/schemas";
-import type { MessageResponse } from "@/types/api";
+import type { ModifyResourceResponse } from "@/types/api";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
 
 import type { ExistingImages } from ".";
@@ -94,14 +94,12 @@ export function AbstractResourceFormInternal<T extends Resource>({
     resource,
     defaultValues,
   );
-  type ResponseType = MessageResponse & {
-    data: ResourceDataType<T>;
-  };
+
   const { mutateAsync, isPending } = useMutationWrapper<
-    ResponseType,
+    ModifyResourceResponse<T>,
     ResourceFormValues<T>
   >(mutationKey, async (body) => {
-    const response = await fetchMutation<ResponseType>(endpoint, {
+    const response = await fetchMutation<ModifyResourceResponse<T>>(endpoint, {
       body,
       method,
       resource,

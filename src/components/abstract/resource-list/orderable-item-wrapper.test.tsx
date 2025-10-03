@@ -24,6 +24,7 @@ const generateGuideArticle = (
   title: faker.lorem.words(5),
   shortDesc: faker.lorem.sentence(),
   imageKey: faker.string.uuid(),
+  order: faker.number.int({ min: 0, max: 100 }),
   ...overrides,
 });
 

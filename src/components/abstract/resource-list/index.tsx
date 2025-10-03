@@ -18,13 +18,11 @@ export async function AbstractResourceList<T extends Resource>({
   searchParams,
   sortableFields = [],
   searchableFields = [],
-  orderable = false,
 }: {
   resource: T;
   searchParams: Promise<ListSearchParameters>;
   sortableFields?: ResourceDeclinableField<T>[];
   searchableFields?: ResourceDeclinableField<T>[];
-  orderable?: boolean;
 }) {
   const page = 1;
 
@@ -45,7 +43,6 @@ export async function AbstractResourceList<T extends Resource>({
           resource={resource}
           initialData={firstPageData}
           searchParameters={await searchParams}
-          orderable={orderable}
         />
       </div>
       <div className="flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
