@@ -35,7 +35,7 @@ export function DeleteButtonWithDialog({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
 
-  const sanitizedId = sanitizeId(String(id));
+  const sanitizedId = sanitizeId(id);
   const { mutateAsync, isPending, isSuccess } = useMutationWrapper<
     MessageResponse,
     null

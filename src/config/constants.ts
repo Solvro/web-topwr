@@ -1,5 +1,5 @@
 import { getErrorMessage } from "@/lib/error-handling";
-import { removeTrailingSlash } from "@/lib/helpers";
+import { removeTrailingSlash } from "@/lib/helpers/transformations";
 import type { AuthState } from "@/types/api";
 import type {
   Declensions,
@@ -55,7 +55,6 @@ export const SORT_DIRECTIONS = {
 } satisfies Record<SortDirection, string>;
 
 export const IMPLICIT_SORT_BY_ATTRIBUTES = [
-  "id",
   "createdAt",
   "updatedAt",
 ] satisfies DeclinableNoun[];
@@ -66,7 +65,7 @@ export const SORT_FILTER_LABEL_DECLENSION_CASES = {
 };
 
 export const SORT_FILTER_DEFAULT_VALUES = {
-  sortBy: "id",
+  sortBy: "",
   sortDirection: "asc",
   searchField: "",
   searchTerm: "",

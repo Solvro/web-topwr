@@ -1,6 +1,9 @@
 import type { z } from "zod";
 
+import type { Resource } from "@/config/enums";
 import type { AuthStateSchema, UserSchema } from "@/schemas";
+
+import type { ResourceDataType } from "./app";
 
 // Types Source: backend-topwr
 export interface MessageResponse {
@@ -73,4 +76,26 @@ export interface FileEntry extends DatedResource {
   id: string;
   fileExtension: string;
   url: string;
+}
+
+export interface PaginationMetadata {
+  total: number;
+  perPage: number;
+  currentPage: number;
+  firstPage: number;
+  lastPage: number;
+  firstPageUrl: string;
+  lastPageUrl: string;
+  nextPageUrl: string | null;
+  previousPageUrl: string | null;
+}
+
+export interface GetResourcesResponse<T extends Resource> {
+  data: ResourceDataType<T>[];
+  meta: PaginationMetadata;
+}
+
+export interface ModifyResourceResponse<T extends Resource>
+  extends MessageResponse {
+  data: ResourceDataType<T>;
 }

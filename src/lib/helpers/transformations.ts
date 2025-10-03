@@ -1,4 +1,6 @@
-export function sanitizeId(id: string | number): string {
+import type { Id } from "@/types/app";
+
+export function sanitizeId(id: Id): string {
   return String(id).trim().replaceAll(/[^\d]/g, "");
 }
 

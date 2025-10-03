@@ -6,17 +6,19 @@ import type {
   NOUN_PHRASE_TRANSFORMATIONS,
   SIMPLE_NOUN_DECLENSIONS,
 } from "@/config/polish";
+import type { ORDERABLE_RESOURCES } from "@/config/resources";
 import type { RESOURCE_SCHEMAS } from "@/schemas";
 
 import type { DatedResource } from "./api";
 
 export type Id = string | number;
 
+export type OrderableResource = (typeof ORDERABLE_RESOURCES)[number];
 export type ResourceSchema<T extends Resource> = (typeof RESOURCE_SCHEMAS)[T];
 export type ResourceFormValues<T extends Resource> = z.infer<ResourceSchema<T>>;
-export type ResourceDataType<T extends Resource> = DatedResource & {
-  id: Id;
-} & ResourceFormValues<T>;
+export type ResourceDataType<T extends Resource> = DatedResource &
+  ResourceFormValues<T> &
+  (T extends OrderableResource ? { id: Id; order: number } : { id: Id });
 
 export interface ListItem {
   id: Id;
@@ -29,10 +31,19 @@ export type ErrorCode = keyof typeof ERROR_CODES;
 export type SortDirection = "asc" | "desc";
 
 export interface SortFiltersOptions {
-  sortBy: DeclinableNoun;
+  sortBy: DeclinableNoun | "";
   sortDirection: SortDirection;
   searchField: DeclinableNoun | "";
   searchTerm: string;
+}
+
+/** The accepted search parameters for the abstract resource list. */
+export interface ListSearchParameters {
+  page?: string;
+  sortBy?: string;
+  sortDirection?: SortDirection;
+  searchField?: string;
+  searchTerm?: string;
 }
 
 export interface Pluralized<T extends Record<string, unknown>> {
