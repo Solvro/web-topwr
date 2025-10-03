@@ -19,40 +19,42 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
+import { TOAST_MESSAGES } from "@/config/constants";
 import type { Resource } from "@/config/enums";
-import type { ResourceDataType } from "@/types/app";
+import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
+import { fetchMutation } from "@/lib/fetch-utils";
+import { sanitizeId } from "@/lib/helpers";
+import { declineNoun } from "@/lib/polish";
+import type { ModifyResourceResponse } from "@/types/api";
+import type { Id, OrderableResource, ResourceDataType } from "@/types/app";
 
 import { AbstractResourceListItem } from "./item";
-
-interface Sortable {
-  id: UniqueIdentifier;
-  sort: number;
-}
 
 /**
  * Given the indices of an item's old and new position, calculate its new sort value using the average of its neighbours' sort values.
  * TODO: this is for future use when the backend supports sorting, currently unused
  */
-export function calculateNewSortValue(
-  items: Sortable[],
+function calculateNewSortValue(
+  items: ResourceDataType<OrderableResource>[],
   oldIndex: number,
   newIndex: number,
 ): number {
   if (newIndex === 0) {
-    return items[0].sort - 1;
+    return items[0].order - 1;
   }
   if (newIndex === items.length - 1) {
     // arbitrary large-ish number which facilitates inserting new items, 64 is a power of 2 so easy to halve
-    return (items.at(-1)?.sort ?? 63) + 1;
+    return (items.at(-1)?.order ?? 63) + 1;
   }
   const first = items[newIndex];
   const second =
     oldIndex < newIndex ? items[newIndex + 1] : items[newIndex - 1];
-  return (first.sort + second.sort) / 2;
+  return (first.order + second.order) / 2;
 }
 
-export function OrderableItemWrapper<T extends Resource>({
+export function OrderableItemWrapper<T extends OrderableResource>({
   resource,
   data,
 }: {
@@ -68,7 +70,33 @@ export function OrderableItemWrapper<T extends Resource>({
     }),
   );
 
+  const { mutateAsync } = useMutationWrapper<
+    unknown,
+    { id: Id; order: number }
+  >(
+    `update__${resource}__order`,
+    async ({ id, order }) => {
+      const response = await fetchMutation<ModifyResourceResponse<T>>(
+        sanitizeId(id),
+        {
+          body: { order },
+          resource,
+          method: "PATCH",
+        },
+      );
+      return response;
+    },
+    {
+      onError: () => {
+        // revert the change
+        setItems(data);
+      },
+    },
+  );
+
   useEffect(() => {
+    // TODO: check if there is a better way to do this
+    // eslint-disable-next-line react-you-might-not-need-an-effect/no-derived-state
     setItems(data);
   }, [data]);
 
@@ -100,9 +128,13 @@ export function OrderableItemWrapper<T extends Resource>({
       }
     }
     const newItems = arrayMove(items, oldIndex, newIndex);
-    // TODO: update the items on the backend
-    // currently this is only updated on the client side
     setItems(newItems);
+    const order = calculateNewSortValue(items, oldIndex, newIndex);
+    const declensions = declineNoun(resource);
+    toast.promise(
+      mutateAsync({ id: getActiveItem().id, order }),
+      TOAST_MESSAGES.object(declensions).modify,
+    );
   }
 
   return (

@@ -53,7 +53,6 @@ export const SORT_DIRECTIONS = {
 } satisfies Record<SortDirection, string>;
 
 export const IMPLICIT_SORT_BY_ATTRIBUTES = [
-  "id",
   "createdAt",
   "updatedAt",
 ] satisfies DeclinableNoun[];
@@ -64,7 +63,7 @@ export const SORT_FILTER_LABEL_DECLENSION_CASES = {
 };
 
 export const SORT_FILTER_DEFAULT_VALUES = {
-  sortBy: "id",
+  sortBy: "",
   sortDirection: "asc",
   searchField: "",
   searchTerm: "",

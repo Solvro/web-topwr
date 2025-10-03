@@ -94,3 +94,8 @@ export interface GetResourcesResponse<T extends Resource> {
   data: ResourceDataType<T>[];
   meta: PaginationMetadata;
 }
+
+export interface ModifyResourceResponse<T extends Resource>
+  extends MessageResponse {
+  data: ResourceDataType<T>;
+}
