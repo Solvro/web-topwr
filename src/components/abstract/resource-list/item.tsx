@@ -1,4 +1,4 @@
-import type { Ref } from "react";
+import type { ComponentType, Ref } from "react";
 
 import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import type { Resource } from "@/config/enums";
@@ -8,17 +8,19 @@ import type { ListItem, ResourceDataType } from "@/types/app";
 import { EditButton } from "../edit-button";
 import { DragHandle } from "./drag-handle";
 
+interface ItemProps<T extends Resource> {
+  ref?: Ref<HTMLLIElement>;
+  item: ResourceDataType<T>;
+  resource: T;
+  orderable?: boolean;
+}
+
 export function AbstractResourceListItem<T extends Resource>({
   ref,
   item,
   resource,
   orderable = false,
-}: {
-  ref?: Ref<HTMLLIElement>;
-  item: ResourceDataType<T>;
-  resource: T;
-  orderable?: boolean;
-}) {
+}: ItemProps<T>) {
   const listItem: ListItem = {
     id: item.id,
     ...RESOURCE_METADATA[resource].itemMapper(item),
@@ -45,5 +47,30 @@ export function AbstractResourceListItem<T extends Resource>({
         <DeleteButtonWithDialog resource={resource} id={listItem.id} />
       </div>
     </li>
+  );
+}
+
+export function AbstractResourceListItems<T extends Resource>({
+  items,
+  resource,
+  orderable = false,
+  ItemComponent = AbstractResourceListItem,
+}: {
+  items: ResourceDataType<T>[];
+  resource: T;
+  orderable?: boolean;
+  ItemComponent?: ComponentType<ItemProps<T>>;
+}) {
+  return (
+    <ul className="space-y-4">
+      {items.map((item) => (
+        <ItemComponent
+          key={String(item.id)}
+          item={item}
+          resource={resource}
+          orderable={orderable}
+        />
+      ))}
+    </ul>
   );
 }

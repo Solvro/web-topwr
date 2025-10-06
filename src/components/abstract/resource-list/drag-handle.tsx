@@ -1,13 +1,13 @@
 "use client";
 
-import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
 import { GripHorizontal } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import type { ListItem } from "@/types/app";
 
 export function DragHandle({ item }: { item: ListItem }) {
-  const { attributes, listeners, isDragging } = useDraggable({
+  const { attributes, listeners, isDragging } = useSortable({
     id: item.id,
   });
   return (

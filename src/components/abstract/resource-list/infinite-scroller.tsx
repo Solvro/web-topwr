@@ -14,7 +14,7 @@ import type {
   ResourceDataType,
 } from "@/types/app";
 
-import { AbstractResourceListItem } from "./item";
+import { AbstractResourceListItems } from "./item";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
 
 export function InfiniteScroller<T extends Resource>({
@@ -60,15 +60,7 @@ export function InfiniteScroller<T extends Resource>({
           data={flatData as ResourceDataType<OrderableResource>[]}
         />
       ) : (
-        <ul>
-          {flatData.map((item) => (
-            <AbstractResourceListItem
-              key={item.id}
-              item={item}
-              resource={resource}
-            />
-          ))}
-        </ul>
+        <AbstractResourceListItems items={flatData} resource={resource} />
       )}
       <div className="flex justify-center">
         <Button

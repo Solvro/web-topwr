@@ -30,11 +30,10 @@ import { declineNoun } from "@/lib/polish";
 import type { ModifyResourceResponse } from "@/types/api";
 import type { Id, OrderableResource, ResourceDataType } from "@/types/app";
 
-import { AbstractResourceListItem } from "./item";
+import { AbstractResourceListItem, AbstractResourceListItems } from "./item";
 
 /**
  * Given the indices of an item's old and new position, calculate its new sort value using the average of its neighbours' sort values.
- * TODO: this is for future use when the backend supports sorting, currently unused
  */
 function calculateNewSortValue(
   items: ResourceDataType<OrderableResource>[],
@@ -46,7 +45,8 @@ function calculateNewSortValue(
   }
   if (newIndex === items.length - 1) {
     // arbitrary large-ish number which facilitates inserting new items, 64 is a power of 2 so easy to halve
-    return (items.at(-1)?.order ?? 63) + 1;
+    const lastItem = items.at(-1);
+    return lastItem == null ? 64 : lastItem.order + 1;
   }
   const first = items[newIndex];
   const second =
@@ -154,11 +154,12 @@ export function OrderableItemWrapper<T extends OrderableResource>({
       }}
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
-        <ul>
-          {items.map((item) => (
-            <SortableItem key={item.id} item={item} resource={resource} />
-          ))}
-        </ul>
+        <AbstractResourceListItems
+          items={items}
+          resource={resource}
+          orderable
+          ItemComponent={SortableItem}
+        />
       </SortableContext>
       <DragOverlay>
         {activeId == null ? null : (

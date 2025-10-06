@@ -38,7 +38,7 @@ export async function AbstractResourceList<T extends Resource>({
         sortableFields={sortableFields}
         searchableFields={searchableFields}
       />
-      <div className="w-full grow basis-[0] space-y-4 overflow-y-auto pr-2">
+      <div className="w-full grow basis-0 overflow-y-auto pr-2">
         <InfiniteScroller
           resource={resource}
           initialData={firstPageData}
