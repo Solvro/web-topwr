@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import type { ReactNode } from "react";
 
-import { Navbar } from "@/components/navbar";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -30,9 +29,8 @@ export default function RootLayout({
         <body
           className={`${space_grotesk.variable} flex h-screen flex-col overflow-auto font-sans antialiased`}
         >
-          <Navbar />
           <Toaster position="top-right" />
-          <div className="w-full grow">{children}</div>
+          {children}
         </body>
       </Providers>
     </html>

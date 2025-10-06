@@ -1,9 +1,8 @@
 "use client";
 
-import { LogOut, UserRound } from "lucide-react";
+import { UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import LogoToPWR from "@/../public/logo-topwr-color.png";
 import { Button } from "@/components/ui/button";
@@ -17,11 +16,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/use-auth";
 
+import { LogoutButton } from "./logout-button";
+
 export function Navbar() {
-  const router = useRouter();
+  // TODO: hydrate the auth state from the server to avoid flicker
+  // https://jotai.org/docs/utilities/ssr
   const auth = useAuth();
 
   if (!auth.isAuthenticated) {
+    // this should only happen when the auth state is changed but the redirect target page is still loading
+    // i.e. in practice only during dev when the page isn't compiled yet
     return null;
   }
 
@@ -48,17 +52,7 @@ export function Navbar() {
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button
-            variant="ghost"
-            className="aspect-square h-10 rounded-full"
-            onClick={async () => {
-              await auth.logout();
-              router.push("/login");
-            }}
-            tooltip="Wyloguj się"
-          >
-            <LogOut />
-          </Button>
+          <LogoutButton />
         </div>
       </div>
     </nav>
