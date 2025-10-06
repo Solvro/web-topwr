@@ -1,6 +1,6 @@
 import type { DefaultValues } from "react-hook-form";
 
-import { getFutureDate } from "@/lib/date-utils";
+import { getFutureDate } from "@/lib/helpers/calendar";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 

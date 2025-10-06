@@ -35,9 +35,13 @@ export function getMonthByNumberAndYear(
   };
 }
 
-export function getFutureDate(hoursAhead: number): Date {
+export function getFutureDate(hoursAhead: number): string {
   const now = new Date();
   now.setHours(now.getHours() + hoursAhead);
   now.setMinutes(0, 0, 0);
-  return now;
+  return now.toISOString();
+}
+
+export function formatDate(dateObject: DateObject): string {
+  return `${dateObject.year.toString()}-${dateObject.month.value.toString().padStart(2, "0")}-${dateObject.day.toString().padStart(2, "0")}`;
 }

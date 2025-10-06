@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import type { ReactNode } from "react";
 
 import {
@@ -11,14 +10,22 @@ import {
 import type { DetailField } from "@/types/calendar";
 
 interface Props<T> {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  data: T | null;
   title?: string | ((data: T) => string);
+  data: T;
   description?: string;
   fields: DetailField<T>[];
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
+/**
+ * Default formatter for displaying field values in the details modal.
+ * Converts string and number values to their string representation.
+ * Returns null for null/undefined values and unsupported types.
+ *
+ * @param value - The value to format for display.
+ * @returns The formatted value as a ReactNode, or null if not displayable.
+ */
 const defaultFormatter = (value: unknown): ReactNode => {
   if (value == null) {
     return null;
@@ -37,10 +44,6 @@ export function AbstractDetailsModal<T>({
   description,
   fields,
 }: Props<T>) {
-  if (data == null) {
-    return null;
-  }
-
   const modalTitle = typeof title === "function" ? title(data) : title;
 
   return (
@@ -54,7 +57,7 @@ export function AbstractDetailsModal<T>({
         </DialogHeader>
         <div className="space-y-4">
           {fields.map((field) => {
-            if (field.isVisible != null && !field.isVisible(data)) {
+            if (field.isVisible?.(data) === false) {
               return null;
             }
 
@@ -80,7 +83,7 @@ export function AbstractDetailsModal<T>({
                   {field.icon !== null && (
                     <span className="mr-1">{field.icon}</span>
                   )}
-                  <>{field.label}</>
+                  {field.label}{" "}
                 </div>
                 <div className="text-sm text-gray-600">{formattedValue}</div>
               </div>

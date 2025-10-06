@@ -8,13 +8,13 @@ import { WEEKDAYS } from "@/config/constants";
 import type { CalendarEventTypes } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resources";
 import { useQueryWrapper } from "@/hooks/use-query-wrapper";
-import { getMonthByNumberAndYear } from "@/lib/date-utils";
 import { fetchQuery } from "@/lib/fetch-utils";
+import { getMonthByNumberAndYear } from "@/lib/helpers/calendar";
 import { calendarStateAtom } from "@/stores/calendar";
 import type { ApiCalendarEvent } from "@/types/api";
 import type { CalendarEvent } from "@/types/calendar";
 
-import { DayButton } from "./day-button";
+import { DayBlock } from "./day-button";
 import { EventDetailsModal } from "./event-details-modal";
 
 interface Props {
@@ -24,14 +24,12 @@ interface Props {
 
 export function Calendar({ clickable = false, resource }: Props) {
   const metadata = RESOURCE_METADATA[resource];
-  const { data, isError: _isError } = useQueryWrapper(
-    `calendarEvents-${resource}`,
-    async () =>
-      fetchQuery<{ data: ApiCalendarEvent[] }>(`/${metadata.apiPath}`),
+  const { data } = useQueryWrapper(`calendarEvents-${resource}`, async () =>
+    fetchQuery<{ data: ApiCalendarEvent[] }>(`/${metadata.apiPath}`),
   );
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
-    null,
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent>(
+    {} as CalendarEvent,
   );
   const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
 
@@ -175,7 +173,7 @@ export function Calendar({ clickable = false, resource }: Props) {
             day: cell.day,
           };
           return (
-            <DayButton
+            <DayBlock
               key={cell.id}
               day={cell.day}
               today={displayedDateObject}

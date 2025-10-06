@@ -6,7 +6,7 @@ import type { CalendarEvent } from "@/types/calendar";
 interface Props {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  event: CalendarEvent | null;
+  event: CalendarEvent;
   resource: CalendarEventTypes;
 }
 
@@ -16,14 +16,7 @@ export function EventDetailsModal({
   event,
   resource,
 }: Props) {
-  if (
-    !((resource as unknown as CalendarEventTypes) in CALENDAR_EVENT_METADATA)
-  ) {
-    console.error(`No metadata found for resource: ${resource}`);
-    return null;
-  }
-  const metadata =
-    CALENDAR_EVENT_METADATA[resource as unknown as CalendarEventTypes];
+  const metadata = CALENDAR_EVENT_METADATA[resource];
 
   return (
     <AbstractDetailsModal

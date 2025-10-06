@@ -45,14 +45,8 @@ export default function Home() {
           resource={Resource.Banners}
           icon={Megaphone}
           variant="outline"
-          className="order-5"
         />
-        <DashboardButton
-          href={`/${Resource.CalendarEvents}`}
-          icon={Calendar}
-          label="Zarządzanie wydarzeniami kalendarzowymi"
-          className="order-3 md:order-5"
-        />
+        <DashboardButton resource={Resource.CalendarEvents} icon={Calendar} />
       </div>
     </div>
   );

@@ -52,7 +52,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
     },
   },
   [Resource.CalendarEvents]: {
-    gender: GrammaticalGender.Masculine,
+    gender: GrammaticalGender.Neuter,
     singular: {
       nominative: "wydarzenie kalendarzowe",
       genitive: "wydarzenia kalendarzowego",

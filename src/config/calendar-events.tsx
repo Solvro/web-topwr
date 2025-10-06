@@ -5,11 +5,8 @@ import type { CalendarEvent, DetailField } from "@/types/calendar";
 
 import { CalendarEventTypes } from "./enums";
 
-/**
- * Date formatting functions for calendar events
- */
-const formatDate = (date: Date): string => {
-  return date.toLocaleDateString("pl-PL", {
+const formatDate = (date: string): string => {
+  return new Date(date).toLocaleDateString("pl-PL", {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -17,14 +14,14 @@ const formatDate = (date: Date): string => {
   });
 };
 
-const formatTime = (date: Date): string => {
-  return date.toLocaleTimeString("pl-PL", {
+const formatTime = (date: string): string => {
+  return new Date(date).toLocaleTimeString("pl-PL", {
     hour: "2-digit",
     minute: "2-digit",
   });
 };
 
-const formatDateTimeRange = (startTime: Date, endTime: Date): ReactNode => {
+const formatDateTimeRange = (startTime: string, endTime: string): ReactNode => {
   return (
     <div>
       <div>{formatDate(startTime)}</div>
@@ -35,9 +32,6 @@ const formatDateTimeRange = (startTime: Date, endTime: Date): ReactNode => {
   );
 };
 
-/**
- * Helper function to check if a value is a non-empty string
- */
 const hasValue = (value: unknown): boolean => {
   return value != null && typeof value === "string" && value.trim() !== "";
 };
@@ -68,8 +62,8 @@ export const CALENDAR_EVENT_METADATA: Record<
         }),
         formatter: (value: unknown): ReactNode => {
           const { startTime, endTime } = value as {
-            startTime: Date;
-            endTime: Date;
+            startTime: string;
+            endTime: string;
           };
           return formatDateTimeRange(startTime, endTime);
         },
