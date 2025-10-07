@@ -42,6 +42,15 @@ const GuideArticleSchema = z.object({
   description: requiredString(),
 });
 
+const EventCalendarSchema = z.object({
+  name: requiredString(),
+  startTime: isoTimestamp(),
+  endTime: isoTimestamp(),
+  description: z.string().nullish(),
+  location: z.string().nullish(),
+  googleCalId: z.string().nullish(),
+});
+
 const BannerSchema = z.object({
   title: requiredString(),
   description: requiredString(),
@@ -58,5 +67,6 @@ const BannerSchema = z.object({
 export const RESOURCE_SCHEMAS = {
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
+  [Resource.CalendarEvents]: EventCalendarSchema,
   [Resource.Banners]: BannerSchema,
 } satisfies Record<Resource, z.ZodSchema>;

@@ -11,6 +11,7 @@ import type { z } from "zod";
 
 import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";
+import { DateTimePicker } from "@/components/inputs/date-time-picker";
 import { ImageUpload } from "@/components/inputs/image-upload";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -121,6 +122,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
     colorInputs = [],
     selectInputs = [],
     checkboxInputs = [],
+    datePickerInputs: timeInputs = [],
   } = metadata.form.inputs;
 
   return (
@@ -137,10 +139,12 @@ export function AbstractResourceFormInternal<T extends Resource>({
         >
           <div className="grow basis-[0] overflow-y-auto">
             <div className="bg-background-secondary flex min-h-full flex-col space-y-4 space-x-4 rounded-xl p-4 md:flex-row">
-              <div className="flex w-full flex-col space-y-4 md:w-48">
-                {imageInputs.map((input) => (
+              {imageInputs.map((input) => (
+                <div
+                  key={input.label}
+                  className="flex w-full flex-col space-y-4 md:w-48"
+                >
                   <FormField
-                    key={input.label}
                     control={form.control}
                     name={input.name}
                     render={({ field }) => (
@@ -154,8 +158,8 @@ export function AbstractResourceFormInternal<T extends Resource>({
                       </FormItem>
                     )}
                   />
-                ))}
-              </div>
+                </div>
+              ))}
 
               <div className="flex w-full flex-col space-y-4">
                 {textInputs.map((input) => (
@@ -299,6 +303,26 @@ export function AbstractResourceFormInternal<T extends Resource>({
                             onCheckedChange={(checked) => {
                               field.onChange(Boolean(checked));
                             }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
+
+                {timeInputs.map((input) => (
+                  <FormField
+                    key={input.name}
+                    control={form.control}
+                    name={input.name}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{input.label}</FormLabel>
+                        <FormControl>
+                          <DateTimePicker
+                            value={field.value as string | null}
+                            onChange={field.onChange}
                           />
                         </FormControl>
                         <FormMessage />

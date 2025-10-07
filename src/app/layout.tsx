@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <Providers>
         <body
-          className={`${space_grotesk.variable} flex h-screen flex-col overflow-hidden font-sans antialiased`}
+          className={`${space_grotesk.variable} flex h-screen flex-col overflow-auto font-sans antialiased`}
         >
           <Navbar />
           <Toaster position="top-right" />

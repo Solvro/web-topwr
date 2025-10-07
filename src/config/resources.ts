@@ -1,5 +1,6 @@
 import type { DefaultValues } from "react-hook-form";
 
+import { getFutureDate } from "@/lib/helpers/calendar";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 
@@ -198,6 +199,29 @@ export const RESOURCE_METADATA: {
         backgroundColor: null,
         draft: true,
         shouldRender: false,
+      },
+    },
+  },
+  [Resource.CalendarEvents]: {
+    apiPath: "event_calendar",
+    form: {
+      inputs: {
+        textInputs: [
+          { name: "name", label: "Nazwa wydarzenia" },
+          { name: "location", label: "Lokalizacja" },
+          { name: "description", label: "Opis wydarzenia" },
+        ],
+        datePickerInputs: [
+          { name: "startTime", label: "Czas rozpoczęcia" },
+          { name: "endTime", label: "Czas zakończenia" },
+        ],
+      },
+      defaultValues: {
+        name: "",
+        location: "",
+        description: "",
+        startTime: getFutureDate(1),
+        endTime: getFutureDate(2),
       },
     },
   },

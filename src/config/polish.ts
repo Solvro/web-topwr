@@ -51,6 +51,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "organizacje studenckie",
     },
   },
+  [Resource.CalendarEvents]: {
+    gender: GrammaticalGender.Neuter,
+    singular: {
+      nominative: "wydarzenie kalendarzowe",
+      genitive: "wydarzenia kalendarzowego",
+      dative: "wydarzeniu kalendarzowemu",
+      accusative: "wydarzenie kalendarzowe",
+      instrumental: "wydarzeniem kalendarzowym",
+      locative: "wydarzeniu kalendarzowemu",
+      vocative: "wydarzenie kalendarzowe",
+    },
+    plural: {
+      nominative: "wydarzenia kalendarzowe",
+      genitive: "wydarzeń kalendarzowych",
+      dative: "wydarzeniom kalendarzowym",
+      accusative: "wydarzenia kalendarzowe",
+      instrumental: "wydarzeniami kalendarzowymi",
+      locative: "wydarzeniach kalendarzowych",
+      vocative: "wydarzenia kalendarzowe",
+    },
+  },
   [Resource.Banners]: {
     gender: GrammaticalGender.Masculine,
     singular: {

@@ -2,6 +2,11 @@ export enum Resource {
   GuideArticles = "guide_articles",
   StudentOrganizations = "student_organizations",
   Banners = "banners",
+  CalendarEvents = "calendar_events",
+}
+
+export enum CalendarEventTypes {
+  CalendarEvents = "calendar_events",
 }
 
 export enum OrganizationType {
