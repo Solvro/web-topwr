@@ -108,3 +108,5 @@ export const WEEKDAYS = ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"];
 
 /** Used as the initially-selected color in the color picker input. */
 export const DEFAULT_COLOR = "#ffffff";
+
+export const CALENDAR_MAX_EVENTS_PER_DAY = 5;

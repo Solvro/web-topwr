@@ -1,12 +1,8 @@
-import { Plus, SquarePen } from "lucide-react";
-import Link from "next/link";
 import { toast } from "sonner";
 
 import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { PaginationComponent } from "@/components/pagination";
-import { Button } from "@/components/ui/button";
 import { LIST_RESULTS_PER_PAGE, TOAST_MESSAGES } from "@/config/constants";
-import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { encodeQueryComponent } from "@/lib/helpers";
@@ -18,6 +14,8 @@ import type {
   SortDirection,
 } from "@/types/app";
 
+import { CreateButton } from "./create-button";
+import { EditButton } from "./edit-button";
 import { SortFilters } from "./sort-filters";
 
 interface ApiResponse<T extends Resource> {
@@ -98,10 +96,6 @@ export async function AbstractResourceList<T extends Resource>({
     ...resourceMapper(item),
   }));
 
-  const resourceAccusative = declineNoun(resource, {
-    case: DeclensionCase.Accusative,
-  });
-
   return (
     <div className="flex h-full flex-col space-y-4">
       <SortFilters
@@ -122,16 +116,7 @@ export async function AbstractResourceList<T extends Resource>({
                 : item.shortDescription}
             </span>
             <div className="space-x-0.5 sm:space-x-2">
-              <Button
-                variant="ghost"
-                className="h-10 w-10"
-                asChild
-                aria-label={`Edytuj ${resourceAccusative}`}
-              >
-                <Link href={`/${resource}/edit/${String(item.id)}`}>
-                  <SquarePen />
-                </Link>
-              </Button>
+              <EditButton resource={resource} id={item.id} />
               <DeleteButtonWithDialog
                 resource={resource}
                 id={item.id}
@@ -150,12 +135,7 @@ export async function AbstractResourceList<T extends Resource>({
           searchParams={resolvedSearchParameters}
         />
 
-        <Button asChild>
-          <Link href={`/${resource}/create`}>
-            Dodaj {resourceAccusative}
-            <Plus />
-          </Link>
-        </Button>
+        <CreateButton resource={resource} />
       </div>
     </div>
   );

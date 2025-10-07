@@ -68,7 +68,7 @@ export function DateTimePicker({
             type="time"
             step="1"
             value={date === undefined ? "00:00:00" : format(date, "HH:mm:ss")}
-            className="bg-background w-32 appearance-none pl-10 [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+            className="bg-background w-34 appearance-none pl-10 [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
             onChange={handleTimeChange}
           />
         </div>

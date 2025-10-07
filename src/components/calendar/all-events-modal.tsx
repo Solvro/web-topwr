@@ -1,6 +1,3 @@
-import { Edit, PlusIcon } from "lucide-react";
-import Link from "next/link";
-
 import {
   Dialog,
   DialogContent,
@@ -12,11 +9,11 @@ import { Resource } from "@/config/enums";
 import type { CalendarEventTypes } from "@/config/enums";
 import type { CalendarEvent } from "@/types/calendar";
 
+import { CreateButton } from "../abstract/create-button";
+import { EditButton } from "../abstract/edit-button";
 import { DeleteButtonWithDialog } from "../delete-button-with-dialog";
-import { Button } from "../ui/button";
 
 export function AllEventsModal({
-  resource,
   events,
   day,
   month,
@@ -47,11 +44,11 @@ export function AllEventsModal({
               : "Wszystkie wydarzenia zaplanowane na ten dzień"}
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-2 overflow-y-auto">
+        <div className="flex flex-col items-end gap-2">
           {events.map((event) => (
             <div
               key={event.id}
-              className="text-accent bg-primary flex h-max w-full rounded-md p-3 text-left text-sm"
+              className="bg-accent flex h-max w-full rounded-md p-3 text-left text-sm"
               title={event.description ?? ""}
             >
               <div>
@@ -69,33 +66,21 @@ export function AllEventsModal({
                 </div>
               </div>
               {clickable ? (
-                <div className="ml-auto flex gap-1.5">
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="text-primary h-10 w-10"
-                  >
-                    <Link href={`/${resource}/edit/${event.id}`}>
-                      <Edit />
-                    </Link>
-                  </Button>
+                <div className="ml-auto flex">
+                  <EditButton
+                    resource={Resource.CalendarEvents}
+                    id={event.id}
+                  />
                   <DeleteButtonWithDialog
                     resource={Resource.CalendarEvents}
                     id={event.id}
-                    variant="destructive"
                   />
                 </div>
               ) : null}
             </div>
           ))}
           {clickable ? (
-            <Button asChild variant="outline" className="float-right">
-              <Link
-                href={`/${resource}/create/${year.toString()}-${month.value.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`}
-              >
-                Dodaj wydarzenie <PlusIcon />
-              </Link>
-            </Button>
+            <CreateButton resource={Resource.CalendarEvents} />
           ) : null}
         </div>
       </DialogContent>

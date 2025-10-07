@@ -111,7 +111,7 @@ export function Calendar({
   };
 
   return (
-    <div className="mx-auto mt-4 grid h-fit w-[95%] grid-cols-7 overflow-y-auto sm:mt-6 sm:w-[90%] md:mt-10 md:max-w-7xl lg:w-[85%]">
+    <div className="mx-auto grid h-fit w-[95%] grid-cols-7 sm:w-[90%] md:max-w-7xl lg:w-[85%]">
       <div className="col-span-7 flex items-center justify-center gap-4 text-center text-base font-bold sm:text-lg">
         <Button
           variant="outline"
@@ -148,7 +148,6 @@ export function Calendar({
       </div>
       {calendarDays.map((cell) => {
         if (cell.type === "empty") {
-          // Empty cell for days before month starts
           return (
             <div key={cell.id} className="h-16 sm:h-24 md:h-28 lg:h-32"></div>
           );

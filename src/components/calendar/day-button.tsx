@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { KeyboardEvent, MouseEvent } from "react";
 
+import { CALENDAR_MAX_EVENTS_PER_DAY } from "@/config/constants";
 import type { CalendarEventTypes } from "@/config/enums";
 import { cn } from "@/lib/utils";
 import type { CalendarEvent, DateObject } from "@/types/calendar";
@@ -43,14 +44,13 @@ export function DayBlock({
     }
   }
 
-  const hasLessThanFiveEvents = events.length < 5;
-
   return (
     <>
       <Button
+        variant="ghost"
         className={cn(
           "relative flex h-16 flex-col rounded-none border p-1 sm:h-24 md:h-28 lg:h-32",
-          isCurrentDay ? "bg-blue-500 text-white" : "bg-white text-black",
+          { "bg-blue-500 text-white": isCurrentDay },
         )}
         onClick={handleDayClick}
         onKeyDown={handleDayKeyDown}
@@ -59,13 +59,11 @@ export function DayBlock({
           {day}
         </div>
 
-        {hasLessThanFiveEvents ? (
-          <div className="mt-4 flex min-h-0 w-full flex-1 flex-col-reverse gap-0.5 overflow-hidden sm:mt-6 md:mt-13">
-            {events.map((event) => (
-              <div key={event.id} className="bg-primary h-2 rounded-md"></div>
-            ))}
-          </div>
-        ) : null}
+        <div className="mt-4 flex min-h-0 w-full flex-1 flex-col-reverse gap-0.5 overflow-hidden sm:mt-6 md:mt-13">
+          {events.slice(0, CALENDAR_MAX_EVENTS_PER_DAY).map((event) => (
+            <div key={event.id} className="bg-primary h-2 rounded-md" />
+          ))}
+        </div>
       </Button>
 
       <AllEventsModal
