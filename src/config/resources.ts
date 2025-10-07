@@ -1,7 +1,11 @@
 import type { DefaultValues } from "react-hook-form";
 
 import { getFutureDate } from "@/lib/helpers/calendar";
-import type { ResourceDataType, ResourceFormValues } from "@/types/app";
+import type {
+  ListItem,
+  ResourceDataType,
+  ResourceFormValues,
+} from "@/types/app";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 
 import {
@@ -57,6 +61,11 @@ const SELECT_OPTION_LABELS = {
   },
 };
 
+/** A list of all resources which define an `order` field in the database. */
+export const ORDERABLE_RESOURCES = [
+  Resource.GuideArticles,
+] satisfies Resource[];
+
 /**
  * Metadata for each resource.
  *
@@ -71,6 +80,7 @@ const SELECT_OPTION_LABELS = {
 export const RESOURCE_METADATA: {
   [R in Resource]: {
     apiPath: string;
+    itemMapper: (item: ResourceDataType<R>) => Omit<ListItem, "id">;
     form: {
       inputs: AbstractResourceFormInputs<R>;
       defaultValues: ResourceFormValues<R> &
@@ -80,6 +90,10 @@ export const RESOURCE_METADATA: {
 } = {
   [Resource.GuideArticles]: {
     apiPath: "guide_articles",
+    itemMapper: (item) => ({
+      name: item.title,
+      shortDescription: item.shortDesc,
+    }),
     form: {
       inputs: {
         imageInputs: [{ label: "Zdjęcie", name: "imageKey" }],
@@ -101,6 +115,10 @@ export const RESOURCE_METADATA: {
   },
   [Resource.StudentOrganizations]: {
     apiPath: "student_organizations",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.shortDescription,
+    }),
     form: {
       inputs: {
         imageInputs: [
@@ -167,6 +185,11 @@ export const RESOURCE_METADATA: {
   },
   [Resource.Banners]: {
     apiPath: "banners",
+    itemMapper: (item) => ({
+      id: item.id,
+      name: item.title,
+      shortDescription: item.description,
+    }),
     form: {
       inputs: {
         textInputs: [
@@ -204,6 +227,10 @@ export const RESOURCE_METADATA: {
   },
   [Resource.CalendarEvents]: {
     apiPath: "event_calendar",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.location ?? "Brak lokalizacji",
+    }),
     form: {
       inputs: {
         textInputs: [

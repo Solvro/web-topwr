@@ -16,7 +16,7 @@ export const LoginSchema = z.object({
 
 export const SortFiltersSchema = z
   .object({
-    sortBy: requiredString().default(SORT_FILTER_DEFAULT_VALUES.sortBy),
+    sortBy: z.string().default(SORT_FILTER_DEFAULT_VALUES.sortBy),
     sortDirection: z
       .enum(["asc", "desc"])
       .default(SORT_FILTER_DEFAULT_VALUES.sortDirection),

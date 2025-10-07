@@ -10,8 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-
-import type { ListSearchParameters } from "./abstract/abstract-resource-list";
+import type { ListSearchParameters } from "@/types/app";
 
 export function PaginationComponent({
   page,

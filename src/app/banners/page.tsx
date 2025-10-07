@@ -1,4 +1,4 @@
-import { AbstractResourceList } from "@/components/abstract/abstract-resource-list";
+import { AbstractResourceList } from "@/components/abstract/resource-list";
 import { Resource } from "@/config/enums";
 
 export default function BannerPage({
@@ -12,11 +12,6 @@ export default function BannerPage({
       searchParams={searchParams}
       sortableFields={["title", "description"]}
       searchableFields={["title", "description"]}
-      resourceMapper={(item) => ({
-        id: item.id,
-        name: item.title,
-        shortDescription: item.description,
-      })}
     />
   );
 }

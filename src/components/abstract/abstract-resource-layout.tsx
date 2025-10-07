@@ -1,8 +1,5 @@
-import { ChevronsLeft } from "lucide-react";
-import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { Button } from "@/components/ui/button";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { declineNoun } from "@/lib/polish";
@@ -41,16 +38,6 @@ export function AbstractResourceLayout({
       </h2>
       <div className="container mx-auto flex h-full grow flex-col space-y-2 px-2 xl:px-32">
         <div className="grow">{children}</div>
-        <Button
-          variant="ghost"
-          className="text-primary hover:text-primary w-min"
-          asChild
-        >
-          <Link href="/" className="">
-            <ChevronsLeft />
-            Wroć na stronę główną
-          </Link>
-        </Button>
       </div>
     </div>
   );
