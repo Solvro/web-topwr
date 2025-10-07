@@ -1,19 +1,28 @@
 import type { DateObject } from "@/types/calendar";
 
+export function getMonthByDate(
+  date: Date,
+  locale = "pl",
+): { value: number; name: string; daysInMonth: number } {
+  const monthNumber = date.getMonth() + 1;
+  const year = date.getFullYear();
+  const monthName = date.toLocaleString(locale, { month: "long" });
+  const daysInMonth = new Date(year, monthNumber, 0).getDate();
+  return {
+    value: monthNumber,
+    name: monthName,
+    daysInMonth,
+  };
+}
+
 export function getCurrentDate(locale = "pl"): DateObject {
   const today = new Date();
   const year = today.getFullYear();
-  const monthNumber = today.getMonth() + 1; // Months are zero-indexed
-  const monthName = today.toLocaleString(locale, { month: "long" });
   const day = today.getDate();
 
   return {
     year,
-    month: {
-      value: monthNumber,
-      name: monthName,
-      daysInMonth: new Date(year, monthNumber, 0).getDate(),
-    },
+    month: getMonthByDate(today, locale),
     day,
   };
 }
@@ -23,16 +32,8 @@ export function getMonthByNumberAndYear(
   year: number,
   locale = "pl",
 ): { value: number; name: string; daysInMonth: number } {
-  const monthName = new Date(year, month - 1).toLocaleString(locale, {
-    month: "long",
-  });
-  const daysInMonth = new Date(year, month, 0).getDate();
-
-  return {
-    value: month,
-    name: monthName,
-    daysInMonth,
-  };
+  const date = new Date(year, month - 1);
+  return getMonthByDate(date, locale);
 }
 
 export function getFutureDate(hoursAhead: number): string {
@@ -42,6 +43,6 @@ export function getFutureDate(hoursAhead: number): string {
   return now.toISOString();
 }
 
-export function formatDate(dateObject: DateObject): string {
+export function serializeDate(dateObject: DateObject): string {
   return `${dateObject.year.toString()}-${dateObject.month.value.toString().padStart(2, "0")}-${dateObject.day.toString().padStart(2, "0")}`;
 }

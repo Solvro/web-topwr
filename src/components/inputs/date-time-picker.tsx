@@ -60,10 +60,7 @@ export function DateTimePicker({
 
   return (
     <div className="flex gap-2">
-      <div className="flex-1">
-        <DatePicker value={value} onChange={handleDateChange} />
-      </div>
-
+      <DatePicker value={value} onChange={handleDateChange} />
       <div className="flex items-end">
         <div className="relative">
           <Clock className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />

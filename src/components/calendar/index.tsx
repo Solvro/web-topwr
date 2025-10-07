@@ -15,39 +15,36 @@ import type { ApiCalendarEvent } from "@/types/api";
 import type { CalendarEvent } from "@/types/calendar";
 
 import { DayBlock } from "./day-button";
-import { EventDetailsModal } from "./event-details-modal";
 
-interface Props {
-  readonly clickable?: boolean;
-  readonly resource: CalendarEventTypes;
-}
-
-export function Calendar({ clickable = false, resource }: Props) {
+export function Calendar({
+  clickable = false,
+  resource,
+}: {
+  clickable?: boolean;
+  resource: CalendarEventTypes;
+}) {
+  const currentDate = new Date();
   const metadata = RESOURCE_METADATA[resource];
   const { data } = useQueryWrapper(`calendarEvents-${resource}`, async () =>
     fetchQuery<{ data: ApiCalendarEvent[] }>(`/${metadata.apiPath}`),
   );
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent>(
-    {} as CalendarEvent,
-  );
-  const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (data?.data != null) {
-      const transformedEvents = data.data.map((apiEvent) => {
-        return {
-          id: apiEvent.id,
-          name: apiEvent.name,
-          description: apiEvent.description ?? undefined,
-          startTime: new Date(apiEvent.startTime),
-          endTime: new Date(apiEvent.endTime),
-          location: apiEvent.location ?? undefined,
-          googleCallId: apiEvent.googleCallId ?? undefined,
-        };
-      });
-      setEvents(transformedEvents);
+    if (data === undefined) {
+      setEvents([]);
+      return;
     }
+    const transformedEvents = data.data.map((apiEvent) => ({
+      id: apiEvent.id,
+      name: apiEvent.name,
+      description: apiEvent.description ?? undefined,
+      startTime: new Date(apiEvent.startTime),
+      endTime: new Date(apiEvent.endTime),
+      location: apiEvent.location ?? undefined,
+      googleCallId: apiEvent.googleCallId ?? undefined,
+    }));
+    setEvents(transformedEvents);
   }, [data]);
 
   const [calendarState, setCalendarState] = useAtom(calendarStateAtom);
@@ -113,11 +110,6 @@ export function Calendar({ clickable = false, resource }: Props) {
     });
   };
 
-  const handleEventClick = (event: CalendarEvent) => {
-    setSelectedEvent(event);
-    setIsEventDetailsModalOpen(true);
-  };
-
   return (
     <div className="mx-auto mt-4 grid h-fit w-[95%] grid-cols-7 overflow-y-auto sm:mt-6 sm:w-[90%] md:mt-10 md:max-w-7xl lg:w-[85%]">
       <div className="col-span-7 flex items-center justify-center gap-4 text-center text-base font-bold sm:text-lg">
@@ -177,18 +169,12 @@ export function Calendar({ clickable = false, resource }: Props) {
               clickable={clickable}
               events={dayEvents}
               resource={resource}
-              onEventClick={handleEventClick}
+              currentDate={currentDate}
             />
           );
         }
         return null;
       })}
-      <EventDetailsModal
-        isOpen={isEventDetailsModalOpen}
-        onOpenChange={setIsEventDetailsModalOpen}
-        event={selectedEvent}
-        resource={resource}
-      />
     </div>
   );
 }

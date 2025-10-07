@@ -15,18 +15,6 @@ import type { CalendarEvent } from "@/types/calendar";
 import { DeleteButtonWithDialog } from "../delete-button-with-dialog";
 import { Button } from "../ui/button";
 
-interface Props {
-  resource: CalendarEventTypes;
-  events: CalendarEvent[];
-  day: number;
-  month: { name: string; value: number };
-  year: number;
-  clickable: boolean;
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  onEventClick: (event: CalendarEvent) => void;
-}
-
 export function AllEventsModal({
   resource,
   events,
@@ -36,37 +24,34 @@ export function AllEventsModal({
   clickable,
   isOpen,
   onOpenChange,
-  onEventClick,
-}: Props) {
+}: {
+  resource: CalendarEventTypes;
+  events: CalendarEvent[];
+  day: number;
+  month: { name: string; value: number };
+  year: number;
+  clickable: boolean;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="h-max max-h-[80vh] max-w-lg">
         <DialogHeader>
           <DialogTitle>
-            Wydarzenia - {day} {month.name} {year}
+            Wydarzenia {day} {month.name} {year}
           </DialogTitle>
           <DialogDescription>
-            Wszystkie wydarzenia zaplanowane na ten dzień
+            {events.length === 0
+              ? "Brak wydarzeń zaplanowanych na ten dzień"
+              : "Wszystkie wydarzenia zaplanowane na ten dzień"}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-2 overflow-y-auto">
-          {clickable ? (
-            <Button asChild variant="outline">
-              <Link
-                href={`/${resource}/create/${year.toString()}-${month.value.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`}
-              >
-                Dodaj wydarzenie <PlusIcon />
-              </Link>
-            </Button>
-          ) : null}
           {events.map((event) => (
-            <Button
+            <div
               key={event.id}
-              type="button"
-              onClick={() => {
-                onEventClick(event);
-              }}
-              className="flex h-max w-full p-3 text-left text-sm"
+              className="text-accent bg-primary flex h-max w-full rounded-md p-3 text-left text-sm"
               title={event.description ?? ""}
             >
               <div>
@@ -84,7 +69,7 @@ export function AllEventsModal({
                 </div>
               </div>
               {clickable ? (
-                <div className="ml-auto flex">
+                <div className="ml-auto flex gap-1.5">
                   <Button
                     asChild
                     variant="outline"
@@ -97,11 +82,21 @@ export function AllEventsModal({
                   <DeleteButtonWithDialog
                     resource={Resource.CalendarEvents}
                     id={event.id}
+                    variant="destructive"
                   />
                 </div>
               ) : null}
-            </Button>
+            </div>
           ))}
+          {clickable ? (
+            <Button asChild variant="outline" className="float-right">
+              <Link
+                href={`/${resource}/create/${year.toString()}-${month.value.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`}
+              >
+                Dodaj wydarzenie <PlusIcon />
+              </Link>
+            </Button>
+          ) : null}
         </div>
       </DialogContent>
     </Dialog>

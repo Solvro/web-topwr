@@ -1,11 +1,13 @@
 "use client";
 
+import type { VariantProps } from "class-variance-authority";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import type { buttonVariants } from "@/components/ui/button/variants";
 import {
   Dialog,
   DialogContent,
@@ -21,16 +23,19 @@ import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
+import { cn } from "@/lib/utils";
 import type { MessageResponse } from "@/types/api";
 
 export function DeleteButtonWithDialog({
   resource,
   id,
   itemName,
+  variant = "ghost",
 }: {
   resource: Resource;
   id: string | number;
   itemName?: string;
+  variant?: VariantProps<typeof buttonVariants>["variant"];
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
@@ -59,8 +64,11 @@ export function DeleteButtonWithDialog({
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="ghost"
-          className="text-destructive hover:text-destructive h-10 w-10"
+          variant={variant}
+          className={cn(
+            "text-destructive hover:text-destructive h-10 w-10",
+            variant === "destructive" && "text-accent hover:text-accent",
+          )}
           aria-label={`Usuń ${declensions.accusative}`}
         >
           <Trash2 />

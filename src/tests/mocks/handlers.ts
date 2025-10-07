@@ -3,6 +3,7 @@ import { HttpResponse, http } from "msw";
 
 import { API_URL } from "@/config/constants";
 import type {
+  ApiCalendarEvent,
   ErrorResponse,
   GetUserResponse,
   LogInResponse,
@@ -90,65 +91,53 @@ export const handlers = [
 
   // Mock handler for getting calendar events
   http.get(`${API_URL}/event_calendar`, () => {
-    return HttpResponse.json({
-      data: [
-        {
-          id: 1,
-          name: "Existing Event",
-          description: "This is an existing event",
-          location: "Test Location",
-          startTime: "2025-07-01T10:00:00.000Z",
-          endTime: "2025-07-01T11:00:00.000Z",
-          googleCallId: null,
-          createdAt: "2025-07-01T08:00:00.000Z",
-          updatedAt: "2025-07-01T08:00:00.000Z",
-        },
-        {
-          id: 2,
-          name: "Event 1",
-          description: "First event",
-          location: "",
-          startTime: "2025-07-01T09:00:00.000Z",
-          endTime: "2025-07-01T10:00:00.000Z",
-          googleCallId: null,
-          createdAt: "2025-07-01T08:00:00.000Z",
-          updatedAt: "2025-07-01T08:00:00.000Z",
-        },
-        {
-          id: 3,
-          name: "Event 2",
-          description: "Second event",
-          location: "",
-          startTime: "2025-07-01T11:00:00.000Z",
-          endTime: "2025-07-01T12:00:00.000Z",
-          googleCallId: null,
-          createdAt: "2025-07-01T08:00:00.000Z",
-          updatedAt: "2025-07-01T08:00:00.000Z",
-        },
-        {
-          id: 4,
-          name: "Event 3",
-          description: "Third event",
-          location: "",
-          startTime: "2025-07-01T13:00:00.000Z",
-          endTime: "2025-07-01T14:00:00.000Z",
-          googleCallId: null,
-          createdAt: "2025-07-01T08:00:00.000Z",
-          updatedAt: "2025-07-01T08:00:00.000Z",
-        },
-        {
-          id: 5,
-          name: "Event 4",
-          description: "Fourth event",
-          location: "",
-          startTime: "2025-07-01T15:00:00.000Z",
-          endTime: "2025-07-01T16:00:00.000Z",
-          googleCallId: null,
-          createdAt: "2025-07-01T08:00:00.000Z",
-          updatedAt: "2025-07-01T08:00:00.000Z",
-        },
-      ],
-    });
+    return HttpResponse.json([
+      {
+        id: "1",
+        name: "Existing Event",
+        description: "This is an existing event",
+        location: "Test Location",
+        startTime: "2025-07-01T10:00:00.000Z",
+        endTime: "2025-07-01T11:00:00.000Z",
+        googleCallId: null,
+      },
+      {
+        id: "2",
+        name: "Event 1",
+        description: "First event",
+        location: "",
+        startTime: "2025-07-01T09:00:00.000Z",
+        endTime: "2025-07-01T10:00:00.000Z",
+        googleCallId: null,
+      },
+      {
+        id: "4",
+        name: "Event 2",
+        description: "Second event",
+        location: "",
+        startTime: "2025-07-01T11:00:00.000Z",
+        endTime: "2025-07-01T12:00:00.000Z",
+        googleCallId: null,
+      },
+      {
+        id: "4",
+        name: "Event 3",
+        description: "Third event",
+        location: "",
+        startTime: "2025-07-01T13:00:00.000Z",
+        endTime: "2025-07-01T14:00:00.000Z",
+        googleCallId: null,
+      },
+      {
+        id: "5",
+        name: "Event 4",
+        description: "Fourth event",
+        location: "",
+        startTime: "2025-07-01T15:00:00.000Z",
+        endTime: "2025-07-01T16:00:00.000Z",
+        googleCallId: null,
+      },
+    ] satisfies ApiCalendarEvent[]);
   }),
 
   // Mock handler for updating calendar events (PATCH)

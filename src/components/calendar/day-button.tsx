@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { KeyboardEvent, MouseEvent } from "react";
 
 import type { CalendarEventTypes } from "@/config/enums";
@@ -8,34 +8,27 @@ import type { CalendarEvent, DateObject } from "@/types/calendar";
 import { Button } from "../ui/button";
 import { AllEventsModal } from "./all-events-modal";
 
-interface Props {
-  day: number;
-  today: DateObject;
-  clickable: boolean;
-  resource: CalendarEventTypes;
-  events?: CalendarEvent[];
-  onDayClick?: () => void;
-  onEventClick?: (event: CalendarEvent) => void;
-}
-
 export function DayBlock({
   day,
   today,
   clickable,
   resource,
   events = [],
-  onEventClick,
-}: Props) {
+  currentDate,
+}: {
+  day: number;
+  today: DateObject;
+  clickable: boolean;
+  resource: CalendarEventTypes;
+  currentDate: Date;
+  events?: CalendarEvent[];
+  onDayClick?: () => void;
+}) {
   const [isAllEventsModalOpen, setIsAllEventsModalOpen] = useState(false);
-  const currentDate = useMemo(() => new Date(), []);
   const isCurrentDay =
     day === currentDate.getDate() &&
     today.month.value === currentDate.getMonth() + 1 &&
     today.year === currentDate.getFullYear();
-
-  function handleEventClick(event: CalendarEvent) {
-    onEventClick?.(event);
-  }
 
   function handleDayClick(clickEvent: MouseEvent) {
     clickEvent.stopPropagation();
@@ -84,7 +77,6 @@ export function DayBlock({
         year={today.year}
         isOpen={isAllEventsModalOpen}
         onOpenChange={setIsAllEventsModalOpen}
-        onEventClick={handleEventClick}
       />
     </>
   );
