@@ -220,8 +220,8 @@ export function AbstractResourceFormInternal<T extends Resource>({
                             editorContentClassName="p-5"
                             output="html"
                             placeholder="Enter your description..."
-                            autofocus={true}
-                            editable={true}
+                            autofocus
+                            editable
                             editorClassName="focus:outline-hidden"
                           />
                         </FormControl>

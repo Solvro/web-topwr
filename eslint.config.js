@@ -1,9 +1,5 @@
 import { solvro } from "@solvro/config/eslint";
 
 export default solvro({
-  ignores: [
-    "src/components/ui/*.ts?(x)",
-    "src/components/ui/minimal-tiptap/*.ts?(x)",
-    "src/components/ui/minimal-tiptap/**/*.ts?(x)",
-  ],
+  ignores: ["src/components/ui/*.ts?(x)", "src/components/ui/**/*.ts?(x)"],
 });
