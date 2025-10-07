@@ -24,6 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { MinimalTiptapEditor } from "@/components/ui/minimal-tiptap";
 import {
   Select,
   SelectContent,
@@ -211,12 +212,17 @@ export function AbstractResourceFormInternal<T extends Resource>({
                       <FormItem>
                         <FormLabel>{input.label}</FormLabel>
                         <FormControl>
-                          <Input
-                            className="bg-background placeholder:text-foreground h-20 shadow-none"
-                            {...field}
-                            // TODO: figure out why field.value is a union of all possible input types
-                            // these casts should not be necessary since AbstractResourceFormInputs specifies only the keys which have the correct type
-                            value={(field.value ?? "") as string}
+                          <MinimalTiptapEditor
+                            // @ts-expect-error types not matching
+                            value={field.value ?? ""}
+                            onChange={field.onChange}
+                            className="w-full"
+                            editorContentClassName="p-5"
+                            output="html"
+                            placeholder="Enter your description..."
+                            autofocus
+                            editable
+                            editorClassName="focus:outline-hidden"
                           />
                         </FormControl>
                         <FormMessage />
