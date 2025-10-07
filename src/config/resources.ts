@@ -211,7 +211,7 @@ export const RESOURCE_METADATA: {
           { name: "location", label: "Lokalizacja" },
           { name: "description", label: "Opis wydarzenia" },
         ],
-        timeInputs: [
+        datePickerInputs: [
           { name: "startTime", label: "Czas rozpoczęcia" },
           { name: "endTime", label: "Czas zakończenia" },
         ],

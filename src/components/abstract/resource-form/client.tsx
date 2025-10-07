@@ -11,6 +11,7 @@ import type { z } from "zod";
 
 import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";
+import { DateTimePicker } from "@/components/inputs/date-time-picker";
 import { ImageUpload } from "@/components/inputs/image-upload";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -71,42 +72,6 @@ const getMutationConfig = <T extends z.ZodType>(
         method: "POST",
       } as const);
 
-function handleTimeChange(
-  event: React.ChangeEvent<HTMLInputElement>,
-  field: { value: Date | undefined | null; onChange: (value: Date) => void },
-) {
-  const timeValue = event.target.value;
-  const [hours, minutes, seconds = "00"] = timeValue.split(":");
-
-  // Create a base date - ALWAYS try to preserve the original date from field.value
-  // Only fall back to current date if absolutely necessary
-  let baseDate: Date;
-
-  if (field.value instanceof Date && !Number.isNaN(field.value.getTime())) {
-    // Use the existing date, preserving the original date portion
-    baseDate = new Date(field.value);
-  } else {
-    baseDate = new Date();
-    baseDate.setHours(0, 0, 0, 0);
-  }
-
-  // Set only the time portion, preserving the date
-  baseDate.setHours(
-    Number.parseInt(hours, 10),
-    Number.parseInt(minutes, 10),
-    Number.parseInt(seconds, 10),
-    0,
-  );
-  field.onChange(baseDate);
-}
-
-function formatTimeValue(value: Date): string {
-  const hours = String(value.getHours()).padStart(2, "0");
-  const minutes = String(value.getMinutes()).padStart(2, "0");
-  const seconds = String(value.getSeconds()).padStart(2, "0");
-  return `${hours}:${minutes}:${seconds}`;
-}
-
 export function AbstractResourceFormInternal<T extends Resource>({
   resource,
   defaultValues,
@@ -157,7 +122,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
     colorInputs = [],
     selectInputs = [],
     checkboxInputs = [],
-    timeInputs = [],
+    datePickerInputs: timeInputs = [],
   } = metadata.form.inputs;
 
   return (
@@ -355,21 +320,9 @@ export function AbstractResourceFormInternal<T extends Resource>({
                       <FormItem>
                         <FormLabel>{input.label}</FormLabel>
                         <FormControl>
-                          <Input
-                            type="time"
-                            step="1"
-                            value={formatTimeValue(
-                              new Date(field.value as string),
-                            )}
-                            className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                            onChange={(event) => {
-                              handleTimeChange(event, {
-                                value: field.value as Date | undefined | null,
-                                onChange: (value: Date) => {
-                                  field.onChange(value);
-                                },
-                              });
-                            }}
+                          <DateTimePicker
+                            value={field.value as string | null}
+                            onChange={field.onChange}
                           />
                         </FormControl>
                         <FormMessage />

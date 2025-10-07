@@ -70,7 +70,7 @@ export const CALENDAR_EVENT_METADATA: Record<
       },
       {
         key: "location",
-        label: "Miejsce",
+        label: "Lokalizacja",
         icon: <Pin />,
         getValue: (event: CalendarEvent) => event.location,
         isVisible: (event: CalendarEvent) => hasValue(event.location),

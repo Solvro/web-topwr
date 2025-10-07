@@ -89,19 +89,18 @@ export function Calendar({ clickable = false, resource }: Props) {
   const startDayOfWeek = (firstDayOfMonth.getDay() + 6) % 7;
 
   const totalCells = startDayOfWeek + currentDisplayedMonth.daysInMonth;
-  const calendarDays = Array.from({ length: totalCells }, (_, index) => {
-    if (index < startDayOfWeek) {
-      return {
-        type: "empty",
-        id: `empty-${displayedYear.toString()}-${displayedMonth.toString()}-${index.toString()}`,
-      }; // Empty cell before month starts
-    }
-    return {
-      type: "day",
-      id: index - startDayOfWeek + 1,
-      day: index - startDayOfWeek + 1,
-    }; // Current day number
-  });
+  const calendarDays = Array.from({ length: totalCells }, (_, index) =>
+    index < startDayOfWeek
+      ? {
+          type: "empty",
+          id: `empty-${displayedYear.toString()}-${displayedMonth.toString()}-${index.toString()}`,
+        }
+      : {
+          type: "day",
+          id: index - startDayOfWeek + 1,
+          day: index - startDayOfWeek + 1,
+        },
+  );
 
   const getEventsForDay = (day: number) => {
     return events.filter((event) => {
@@ -115,10 +114,8 @@ export function Calendar({ clickable = false, resource }: Props) {
   };
 
   const handleEventClick = (event: CalendarEvent) => {
-    if (!clickable) {
-      setSelectedEvent(event);
-      setIsEventDetailsModalOpen(true);
-    }
+    setSelectedEvent(event);
+    setIsEventDetailsModalOpen(true);
   };
 
   return (

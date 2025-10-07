@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import type { DetailField } from "@/types/calendar";
 
 interface Props<T> {
@@ -75,10 +76,7 @@ export function AbstractDetailsModal<T>({
             }
 
             return (
-              <div
-                key={field.key}
-                className={`space-y-2 ${field.className ?? ""}`}
-              >
+              <div key={field.key} className={cn("space-y-2", field.className)}>
                 <div className="flex text-sm font-medium text-gray-700">
                   {field.icon !== null && (
                     <span className="mr-1">{field.icon}</span>
