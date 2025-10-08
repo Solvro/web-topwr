@@ -32,6 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
@@ -116,6 +117,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
   const {
     imageInputs = [],
     textInputs = [],
+    textareaInputs = [],
     richTextInputs = [],
     dateInputs = [],
     colorInputs = [],
@@ -179,7 +181,26 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     )}
                   />
                 ))}
-
+                {textareaInputs.map((input) => (
+                  <FormField
+                    key={input.name}
+                    control={form.control}
+                    name={input.name}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{input.label}</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            className="bg-background placeholder:text-foreground shadow-none"
+                            {...field}
+                            value={(field.value ?? "") as string}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
                 <div className="flex flex-wrap gap-4">
                   {dateInputs.map((input) => (
                     <FormField
