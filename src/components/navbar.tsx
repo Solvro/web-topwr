@@ -30,7 +30,7 @@ export function Navbar() {
   }
 
   return (
-    <nav className="">
+    <nav>
       <div className="container mx-auto flex flex-row items-center justify-between">
         <Link href="/" passHref className="w-32 p-4">
           <Image src={LogoToPWR} alt="logo ToPWR" className="h-auto w-full" />

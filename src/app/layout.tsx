@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
 import type { ReactNode } from "react";
 
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
 
 import "./globals.css";
 
@@ -27,8 +29,12 @@ export default function RootLayout({
     <html lang="en">
       <Providers>
         <body
-          className={`${space_grotesk.variable} flex h-screen flex-col overflow-auto font-sans antialiased`}
+          className={cn(
+            "flex h-screen flex-col overflow-auto font-sans antialiased",
+            space_grotesk.variable,
+          )}
         >
+          <NextTopLoader color="var(--color-primary)" />
           <Toaster position="top-right" />
           {children}
         </body>

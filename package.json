@@ -62,6 +62,7 @@
     "lucide-react": "^0.487.0",
     "next": "15.2.4",
     "next-themes": "^0.4.6",
+    "nextjs-toploader": "^3.9.17",
     "radix-ui": "^1.4.3",
     "react": "^19.0.0",
     "react-day-picker": "^9.10.0",
