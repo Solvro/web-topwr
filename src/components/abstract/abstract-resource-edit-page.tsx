@@ -1,30 +1,11 @@
-import { toast } from "sonner";
+import { notFound } from "next/navigation";
 
-import { TOAST_MESSAGES } from "@/config/constants";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
 import type { ResourceDataType, ResourceEditPageProps } from "@/types/app";
 
 import { AbstractResourceForm } from "./resource-form";
-
-async function fetchResource<T extends Resource>(
-  resource: T,
-  id: string,
-): Promise<ResourceDataType<T> | null> {
-  const declensions = declineNoun(resource);
-  try {
-    const response = await fetchQuery<{ data: ResourceDataType<T> }>(
-      sanitizeId(id),
-      { resource },
-    );
-    return response.data;
-  } catch {
-    toast.error(TOAST_MESSAGES.object(declensions).read.error);
-    return null;
-  }
-}
 
 export async function AbstractResourceEditPage({
   resource,
@@ -33,7 +14,16 @@ export async function AbstractResourceEditPage({
   resource: Resource;
 }) {
   const { id } = await params;
-  const resourceData = await fetchResource(resource, id);
+  let resourceData: ResourceDataType<Resource> | null = null;
+  try {
+    const response = await fetchQuery<{ data: ResourceDataType<Resource> }>(
+      sanitizeId(id),
+      { resource },
+    );
+    resourceData = response.data;
+  } catch {
+    return notFound();
+  }
 
   return (
     <AbstractResourceForm resource={resource} defaultValues={resourceData} />

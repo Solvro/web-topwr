@@ -128,22 +128,20 @@ export function AbstractResourceFormInternal<T extends Resource>({
     <div className="mx-auto flex h-full flex-col">
       <Form {...form}>
         <form
+          className="flex grow flex-col gap-4"
           onSubmit={form.handleSubmit((values) =>
             toast.promise(
               mutateAsync(values),
               TOAST_MESSAGES.object(declensions).modify,
             ),
           )}
-          className="flex grow flex-col space-y-4"
         >
-          <div className="grow basis-[0] overflow-y-auto">
-            <div className="bg-background-secondary flex min-h-full flex-col space-y-4 space-x-4 rounded-xl p-4 md:flex-row">
-              {imageInputs.map((input) => (
-                <div
-                  key={input.label}
-                  className="flex w-full flex-col space-y-4 md:w-48"
-                >
+          <div className="grow overflow-y-auto">
+            <div className="bg-background-secondary flex min-h-full flex-col gap-4 rounded-xl p-4 md:flex-row">
+              <div className="space-y-4">
+                {imageInputs.map((input) => (
                   <FormField
+                    key={input.name}
                     control={form.control}
                     name={input.name}
                     render={({ field }) => (
@@ -157,8 +155,8 @@ export function AbstractResourceFormInternal<T extends Resource>({
                       </FormItem>
                     )}
                   />
-                </div>
-              ))}
+                ))}
+              </div>
 
               <div className="flex w-full flex-col space-y-4">
                 {textInputs.map((input) => (
@@ -220,7 +218,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                             editorContentClassName="p-5"
                             output="html"
                             placeholder="Enter your description..."
-                            autofocus
                             editable
                             editorClassName="focus:outline-hidden"
                           />
