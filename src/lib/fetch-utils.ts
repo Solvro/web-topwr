@@ -3,24 +3,33 @@ import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resources";
 import { getAuthState } from "@/stores/auth";
 import type { ErrorResponse, SuccessResponse } from "@/types/api";
+import type { ResourceRelations } from "@/types/app";
 
-interface BaseRequestOptions
+import { removeLeadingSlash } from "./helpers";
+
+interface BaseRequestOptions<T extends Resource>
   extends Omit<RequestInit, "headers" | "method" | "body"> {
   headers?: Record<string, string>;
   accessTokenOverride?: string;
-  resource?: Resource;
+  resource?: T;
 }
-interface QueryRequestOptions extends BaseRequestOptions {
+interface QueryRequestOptions<T extends Resource>
+  extends BaseRequestOptions<T> {
   method?: "GET";
   body?: never;
+  relations?: ResourceRelations<T>[];
 }
 
-interface MutationRequestOptions extends BaseRequestOptions {
+interface MutationRequestOptions<T extends Resource>
+  extends BaseRequestOptions<T> {
   method?: "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
+  relations?: never;
 }
 
-type FetchRequestOptions = QueryRequestOptions | MutationRequestOptions;
+type FetchRequestOptions<T extends Resource> =
+  | QueryRequestOptions<T>
+  | MutationRequestOptions<T>;
 
 const isAbsolutePath = (url: string) => /^https?:\/\//.test(url);
 
@@ -75,9 +84,23 @@ async function handleResponse<T>(response: Response): Promise<NonNullable<T>> {
 
 const getAccessToken = () => getAuthState()?.accessToken;
 
-function createRequest(
+const getResourceEndpointPrefix = (resource: Resource | undefined) =>
+  resource == null ? "" : `${RESOURCE_METADATA[resource].apiPath}/`;
+
+const getRelationQueryParameters = (relations: string[]): string =>
+  relations.length === 0
+    ? ""
+    : `?${new URLSearchParams(relations.map((relation) => [relation, "true"])).toString()}`;
+
+function createRequest<T extends Resource>(
   endpoint: string,
-  { accessTokenOverride, resource, body, ...options }: FetchRequestOptions,
+  {
+    accessTokenOverride,
+    resource,
+    body,
+    relations = [],
+    ...options
+  }: FetchRequestOptions<T>,
 ): Request {
   function setHeader(key: string, value?: string) {
     if (value == null) {
@@ -92,7 +115,7 @@ function createRequest(
 
   const url = isAbsolutePath(endpoint)
     ? endpoint
-    : `${API_URL}/${resource == null ? "" : `${RESOURCE_METADATA[resource].apiPath}/`}${endpoint.replace(/^\/+/, "")}`;
+    : `${API_URL}/${getResourceEndpointPrefix(resource)}${removeLeadingSlash(endpoint)}${getRelationQueryParameters(relations)}`;
 
   const token = accessTokenOverride ?? getAccessToken();
   const isMultipart = body instanceof FormData;
@@ -114,16 +137,16 @@ function createRequest(
 }
 
 /** Prepares, sends and handles a fetch request based on the provided options. */
-const executeFetch = async <T>(
+const executeFetch = async <T, R extends Resource>(
   endpoint: string,
-  options: FetchRequestOptions,
+  options: FetchRequestOptions<R>,
 ): Promise<NonNullable<T>> =>
   handleResponse<T>(await fetch(createRequest(endpoint, options)));
 
 /** Performs a cached GET request on the API. */
-export const fetchQuery = async <T>(
+export const fetchQuery = async <T, R extends Resource = Resource>(
   endpoint: string,
-  options: QueryRequestOptions = {},
+  options: QueryRequestOptions<R> = {},
 ): Promise<NonNullable<T>> =>
   executeFetch(endpoint, {
     next: { revalidate: 60 },
@@ -132,9 +155,9 @@ export const fetchQuery = async <T>(
   });
 
 /** Performs a non-GET request on the API. */
-export const fetchMutation = async <T>(
+export const fetchMutation = async <T, R extends Resource = Resource>(
   endpoint: string,
-  options: MutationRequestOptions = {},
+  options: MutationRequestOptions<R> = {},
 ): Promise<NonNullable<T>> =>
   executeFetch(endpoint, {
     method: "POST",

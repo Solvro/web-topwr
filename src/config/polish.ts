@@ -1,9 +1,5 @@
-import type {
-  Declensions,
-  DeclinableSimpleNoun,
-  Pluralized,
-  RecordIntersection,
-} from "@/types/app";
+import type { Declensions, DeclinableSimpleNoun } from "@/types/app";
+import type { Pluralized, RecordIntersection } from "@/types/helpers";
 
 import { GrammaticalGender, Resource } from "./enums";
 

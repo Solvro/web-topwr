@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-import { isoTimestamp, timestampNumber } from "@/lib/helpers";
+import { isoTimestamp, numericId, timestampNumber } from "@/lib/helpers";
 
 export const UserSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: numericId(),
     fullName: z.string().nullable(),
     email: z.string().email(),
     createdAt: isoTimestamp(),
