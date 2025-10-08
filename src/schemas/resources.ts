@@ -3,12 +3,30 @@ import { z } from "zod";
 import { FORM_ERROR_MESSAGES } from "@/config/constants";
 import {
   DepartmentIds,
+  LinkType,
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
+  RelatedResource,
   Resource,
 } from "@/config/enums";
-import { colorField, isoTimestamp, requiredString } from "@/lib/helpers";
+import {
+  colorField,
+  isoTimestamp,
+  numericId,
+  requiredString,
+} from "@/lib/helpers";
+import type { AppZodObject } from "@/types/app";
+
+const StudentOrganizationLinkSchema = z.object({
+  linkType: z.nativeEnum(LinkType),
+  link: requiredString().url(),
+  studentOrganizationId: numericId(),
+});
+
+const StudentOrganizationTagSchema = z.object({
+  tag: requiredString(),
+});
 
 const StudentOrganizationSchema = z.object({
   name: requiredString(),
@@ -64,9 +82,14 @@ const BannerSchema = z.object({
   shouldRender: z.boolean().default(false),
 });
 
+export const RELATED_RESOURCE_SCHEMAS = {
+  [RelatedResource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
+  [RelatedResource.StudentOrganizationTags]: StudentOrganizationTagSchema,
+} satisfies Record<RelatedResource, AppZodObject>;
+
 export const RESOURCE_SCHEMAS = {
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
   [Resource.CalendarEvents]: EventCalendarSchema,
   [Resource.Banners]: BannerSchema,
-} satisfies Record<Resource, z.ZodSchema>;
+} satisfies Record<Resource, AppZodObject>;
