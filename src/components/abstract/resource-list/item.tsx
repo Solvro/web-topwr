@@ -1,6 +1,7 @@
 import type { ComponentType, Ref } from "react";
 
 import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
+import { Badge } from "@/components/ui/badge";
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resources";
 import type { ListItem, ResourceDataType } from "@/types/app";
@@ -28,10 +29,13 @@ export function AbstractResourceListItem<T extends Resource>({
   return (
     <li
       ref={ref}
-      className="bg-background-secondary grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[12rem_1fr_auto] md:gap-x-4 xl:grid-cols-[20rem_1fr_auto]"
+      className="bg-background-secondary grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[1fr_2fr_auto] md:gap-x-4"
     >
-      <div className="flex h-full items-center">
-        {orderable ? <DragHandle item={listItem} /> : null}
+      <div className="flex items-center gap-4">
+        <div className="flex flex-col items-center gap-1 sm:flex-row sm:gap-2">
+          {orderable ? <DragHandle item={listItem} /> : null}
+          <Badge>{listItem.id}</Badge>
+        </div>
         <span className="w-full font-medium md:text-center">
           {listItem.name}
         </span>

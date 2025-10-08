@@ -206,10 +206,7 @@ export const RESOURCE_METADATA: {
           { name: "textColor", label: "Kolor tekstu" },
           { name: "backgroundColor", label: "Kolor tła" },
         ],
-        checkboxInputs: [
-          { name: "draft", label: "Wersja robocza" },
-          { name: "shouldRender", label: "Wyświetlaj użytkownikom" },
-        ],
+        checkboxInputs: [{ name: "draft", label: "Wersja robocza" }],
       },
       defaultValues: {
         title: "",

@@ -1,7 +1,7 @@
 "use client";
 
 import type { VariantProps } from "class-variance-authority";
-import { Trash2 } from "lucide-react";
+import { Shredder, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -23,7 +23,6 @@ import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import { cn } from "@/lib/utils";
 import type { MessageResponse } from "@/types/api";
 
 export function DeleteButtonWithDialog({
@@ -64,10 +63,8 @@ export function DeleteButtonWithDialog({
       <DialogTrigger asChild>
         <Button
           variant={variant}
-          className={cn(
-            "text-destructive hover:text-destructive h-10 w-10",
-            variant === "destructive" && "text-accent hover:text-accent",
-          )}
+          className="text-destructive hover:text-destructive/90"
+          size="sm"
           aria-label={`Usuń ${declensions.accusative}`}
         >
           <Trash2 />
@@ -97,6 +94,7 @@ export function DeleteButtonWithDialog({
             loading={isPending}
             disabled={isSuccess}
           >
+            <Shredder />
             Usuń
           </Button>
           <DialogTrigger asChild>
