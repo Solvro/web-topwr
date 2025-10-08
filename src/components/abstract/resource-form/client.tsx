@@ -160,7 +160,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                   />
                 ))}
               </div>
-
               <div className="w-full space-y-4">
                 {textInputs.map((input) => (
                   <FormField

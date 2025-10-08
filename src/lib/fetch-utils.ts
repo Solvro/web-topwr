@@ -2,6 +2,7 @@ import { API_URL } from "@/config/constants";
 import type { Resource } from "@/config/enums";
 import { getAuthState } from "@/stores/auth";
 import type { ErrorResponse, SuccessResponse } from "@/types/api";
+import type { ResourceRelations } from "@/types/app";
 
 import { removeLeadingSlash } from "./helpers";
 import { getResourceMetadata } from "./helpers/app";
@@ -16,12 +17,14 @@ interface QueryRequestOptions<T extends Resource>
   extends BaseRequestOptions<T> {
   method?: "GET";
   body?: never;
+  relations?: ResourceRelations<T>[];
 }
 
 interface MutationRequestOptions<T extends Resource>
   extends BaseRequestOptions<T> {
   method?: "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
+  relations?: never;
 }
 
 type FetchRequestOptions<T extends Resource> =
@@ -84,9 +87,20 @@ const getAccessToken = () => getAuthState()?.accessToken;
 const getResourceEndpointPrefix = (resource: Resource | undefined) =>
   resource == null ? "" : `${getResourceMetadata(resource).apiPath}/`;
 
+const getRelationQueryParameters = (relations: string[]): string =>
+  relations.length === 0
+    ? ""
+    : `?${new URLSearchParams(relations.map((relation) => [relation, "true"])).toString()}`;
+
 function createRequest<T extends Resource>(
   endpoint: string,
-  { accessTokenOverride, resource, body, ...options }: FetchRequestOptions<T>,
+  {
+    accessTokenOverride,
+    resource,
+    body,
+    relations = [],
+    ...options
+  }: FetchRequestOptions<T>,
 ): Request {
   function setHeader(key: string, value?: string) {
     if (value == null) {
@@ -101,7 +115,7 @@ function createRequest<T extends Resource>(
 
   const url = isAbsolutePath(endpoint)
     ? endpoint
-    : `${API_URL}/${getResourceEndpointPrefix(resource)}${removeLeadingSlash(endpoint)}`;
+    : `${API_URL}/${getResourceEndpointPrefix(resource)}${removeLeadingSlash(endpoint)}${getRelationQueryParameters(relations)}`;
 
   const token = accessTokenOverride ?? getAccessToken();
   const isMultipart = body instanceof FormData;

@@ -6,6 +6,7 @@ import {
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
+  RelatedResource,
   Resource,
 } from "./enums";
 
@@ -140,14 +141,18 @@ export const RESOURCE_METADATA = {
         coverKey: null,
         description: null,
         shortDescription: null,
-        coverPreview: false, // pojęcia nie mam co to jest, te organizacje co są już w bazie mają to w 99% przypadków na false
+        coverPreview: false, // czy używać covera jako zdjęcie podglądowe zamiast logo
         source: OrganizationSource.Manual,
         organizationType: OrganizationType.ScientificClub,
         organizationStatus: OrganizationStatus.Active,
         isStrategic: false,
-        branch: "main", // ????? wymagane ale w bazie jest zawsze 'main'
+        branch: "main", // filia/oddział Politechniki
       },
     },
+    relations: {
+      [RelatedResource.StudentOrganizationLinks]: { name: "links" },
+      [RelatedResource.StudentOrganizationTags]: { name: "tags", pk: "tag" },
+    } as const,
   },
   [Resource.Banners]: {
     apiPath: "banners",

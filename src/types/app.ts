@@ -3,17 +3,21 @@ import type { DefaultValues } from "react-hook-form";
 import type { z } from "zod";
 
 import type { ERROR_CODES } from "@/config/constants";
-import type { DeclensionCase, Resource } from "@/config/enums";
+import type { DeclensionCase, RelatedResource, Resource } from "@/config/enums";
 import type {
   DETERMINER_DECLENSIONS,
   NOUN_PHRASE_TRANSFORMATIONS,
   SIMPLE_NOUN_DECLENSIONS,
 } from "@/config/polish";
-import type { ORDERABLE_RESOURCES } from "@/config/resources";
-import type { RESOURCE_SCHEMAS } from "@/schemas";
+import type {
+  ORDERABLE_RESOURCES,
+  RESOURCE_METADATA,
+} from "@/config/resources";
+import type { RELATED_RESOURCE_SCHEMAS, RESOURCE_SCHEMAS } from "@/schemas";
 
 import type { DatedResource } from "./api";
 import type { AbstractResourceFormInputs } from "./forms";
+import type { ValueOf } from "./helpers";
 
 // Data types
 export type Id = string | number;
@@ -34,8 +38,21 @@ export type ResourceDataType<T extends Resource> = DatedResource &
 export type ResourceDefaultValues<R extends Resource> = ResourceFormValues<R> &
   DefaultValues<ResourceFormValues<R> | ResourceDataType<R>>;
 
+// Relations
+type RelatedResourceSchema<T extends RelatedResource> =
+  (typeof RELATED_RESOURCE_SCHEMAS)[T];
+type RelatedResourceFormValues<T extends RelatedResource> = z.infer<
+  RelatedResourceSchema<T>
+>;
+export type ResourceRelations<T extends Resource> =
+  ((typeof RESOURCE_METADATA)[T] extends {
+    relations: infer R;
+  }
+    ? ValueOf<R>
+    : never)["name"];
+
 // Resource metadata
-export type ResourceMetadata<R extends Resource> = Readonly<{
+export interface ResourceMetadata<R extends Resource> {
   /** A mapping of the client-side resources to their paths in the backend API. */
   apiPath: string;
   /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */
@@ -46,7 +63,16 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
     /** The default values to be used in the form for the resource. */
     defaultValues: ResourceDefaultValues<R>;
   };
-}>;
+  /** Configuration for related resources, if any. */
+  relations?: {
+    [L in RelatedResource]?: {
+      /** The name of the query param used to fetch the related resource from the API. */
+      readonly name: string;
+      /** The primary key field in the related resource schema, if not `"id"`. */
+      readonly pk?: keyof RelatedResourceFormValues<L>;
+    };
+  };
+}
 
 // Polish grammar
 export type Declensions = Record<DeclensionCase, string>;
