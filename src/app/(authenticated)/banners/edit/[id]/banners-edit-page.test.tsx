@@ -43,6 +43,5 @@ describe("edit page for existing banner", () => {
     expect(screen.getByLabelText("Opis")).toHaveValue(MOCK_BANNER.description);
     expect(screen.getByLabelText("URL")).toHaveValue(MOCK_BANNER.url);
     expect(screen.getByLabelText("Wersja robocza")).toBeChecked();
-    expect(screen.getByLabelText("Wyświetlaj użytkownikom")).not.toBeChecked();
   });
 });

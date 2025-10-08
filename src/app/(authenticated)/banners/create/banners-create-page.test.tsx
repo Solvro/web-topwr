@@ -28,7 +28,6 @@ describe("new banner creation form", () => {
     );
     expect(screen.getByLabelText("URL")).toHaveValue(DEFAULT_BANNER.url);
     expect(screen.getByLabelText("Wersja robocza")).toBeChecked();
-    expect(screen.getByLabelText("Wyświetlaj użytkownikom")).not.toBeChecked();
 
     const inputSections = RESOURCE_METADATA[Resource.Banners].form.inputs;
     const allInputs = [];

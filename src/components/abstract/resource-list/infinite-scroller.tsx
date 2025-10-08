@@ -62,12 +62,13 @@ export function InfiniteScroller<T extends Resource>({
       ) : (
         <AbstractResourceListItems items={flatData} resource={resource} />
       )}
-      <div className="flex justify-center">
+      <div className="mt-4 flex justify-center">
         <Button
           ref={ref}
           onClick={() => void fetchNextPage()}
           disabled={!hasNextPage}
           loading={isFetchingNextPage}
+          variant="secondary"
         >
           {hasNextPage
             ? "Załaduj więcej"
