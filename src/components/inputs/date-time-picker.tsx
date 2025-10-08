@@ -4,9 +4,14 @@ import { format } from "date-fns";
 import { Clock } from "lucide-react";
 import type { ChangeEvent } from "react";
 
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 
 import { DatePicker } from "./date-picker";
+import { InputRow } from "./input-row";
 
 export function DateTimePicker({
   value,
@@ -59,20 +64,19 @@ export function DateTimePicker({
   };
 
   return (
-    <div className="flex gap-2">
+    <InputRow>
       <DatePicker value={value} onChange={handleDateChange} />
-      <div className="flex items-end">
-        <div className="relative">
-          <Clock className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-          <Input
-            type="time"
-            step="1"
-            value={date === undefined ? "00:00:00" : format(date, "HH:mm:ss")}
-            className="bg-background w-34 appearance-none pl-10 [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-            onChange={handleTimeChange}
-          />
-        </div>
-      </div>
-    </div>
+      <InputGroup className="w-fit min-w-34">
+        <InputGroupAddon>
+          <Clock className="text-muted-foreground" />
+        </InputGroupAddon>
+        <InputGroupInput
+          type="time"
+          step="1"
+          value={date === undefined ? "00:00:00" : format(date, "HH:mm:ss")}
+          onChange={handleTimeChange}
+        />
+      </InputGroup>
+    </InputRow>
   );
 }

@@ -1,13 +1,12 @@
 import { SquarePen } from "lucide-react";
 import Link from "next/link";
 
+import { Button } from "@/components/ui/button";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { Id } from "@/types/app";
-
-import { Button } from "../ui/button";
 
 export function EditButton({ resource, id }: { resource: Resource; id: Id }) {
   const resourceAccusative = declineNoun(resource, {

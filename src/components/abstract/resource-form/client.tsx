@@ -13,6 +13,7 @@ import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";
 import { DateTimePicker } from "@/components/inputs/date-time-picker";
 import { ImageUpload } from "@/components/inputs/image-upload";
+import { OptionalInputRow } from "@/components/inputs/input-row";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -120,10 +121,10 @@ export function AbstractResourceFormInternal<T extends Resource>({
     textareaInputs = [],
     richTextInputs = [],
     dateInputs = [],
+    datetimeInputs = [],
     colorInputs = [],
     selectInputs = [],
     checkboxInputs = [],
-    datePickerInputs: timeInputs = [],
   } = metadata.form.inputs;
 
   return (
@@ -201,8 +202,9 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     )}
                   />
                 ))}
-                <div className="flex flex-wrap gap-4">
-                  {dateInputs.map((input) => (
+                <OptionalInputRow
+                  inputs={dateInputs}
+                  mapper={(input) => (
                     <FormField
                       key={input.name}
                       control={form.control}
@@ -218,10 +220,27 @@ export function AbstractResourceFormInternal<T extends Resource>({
                         </FormItem>
                       )}
                     />
-                  ))}
-                </div>
-
-                {/* // TODO: rich text editor */}
+                  )}
+                />
+                {datetimeInputs.map((input) => (
+                  <FormField
+                    key={input.name}
+                    control={form.control}
+                    name={input.name}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{input.label}</FormLabel>
+                        <FormControl>
+                          <DateTimePicker
+                            value={field.value as string | null}
+                            onChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
                 {richTextInputs.map((input) => (
                   <FormField
                     key={input.name}
@@ -248,9 +267,9 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     )}
                   />
                 ))}
-
-                <div className="flex flex-wrap gap-4">
-                  {colorInputs.map((input) => (
+                <OptionalInputRow
+                  inputs={colorInputs}
+                  mapper={(input) => (
                     <FormField
                       key={input.name}
                       control={form.control}
@@ -268,11 +287,12 @@ export function AbstractResourceFormInternal<T extends Resource>({
                         </FormItem>
                       )}
                     />
-                  ))}
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                  {selectInputs.map((input) => (
+                  )}
+                />
+                <OptionalInputRow
+                  className="grid grid-cols-1 lg:grid-cols-2"
+                  inputs={selectInputs}
+                  mapper={(input) => (
                     <FormField
                       key={input.name}
                       control={form.control}
@@ -307,9 +327,8 @@ export function AbstractResourceFormInternal<T extends Resource>({
                         </FormItem>
                       )}
                     />
-                  ))}
-                </div>
-
+                  )}
+                />
                 {checkboxInputs.map((input) => (
                   <FormField
                     key={input.name}
@@ -325,26 +344,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                             onCheckedChange={(checked) => {
                               field.onChange(Boolean(checked));
                             }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-
-                {timeInputs.map((input) => (
-                  <FormField
-                    key={input.name}
-                    control={form.control}
-                    name={input.name}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{input.label}</FormLabel>
-                        <FormControl>
-                          <DateTimePicker
-                            value={field.value as string | null}
-                            onChange={field.onChange}
                           />
                         </FormControl>
                         <FormMessage />

@@ -194,7 +194,7 @@ export const RESOURCE_METADATA: {
           { name: "url", label: "URL" },
         ],
         textareaInputs: [{ name: "description", label: "Opis" }],
-        dateInputs: [
+        datetimeInputs: [
           { name: "visibleFrom", label: "Data rozpoczęcia" },
           { name: "visibleUntil", label: "Data zakończenia" },
         ],
@@ -232,7 +232,7 @@ export const RESOURCE_METADATA: {
           { name: "location", label: "Lokalizacja" },
           { name: "description", label: "Opis wydarzenia" },
         ],
-        datePickerInputs: [
+        datetimeInputs: [
           { name: "startTime", label: "Czas rozpoczęcia" },
           { name: "endTime", label: "Czas zakończenia" },
         ],
