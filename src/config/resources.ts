@@ -1,10 +1,8 @@
-import type { DefaultValues } from "react-hook-form";
-
 import { getFutureDate } from "@/lib/helpers/calendar";
 import type {
-  ListItem,
-  ResourceDataType,
-  ResourceFormValues,
+  ListItemMapper,
+  RelatedResourceFormValues,
+  ResourceDefaultValues,
 } from "@/types/app";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 
@@ -13,6 +11,7 @@ import {
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
+  RelatedResource,
   Resource,
 } from "./enums";
 
@@ -66,28 +65,19 @@ export const ORDERABLE_RESOURCES = [
   Resource.GuideArticles,
 ] satisfies Resource[];
 
-/**
- * Metadata for each resource.
- *
- * apiPath - A mapping of the client-side resources to their paths in the backend API.
- *           Currently they are the same, but this allows for flexibility in the website paths.
- *
- * form.inputs - The inputs to be used in the form for the resource.
- *
- * form.defaultValues - The default values to be used in the form for the resource.
- *
- */
-export const RESOURCE_METADATA: {
-  [R in Resource]: {
-    apiPath: string;
-    itemMapper: (item: ResourceDataType<R>) => Omit<ListItem, "id">;
-    form: {
-      inputs: AbstractResourceFormInputs<R>;
-      defaultValues: ResourceFormValues<R> &
-        DefaultValues<ResourceFormValues<R> | ResourceDataType<R>>;
-    };
-  };
-} = {
+interface RelationConfiguration<L extends RelatedResource> {
+  /** The name of the query param used to fetch the related resource from the API. */
+  readonly name: string;
+  /** The primary key field in the related resource schema, if not `"id"`. */
+  readonly pk?: keyof RelatedResourceFormValues<L>;
+}
+
+export type RelationConfigurations = {
+  [L in RelatedResource]?: RelationConfiguration<L>;
+};
+
+/** Required metadata for each resource. */
+export const RESOURCE_METADATA = {
   [Resource.GuideArticles]: {
     apiPath: "guide_articles",
     itemMapper: (item) => ({
@@ -97,12 +87,10 @@ export const RESOURCE_METADATA: {
     form: {
       inputs: {
         imageInputs: [{ label: "Zdjęcie", name: "imageKey" }],
-
         textInputs: [
           { name: "title", label: "Tytuł" },
           { name: "shortDesc", label: "Krótki opis" },
         ],
-
         richTextInputs: [{ name: "description", label: "Opis" }],
       },
       defaultValues: {
@@ -171,14 +159,18 @@ export const RESOURCE_METADATA: {
         coverKey: null,
         description: null,
         shortDescription: null,
-        coverPreview: false, // pojęcia nie mam co to jest, te organizacje co są już w bazie mają to w 99% przypadków na false
+        coverPreview: false, // czy używać covera jako zdjęcie podglądowe zamiast logo
         source: OrganizationSource.Manual,
         organizationType: OrganizationType.ScientificClub,
         organizationStatus: OrganizationStatus.Active,
         isStrategic: false,
-        branch: "main", // ????? wymagane ale w bazie jest zawsze 'main'
+        branch: "main", // filia/oddział Politechniki
       },
     },
+    relations: {
+      [RelatedResource.StudentOrganizationLinks]: { name: "links" },
+      [RelatedResource.StudentOrganizationTags]: { name: "tags", pk: "tag" },
+    } as const,
   },
   [Resource.Banners]: {
     apiPath: "banners",
@@ -246,4 +238,19 @@ export const RESOURCE_METADATA: {
       },
     },
   },
+} satisfies {
+  [R in Resource]: {
+    /** A mapping of the client-side resources to their paths in the backend API. */
+    apiPath: string;
+    /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */
+    itemMapper: ListItemMapper<R>;
+    form: {
+      /** The inputs to be used in the form for the resource. */
+      inputs: AbstractResourceFormInputs<R>;
+      /** The default values to be used in the form for the resource. */
+      defaultValues: ResourceDefaultValues<R>;
+    };
+    /** Configuration for related resources, if any. */
+    relations?: RelationConfigurations;
+  };
 };

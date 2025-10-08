@@ -102,9 +102,6 @@ describe("OrderableItemWrapper for AbstractResourceList", () => {
     const { screen, draggableItems } = renderOrderableList();
     for (const item of MOCK_DATA) {
       const mappedData = RESOURCE_METADATA[resource].itemMapper(item);
-      if (mappedData.name == null || mappedData.shortDescription == null) {
-        expect.fail(`item with id ${String(item.id)} has nullish fields`);
-      }
       expect(screen.getByText(mappedData.name)).toBeInTheDocument();
       expect(screen.getByText(mappedData.shortDescription)).toBeInTheDocument();
     }
@@ -137,10 +134,10 @@ describe("OrderableItemWrapper for AbstractResourceList", () => {
     const reorderedItems = screen.getAllByRole("listitem");
     expect(reorderedItems).toHaveLength(MOCK_DATA.length);
     expect(reorderedItems[0]).toHaveTextContent(
-      RESOURCE_METADATA[resource].itemMapper(MOCK_DATA[1]).name ?? "",
+      RESOURCE_METADATA[resource].itemMapper(MOCK_DATA[1]).name,
     );
     expect(reorderedItems[1]).toHaveTextContent(
-      RESOURCE_METADATA[resource].itemMapper(MOCK_DATA[0]).name ?? "",
+      RESOURCE_METADATA[resource].itemMapper(MOCK_DATA[0]).name,
     );
   });
 });
