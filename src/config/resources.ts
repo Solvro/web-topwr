@@ -126,11 +126,8 @@ export const RESOURCE_METADATA: {
           { label: "Baner", name: "coverKey" },
         ],
 
-        textInputs: [
-          { name: "name", label: "Nazwa" },
-          { name: "shortDescription", label: "Krótki opis" },
-        ],
-
+        textInputs: [{ name: "name", label: "Nazwa" }],
+        textareaInputs: [{ name: "shortDescription", label: "Krótki opis" }],
         richTextInputs: [{ name: "description", label: "Opis" }],
 
         selectInputs: [
@@ -194,9 +191,9 @@ export const RESOURCE_METADATA: {
       inputs: {
         textInputs: [
           { name: "title", label: "Tytuł" },
-          { name: "description", label: "Opis" },
           { name: "url", label: "URL" },
         ],
+        textareaInputs: [{ name: "description", label: "Opis" }],
         dateInputs: [
           { name: "visibleFrom", label: "Data rozpoczęcia" },
           { name: "visibleUntil", label: "Data zakończenia" },

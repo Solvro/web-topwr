@@ -48,6 +48,7 @@ interface FormInputBase<
 interface FormImageInput<T extends Resource> extends FormInputBase<T> {}
 
 interface FormTextInput<T extends Resource> extends FormInputBase<T> {}
+interface FormTextareaInput<T extends Resource> extends FormInputBase<T> {}
 
 interface FormDateInput<T extends Resource> extends FormInputBase<T> {}
 
@@ -73,6 +74,7 @@ interface FormCheckboxInput<T extends Resource>
 export interface AbstractResourceFormInputs<T extends Resource> {
   imageInputs?: FormImageInput<T>[];
   textInputs?: FormTextInput<T>[];
+  textareaInputs?: FormTextareaInput<T>[];
   dateInputs?: FormDateInput<T>[];
   richTextInputs?: FormRichTextInput<T>[];
   colorInputs?: FormColorInput<T>[];
