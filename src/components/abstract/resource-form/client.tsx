@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
@@ -41,10 +42,12 @@ import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import { getResourceMetadata } from "@/lib/helpers/app";
+import { fetchBelongsToInputOptions } from "@/lib/helpers/forms";
 import { declineNoun } from "@/lib/polish";
 import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { ModifyResourceResponse } from "@/types/api";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
+import type { BelongsToInputsSelectOptions } from "@/types/forms";
 
 import type { ExistingImages } from ".";
 
@@ -125,7 +128,14 @@ export function AbstractResourceFormInternal<T extends Resource>({
     colorInputs = [],
     selectInputs = [],
     checkboxInputs = [],
+    belongsToInputs = [],
   } = metadata.form.inputs;
+
+  const [belongsToOptions, setBelongsToOptions] =
+    useState<BelongsToInputsSelectOptions>({});
+  useEffect(() => {
+    void fetchBelongsToInputOptions(belongsToInputs).then(setBelongsToOptions);
+  }, [belongsToInputs]);
 
   return (
     <div className="mx-auto flex h-full flex-col">
@@ -328,6 +338,61 @@ export function AbstractResourceFormInternal<T extends Resource>({
                       )}
                     />
                   )}
+                />
+                <OptionalInputRow
+                  className="grid grid-cols-1 lg:grid-cols-2"
+                  inputs={belongsToInputs}
+                  mapper={(input) => {
+                    return (
+                      <FormField
+                        key={input.name}
+                        control={form.control}
+                        name={input.name}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{input.label}</FormLabel>
+                            <Select
+                              value={
+                                field.value != null &&
+                                !Number.isNaN(field.value)
+                                  ? String(field.value)
+                                  : ""
+                              }
+                              onValueChange={(value) => {
+                                field.onChange(
+                                  Number.isNaN(Number.parseInt(value))
+                                    ? value
+                                    : Number.parseInt(value),
+                                );
+                              }}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="bg-background w-full shadow-none">
+                                  <SelectValue
+                                    placeholder={input.placeholder}
+                                  />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="border-input">
+                                {(Array.isArray(belongsToOptions[input.name])
+                                  ? belongsToOptions[input.name]
+                                  : []
+                                ).map((option) => (
+                                  <SelectItem
+                                    key={option.value}
+                                    value={String(option.value)}
+                                  >
+                                    {option.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    );
+                  }}
                 />
                 {checkboxInputs.map((input) => (
                   <FormField

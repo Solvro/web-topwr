@@ -2,13 +2,19 @@ import { z } from "zod";
 
 import { FORM_ERROR_MESSAGES } from "@/config/constants";
 import {
+  ChangeType,
   DepartmentIds,
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
   Resource,
 } from "@/config/enums";
-import { colorField, isoTimestamp, requiredString } from "@/lib/helpers";
+import {
+  colorField,
+  isoTimestamp,
+  numericId,
+  requiredString,
+} from "@/lib/helpers";
 
 const StudentOrganizationSchema = z.object({
   name: requiredString(),
@@ -64,9 +70,27 @@ const BannerSchema = z.object({
   shouldRender: z.boolean().default(false),
 });
 
+const VersionsSchema = z.object({
+  name: requiredString(),
+  description: z.string().nullish(),
+  releaseDate: requiredString().datetime(),
+  milestoneId: z.number(),
+});
+
+const ChangesSchema = z.object({
+  name: requiredString(),
+  description: requiredString(),
+  versionId: numericId(),
+  type: z.nativeEnum(ChangeType, {
+    required_error: FORM_ERROR_MESSAGES.REQUIRED,
+  }),
+});
+
 export const RESOURCE_SCHEMAS = {
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
   [Resource.CalendarEvents]: EventCalendarSchema,
   [Resource.Banners]: BannerSchema,
+  [Resource.Versions]: VersionsSchema,
+  [Resource.Changes]: ChangesSchema,
 } satisfies Record<Resource, z.ZodSchema>;

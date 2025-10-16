@@ -3,6 +3,8 @@ export enum Resource {
   StudentOrganizations = "student_organizations",
   Banners = "banners",
   CalendarEvents = "calendar_events",
+  Versions = "versions",
+  Changes = "changes",
 }
 
 export enum OrganizationType {
@@ -24,6 +26,11 @@ export enum OrganizationStatus {
   Inactive = "inactive",
   Dissolved = "dissolved",
   Unknown = "unknown",
+}
+
+export enum ChangeType {
+  Feature = "FEATURE",
+  Fix = "FIX",
 }
 
 //from https://api.topwr.solvro.pl/api/v1/departments

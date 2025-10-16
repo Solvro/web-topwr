@@ -5,6 +5,7 @@ import {
   BookOpen,
   Building,
   Calendar,
+  FolderClock,
   Megaphone,
   RefreshCcw,
 } from "lucide-react";
@@ -47,6 +48,8 @@ export default function Home() {
           variant="outline"
         />
         <DashboardButton resource={Resource.CalendarEvents} icon={Calendar} />
+        <DashboardButton resource={Resource.Versions} icon={FolderClock} />
+        <DashboardButton resource={Resource.Changes} icon={FolderClock} />
       </div>
     </div>
   );
