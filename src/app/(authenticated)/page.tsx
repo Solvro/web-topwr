@@ -5,6 +5,7 @@ import {
   BookOpen,
   Building,
   Calendar,
+  FolderClock,
   Megaphone,
   RefreshCcw,
   University,
@@ -55,6 +56,7 @@ export default function Home() {
           icon={Calendar}
           variant="outline"
         />
+        <DashboardButton resource={Resource.Versions} icon={FolderClock} />
       </div>
     </div>
   );

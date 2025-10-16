@@ -198,6 +198,48 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "kierunki",
     },
   },
+  [Resource.Versions]: {
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "wersja",
+      genitive: "wersji",
+      dative: "wersji",
+      accusative: "wersję",
+      instrumental: "wersją",
+      locative: "wersji",
+      vocative: "wersjo",
+    },
+    plural: {
+      nominative: "wersje",
+      genitive: "wersji",
+      dative: "wersjom",
+      accusative: "wersje",
+      instrumental: "wersjami",
+      locative: "wersjach",
+      vocative: "wersje",
+    },
+  },
+  [Resource.Changes]: {
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "zmiana",
+      genitive: "zmiany",
+      dative: "zmianie",
+      accusative: "zmianę",
+      instrumental: "zmianą",
+      locative: "zmianie",
+      vocative: "zmiano",
+    },
+    plural: {
+      nominative: "zmiany",
+      genitive: "zmian",
+      dative: "zmianom",
+      accusative: "zmiany",
+      instrumental: "zmianami",
+      locative: "zmianach",
+      vocative: "zmiany",
+    },
+  },
   image: {
     gender: GrammaticalGender.Neuter,
     singular: {

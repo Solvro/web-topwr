@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { FORM_ERROR_MESSAGES } from "@/config/constants";
 import {
+  ChangeType,
   LinkType,
   OrganizationSource,
   OrganizationStatus,
@@ -108,6 +109,22 @@ const MajorSchema = z.object({
   departmentId: numericId(),
 });
 
+const VersionsSchema = z.object({
+  name: requiredString(),
+  description: z.string().nullish(),
+  releaseDate: requiredString().datetime(),
+  milestoneId: z.number(),
+});
+
+const ChangesSchema = z.object({
+  name: requiredString(),
+  description: requiredString(),
+  versionId: numericId(),
+  type: z.nativeEnum(ChangeType, {
+    required_error: FORM_ERROR_MESSAGES.REQUIRED,
+  }),
+});
+
 export const RESOURCE_SCHEMAS = {
   [Resource.Banners]: BannerSchema,
   [Resource.CalendarEvents]: CalendarEventSchema,
@@ -118,4 +135,6 @@ export const RESOURCE_SCHEMAS = {
   [Resource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
   [Resource.StudentOrganizationTags]: StudentOrganizationTagSchema,
   [Resource.Majors]: MajorSchema,
+  [Resource.Versions]: VersionsSchema,
+  [Resource.Changes]: ChangesSchema,
 } satisfies Record<Resource, AppZodObject>;

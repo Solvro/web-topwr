@@ -16,6 +16,8 @@ const REQUIRED_ROUTE_PERMISSIONS: Record<string, string[] | undefined> = {
   [`/${Resource.Departments}`]: ["user", "admin"],
   [`/${Resource.GuideArticles}`]: ["user", "admin"],
   [`/${Resource.StudentOrganizations}`]: ["user", "admin"],
+  [`/${Resource.Versions}`]: ["user", "admin"],
+  [`/${Resource.Changes}`]: ["user", "admin"],
   "/change_review": ["admin"],
 };
 

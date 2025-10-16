@@ -2,6 +2,7 @@ import { getFutureDate } from "@/lib/helpers/calendar";
 import type { ResourceMetadata } from "@/types/app";
 
 import {
+  ChangeType,
   GuideAuthorRole,
   LinkType,
   OrganizationSource,
@@ -50,6 +51,12 @@ const SELECT_OPTION_LABELS = {
       [LinkType.X]: "X (dawniej Twitter)",
       [LinkType.Twitch]: "Twitch",
     } satisfies Record<LinkType, string>,
+  },
+  CHANGES: {
+    TYPE: {
+      [ChangeType.Feature]: "Funkcjonalność",
+      [ChangeType.Fix]: "Fix",
+    },
   },
   MAJORS: {
     STUDIES_TYPE: {
@@ -363,6 +370,52 @@ export const RESOURCE_METADATA = {
         studiesType: StudiesType.FirstDegree,
         hasWeekendOption: false,
         departmentId: -1,
+      },
+    },
+  },
+  [Resource.Versions]: {
+    apiPath: "versions",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.description,
+    }),
+    form: {
+      inputs: {
+        textInputs: { name: { label: "Nazwa wersji" } },
+        textareaInputs: { name: { label: "Opis wersji" } },
+        dateInputs: { name: { label: "Data" } },
+      },
+      defaultValues: {
+        name: "",
+        description: null,
+        releaseDate: new Date().toISOString(),
+        milestoneId: 3, // placeholder // TODO
+      },
+    },
+  },
+  [Resource.Changes]: {
+    apiPath: "changes",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.description,
+    }),
+    form: {
+      inputs: {
+        textInputs: { name: { label: "Nazwa zmiany" } },
+        textareaInputs: { name: { label: "Opis zmiany" } },
+        selectInputs: {
+          type: {
+            label: "Typ",
+            optionEnum: ChangeType,
+            optionLabels: SELECT_OPTION_LABELS.CHANGES.TYPE,
+          },
+        },
+      },
+      defaultValues: {
+        name: "",
+        description: "",
+        versionId: Number.NaN,
+        type: ChangeType.Feature,
       },
     },
   },
