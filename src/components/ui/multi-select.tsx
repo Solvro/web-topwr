@@ -1040,7 +1040,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
             <Command>
               {searchable && (
                 <CommandInput
-                  placeholder="Search options..."
+                  placeholder="Wyszukaj opcję..."
                   onKeyDown={handleInputKeyDown}
                   value={searchValue}
                   onValueChange={setSearchValue}
@@ -1205,7 +1205,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                           onSelect={handleClear}
                           className="flex-1 cursor-pointer justify-center"
                         >
-                          Clear
+                          Wyczyść
                         </CommandItem>
                         <Separator
                           orientation="vertical"
@@ -1217,7 +1217,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                       onSelect={() => setIsPopoverOpen(false)}
                       className="max-w-full flex-1 cursor-pointer justify-center"
                     >
-                      Close
+                      Zamknij
                     </CommandItem>
                   </div>
                 </CommandGroup>

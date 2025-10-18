@@ -1,5 +1,5 @@
 import { getFutureDate } from "@/lib/helpers/calendar";
-import type { ResourceMetadata } from "@/types/app";
+import type { RelationConfiguration, ResourceMetadata } from "@/types/app";
 
 import {
   DepartmentIds,
@@ -60,6 +60,25 @@ export const ORDERABLE_RESOURCES = [
   Resource.GuideArticles,
 ] satisfies Resource[];
 
+export const RELATED_RESOURCE_METADATA = {
+  [RelatedResource.GuideAuthors]: {
+    name: "guideAuthors",
+    apiPath: "guide_authors",
+    displayField: "name",
+  },
+  [RelatedResource.StudentOrganizationLinks]: {
+    name: "links",
+    apiPath: "student_organization_links",
+    displayField: "link",
+  },
+  [RelatedResource.StudentOrganizationTags]: {
+    name: "tags",
+    pk: "tag",
+    apiPath: "student_organization_tags",
+    displayField: "tag",
+  },
+} as const satisfies { [L in RelatedResource]: RelationConfiguration<L> };
+
 /** Required metadata for each resource. */
 export const RESOURCE_METADATA = {
   [Resource.GuideArticles]: {
@@ -79,11 +98,7 @@ export const RESOURCE_METADATA = {
         },
         richTextInputs: { description: { label: "Opis" } },
         relationInputs: {
-          [RelatedResource.GuideAuthors]: {
-            name: "guideAuthors",
-            apiPath: "guide_authors",
-            displayField: "name",
-          },
+          [RelatedResource.GuideAuthors]: true,
         },
       },
       defaultValues: {
@@ -139,17 +154,8 @@ export const RESOURCE_METADATA = {
           isStrategic: { label: "Czy jest kołem strategicznym?" },
         },
         relationInputs: {
-          [RelatedResource.StudentOrganizationLinks]: {
-            name: "links",
-            apiPath: "student_organization_links",
-            displayField: "link",
-          },
-          [RelatedResource.StudentOrganizationTags]: {
-            name: "tags",
-            pk: "tag",
-            apiPath: "student_organization_tags",
-            displayField: "tag",
-          },
+          [RelatedResource.StudentOrganizationLinks]: true,
+          [RelatedResource.StudentOrganizationTags]: true,
         },
       },
       defaultValues: {

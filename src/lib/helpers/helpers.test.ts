@@ -9,6 +9,7 @@ import {
   getUserDisplayName,
   removeTrailingSlash,
   sanitizeId,
+  toTitleCase,
 } from ".";
 
 describe("sanitizeId function", () => {
@@ -66,5 +67,13 @@ describe("encodeQueryParameters function", () => {
     };
     const encoded = "key1=value+1&key2=value%262";
     expect(encodeQueryParameters(decoded)).toBe(encoded);
+  });
+});
+
+describe("toTitleCase function", () => {
+  it("should convert text to title case", () => {
+    expect(toTitleCase("hello world")).toBe("Hello world");
+    expect(toTitleCase("JAVA SCRIPT")).toBe("Java script");
+    expect(toTitleCase("tYpEsCrIpT")).toBe("Typescript");
   });
 });

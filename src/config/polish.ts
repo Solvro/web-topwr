@@ -1,7 +1,11 @@
-import type { Declensions, DeclinableSimpleNoun } from "@/types/app";
+import type {
+  Declensions,
+  DeclinableSimpleNoun,
+  GenericResource,
+} from "@/types/app";
 import type { Pluralized, RecordIntersection } from "@/types/helpers";
 
-import { GrammaticalGender, Resource } from "./enums";
+import { GrammaticalGender, RelatedResource, Resource } from "./enums";
 
 /** A dictionary of Polish language declensions of all resource names & other nouns, as well as their genders for use with determiners. */
 export const SIMPLE_NOUN_DECLENSIONS = {
@@ -26,6 +30,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "artykuły",
     },
   },
+  [RelatedResource.GuideAuthors]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "autor",
+      genitive: "autora",
+      dative: "autorowi",
+      accusative: "autora",
+      instrumental: "autorem",
+      locative: "autorze",
+      vocative: "autorze",
+    },
+    plural: {
+      nominative: "autorzy",
+      genitive: "autorów",
+      dative: "autorom",
+      accusative: "autorów",
+      instrumental: "autorami",
+      locative: "autorach",
+      vocative: "autorzy",
+    },
+  },
   [Resource.StudentOrganizations]: {
     gender: GrammaticalGender.Feminine,
     singular: {
@@ -45,6 +70,48 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       instrumental: "organizacjami studenckimi",
       locative: "organizacjach studenckich",
       vocative: "organizacje studenckie",
+    },
+  },
+  [RelatedResource.StudentOrganizationLinks]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "link",
+      genitive: "linku",
+      dative: "linkowi",
+      accusative: "link",
+      instrumental: "linkiem",
+      locative: "linku",
+      vocative: "linku",
+    },
+    plural: {
+      nominative: "linki",
+      genitive: "linków",
+      dative: "linkom",
+      accusative: "linki",
+      instrumental: "linkami",
+      locative: "linkach",
+      vocative: "linki",
+    },
+  },
+  [RelatedResource.StudentOrganizationTags]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "tag",
+      genitive: "tagu",
+      dative: "tagowi",
+      accusative: "tag",
+      instrumental: "tagiem",
+      locative: "tagu",
+      vocative: "tagu",
+    },
+    plural: {
+      nominative: "tagi",
+      genitive: "tagów",
+      dative: "tagom",
+      accusative: "tagi",
+      instrumental: "tagami",
+      locative: "tagach",
+      vocative: "tagi",
     },
   },
   [Resource.CalendarEvents]: {
@@ -237,7 +304,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
     },
   },
 } satisfies RecordIntersection<
-  Resource,
+  GenericResource,
   string,
   { gender: GrammaticalGender } & Pluralized<Declensions>
 >;
