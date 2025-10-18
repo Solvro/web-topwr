@@ -34,6 +34,7 @@ vi.mock("next/navigation", async (importOriginal) => {
     useSearchParams: MOCK_USE_SEARCH_PARAMS,
   } satisfies NextNavigationModule;
 });
+vi.mock("nextjs-toploader/app", () => ({ useRouter: () => MOCK_USE_ROUTER }));
 
 vi.mock("next/image", () => ({ default: MockImage }));
 vi.mock("@/lib/error-handling", { spy: true });

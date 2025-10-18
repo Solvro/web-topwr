@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
@@ -53,7 +53,7 @@ type SchemaWithOptionalId<T extends z.ZodType> = WithOptionalId<z.infer<T>>;
 
 const isExistingResourceItem = <T extends z.ZodType>(
   defaultValues?: SchemaWithOptionalId<T>,
-): defaultValues is z.infer<T> & { id: number } =>
+): defaultValues is Omit<z.infer<T>, "id"> & { id: number } =>
   defaultValues != null &&
   "id" in defaultValues &&
   defaultValues.id !== undefined &&
