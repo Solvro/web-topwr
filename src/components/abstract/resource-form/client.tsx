@@ -140,7 +140,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
             ),
           )}
         >
-          <div className="grow overflow-y-auto">
+          <div className="grow basis-0 overflow-y-auto">
             <div className="bg-background-secondary flex min-h-full flex-col gap-4 rounded-xl p-4 md:flex-row">
               <div className="space-y-4">
                 {imageInputs.map((input) => (
@@ -162,7 +162,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                 ))}
               </div>
 
-              <div className="flex w-full flex-col space-y-4">
+              <div className="w-full space-y-4">
                 {textInputs.map((input) => (
                   <FormField
                     key={input.name}
