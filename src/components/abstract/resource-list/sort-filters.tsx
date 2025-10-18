@@ -3,7 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ClassValue } from "clsx";
 import { Check } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 
