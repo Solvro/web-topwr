@@ -130,8 +130,18 @@ interface MultiSelectProps
   /**
    * Callback function triggered when the selected values change.
    * Receives an array of the new selected values.
+   * If `onOptionToggled` is provided, it will not be called when an individual option is toggled,
+   * only when the entire selection changes.
    */
   onValueChange: (value: string[]) => void;
+
+  /**
+   * Callback function triggered when an individual option is toggled.
+   * Receives the option value and a boolean indicating if it was removed.
+   * If provided, `onValueChange` will not be called when an individual option is toggled,
+   * only when the entire selection changes.
+   */
+  onOptionToggled?: (optionValue: string, removed: boolean) => void;
 
   /** The default selected values when the component mounts. */
   defaultValue?: string[];
@@ -318,6 +328,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
     {
       options,
       onValueChange,
+      onOptionToggled,
       variant,
       defaultValue = [],
       placeholder = "Select options",
@@ -630,11 +641,16 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       if (disabled) return;
       const option = getOptionByValue(optionValue);
       if (option?.disabled) return;
-      const newSelectedValues = selectedValues.includes(optionValue)
+      const optionRemoved = selectedValues.includes(optionValue);
+      const newSelectedValues = optionRemoved
         ? selectedValues.filter((value) => value !== optionValue)
         : [...selectedValues, optionValue];
       setSelectedValues(newSelectedValues);
-      onValueChange(newSelectedValues);
+      if (onOptionToggled == null) {
+        onValueChange(newSelectedValues);
+      } else {
+        onOptionToggled(optionValue, optionRemoved);
+      }
       if (closeOnSelect) {
         setIsPopoverOpen(false);
       }
