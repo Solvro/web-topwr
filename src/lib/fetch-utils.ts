@@ -2,10 +2,13 @@ import { API_URL } from "@/config/constants";
 import type { Resource } from "@/config/enums";
 import { getAuthState } from "@/stores/auth";
 import type { ErrorResponse, SuccessResponse } from "@/types/api";
-import type { ResourceRelations } from "@/types/app";
+import type { ResourceRelation } from "@/types/app";
 
 import { removeLeadingSlash } from "./helpers";
-import { getResourceMetadata } from "./helpers/app";
+import {
+  getResourceMetadata,
+  getResourceRelationConfigurations,
+} from "./helpers/app";
 
 interface BaseRequestOptions<T extends Resource>
   extends Omit<RequestInit, "headers" | "method" | "body"> {
@@ -17,7 +20,7 @@ interface QueryRequestOptions<T extends Resource>
   extends BaseRequestOptions<T> {
   method?: "GET";
   body?: never;
-  relations?: ResourceRelations<T>[];
+  relations?: ResourceRelation<T>[];
 }
 
 interface MutationRequestOptions<T extends Resource>
@@ -87,10 +90,16 @@ const getAccessToken = () => getAuthState()?.accessToken;
 const getResourceEndpointPrefix = (resource: Resource | undefined) =>
   resource == null ? "" : `${getResourceMetadata(resource).apiPath}/`;
 
-const getRelationQueryParameters = (relations: string[]): string =>
-  relations.length === 0
-    ? ""
-    : `?${new URLSearchParams(relations.map((relation) => [relation, "true"])).toString()}`;
+function getRelationQueryParameters<T extends Resource>(
+  resource: T | undefined,
+  relatedResources: ResourceRelation<T>[],
+): string {
+  if (resource == null || relatedResources.length === 0) {
+    return "";
+  }
+  const relations = getResourceRelationConfigurations(resource);
+  return `?${new URLSearchParams(relatedResources.map((relation) => [relations[relation].name, "true"])).toString()}`;
+}
 
 function createRequest<T extends Resource>(
   endpoint: string,
@@ -115,7 +124,7 @@ function createRequest<T extends Resource>(
 
   const url = isAbsolutePath(endpoint)
     ? endpoint
-    : `${API_URL}/${getResourceEndpointPrefix(resource)}${removeLeadingSlash(endpoint)}${getRelationQueryParameters(relations)}`;
+    : `${API_URL}/${getResourceEndpointPrefix(resource)}${removeLeadingSlash(endpoint)}${getRelationQueryParameters(resource, relations)}`;
 
   const token = accessTokenOverride ?? getAccessToken();
   const isMultipart = body instanceof FormData;
