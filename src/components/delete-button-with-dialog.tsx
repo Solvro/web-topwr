@@ -22,7 +22,7 @@ import type { Resource } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
-import { TANSTACK_KEYS } from "@/lib/helpers/query-keys";
+import { TANSTACK_KEYS } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 import type { MessageResponse } from "@/types/api";
 

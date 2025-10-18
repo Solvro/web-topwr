@@ -37,15 +37,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
-import { RESOURCE_METADATA } from "@/config/resources";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
+import { getResourceMetadata } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { ModifyResourceResponse } from "@/types/api";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
-import type { AbstractResourceFormInputs } from "@/types/forms";
 
 import type { ExistingImages } from ".";
 
@@ -115,7 +114,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
 
   const declensions = declineNoun(resource);
 
-  const metadata = RESOURCE_METADATA[resource];
+  const metadata = getResourceMetadata(resource);
   const {
     imageInputs = [],
     textInputs = [],
@@ -126,7 +125,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
     colorInputs = [],
     selectInputs = [],
     checkboxInputs = [],
-  } = metadata.form.inputs as AbstractResourceFormInputs<T>;
+  } = metadata.form.inputs;
 
   return (
     <div className="mx-auto flex h-full flex-col">
