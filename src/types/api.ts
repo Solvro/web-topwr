@@ -89,7 +89,7 @@ export interface ApiCalendarEvent {
   googleCallId: string | null;
 }
 
-export interface PaginationMetadata {
+interface PaginationMetadata {
   total: number;
   perPage: number;
   currentPage: number;

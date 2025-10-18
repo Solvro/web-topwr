@@ -1,6 +1,6 @@
 import type { DateObject } from "@/types/calendar";
 
-export function getMonthByDate(
+function getMonthByDate(
   date: Date,
   locale = "pl",
 ): { value: number; name: string; daysInMonth: number } {
@@ -41,8 +41,4 @@ export function getFutureDate(hoursAhead: number): string {
   now.setHours(now.getHours() + hoursAhead);
   now.setMinutes(0, 0, 0);
   return now.toISOString();
-}
-
-export function serializeDate(dateObject: DateObject): string {
-  return `${dateObject.year.toString()}-${dateObject.month.value.toString().padStart(2, "0")}-${dateObject.day.toString().padStart(2, "0")}`;
 }

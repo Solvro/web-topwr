@@ -1,5 +1,3 @@
-import type { ReactNode } from "react";
-
 export interface DateObject {
   year: number;
   month: {
@@ -18,14 +16,4 @@ export interface CalendarEvent {
   endTime: Date;
   location?: string;
   googleCallId?: string;
-}
-
-export interface DetailField<T> {
-  key: string;
-  label: string;
-  icon?: ReactNode;
-  getValue: (data: T) => unknown;
-  formatter?: (value: unknown) => ReactNode;
-  isVisible?: (data: T) => boolean;
-  className?: string;
 }

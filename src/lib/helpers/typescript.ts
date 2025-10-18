@@ -2,13 +2,6 @@ import type { Resource } from "@/config/enums";
 import { ORDERABLE_RESOURCES } from "@/config/resources";
 import type { OrderableResource } from "@/types/app";
 
-export function isKeyOf<T extends object, K extends string | number | symbol>(
-  key: K,
-  parentObject: T,
-): key is K & keyof T {
-  return key in parentObject;
-}
-
 export function typedEntries<T extends Record<string, unknown> | unknown[]>(
   targetObject: T,
 ): [keyof T, T[keyof T]][] {

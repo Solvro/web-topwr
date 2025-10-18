@@ -5,8 +5,7 @@ import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { WEEKDAYS } from "@/config/constants";
-import type { CalendarEventTypes } from "@/config/enums";
-import { RESOURCE_METADATA } from "@/config/resources";
+import type { Resource } from "@/config/enums";
 import { useQueryWrapper } from "@/hooks/use-query-wrapper";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { getMonthByNumberAndYear } from "@/lib/helpers/calendar";
@@ -21,12 +20,11 @@ export function Calendar({
   resource,
 }: {
   clickable?: boolean;
-  resource: CalendarEventTypes;
+  resource: Resource;
 }) {
   const currentDate = new Date();
-  const metadata = RESOURCE_METADATA[resource];
   const { data } = useQueryWrapper(`calendarEvents-${resource}`, async () =>
-    fetchQuery<{ data: ApiCalendarEvent[] }>(`/${metadata.apiPath}`),
+    fetchQuery<{ data: ApiCalendarEvent[] }>("", { resource }),
   );
   const [events, setEvents] = useState<CalendarEvent[]>([]);
 
