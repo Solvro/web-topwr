@@ -71,6 +71,14 @@ interface FormDatetimeInput<T extends Resource> extends FormInputBase<T> {}
 interface FormCheckboxInput<T extends Resource>
   extends FormInputBase<T, z.ZodBoolean> {}
 
+export interface FormBelongsToInput<T extends Resource>
+  extends FormInputBase<T, z.ZodNumber> {
+  placeholder: string;
+  relatedResource: Resource;
+  valueField: string;
+  nameField: string;
+}
+
 export interface AbstractResourceFormInputs<T extends Resource> {
   /** Image upload inputs for image key fields. */
   imageInputs?: FormImageInput<T>[];
@@ -90,4 +98,16 @@ export interface AbstractResourceFormInputs<T extends Resource> {
   selectInputs?: FormSelectInput<T>[];
   /** Checkbox input fields for boolean values. */
   checkboxInputs?: FormCheckboxInput<T>[];
+  /** Select input used for choosing parent */
+  belongsToInputs?: FormBelongsToInput<T>[];
 }
+
+interface BelongsToInputSelectOption {
+  value: number; // TODO: support different types
+  name: string;
+}
+
+export type BelongsToInputsSelectOptions = Record<
+  string,
+  BelongsToInputSelectOption[]
+>;

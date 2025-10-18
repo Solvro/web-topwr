@@ -2,6 +2,7 @@ import { getFutureDate } from "@/lib/helpers/calendar";
 import type { ResourceMetadata } from "@/types/app";
 
 import {
+  ChangeType,
   DepartmentIds,
   OrganizationSource,
   OrganizationStatus,
@@ -50,6 +51,12 @@ const SELECT_OPTION_LABELS = {
       [OrganizationStatus.Inactive]: "Nieaktywna",
       [OrganizationStatus.Dissolved]: "Rozwiązana",
       [OrganizationStatus.Unknown]: "Nieznany",
+    },
+  },
+  CHANGES: {
+    TYPE: {
+      [ChangeType.Feature]: "Funkcjonalność",
+      [ChangeType.Fix]: "Fix",
     },
   },
 };
@@ -212,6 +219,89 @@ export const RESOURCE_METADATA = {
         description: "",
         startTime: getFutureDate(1),
         endTime: getFutureDate(2),
+      },
+    },
+  },
+  [Resource.Versions]: {
+    apiPath: "versions",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.description,
+    }),
+    form: {
+      inputs: {
+        textInputs: [{ name: "name", label: "Nazwa wersji" }],
+        textareaInputs: [{ name: "description", label: "Opis wersji" }],
+        dateInputs: [{ name: "releaseDate", label: "Data" }],
+        belongsToInputs: [
+          {
+            name: "milestoneId",
+            label: "Milestone",
+            placeholder: "Wybierz milestone",
+            relatedResource: Resource.Milestones,
+            valueField: "id",
+            nameField: "name",
+          },
+        ],
+      },
+      defaultValues: {
+        name: "",
+        description: null,
+        releaseDate: new Date().toISOString(),
+        milestoneId: Number.NaN,
+      },
+    },
+  },
+  [Resource.Changes]: {
+    apiPath: "changes",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.description,
+    }),
+    form: {
+      inputs: {
+        textInputs: [{ name: "name", label: "Nazwa zmiany" }],
+        textareaInputs: [{ name: "description", label: "Opis zmiany" }],
+        belongsToInputs: [
+          {
+            name: "versionId",
+            label: "Wersja",
+            placeholder: "Wybierz wersję",
+            relatedResource: Resource.Versions,
+            valueField: "id",
+            nameField: "name",
+          },
+        ],
+        selectInputs: [
+          {
+            name: "type",
+            label: "Typ",
+            placeholder: "Wybierz typ",
+            optionEnum: ChangeType,
+            optionLabels: SELECT_OPTION_LABELS.CHANGES.TYPE,
+          },
+        ],
+      },
+      defaultValues: {
+        name: "",
+        description: "",
+        versionId: Number.NaN,
+        type: ChangeType.Feature,
+      },
+    },
+  },
+  [Resource.Milestones]: {
+    apiPath: "milestones",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: "",
+    }),
+    form: {
+      inputs: {
+        textInputs: [{ name: "name", label: "Nazwa" }],
+      },
+      defaultValues: {
+        name: "",
       },
     },
   },

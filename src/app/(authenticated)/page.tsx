@@ -5,7 +5,10 @@ import {
   BookOpen,
   Building,
   Calendar,
+  CircleFadingArrowUp,
+  FolderClock,
   Megaphone,
+  Milestone,
   RefreshCcw,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -47,6 +50,12 @@ export default function Home() {
           variant="outline"
         />
         <DashboardButton resource={Resource.CalendarEvents} icon={Calendar} />
+        <DashboardButton resource={Resource.Versions} icon={FolderClock} />
+        <DashboardButton
+          resource={Resource.Changes}
+          icon={CircleFadingArrowUp}
+        />
+        <DashboardButton resource={Resource.Milestones} icon={Milestone} />
       </div>
     </div>
   );
