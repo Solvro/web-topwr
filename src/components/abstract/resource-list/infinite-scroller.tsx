@@ -7,7 +7,7 @@ import { useInView } from "react-intersection-observer";
 import { Button } from "@/components/ui/button";
 import type { Resource } from "@/config/enums";
 import { fetchResources, isOrderableResource } from "@/lib/helpers";
-import { TANSTACK_KEYS } from "@/lib/helpers/query-keys";
+import { TANSTACK_KEYS } from "@/lib/helpers/app";
 import type { GetResourcesResponse } from "@/types/api";
 import type {
   ListSearchParameters,

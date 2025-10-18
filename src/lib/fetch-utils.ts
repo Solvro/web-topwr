@@ -1,10 +1,10 @@
 import { API_URL } from "@/config/constants";
 import type { Resource } from "@/config/enums";
-import { RESOURCE_METADATA } from "@/config/resources";
 import { getAuthState } from "@/stores/auth";
 import type { ErrorResponse, SuccessResponse } from "@/types/api";
 
 import { removeLeadingSlash } from "./helpers";
+import { getResourceMetadata } from "./helpers/app";
 
 interface BaseRequestOptions<T extends Resource>
   extends Omit<RequestInit, "headers" | "method" | "body"> {
@@ -82,7 +82,7 @@ async function handleResponse<T>(response: Response): Promise<NonNullable<T>> {
 const getAccessToken = () => getAuthState()?.accessToken;
 
 const getResourceEndpointPrefix = (resource: Resource | undefined) =>
-  resource == null ? "" : `${RESOURCE_METADATA[resource].apiPath}/`;
+  resource == null ? "" : `${getResourceMetadata(resource).apiPath}/`;
 
 function createRequest<T extends Resource>(
   endpoint: string,

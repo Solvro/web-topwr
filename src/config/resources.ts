@@ -1,6 +1,5 @@
 import { getFutureDate } from "@/lib/helpers/calendar";
-import type { ListItemMapper, ResourceDefaultValues } from "@/types/app";
-import type { AbstractResourceFormInputs } from "@/types/forms";
+import type { ResourceMetadata } from "@/types/app";
 
 import {
   DepartmentIds,
@@ -217,16 +216,5 @@ export const RESOURCE_METADATA = {
     },
   },
 } satisfies {
-  [R in Resource]: {
-    /** A mapping of the client-side resources to their paths in the backend API. */
-    apiPath: string;
-    /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */
-    itemMapper: ListItemMapper<R>;
-    form: {
-      /** The inputs to be used in the form for the resource. */
-      inputs: AbstractResourceFormInputs<R>;
-      /** The default values to be used in the form for the resource. */
-      defaultValues: ResourceDefaultValues<R>;
-    };
-  };
+  [R in Resource]: ResourceMetadata<R>;
 };
