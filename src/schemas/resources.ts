@@ -60,6 +60,10 @@ const GuideArticleSchema = z.object({
   description: requiredString(),
 });
 
+const GuideAuthorSchema = z.object({
+  name: requiredString(),
+});
+
 const EventCalendarSchema = z.object({
   name: requiredString(),
   startTime: isoTimestamp(),
@@ -85,6 +89,7 @@ const BannerSchema = z.object({
 export const RELATED_RESOURCE_SCHEMAS = {
   [RelatedResource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
   [RelatedResource.StudentOrganizationTags]: StudentOrganizationTagSchema,
+  [RelatedResource.GuideAuthors]: GuideAuthorSchema,
 } satisfies Record<RelatedResource, AppZodObject>;
 
 export const RESOURCE_SCHEMAS = {

@@ -8,6 +8,7 @@ export enum Resource {
 export enum RelatedResource {
   StudentOrganizationLinks = "student_organization_links",
   StudentOrganizationTags = "student_organization_tags",
+  GuideAuthors = "guide_authors",
 }
 
 export enum OrganizationType {
