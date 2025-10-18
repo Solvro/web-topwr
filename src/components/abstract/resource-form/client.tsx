@@ -87,6 +87,9 @@ export function AbstractResourceFormInternal<T extends Resource>({
   defaultValues: DefaultValues<ResourceDataType<T> | ResourceFormValues<T>>;
   existingImages: ExistingImages<T>;
 }) {
+  const [belongsToOptions, setBelongsToOptions] =
+    useState<BelongsToInputsSelectOptions>({});
+
   const schema = RESOURCE_SCHEMAS[resource];
   const router = useRouter();
   const form = useForm<ResourceFormValues<T>>({
@@ -131,11 +134,10 @@ export function AbstractResourceFormInternal<T extends Resource>({
     belongsToInputs = [],
   } = metadata.form.inputs;
 
-  const [belongsToOptions, setBelongsToOptions] =
-    useState<BelongsToInputsSelectOptions>({});
   useEffect(() => {
     void fetchBelongsToInputOptions(belongsToInputs).then(setBelongsToOptions);
-  }, [belongsToInputs]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="mx-auto flex h-full flex-col">
