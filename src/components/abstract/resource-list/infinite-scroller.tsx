@@ -7,6 +7,7 @@ import { useInView } from "react-intersection-observer";
 import { Button } from "@/components/ui/button";
 import type { Resource } from "@/config/enums";
 import { fetchResources, isOrderableResource } from "@/lib/helpers";
+import { TANSTACK_KEYS } from "@/lib/helpers/query-keys";
 import type { GetResourcesResponse } from "@/types/api";
 import type {
   ListSearchParameters,
@@ -30,7 +31,7 @@ export function InfiniteScroller<T extends Resource>({
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: [`${resource}-list-page`, searchParameters],
+      queryKey: [TANSTACK_KEYS.query.resourceList(resource), searchParameters],
       queryFn: async ({ pageParam }) =>
         fetchResources(resource, pageParam, searchParameters),
       initialPageParam: 1,

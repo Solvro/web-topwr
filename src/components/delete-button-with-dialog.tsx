@@ -1,8 +1,8 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import type { VariantProps } from "class-variance-authority";
 import { Shredder, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -22,6 +22,7 @@ import type { Resource } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
+import { TANSTACK_KEYS } from "@/lib/helpers/query-keys";
 import { declineNoun } from "@/lib/polish";
 import type { MessageResponse } from "@/types/api";
 
@@ -36,26 +37,34 @@ export function DeleteButtonWithDialog({
   itemName?: string;
 } & VariantProps<typeof buttonVariants>) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const router = useRouter();
 
-  const sanitizedId = sanitizeId(id);
+  const queryClient = useQueryClient();
   const { mutateAsync, isPending, isSuccess } = useMutationWrapper<
     MessageResponse,
-    null
-  >(`delete__${resource}__${sanitizedId}`, async () => {
-    const response = await fetchMutation<MessageResponse>(sanitizedId, {
-      resource,
-      method: "DELETE",
-    });
-    setIsDialogOpen(false);
-    router.refresh();
-    return response;
-  });
+    string
+  >(
+    TANSTACK_KEYS.mutation.deleteResource(resource, id),
+    async (sanitizedId) => {
+      const response = await fetchMutation<MessageResponse>(sanitizedId, {
+        resource,
+        method: "DELETE",
+      });
+      setIsDialogOpen(false);
+      await queryClient.invalidateQueries({
+        queryKey: [TANSTACK_KEYS.query.resourceList(resource)],
+        exact: false,
+      });
+      return response;
+    },
+  );
 
   const declensions = declineNoun(resource);
 
   function handleDelete() {
-    toast.promise(mutateAsync(null), TOAST_MESSAGES.object(declensions).delete);
+    toast.promise(
+      mutateAsync(sanitizeId(id)),
+      TOAST_MESSAGES.object(declensions).delete,
+    );
   }
 
   return (
