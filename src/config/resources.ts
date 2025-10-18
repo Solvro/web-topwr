@@ -1,11 +1,12 @@
 import { getFutureDate } from "@/lib/helpers/calendar";
-import type { ResourceMetadata } from "@/types/app";
+import type { RelationConfiguration, ResourceMetadata } from "@/types/app";
 
 import {
   DepartmentIds,
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
+  RelatedResource,
   Resource,
 } from "./enums";
 
@@ -59,6 +60,25 @@ export const ORDERABLE_RESOURCES = [
   Resource.GuideArticles,
 ] satisfies Resource[];
 
+export const RELATED_RESOURCE_METADATA = {
+  [RelatedResource.GuideAuthors]: {
+    name: "guideAuthors",
+    apiPath: "guide_authors",
+    displayField: "name",
+  },
+  [RelatedResource.StudentOrganizationLinks]: {
+    name: "links",
+    apiPath: "student_organization_links",
+    displayField: "link",
+  },
+  [RelatedResource.StudentOrganizationTags]: {
+    name: "tags",
+    pk: "tag",
+    apiPath: "student_organization_tags",
+    displayField: "tag",
+  },
+} as const satisfies { [L in RelatedResource]: RelationConfiguration<L> };
+
 /** Required metadata for each resource. */
 export const RESOURCE_METADATA = {
   [Resource.GuideArticles]: {
@@ -69,12 +89,17 @@ export const RESOURCE_METADATA = {
     }),
     form: {
       inputs: {
-        imageInputs: [{ label: "Zdjęcie", name: "imageKey" }],
-        textInputs: [
-          { name: "title", label: "Tytuł" },
-          { name: "shortDesc", label: "Krótki opis" },
-        ],
-        richTextInputs: [{ name: "description", label: "Opis" }],
+        imageInputs: {
+          imageKey: { label: "Zdjęcie" },
+        },
+        textInputs: {
+          title: { label: "Tytuł" },
+          shortDesc: { label: "Krótki opis" },
+        },
+        richTextInputs: { description: { label: "Opis" } },
+        relationInputs: {
+          [RelatedResource.GuideAuthors]: true,
+        },
       },
       defaultValues: {
         title: "",
@@ -92,46 +117,46 @@ export const RESOURCE_METADATA = {
     }),
     form: {
       inputs: {
-        imageInputs: [
-          { label: "Logo", name: "logoKey" },
-          { label: "Baner", name: "coverKey" },
-        ],
-        textInputs: [{ name: "name", label: "Nazwa" }],
-        textareaInputs: [{ name: "shortDescription", label: "Krótki opis" }],
-        richTextInputs: [{ name: "description", label: "Opis" }],
-        selectInputs: [
-          {
-            name: "departmentId",
+        imageInputs: {
+          logoKey: { label: "Logo" },
+          coverKey: { label: "Baner" },
+        },
+        textInputs: { name: { label: "Nazwa" } },
+        textareaInputs: { shortDescription: { label: "Krótki opis" } },
+        richTextInputs: { description: { label: "Opis" } },
+        selectInputs: {
+          departmentId: {
             label: "Wydział",
             placeholder: "Wybierz wydział",
             optionEnum: DepartmentIds,
             optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.DEPARTMENT,
           },
-          {
-            name: "source",
+          source: {
             label: "Źródło",
             placeholder: "Wybierz źródło",
             optionEnum: OrganizationSource,
             optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.SOURCE,
           },
-          {
-            name: "organizationType",
+          organizationType: {
             label: "Typ",
             placeholder: "Wybierz typ",
             optionEnum: OrganizationType,
             optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.TYPE,
           },
-          {
-            name: "organizationStatus",
+          organizationStatus: {
             label: "Status",
             placeholder: "Wybierz status",
             optionEnum: OrganizationStatus,
             optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
           },
-        ],
-        checkboxInputs: [
-          { name: "isStrategic", label: "Czy jest kołem strategicznym?" },
-        ],
+        },
+        checkboxInputs: {
+          isStrategic: { label: "Czy jest kołem strategicznym?" },
+        },
+        relationInputs: {
+          [RelatedResource.StudentOrganizationLinks]: true,
+          [RelatedResource.StudentOrganizationTags]: true,
+        },
       },
       defaultValues: {
         name: "",
@@ -140,12 +165,12 @@ export const RESOURCE_METADATA = {
         coverKey: null,
         description: null,
         shortDescription: null,
-        coverPreview: false, // pojęcia nie mam co to jest, te organizacje co są już w bazie mają to w 99% przypadków na false
+        coverPreview: false, // czy używać covera jako zdjęcie podglądowe zamiast logo
         source: OrganizationSource.Manual,
         organizationType: OrganizationType.ScientificClub,
         organizationStatus: OrganizationStatus.Active,
         isStrategic: false,
-        branch: "main", // ????? wymagane ale w bazie jest zawsze 'main'
+        branch: "main", // filia/oddział Politechniki
       },
     },
   },
@@ -158,21 +183,21 @@ export const RESOURCE_METADATA = {
     }),
     form: {
       inputs: {
-        textInputs: [
-          { name: "title", label: "Tytuł" },
-          { name: "url", label: "URL" },
-        ],
-        textareaInputs: [{ name: "description", label: "Opis" }],
-        datetimeInputs: [
-          { name: "visibleFrom", label: "Data rozpoczęcia" },
-          { name: "visibleUntil", label: "Data zakończenia" },
-        ],
-        colorInputs: [
-          { name: "titleColor", label: "Kolor tytułu" },
-          { name: "textColor", label: "Kolor tekstu" },
-          { name: "backgroundColor", label: "Kolor tła" },
-        ],
-        checkboxInputs: [{ name: "draft", label: "Wersja robocza" }],
+        textInputs: {
+          title: { label: "Tytuł" },
+          url: { label: "URL" },
+        },
+        textareaInputs: { description: { label: "Opis" } },
+        datetimeInputs: {
+          visibleFrom: { label: "Data rozpoczęcia" },
+          visibleUntil: { label: "Data zakończenia" },
+        },
+        colorInputs: {
+          titleColor: { label: "Kolor tytułu" },
+          textColor: { label: "Kolor tekstu" },
+          backgroundColor: { label: "Kolor tła" },
+        },
+        checkboxInputs: { draft: { label: "Wersja robocza" } },
       },
       defaultValues: {
         title: "",
@@ -196,15 +221,15 @@ export const RESOURCE_METADATA = {
     }),
     form: {
       inputs: {
-        textInputs: [
-          { name: "name", label: "Nazwa wydarzenia" },
-          { name: "location", label: "Lokalizacja" },
-          { name: "description", label: "Opis wydarzenia" },
-        ],
-        datetimeInputs: [
-          { name: "startTime", label: "Czas rozpoczęcia" },
-          { name: "endTime", label: "Czas zakończenia" },
-        ],
+        textInputs: {
+          name: { label: "Nazwa wydarzenia" },
+          location: { label: "Lokalizacja" },
+          description: { label: "Opis wydarzenia" },
+        },
+        datetimeInputs: {
+          startTime: { label: "Czas rozpoczęcia" },
+          endTime: { label: "Czas zakończenia" },
+        },
       },
       defaultValues: {
         name: "",

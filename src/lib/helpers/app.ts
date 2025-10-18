@@ -1,8 +1,17 @@
 import type { Resource } from "@/config/enums";
-import { RESOURCE_METADATA } from "@/config/resources";
-import type { Id, ResourceMetadata } from "@/types/app";
+import {
+  RELATED_RESOURCE_METADATA,
+  RESOURCE_METADATA,
+} from "@/config/resources";
+import type {
+  Id,
+  RelationConfiguration,
+  ResourceMetadata,
+  ResourceRelation,
+} from "@/types/app";
 
 import { sanitizeId } from "./transformations";
+import { typedEntries, typedKeys } from "./typescript";
 
 export const TANSTACK_KEYS = {
   query: {
@@ -21,3 +30,28 @@ export const TANSTACK_KEYS = {
  */
 export const getResourceMetadata = <R extends Resource>(resource: R) =>
   RESOURCE_METADATA[resource] as unknown as ResourceMetadata<R>;
+
+type RelationConfigurations<T extends Resource> = Record<
+  ResourceRelation<T>,
+  RelationConfiguration<ResourceRelation<T>>
+>;
+
+export function getResourceRelationConfigurations<T extends Resource>(
+  resource: T,
+) {
+  const metadata = RESOURCE_METADATA[resource];
+  return (
+    "relationInputs" in metadata.form.inputs
+      ? Object.fromEntries(
+          typedEntries(metadata.form.inputs.relationInputs).map(
+            ([relation]) => [relation, RELATED_RESOURCE_METADATA[relation]],
+          ),
+        )
+      : {}
+  ) as RelationConfigurations<T>;
+}
+
+export const getResourceRelations = <T extends Resource>(
+  resource: T,
+): ResourceRelation<T>[] =>
+  typedKeys(getResourceRelationConfigurations(resource));

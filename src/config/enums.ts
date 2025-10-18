@@ -5,6 +5,12 @@ export enum Resource {
   CalendarEvents = "calendar_events",
 }
 
+export enum RelatedResource {
+  StudentOrganizationLinks = "student_organization_links",
+  StudentOrganizationTags = "student_organization_tags",
+  GuideAuthors = "guide_authors",
+}
+
 export enum OrganizationType {
   ScientificClub = "scientific_club",
   StudentOrganization = "student_organization",
@@ -42,6 +48,23 @@ export enum DepartmentIds {
   ElectronicsPhotonicsAndMicrosystems = "13",
   Mathematics = "14",
   Medical = "15",
+}
+
+// from https://github.com/Solvro/backend-topwr/blob/main/app/enums/link_type.ts
+export enum LinkType {
+  TopwrBuildings = "topwr:buildings",
+  Phone = "tel",
+  Mail = "mailto:",
+  Default = "default",
+  Facebook = "facebook",
+  Instagram = "instagram",
+  Discord = "discord",
+  LinkedIn = "linkedin",
+  GitHub = "github",
+  X = "https://x.com",
+  YouTube = "youtu",
+  TikTok = "tiktok",
+  Twitch = "twitch",
 }
 
 // #region Polish language enums

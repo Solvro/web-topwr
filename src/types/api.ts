@@ -3,7 +3,7 @@ import type { z } from "zod";
 import type { Resource } from "@/config/enums";
 import type { AuthStateSchema, UserSchema } from "@/schemas";
 
-import type { ResourceDataType } from "./app";
+import type { QueriedRelations, ResourceDataType } from "./app";
 
 // Types Source: backend-topwr
 export interface MessageResponse {
@@ -109,4 +109,8 @@ export interface GetResourcesResponse<T extends Resource> {
 export interface ModifyResourceResponse<T extends Resource>
   extends MessageResponse {
   data: ResourceDataType<T>;
+}
+
+export interface GetResourceWithRelationsResponse<T extends Resource> {
+  data: ResourceDataType<T> & QueriedRelations<T>;
 }

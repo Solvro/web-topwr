@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
-import type { ResourceDataType, ResourceEditPageProps } from "@/types/app";
+import { getResourceRelations } from "@/lib/helpers/app";
+import type { GetResourceWithRelationsResponse } from "@/types/api";
+import type { ResourceEditPageProps } from "@/types/app";
 
 import { AbstractResourceForm } from "./resource-form";
 
@@ -14,12 +16,13 @@ export async function AbstractResourceEditPage({
   resource: Resource;
 }) {
   const { id } = await params;
-  let resourceData: ResourceDataType<Resource> | null = null;
+  const relations = getResourceRelations(resource);
+
+  let resourceData;
   try {
-    const response = await fetchQuery<{ data: ResourceDataType<Resource> }>(
-      sanitizeId(id),
-      { resource },
-    );
+    const response = await fetchQuery<
+      GetResourceWithRelationsResponse<Resource>
+    >(sanitizeId(id), { resource, relations });
     resourceData = response.data;
   } catch {
     return notFound();

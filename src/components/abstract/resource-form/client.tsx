@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
-import { useForm } from "react-hook-form";
+import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -13,7 +13,7 @@ import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";
 import { DateTimePicker } from "@/components/inputs/date-time-picker";
 import { ImageUpload } from "@/components/inputs/image-upload";
-import { OptionalInputRow } from "@/components/inputs/input-row";
+import { Inputs } from "@/components/inputs/input-row";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -25,7 +25,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { MinimalTiptapEditor } from "@/components/ui/minimal-tiptap";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
   SelectContent,
@@ -37,14 +39,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { RELATED_RESOURCE_METADATA } from "@/config/resources";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
-import { sanitizeId } from "@/lib/helpers";
+import { sanitizeId, toTitleCase } from "@/lib/helpers";
 import { getResourceMetadata } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { ModifyResourceResponse } from "@/types/api";
-import type { ResourceDataType, ResourceFormValues } from "@/types/app";
+import type {
+  QueriedRelations,
+  RelationConfiguration,
+  ResourceDataType,
+  ResourceFormValues,
+  ResourceRelation,
+  ResourceRelations,
+} from "@/types/app";
 
 import type { ExistingImages } from ".";
 
@@ -79,10 +89,12 @@ export function AbstractResourceFormInternal<T extends Resource>({
   resource,
   defaultValues,
   existingImages,
+  relatedResources,
 }: {
   resource: T;
   defaultValues: DefaultValues<ResourceDataType<T> | ResourceFormValues<T>>;
   existingImages: ExistingImages<T>;
+  relatedResources: ResourceRelations<T>;
 }) {
   const schema = RESOURCE_SCHEMAS[resource];
   const router = useRouter();
@@ -116,15 +128,16 @@ export function AbstractResourceFormInternal<T extends Resource>({
 
   const metadata = getResourceMetadata(resource);
   const {
-    imageInputs = [],
-    textInputs = [],
-    textareaInputs = [],
-    richTextInputs = [],
-    dateInputs = [],
-    datetimeInputs = [],
-    colorInputs = [],
-    selectInputs = [],
-    checkboxInputs = [],
+    imageInputs,
+    textInputs,
+    textareaInputs,
+    richTextInputs,
+    dateInputs,
+    datetimeInputs,
+    colorInputs,
+    selectInputs,
+    checkboxInputs,
+    relationInputs,
   } = metadata.form.inputs;
 
   return (
@@ -142,73 +155,84 @@ export function AbstractResourceFormInternal<T extends Resource>({
           <div className="grow basis-0 overflow-y-auto">
             <div className="bg-background-secondary flex min-h-full flex-col gap-4 rounded-xl p-4 md:flex-row">
               <div className="space-y-4">
-                {imageInputs.map((input) => (
-                  <FormField
-                    key={input.name}
-                    control={form.control}
-                    name={input.name}
-                    render={({ field }) => (
-                      <FormItem>
-                        <ImageUpload
-                          {...field}
-                          label={input.label}
-                          existingImage={existingImages[field.name]}
-                        />
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-              </div>
-
-              <div className="w-full space-y-4">
-                {textInputs.map((input) => (
-                  <FormField
-                    key={input.name}
-                    control={form.control}
-                    name={input.name}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{input.label}</FormLabel>
-                        <FormControl>
-                          <Input
-                            className="bg-background placeholder:text-foreground shadow-none"
-                            {...field}
-                            value={(field.value ?? "") as string}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-                {textareaInputs.map((input) => (
-                  <FormField
-                    key={input.name}
-                    control={form.control}
-                    name={input.name}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{input.label}</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            className="bg-background placeholder:text-foreground shadow-none"
-                            {...field}
-                            value={(field.value ?? "") as string}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-                <OptionalInputRow
-                  inputs={dateInputs}
-                  mapper={(input) => (
+                <Inputs
+                  inputs={imageInputs}
+                  mapper={([name, input]) => (
                     <FormField
-                      key={input.name}
+                      key={name}
                       control={form.control}
-                      name={input.name}
+                      name={name}
+                      render={({ field }) => (
+                        <FormItem>
+                          <ImageUpload
+                            {...field}
+                            label={input.label}
+                            existingImage={existingImages[field.name]}
+                          />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                />
+              </div>
+              <div className="w-full space-y-4">
+                <Inputs
+                  inputs={textInputs}
+                  mapper={([name, input]) => (
+                    <FormField
+                      key={name}
+                      control={form.control}
+                      name={name}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{input.label}</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Wpisz tekst..."
+                              className="bg-background"
+                              {...field}
+                              value={(field.value ?? "") as string}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                />
+                <Inputs
+                  inputs={textareaInputs}
+                  mapper={([name, input]) => (
+                    <FormField
+                      key={name}
+                      control={form.control}
+                      name={name}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{input.label}</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Wpisz tekst..."
+                              className="bg-background"
+                              {...field}
+                              value={(field.value ?? "") as string}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                />
+                <Inputs
+                  container
+                  inputs={dateInputs}
+                  mapper={([name, input]) => (
+                    <FormField
+                      key={name}
+                      control={form.control}
+                      name={name}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>{input.label}</FormLabel>
@@ -222,58 +246,65 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     />
                   )}
                 />
-                {datetimeInputs.map((input) => (
-                  <FormField
-                    key={input.name}
-                    control={form.control}
-                    name={input.name}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{input.label}</FormLabel>
-                        <FormControl>
-                          <DateTimePicker
-                            value={field.value as string | null}
-                            onChange={field.onChange}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-                {richTextInputs.map((input) => (
-                  <FormField
-                    key={input.name}
-                    control={form.control}
-                    name={input.name}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{input.label}</FormLabel>
-                        <FormControl>
-                          <MinimalTiptapEditor
-                            // @ts-expect-error types not matching
-                            value={field.value ?? ""}
-                            onChange={field.onChange}
-                            className="w-full"
-                            editorContentClassName="p-5"
-                            output="html"
-                            placeholder="Enter your description..."
-                            editable
-                            editorClassName="focus:outline-hidden"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-                <OptionalInputRow
-                  inputs={colorInputs}
-                  mapper={(input) => (
+                <Inputs
+                  inputs={datetimeInputs}
+                  mapper={([name, input]) => (
                     <FormField
-                      key={input.name}
+                      key={name}
                       control={form.control}
-                      name={input.name}
+                      name={name}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{input.label}</FormLabel>
+                          <FormControl>
+                            <DateTimePicker
+                              value={field.value as string | null}
+                              onChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                />
+                <Inputs
+                  inputs={richTextInputs}
+                  mapper={([name, input]) => (
+                    <FormField
+                      key={name}
+                      control={form.control}
+                      name={name}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{input.label}</FormLabel>
+                          <FormControl>
+                            <MinimalTiptapEditor
+                              // @ts-expect-error types not matching
+                              value={field.value ?? ""}
+                              onChange={field.onChange}
+                              className="w-full"
+                              editorContentClassName="p-5"
+                              output="html"
+                              placeholder="Wpisz opis..."
+                              editable
+                              editorClassName="focus:outline-hidden"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                />
+                <Inputs
+                  container
+                  inputs={colorInputs}
+                  mapper={([name, input]) => (
+                    <FormField
+                      key={name}
+                      control={form.control}
+                      name={name}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>{input.label}</FormLabel>
@@ -289,14 +320,15 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     />
                   )}
                 />
-                <OptionalInputRow
+                <Inputs
+                  container
                   className="grid grid-cols-1 lg:grid-cols-2"
                   inputs={selectInputs}
-                  mapper={(input) => (
+                  mapper={([name, input]) => (
                     <FormField
-                      key={input.name}
+                      key={name}
                       control={form.control}
-                      name={input.name}
+                      name={name}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>{input.label}</FormLabel>
@@ -311,7 +343,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                             }}
                           >
                             <FormControl>
-                              <SelectTrigger className="bg-background w-full shadow-none">
+                              <SelectTrigger className="bg-background w-full">
                                 <SelectValue placeholder={input.placeholder} />
                               </SelectTrigger>
                             </FormControl>
@@ -329,28 +361,104 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     />
                   )}
                 />
-                {checkboxInputs.map((input) => (
-                  <FormField
-                    key={input.name}
-                    control={form.control}
-                    name={input.name}
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row space-x-2">
-                        <FormLabel>{input.label}</FormLabel>
-                        <FormControl>
-                          <Checkbox
-                            checked={(field.value ?? false) as boolean}
-                            className="bg-background"
-                            onCheckedChange={(checked) => {
-                              field.onChange(Boolean(checked));
+                <Inputs
+                  inputs={checkboxInputs}
+                  mapper={([name, input]) => (
+                    <FormField
+                      key={name}
+                      control={form.control}
+                      name={name}
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row space-x-2">
+                          <FormLabel>{input.label}</FormLabel>
+                          <FormControl>
+                            <Checkbox
+                              checked={(field.value ?? false) as boolean}
+                              className="bg-background"
+                              onCheckedChange={(checked) => {
+                                field.onChange(Boolean(checked));
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                />
+                <Inputs
+                  container
+                  className="grid grid-cols-1 lg:grid-cols-2"
+                  inputs={relationInputs}
+                  mapper={([relation]) => {
+                    const resourceRelation = relation as ResourceRelation<T>;
+                    const relationData = relatedResources[resourceRelation];
+                    const config = RELATED_RESOURCE_METADATA[relation];
+                    const relationDeclined = {
+                      singular: declineNoun(relation, { plural: false }),
+                      plural: declineNoun(relation, { plural: true }),
+                    };
+                    const primaryKeyField =
+                      (config as RelationConfiguration<ResourceRelation<T>>)
+                        .pk ?? "id";
+                    const selectedValues = isExistingResourceItem(defaultValues)
+                      ? (
+                          defaultValues as unknown as ResourceDataType<T> &
+                            QueriedRelations<T>
+                        )[config.name].map((item) =>
+                          String(
+                            get(item, primaryKeyField, "unknown-select-item"),
+                          ),
+                        )
+                      : [];
+                    return (
+                      <Label
+                        asChild
+                        key={`${resource}-multiselect-${relation}`}
+                      >
+                        <div className="flex-col items-start">
+                          {toTitleCase(relationDeclined.plural.nominative)}
+                          <MultiSelect
+                            deduplicateOptions
+                            hideSelectAll
+                            placeholder={`Wybierz ${relationDeclined.singular.accusative}`}
+                            className="bg-background border-input"
+                            options={relationData.map((option, index) => {
+                              const label: string = get(
+                                option,
+                                config.displayField,
+                                "",
+                              ) as string;
+                              const value = String(
+                                get(
+                                  option,
+                                  primaryKeyField,
+                                  `item-${String(index)}`,
+                                ),
+                              );
+                              return { label, value };
+                            })}
+                            onOptionToggled={(value, removed) => {
+                              // TODO: implement on value toggled
+                              // eslint-disable-next-line no-console
+                              console.log(
+                                "option",
+                                removed ? "removed:" : "added:",
+                                value,
+                              );
                             }}
+                            onValueChange={(values) => {
+                              // TODO: implement on change
+                              // eslint-disable-next-line no-console
+                              console.log("new select values:", values);
+                            }}
+                            defaultValue={selectedValues}
                           />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
+                        </div>
+                      </Label>
+                    );
+                  }}
+                />
               </div>
             </div>
           </div>
