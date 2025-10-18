@@ -86,6 +86,10 @@ const ChangesSchema = z.object({
   }),
 });
 
+const MilestonesSchema = z.object({
+  name: requiredString(),
+});
+
 export const RESOURCE_SCHEMAS = {
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
@@ -93,4 +97,5 @@ export const RESOURCE_SCHEMAS = {
   [Resource.Banners]: BannerSchema,
   [Resource.Versions]: VersionsSchema,
   [Resource.Changes]: ChangesSchema,
+  [Resource.Milestones]: MilestonesSchema,
 } satisfies Record<Resource, z.ZodSchema>;

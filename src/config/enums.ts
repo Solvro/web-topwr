@@ -5,6 +5,7 @@ export enum Resource {
   CalendarEvents = "calendar_events",
   Versions = "versions",
   Changes = "changes",
+  Milestones = "milestones",
 }
 
 export enum OrganizationType {

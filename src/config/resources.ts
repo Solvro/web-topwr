@@ -233,12 +233,22 @@ export const RESOURCE_METADATA = {
         textInputs: [{ name: "name", label: "Nazwa wersji" }],
         textareaInputs: [{ name: "description", label: "Opis wersji" }],
         dateInputs: [{ name: "releaseDate", label: "Data" }],
+        belongsToInputs: [
+          {
+            name: "milestoneId",
+            label: "Milestone",
+            placeholder: "Wybierz milestone",
+            relatedResource: Resource.Milestones,
+            valueField: "id",
+            nameField: "name",
+          },
+        ],
       },
       defaultValues: {
         name: "",
         description: null,
         releaseDate: new Date().toISOString(),
-        milestoneId: 3, // placeholder // TODO
+        milestoneId: Number.NaN,
       },
     },
   },
@@ -277,6 +287,21 @@ export const RESOURCE_METADATA = {
         description: "",
         versionId: Number.NaN,
         type: ChangeType.Feature,
+      },
+    },
+  },
+  [Resource.Milestones]: {
+    apiPath: "milestones",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: "",
+    }),
+    form: {
+      inputs: {
+        textInputs: [{ name: "name", label: "Nazwa" }],
+      },
+      defaultValues: {
+        name: "",
       },
     },
   },
