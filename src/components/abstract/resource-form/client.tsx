@@ -438,6 +438,15 @@ export function AbstractResourceFormInternal<T extends Resource>({
                               );
                               return { label, value };
                             })}
+                            onOptionToggled={(value, removed) => {
+                              // TODO: implement on value toggled
+                              // eslint-disable-next-line no-console
+                              console.log(
+                                "option",
+                                removed ? "removed:" : "added:",
+                                value,
+                              );
+                            }}
                             onValueChange={(values) => {
                               // TODO: implement on change
                               // eslint-disable-next-line no-console
