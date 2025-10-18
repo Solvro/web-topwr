@@ -31,5 +31,5 @@ jobs:
         if: always()
 
       - name: Run unit tests
-        run: npx vitest run --passWithNoTests
+        run: npm run test:once
         if: always()
