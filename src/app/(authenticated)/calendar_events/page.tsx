@@ -1,6 +1,6 @@
 import { Calendar } from "@/components/calendar";
-import { CalendarEventTypes } from "@/config/enums";
+import { Resource } from "@/config/enums";
 
 export default function CalendarPage() {
-  return <Calendar clickable resource={CalendarEventTypes.CalendarEvents} />;
+  return <Calendar clickable resource={Resource.CalendarEvents} />;
 }

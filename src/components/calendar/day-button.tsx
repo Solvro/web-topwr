@@ -3,7 +3,7 @@ import type { KeyboardEvent, MouseEvent } from "react";
 
 import { Button } from "@/components/ui/button";
 import { CALENDAR_MAX_EVENTS_PER_DAY } from "@/config/constants";
-import type { CalendarEventTypes } from "@/config/enums";
+import type { Resource } from "@/config/enums";
 import { cn } from "@/lib/utils";
 import type { CalendarEvent, DateObject } from "@/types/calendar";
 
@@ -20,7 +20,7 @@ export function DayBlock({
   day: number;
   today: DateObject;
   clickable: boolean;
-  resource: CalendarEventTypes;
+  resource: Resource;
   currentDate: Date;
   events?: CalendarEvent[];
   onDayClick?: () => void;

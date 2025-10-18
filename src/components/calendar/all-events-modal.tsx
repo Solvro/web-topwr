@@ -6,7 +6,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Resource } from "@/config/enums";
-import type { CalendarEventTypes } from "@/config/enums";
 import type { CalendarEvent } from "@/types/calendar";
 
 import { CreateButton } from "../abstract/create-button";
@@ -22,7 +21,7 @@ export function AllEventsModal({
   isOpen,
   onOpenChange,
 }: {
-  resource: CalendarEventTypes;
+  resource: Resource;
   events: CalendarEvent[];
   day: number;
   month: { name: string; value: number };
