@@ -72,13 +72,22 @@ interface FormCheckboxInput<T extends Resource>
   extends FormInputBase<T, z.ZodBoolean> {}
 
 export interface AbstractResourceFormInputs<T extends Resource> {
+  /** Image upload inputs for image key fields. */
   imageInputs?: FormImageInput<T>[];
+  /** Standard text input fields. */
   textInputs?: FormTextInput<T>[];
+  /** Resizable longer text input fields. */
   textareaInputs?: FormTextareaInput<T>[];
+  /** Date input fields, without time. */
   dateInputs?: FormDateInput<T>[];
-  richTextInputs?: FormRichTextInput<T>[];
-  colorInputs?: FormColorInput<T>[];
-  selectInputs?: FormSelectInput<T>[];
-  checkboxInputs?: FormCheckboxInput<T>[];
+  /** Date and time input fields. */
   datetimeInputs?: FormDatetimeInput<T>[];
+  /** Rich text editor input for HTML string fields. */
+  richTextInputs?: FormRichTextInput<T>[];
+  /** Color picker input fields for HEX string fields. */
+  colorInputs?: FormColorInput<T>[];
+  /** Select input fields for dropdowns. */
+  selectInputs?: FormSelectInput<T>[];
+  /** Checkbox input fields for boolean values. */
+  checkboxInputs?: FormCheckboxInput<T>[];
 }

@@ -9,11 +9,12 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "next lint",
-    "preflight": "npm run format && npm run lint && npm run typecheck && npm run test && npm run build",
+    "preflight": "npm run format && npm run lint && npm run typecheck && npm run test:once && npm run build",
     "prepare": "husky || true",
     "start": "next start",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage --passWithNoTests",
+    "test:coverage": "vitest run --coverage",
+    "test:once": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "lint-staged": {

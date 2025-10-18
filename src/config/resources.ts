@@ -1,11 +1,5 @@
-import type { DefaultValues } from "react-hook-form";
-
 import { getFutureDate } from "@/lib/helpers/calendar";
-import type {
-  ListItem,
-  ResourceDataType,
-  ResourceFormValues,
-} from "@/types/app";
+import type { ListItemMapper, ResourceDefaultValues } from "@/types/app";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 
 import {
@@ -66,28 +60,8 @@ export const ORDERABLE_RESOURCES = [
   Resource.GuideArticles,
 ] satisfies Resource[];
 
-/**
- * Metadata for each resource.
- *
- * apiPath - A mapping of the client-side resources to their paths in the backend API.
- *           Currently they are the same, but this allows for flexibility in the website paths.
- *
- * form.inputs - The inputs to be used in the form for the resource.
- *
- * form.defaultValues - The default values to be used in the form for the resource.
- *
- */
-export const RESOURCE_METADATA: {
-  [R in Resource]: {
-    apiPath: string;
-    itemMapper: (item: ResourceDataType<R>) => Omit<ListItem, "id">;
-    form: {
-      inputs: AbstractResourceFormInputs<R>;
-      defaultValues: ResourceFormValues<R> &
-        DefaultValues<ResourceFormValues<R> | ResourceDataType<R>>;
-    };
-  };
-} = {
+/** Required metadata for each resource. */
+export const RESOURCE_METADATA = {
   [Resource.GuideArticles]: {
     apiPath: "guide_articles",
     itemMapper: (item) => ({
@@ -97,12 +71,10 @@ export const RESOURCE_METADATA: {
     form: {
       inputs: {
         imageInputs: [{ label: "Zdjęcie", name: "imageKey" }],
-
         textInputs: [
           { name: "title", label: "Tytuł" },
           { name: "shortDesc", label: "Krótki opis" },
         ],
-
         richTextInputs: [{ name: "description", label: "Opis" }],
       },
       defaultValues: {
@@ -125,11 +97,9 @@ export const RESOURCE_METADATA: {
           { label: "Logo", name: "logoKey" },
           { label: "Baner", name: "coverKey" },
         ],
-
         textInputs: [{ name: "name", label: "Nazwa" }],
         textareaInputs: [{ name: "shortDescription", label: "Krótki opis" }],
         richTextInputs: [{ name: "description", label: "Opis" }],
-
         selectInputs: [
           {
             name: "departmentId",
@@ -246,4 +216,17 @@ export const RESOURCE_METADATA: {
       },
     },
   },
+} satisfies {
+  [R in Resource]: {
+    /** A mapping of the client-side resources to their paths in the backend API. */
+    apiPath: string;
+    /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */
+    itemMapper: ListItemMapper<R>;
+    form: {
+      /** The inputs to be used in the form for the resource. */
+      inputs: AbstractResourceFormInputs<R>;
+      /** The default values to be used in the form for the resource. */
+      defaultValues: ResourceDefaultValues<R>;
+    };
+  };
 };

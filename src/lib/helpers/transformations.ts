@@ -1,12 +1,13 @@
 import type { Id } from "@/types/app";
 
-export function sanitizeId(id: Id): string {
-  return String(id).trim().replaceAll(/[^\d]/g, "");
-}
+export const sanitizeId = (id: Id): string =>
+  String(id).trim().replaceAll(/[^\d]/g, "");
 
-export function removeTrailingSlash(path: string): string {
-  return path.replace(/\/+$/, "");
-}
+export const removeTrailingSlash = (path: string): string =>
+  path.replace(/\/+$/, "");
+
+export const removeLeadingSlash = (path: string): string =>
+  path.replace(/^\/+/, "");
 
 /** This needs to be used instead of encodeURIComponent for requests made to the backend because it cannot parse '%20' as space, only the plus symbol. */
 export const encodeQueryComponent = (value: string) =>

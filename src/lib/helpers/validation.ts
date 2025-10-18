@@ -8,7 +8,9 @@ export const requiredString = () =>
     .trim()
     .min(1, { message: FORM_ERROR_MESSAGES.NONEMPTY });
 
-export const timestampNumber = () => z.number().int().positive();
+const positiveInteger = () => z.number().int().positive();
+export const timestampNumber = () => positiveInteger();
+export const numericId = () => positiveInteger();
 
 export const isoTimestamp = () => z.string().datetime({ offset: true });
 

@@ -4,7 +4,7 @@ import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { Badge } from "@/components/ui/badge";
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resources";
-import type { ListItem, ResourceDataType } from "@/types/app";
+import type { ListItem, ListItemMapper, ResourceDataType } from "@/types/app";
 
 import { EditButton } from "../edit-button";
 import { DragHandle } from "./drag-handle";
@@ -22,9 +22,10 @@ export function AbstractResourceListItem<T extends Resource>({
   resource,
   orderable = false,
 }: ItemProps<T>) {
+  const mapper = RESOURCE_METADATA[resource].itemMapper as ListItemMapper<T>;
   const listItem: ListItem = {
     id: item.id,
-    ...RESOURCE_METADATA[resource].itemMapper(item),
+    ...mapper(item),
   };
   return (
     <li

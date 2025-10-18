@@ -1,3 +1,4 @@
+import type { DefaultValues } from "react-hook-form";
 import type { z } from "zod";
 
 import type { ERROR_CODES } from "@/config/constants";
@@ -12,6 +13,9 @@ import type { RESOURCE_SCHEMAS } from "@/schemas";
 import type { DatedResource } from "./api";
 
 export type Id = string | number;
+export type ListItemMapper<R extends Resource> = (
+  item: ResourceDataType<R>,
+) => Omit<ListItem, "id">;
 
 export type OrderableResource = (typeof ORDERABLE_RESOURCES)[number];
 export type ResourceSchema<T extends Resource> = (typeof RESOURCE_SCHEMAS)[T];
@@ -19,6 +23,8 @@ export type ResourceFormValues<T extends Resource> = z.infer<ResourceSchema<T>>;
 export type ResourceDataType<T extends Resource> = DatedResource &
   ResourceFormValues<T> &
   (T extends OrderableResource ? { id: Id; order: number } : { id: Id });
+export type ResourceDefaultValues<R extends Resource> = ResourceFormValues<R> &
+  DefaultValues<ResourceFormValues<R> | ResourceDataType<R>>;
 
 export interface ListItem {
   id: Id;
@@ -46,10 +52,6 @@ export interface ListSearchParameters {
   searchTerm?: string;
 }
 
-export interface Pluralized<T extends Record<string, unknown>> {
-  singular: T;
-  plural: { [K in keyof T]: T[K] };
-}
 export type Declensions = Record<DeclensionCase, string>;
 
 export type DeclinableSimpleNoun = keyof typeof SIMPLE_NOUN_DECLENSIONS;
@@ -57,18 +59,6 @@ export type DeclinableNounPhrase = keyof typeof NOUN_PHRASE_TRANSFORMATIONS;
 export type DeclinableNoun = DeclinableSimpleNoun | DeclinableNounPhrase;
 
 export type AppZodObject = z.ZodObject<z.ZodRawShape>;
-
-/**
- * A record which must contain all keys from type K and all keys from type J.
- * Useful when combining a record of a specific type and a record of strings,
- * which prevents the string keys from absorbing the specific type keys
- * due to them being more generic.
- */
-export type RecordIntersection<
-  K extends string | number | symbol,
-  J extends string | number | symbol,
-  V,
-> = Record<K, V> & Record<J, V>;
 
 /** Extracts from the fields of a resource only those which have defined translations and declinations in Polish. */
 export type ResourceDeclinableField<T extends Resource> =
