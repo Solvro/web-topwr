@@ -2,6 +2,16 @@
   "name": "web-topwr",
   "version": "1.0.0",
   "private": true,
+  "homepage": "https://solvro.pwr.edu.pl/portfolio/to-pwr/",
+  "bugs": {
+    "url": "https://github.com/Solvro/web-topwr/issues",
+    "email": "kn.solvro@pwr.edu.pl"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Solvro/web-topwr.git"
+  },
+  "license": "AGPL-3.0-only",
   "type": "module",
   "scripts": {
     "build": "next build",
