@@ -240,6 +240,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "zmiany",
     },
   },
+  [Resource.Milestones]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "milestone",
+      genitive: "milestone'u",
+      dative: "milestone'owi",
+      accusative: "milestone",
+      instrumental: "milestone'em",
+      locative: "milestone'ie",
+      vocative: "milestone'ie",
+    },
+    plural: {
+      nominative: "milestone'y",
+      genitive: "milestone'ów",
+      dative: "milestone'om",
+      accusative: "milestone'y",
+      instrumental: "milestone'ami",
+      locative: "milestone'ach",
+      vocative: "milestone'y",
+    },
+  },
   image: {
     gender: GrammaticalGender.Neuter,
     singular: {

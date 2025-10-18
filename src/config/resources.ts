@@ -384,16 +384,27 @@ export const RESOURCE_METADATA = {
         textInputs: { name: { label: "Nazwa wersji" } },
         textareaInputs: { name: { label: "Opis wersji" } },
         dateInputs: { name: { label: "Data" } },
+        relationInputs: {
+          [Resource.Changes]: {
+            type: RelationType.OneToMany,
+            foreignKey: "versionId",
+          },
+          [Resource.Milestones]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "milestoneId",
+          },
+        },
       },
       defaultValues: {
         name: "",
         description: null,
         releaseDate: new Date().toISOString(),
-        milestoneId: 3, // placeholder // TODO
+        milestoneId: Number.NaN,
       },
     },
   },
   [Resource.Changes]: {
+    queryName: "changes",
     apiPath: "changes",
     itemMapper: (item) => ({
       name: item.name,
@@ -402,7 +413,7 @@ export const RESOURCE_METADATA = {
     form: {
       inputs: {
         textInputs: { name: { label: "Nazwa zmiany" } },
-        textareaInputs: { name: { label: "Opis zmiany" } },
+        textareaInputs: { description: { label: "Opis zmiany" } },
         selectInputs: {
           type: {
             label: "Typ",
@@ -414,8 +425,24 @@ export const RESOURCE_METADATA = {
       defaultValues: {
         name: "",
         description: "",
-        versionId: Number.NaN,
+        versionId: -1,
         type: ChangeType.Feature,
+      },
+    },
+  },
+  [Resource.Milestones]: {
+    queryName: "milestones",
+    apiPath: "milestones",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: "",
+    }),
+    form: {
+      inputs: {
+        textInputs: { name: { label: "Nazwa" } },
+      },
+      defaultValues: {
+        name: "",
       },
     },
   },

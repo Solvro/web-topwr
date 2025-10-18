@@ -125,6 +125,10 @@ const ChangesSchema = z.object({
   }),
 });
 
+const MilestonesSchema = z.object({
+  name: requiredString(),
+});
+
 export const RESOURCE_SCHEMAS = {
   [Resource.Banners]: BannerSchema,
   [Resource.CalendarEvents]: CalendarEventSchema,
@@ -137,4 +141,5 @@ export const RESOURCE_SCHEMAS = {
   [Resource.Majors]: MajorSchema,
   [Resource.Versions]: VersionsSchema,
   [Resource.Changes]: ChangesSchema,
+  [Resource.Milestones]: MilestonesSchema,
 } satisfies Record<Resource, AppZodObject>;
