@@ -25,6 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { MinimalTiptapEditor } from "@/components/ui/minimal-tiptap";
 import { MultiSelect } from "@/components/ui/multi-select";
 import {
@@ -38,14 +39,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { RELATED_RESOURCE_METADATA } from "@/config/resources";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
-import { sanitizeId } from "@/lib/helpers";
+import { sanitizeId, toTitleCase } from "@/lib/helpers";
 import { getResourceMetadata } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { ModifyResourceResponse } from "@/types/api";
 import type {
+  QueriedRelations,
+  RelationConfiguration,
   ResourceDataType,
   ResourceFormValues,
   ResourceRelation,
@@ -386,33 +390,63 @@ export function AbstractResourceFormInternal<T extends Resource>({
                   container
                   className="grid grid-cols-1 lg:grid-cols-2"
                   inputs={relationInputs}
-                  mapper={([relation, input]) => {
+                  mapper={([relation]) => {
                     const resourceRelation = relation as ResourceRelation<T>;
                     const relationData = relatedResources[resourceRelation];
+                    const config = RELATED_RESOURCE_METADATA[relation];
+                    const relationDeclined = {
+                      singular: declineNoun(relation, { plural: false }),
+                      plural: declineNoun(relation, { plural: true }),
+                    };
+                    const primaryKeyField =
+                      (config as RelationConfiguration<ResourceRelation<T>>)
+                        .pk ?? "id";
+                    const selectedValues = isExistingResourceItem(defaultValues)
+                      ? (
+                          defaultValues as unknown as ResourceDataType<T> &
+                            QueriedRelations<T>
+                        )[config.name].map((item) =>
+                          String(
+                            get(item, primaryKeyField, "unknown-select-item"),
+                          ),
+                        )
+                      : [];
                     return (
-                      <MultiSelect
+                      <Label
+                        asChild
                         key={`${resource}-multiselect-${relation}`}
-                        placeholder={relation}
-                        className="bg-background border-input"
-                        options={relationData.map((option, index) => {
-                          const label: string = get(
-                            option,
-                            input.displayField,
-                            "",
-                          ) as string;
-                          const value: string = get(
-                            option,
-                            input.pk ?? "id",
-                            `item-${String(index)}`,
-                          ) as string;
-                          return { label, value };
-                        })}
-                        onValueChange={(values) => {
-                          // TODO: implement on change
-                          // eslint-disable-next-line no-console
-                          console.log("new select values:", values);
-                        }}
-                      />
+                      >
+                        <div className="flex-col items-start">
+                          {toTitleCase(relationDeclined.plural.nominative)}
+                          <MultiSelect
+                            deduplicateOptions
+                            hideSelectAll
+                            placeholder={`Wybierz ${relationDeclined.singular.accusative}`}
+                            className="bg-background border-input"
+                            options={relationData.map((option, index) => {
+                              const label: string = get(
+                                option,
+                                config.displayField,
+                                "",
+                              ) as string;
+                              const value = String(
+                                get(
+                                  option,
+                                  primaryKeyField,
+                                  `item-${String(index)}`,
+                                ),
+                              );
+                              return { label, value };
+                            })}
+                            onValueChange={(values) => {
+                              // TODO: implement on change
+                              // eslint-disable-next-line no-console
+                              console.log("new select values:", values);
+                            }}
+                            defaultValue={selectedValues}
+                          />
+                        </div>
+                      </Label>
                     );
                   }}
                 />

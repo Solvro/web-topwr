@@ -11,6 +11,7 @@ import type {
 } from "@/config/polish";
 import type {
   ORDERABLE_RESOURCES,
+  RELATED_RESOURCE_METADATA,
   RESOURCE_METADATA,
 } from "@/config/resources";
 import type { RELATED_RESOURCE_SCHEMAS, RESOURCE_SCHEMAS } from "@/schemas";
@@ -76,6 +77,13 @@ export type ResourceRelation<T extends Resource> = {
 }[T];
 export type ResourceRelations<T extends Resource> = {
   [L in ResourceRelation<T>]: ResourceDataType<L>[];
+};
+type RelationQueryName<T extends RelatedResource> =
+  (typeof RELATED_RESOURCE_METADATA)[T]["name"];
+export type QueriedRelations<T extends Resource> = {
+  [L in RelatedResource as RelationQueryName<L>]: L extends ResourceRelation<T>
+    ? ResourceDataType<L>[]
+    : never;
 };
 
 // Resource metadata

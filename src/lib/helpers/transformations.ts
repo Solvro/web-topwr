@@ -29,3 +29,6 @@ export const encodeQueryParameters = (
   );
   return pairArray.join("&");
 };
+
+export const toTitleCase = (text: string): string =>
+  text === "" ? "" : text[0].toUpperCase() + text.slice(1).toLowerCase();
