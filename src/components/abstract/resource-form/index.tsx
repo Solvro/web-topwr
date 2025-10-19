@@ -10,16 +10,38 @@ import type {
   ResourceDataType,
   ResourceDefaultValues,
   ResourceRelation,
-  ResourceRelations,
 } from "@/types/app";
 import type { ResourceSchemaKey } from "@/types/forms";
 
 import { AbstractResourceFormInternal } from "./client";
 
+export interface RelationItem<L extends ResourceRelation<Resource>> {
+  data: ResourceDataType<L>;
+  editForm: ReactNode;
+}
+
+interface RelationDataWithEditors<L extends ResourceRelation<Resource>> {
+  createForm: ReactNode;
+  data: RelationItem<L>[];
+}
+
 type LabelledRelationData<T extends ResourceRelation<Resource>> = [
   T,
-  ResourceDataType<T>[],
+  RelationDataWithEditors<T>,
 ];
+
+export type ExistingImages<T extends Resource> = Partial<
+  Record<ResourceSchemaKey<T>, ReactNode>
+>;
+export type ResourceRelations<T extends Resource> = {
+  [L in ResourceRelation<T>]: RelationDataWithEditors<L>;
+};
+
+export interface AbstractResourceFormProps<T extends Resource> {
+  resource: T;
+  renderButtons?: boolean;
+  className?: string;
+}
 
 async function fetchRelatedResources<T extends Resource>(
   resource: T,
@@ -27,26 +49,42 @@ async function fetchRelatedResources<T extends Resource>(
   const metadata = getResourceMetadata(resource);
   const responses = await Promise.all(
     typedEntries(metadata.form.inputs.relationInputs ?? {}).map(
-      async ([relation]) =>
-        [
-          relation,
-          await fetchQuery<{ data: ResourceDataType<typeof relation>[] }>(
-            getResourceMetadata(relation).apiPath,
-          ).then(({ data }) => data),
-        ] as LabelledRelationData<ResourceRelation<T>>,
+      async ([relation]) => {
+        const relatedResource = relation as ResourceRelation<T>;
+        const { data } = await fetchQuery<{
+          data: ResourceDataType<typeof relatedResource>[];
+        }>("", { resource: relation });
+        const formProps: AbstractResourceFormProps<Resource> = {
+          resource: relation,
+          renderButtons: false,
+          className: "w-full px-4",
+        };
+        return [
+          relatedResource,
+          {
+            createForm: <AbstractResourceForm {...formProps} />,
+            data: data.map((item) => ({
+              data: item,
+              editForm: (
+                <AbstractResourceForm
+                  defaultValues={item as ResourceDataType<Resource>}
+                  {...formProps}
+                />
+              ),
+            })),
+          },
+        ] as LabelledRelationData<ResourceRelation<T>>;
+      },
     ),
   );
   return typedFromEntries<ResourceRelations<T>>(responses);
 }
 
-export type ExistingImages<T extends Resource> = Partial<
-  Record<ResourceSchemaKey<T>, ReactNode>
->;
 export async function AbstractResourceForm<T extends Resource>({
   resource,
   defaultValues = getResourceMetadata(resource).form.defaultValues,
-}: {
-  resource: T;
+  ...props
+}: AbstractResourceFormProps<T> & {
   defaultValues?: ResourceDefaultValues<T>;
 }) {
   const existingImages: ExistingImages<T> = {};
@@ -73,6 +111,7 @@ export async function AbstractResourceForm<T extends Resource>({
       defaultValues={defaultValues}
       existingImages={existingImages}
       relatedResources={relatedResources}
+      {...props}
     />
   );
 }
