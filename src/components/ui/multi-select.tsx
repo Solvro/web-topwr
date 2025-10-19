@@ -38,6 +38,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { conjugateNumeric } from "@/lib/polish";
 import { cn } from "@/lib/utils";
+import type { OptionalPromise } from "@/types/helpers";
 
 /**
  * Animation types and configurations
@@ -135,16 +136,21 @@ interface MultiSelectProps
    * Receives an array of the new selected values.
    * If `onOptionToggled` is provided, it will not be called when an individual option is toggled,
    * only when the entire selection changes.
+   * If `onValueChange` returns `false`, the value change will be aborted.
    */
-  onValueChange: (value: string[]) => void;
+  onValueChange: (value: string[]) => boolean | void;
 
   /**
    * Callback function triggered when an individual option is toggled.
    * Receives the option value and a boolean indicating if it was removed.
    * If provided, `onValueChange` will not be called when an individual option is toggled,
    * only when the entire selection changes.
+   * If this callback returns `false` (or a promise resolving to `false`), the toggle action will be aborted.
    */
-  onOptionToggled?: (optionValue: string, removed: boolean) => void;
+  onOptionToggled?: (
+    optionValue: string,
+    removed: boolean,
+  ) => OptionalPromise<boolean | void>;
 
   /**
    * When provided, renders a "Create" button at the bottom of the dropdown that triggers this callback when selected.
@@ -480,10 +486,11 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
     );
 
     const resetToDefault = React.useCallback(() => {
-      setSelectedValues(defaultValue);
-      setIsPopoverOpen(false);
-      setSearchValue("");
-      onValueChange(defaultValue);
+      if (onValueChange(defaultValue) !== false) {
+        setSelectedValues(defaultValue);
+        setIsPopoverOpen(false);
+        setSearchValue("");
+      }
     }, [defaultValue, onValueChange]);
 
     const buttonRef = React.useRef<HTMLButtonElement>(null);
@@ -494,12 +501,14 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
         reset: resetToDefault,
         getSelectedValues: () => selectedValues,
         setSelectedValues: (values: string[]) => {
-          setSelectedValues(values);
-          onValueChange(values);
+          if (onValueChange(values) !== false) {
+            setSelectedValues(values);
+          }
         },
         clear: () => {
-          setSelectedValues([]);
-          onValueChange([]);
+          if (onValueChange([]) !== false) {
+            setSelectedValues([]);
+          }
         },
         focus: () => {
           if (buttonRef.current) {
@@ -705,12 +714,13 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       } else if (event.key === "Backspace" && !event.currentTarget.value) {
         const newSelectedValues = [...selectedValues];
         newSelectedValues.pop();
-        setSelectedValues(newSelectedValues);
-        onValueChange(newSelectedValues);
+        if (onValueChange(newSelectedValues) !== false) {
+          setSelectedValues(newSelectedValues);
+        }
       }
     };
 
-    const toggleOption = (optionValue: string) => {
+    const toggleOption = async (optionValue: string) => {
       if (disabled) return;
       const option = getOptionByValue(optionValue);
       if (option?.disabled) return;
@@ -718,21 +728,23 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       const newSelectedValues = optionRemoved
         ? selectedValues.filter((value) => value !== optionValue)
         : [...selectedValues, optionValue];
-      setSelectedValues(newSelectedValues);
-      if (onOptionToggled == null) {
-        onValueChange(newSelectedValues);
-      } else {
-        onOptionToggled(optionValue, optionRemoved);
-      }
-      if (closeOnSelect) {
-        setIsPopoverOpen(false);
+      const shouldProceed =
+        onOptionToggled == null
+          ? onValueChange(newSelectedValues)
+          : await onOptionToggled(optionValue, optionRemoved);
+      if (shouldProceed !== false) {
+        setSelectedValues(newSelectedValues);
+        if (closeOnSelect) {
+          setIsPopoverOpen(false);
+        }
       }
     };
 
     const handleClear = () => {
       if (disabled) return;
-      setSelectedValues([]);
-      onValueChange([]);
+      if (onValueChange([]) !== false) {
+        setSelectedValues([]);
+      }
     };
 
     const handleTogglePopover = () => {
@@ -746,8 +758,9 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
         0,
         responsiveSettings.maxCount,
       );
-      setSelectedValues(newSelectedValues);
-      onValueChange(newSelectedValues);
+      if (onValueChange(newSelectedValues) !== false) {
+        setSelectedValues(newSelectedValues);
+      }
     };
 
     const toggleAll = () => {
@@ -757,8 +770,9 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
         handleClear();
       } else {
         const allValues = allOptions.map((option) => option.value);
-        setSelectedValues(allValues);
-        onValueChange(allValues);
+        if (onValueChange(allValues) !== false) {
+          setSelectedValues(allValues);
+        }
       }
 
       if (closeOnSelect) {

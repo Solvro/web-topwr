@@ -29,7 +29,7 @@ export type ResourceRelations<T extends Resource> = {
 
 export interface AbstractResourceFormProps<T extends Resource> {
   resource: T;
-  renderButtons?: boolean;
+  isEmbedded?: boolean;
   className?: string;
 }
 

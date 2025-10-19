@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, FilePlus2, Save } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
@@ -40,6 +40,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { RESOURCE_METADATA } from "@/config/resources";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { renderAbstractResourceForm } from "@/lib/actions";
 import { fetchMutation } from "@/lib/fetch-utils";
@@ -50,7 +51,9 @@ import { cn } from "@/lib/utils";
 import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { ModifyResourceResponse } from "@/types/api";
 import type {
+  Id,
   QueriedRelations,
+  RelationResource,
   ResourceDataType,
   ResourceDefaultValues,
   ResourceFormSheetData,
@@ -76,7 +79,7 @@ const isExistingResourceItem = <T extends z.ZodType>(
   defaultValues != null &&
   "id" in defaultValues &&
   defaultValues.id !== undefined &&
-  typeof defaultValues.id === "number";
+  ["number", "string"].includes(typeof defaultValues.id);
 
 const getMutationConfig = <T extends z.ZodType>(
   resource: Resource,
@@ -87,11 +90,15 @@ const getMutationConfig = <T extends z.ZodType>(
         mutationKey: `update__${resource}__${String(defaultValues.id)}`,
         endpoint: sanitizeId(String(defaultValues.id)),
         method: "PATCH",
+        submitLabel: "Zapisz",
+        SubmitIconComponent: Save,
       } as const)
     : ({
         mutationKey: `create__${resource}`,
         endpoint: "/",
         method: "POST",
+        submitLabel: "Utwórz",
+        SubmitIconComponent: FilePlus2,
       } as const);
 
 export function AbstractResourceFormInternal<T extends Resource>({
@@ -99,7 +106,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
   defaultValues,
   existingImages,
   relatedResources,
-  renderButtons = true,
+  isEmbedded = false,
   className,
 }: AbstractResourceFormProps<T> & {
   defaultValues: ResourceDefaultValues<T>;
@@ -118,10 +125,8 @@ export function AbstractResourceFormInternal<T extends Resource>({
     defaultValues: defaultValues as DefaultValues<ResourceFormValues<T>>,
   });
 
-  const { mutationKey, endpoint, method } = getMutationConfig(
-    resource,
-    defaultValues,
-  );
+  const { mutationKey, endpoint, method, submitLabel, SubmitIconComponent } =
+    getMutationConfig(resource, defaultValues);
 
   const { mutateAsync, isPending } = useMutationWrapper<
     ModifyResourceResponse<T>,
@@ -136,6 +141,25 @@ export function AbstractResourceFormInternal<T extends Resource>({
     form.reset(response.data);
     return response;
   });
+
+  const relationMutation = useMutationWrapper<
+    ModifyResourceResponse<T>,
+    { deleted: boolean; id: Id; resourceRelation: ResourceRelation<T> }
+  >(
+    `update__${resource}__relation`,
+    async ({ deleted, id, resourceRelation }) => {
+      const relationMetadata =
+        RESOURCE_METADATA[resourceRelation as RelationResource];
+      const response = await fetchMutation<ModifyResourceResponse<T>>(
+        `${endpoint}/${relationMetadata.queryName}/${sanitizeId(String(id))}`,
+        {
+          method: deleted ? "DELETE" : "POST",
+          resource,
+        },
+      );
+      return response;
+    },
+  );
 
   const declensions = declineNoun(resource);
 
@@ -441,7 +465,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                       : [];
                     const formProps: AbstractResourceFormProps<Resource> = {
                       resource: relation,
-                      renderButtons: false,
+                      isEmbedded: true,
                       className: "w-full px-4",
                     };
                     return (
@@ -469,24 +493,39 @@ export function AbstractResourceFormInternal<T extends Resource>({
                               );
                               return { label, value };
                             })}
-                            onOptionToggled={(value, removed) => {
-                              // TODO: implement on value toggled
-                              // eslint-disable-next-line no-console
-                              console.log(
-                                "option",
-                                removed ? "removed:" : "added:",
-                                value,
+                            onOptionToggled={async (value, removed) => {
+                              if (!isExistingResourceItem(defaultValues)) {
+                                toast.error(
+                                  `Najpierw utwórz ${declensions.accusative}, a następnie dopiero będziesz mógł dodać powiązane pola.`,
+                                );
+                                return false;
+                              }
+                              const { unwrap } = toast.promise(
+                                relationMutation.mutateAsync({
+                                  id: value,
+                                  deleted: removed,
+                                  resourceRelation,
+                                }),
+                                TOAST_MESSAGES.object(relationDeclined.singular)
+                                  .modify,
                               );
+                              try {
+                                await unwrap();
+                                return true;
+                              } catch {
+                                return false;
+                              }
                             }}
-                            onValueChange={(values) => {
-                              // TODO: implement on change
-                              // eslint-disable-next-line no-console
-                              console.log("new select values:", values);
+                            onValueChange={() => {
+                              toast.info(
+                                "Zmiana wszystkich wartości na raz nie jest jeszcze dostępna. Dodawaj lub usuwaj pojedynczo.",
+                              );
+                              return false;
                             }}
                             onCreateItem={async () => {
                               await showSheet(
                                 {
-                                  type: "create",
+                                  item: null,
                                   resource: resourceRelation,
                                 },
                                 formProps,
@@ -497,17 +536,31 @@ export function AbstractResourceFormInternal<T extends Resource>({
                                 (option) =>
                                   value ===
                                   String(get(option, primaryKeyField)),
-                              ) as
-                                | undefined
-                                | ResourceDataType<typeof relation>;
+                              );
+                              const label =
+                                relationDefaultValues == null
+                                  ? undefined
+                                  : config.itemMapper(relationDefaultValues)
+                                      .name;
                               await showSheet(
                                 {
-                                  type: "edit",
+                                  item: {
+                                    name: label,
+                                    id: value,
+                                  },
                                   resource: resourceRelation,
                                 },
                                 {
                                   ...formProps,
-                                  defaultValues: relationDefaultValues,
+                                  defaultValues: {
+                                    ...(relationDefaultValues as ResourceDataType<
+                                      typeof relation
+                                    >),
+                                    // ! for now I am overriding the id to always use the PK field
+                                    // ! this may break something down the line but it should work for now,
+                                    // ! assuming the backend doesn't do some crazy stuff with IDs and PKs
+                                    id: value,
+                                  } as ResourceDefaultValues<Resource>,
                                 },
                               );
                             }}
@@ -518,16 +571,11 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     );
                   }}
                 />
-                <AbstractResourceFormSheet
-                  resource={resource}
-                  sheet={sheet}
-                  setSheet={setSheet}
-                />
               </div>
             </div>
           </div>
-          {renderButtons ? (
-            <div className="flex w-full justify-between">
+          <div className="flex w-full justify-between">
+            {isEmbedded ? null : (
               <Button
                 variant="ghost"
                 className="text-primary hover:text-primary w-min"
@@ -542,17 +590,23 @@ export function AbstractResourceFormInternal<T extends Resource>({
                   })}
                 </Link>
               </Button>
-              <Button
-                type="submit"
-                loading={isPending}
-                disabled={!form.formState.isDirty}
-              >
-                Zapisz
-              </Button>
-            </div>
-          ) : null}
+            )}
+            <Button
+              type="submit"
+              loading={isPending}
+              disabled={!form.formState.isDirty}
+              className={cn({ "w-full": isEmbedded })}
+            >
+              {submitLabel} {declensions.accusative} <SubmitIconComponent />
+            </Button>
+          </div>
         </form>
       </Form>
+      <AbstractResourceFormSheet
+        resource={resource}
+        sheet={sheet}
+        setSheet={setSheet}
+      />
     </div>
   );
 }

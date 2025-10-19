@@ -127,7 +127,10 @@ export type LayoutProps = Readonly<{
 export interface ResourceFormSheetDataContent<T extends Resource> {
   resource: ResourceRelation<T>;
   form: ReactNode;
-  type: "create" | "edit";
+  item: {
+    id: Id;
+    name: string | undefined;
+  } | null;
 }
 
 export type ResourceFormSheetData<T extends Resource> =

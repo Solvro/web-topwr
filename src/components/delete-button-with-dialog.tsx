@@ -25,16 +25,21 @@ import { sanitizeId } from "@/lib/helpers";
 import { TANSTACK_KEYS } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 import type { MessageResponse } from "@/types/api";
+import type { Id } from "@/types/app";
 
 export function DeleteButtonWithDialog({
   resource,
   id,
   itemName,
-  variant = "ghost",
+  showLabel = false,
+  onDeleteSuccess,
+  ...props
 }: {
   resource: Resource;
-  id: string | number;
+  id: Id;
   itemName?: string;
+  showLabel?: boolean;
+  onDeleteSuccess?: () => void | Promise<void>;
 } & VariantProps<typeof buttonVariants>) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -54,6 +59,7 @@ export function DeleteButtonWithDialog({
         queryKey: [TANSTACK_KEYS.query.resourceList(resource)],
         exact: false,
       });
+      await onDeleteSuccess?.();
       return response;
     },
   );
@@ -67,15 +73,19 @@ export function DeleteButtonWithDialog({
     );
   }
 
+  const label = `Usuń ${declensions.accusative}`;
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button
-          variant={variant}
-          className="text-destructive hover:text-destructive/90"
+          variant="ghost"
           size="sm"
-          aria-label={`Usuń ${declensions.accusative}`}
+          className="text-destructive hover:text-destructive/90"
+          aria-label={label}
+          {...props}
         >
+          {showLabel ? label : null}
           <Trash2 />
         </Button>
       </DialogTrigger>

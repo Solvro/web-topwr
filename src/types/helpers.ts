@@ -18,3 +18,5 @@ export type RecordIntersection<
   J extends string | number | symbol,
   V,
 > = Record<K, V> & Record<J, V>;
+
+export type OptionalPromise<T> = T | Promise<T>;

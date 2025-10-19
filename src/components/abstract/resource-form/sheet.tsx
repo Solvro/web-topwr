@@ -1,8 +1,8 @@
 "use client";
 
-import { Save } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
 
+import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -24,25 +24,27 @@ import type {
 function AbstractResourceFormSheetContent<T extends Resource>({
   resource,
   content,
+  closeSheet,
 }: {
   resource: T;
   content: ResourceFormSheetDataContent<T>;
+  closeSheet: () => void;
 }) {
-  const contentResource = content.resource as Resource;
-  const relationDeclensions = declineNoun(contentResource);
+  const relatedResource = content.resource as Resource;
+  const relationDeclensions = declineNoun(relatedResource);
 
   const [sheetTitle, sheetDescription] =
-    content.type === "create"
+    content.item == null
       ? [
           `Utwórz ${relationDeclensions.accusative}`,
-          `Stwórz ${declineNoun(contentResource, {
+          `Stwórz ${declineNoun(relatedResource, {
             prependDeterminer: "new",
             case: DeclensionCase.Nominative,
           })} dla ${declineNoun(resource, { case: DeclensionCase.Genitive, plural: true })}.`,
         ]
       : [
           `Edycja ${relationDeclensions.genitive}`,
-          `Zmień dane ${declineNoun(contentResource, {
+          `Zmień dane ${declineNoun(relatedResource, {
             prependDeterminer: "existing",
             case: DeclensionCase.Genitive,
           })} ${declineNoun(resource, { case: DeclensionCase.Dative })}.`,
@@ -55,10 +57,17 @@ function AbstractResourceFormSheetContent<T extends Resource>({
         <SheetDescription>{sheetDescription}</SheetDescription>
       </SheetHeader>
       {content.form}
-      <SheetFooter>
-        <Button>
-          Zapisz <Save />
-        </Button>
+      <SheetFooter className="pt-0">
+        {content.item == null ? null : (
+          <DeleteButtonWithDialog
+            resource={relatedResource}
+            showLabel
+            variant="destructive"
+            size="lg"
+            onDeleteSuccess={closeSheet}
+            {...content.item}
+          />
+        )}
         <SheetClose asChild>
           <Button variant="outline">Zamknij</Button>
         </SheetClose>
@@ -76,12 +85,15 @@ export function AbstractResourceFormSheet<T extends Resource>({
   sheet: ResourceFormSheetData<T>;
   setSheet: Dispatch<SetStateAction<ResourceFormSheetData<T>>>;
 }) {
+  const closeSheet = () => {
+    setSheet((oldValue) => ({ ...oldValue, visible: false }));
+  };
   return (
     <Sheet
       open={sheet.visible}
       onOpenChange={(open) => {
         if (!open) {
-          setSheet((oldValue) => ({ ...oldValue, visible: false }));
+          closeSheet();
         }
       }}
     >
@@ -89,6 +101,7 @@ export function AbstractResourceFormSheet<T extends Resource>({
         <AbstractResourceFormSheetContent
           resource={resource}
           content={sheet.content}
+          closeSheet={closeSheet}
         />
       )}
     </Sheet>
