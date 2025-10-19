@@ -66,7 +66,7 @@ interface FormSelectInput<
 
 interface FormColorInput<T extends Resource> extends FormInputBase<T> {}
 
-interface FormDatetimeInput<T extends Resource> extends FormInputBase<T> {}
+interface FormDateTimeInput<T extends Resource> extends FormInputBase<T> {}
 
 interface FormCheckboxInput<T extends Resource>
   extends FormInputBase<T, z.ZodBoolean> {}
@@ -81,7 +81,7 @@ export interface AbstractResourceFormInputs<T extends Resource> {
   /** Date input fields, without time. */
   dateInputs?: FormDateInput<T>[];
   /** Date and time input fields. */
-  datetimeInputs?: FormDatetimeInput<T>[];
+  dateTimeInputs?: FormDateTimeInput<T>[];
   /** Rich text editor input for HTML string fields. */
   richTextInputs?: FormRichTextInput<T>[];
   /** Color picker input fields for HEX string fields. */

@@ -121,7 +121,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
     textareaInputs = [],
     richTextInputs = [],
     dateInputs = [],
-    datetimeInputs = [],
+    dateTimeInputs = [],
     colorInputs = [],
     selectInputs = [],
     checkboxInputs = [],
@@ -222,7 +222,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     />
                   )}
                 />
-                {datetimeInputs.map((input) => (
+                {dateTimeInputs.map((input) => (
                   <FormField
                     key={input.name}
                     control={form.control}

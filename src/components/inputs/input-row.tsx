@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import type { Resource } from "@/config/enums";
 import { cn } from "@/lib/utils";
+import type { LayoutProps } from "@/types/app";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 
 type SynchronousReactNode = Exclude<ReactNode, Promise<ReactNode>>;
@@ -14,8 +15,7 @@ type AbstractResourceFormInput<T extends Resource> = Exclude<
 export function InputRow({
   children,
   className,
-}: {
-  children: ReactNode;
+}: LayoutProps & {
   className?: string;
 }) {
   return <div className={cn("flex flex-row gap-4", className)}>{children}</div>;

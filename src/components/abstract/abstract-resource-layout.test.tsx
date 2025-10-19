@@ -3,16 +3,15 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { Resource } from "@/config/enums";
+import { MOCK_USE_PATHNAME } from "@/tests/mocks/functions";
 
 import { AbstractResourceLayout } from "./abstract-resource-layout";
 
 describe("Abstract Resource Layout", () => {
   function renderLayout(pathname: string) {
+    MOCK_USE_PATHNAME.mockReturnValueOnce(pathname);
     render(
-      <AbstractResourceLayout
-        resource={Resource.StudentOrganizations}
-        pathname={pathname}
-      >
+      <AbstractResourceLayout resource={Resource.StudentOrganizations}>
         <div>Test Content</div>
       </AbstractResourceLayout>,
     );

@@ -2,13 +2,8 @@ import { AbstractResourceEditPage } from "@/components/abstract/abstract-resourc
 import { Resource } from "@/config/enums";
 import type { ResourceEditPageProps } from "@/types/app";
 
-export default function EditCalendarEventPage({
-  params,
-}: ResourceEditPageProps) {
+export default function EditCalendarEventPage(props: ResourceEditPageProps) {
   return (
-    <AbstractResourceEditPage
-      resource={Resource.CalendarEvents}
-      params={params}
-    />
+    <AbstractResourceEditPage resource={Resource.CalendarEvents} {...props} />
   );
 }

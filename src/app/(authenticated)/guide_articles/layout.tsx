@@ -1,20 +1,9 @@
-"use client";
-
-import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
-
 import { AbstractResourceLayout } from "@/components/abstract/abstract-resource-layout";
 import { Resource } from "@/config/enums";
+import type { LayoutProps } from "@/types/app";
 
-export default function Layout({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-
+export default function GuideArticlesLayout(props: LayoutProps) {
   return (
-    <AbstractResourceLayout
-      resource={Resource.GuideArticles}
-      pathname={pathname}
-    >
-      {children}
-    </AbstractResourceLayout>
+    <AbstractResourceLayout resource={Resource.GuideArticles} {...props} />
   );
 }
