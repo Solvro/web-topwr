@@ -1,11 +1,7 @@
-import type {
-  Declensions,
-  DeclinableSimpleNoun,
-  GenericResource,
-} from "@/types/app";
+import type { Declensions, DeclinableSimpleNoun } from "@/types/app";
 import type { Pluralized, RecordIntersection } from "@/types/helpers";
 
-import { GrammaticalGender, RelatedResource, Resource } from "./enums";
+import { GrammaticalGender, Resource } from "./enums";
 
 /** A dictionary of Polish language declensions of all resource names & other nouns, as well as their genders for use with determiners. */
 export const SIMPLE_NOUN_DECLENSIONS = {
@@ -30,7 +26,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "artykuły",
     },
   },
-  [RelatedResource.GuideAuthors]: {
+  [Resource.GuideAuthors]: {
     gender: GrammaticalGender.Masculine,
     singular: {
       nominative: "autor",
@@ -72,7 +68,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "organizacje studenckie",
     },
   },
-  [RelatedResource.StudentOrganizationLinks]: {
+  [Resource.StudentOrganizationLinks]: {
     gender: GrammaticalGender.Masculine,
     singular: {
       nominative: "link",
@@ -93,7 +89,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "linki",
     },
   },
-  [RelatedResource.StudentOrganizationTags]: {
+  [Resource.StudentOrganizationTags]: {
     gender: GrammaticalGender.Masculine,
     singular: {
       nominative: "tag",
@@ -304,7 +300,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
     },
   },
 } satisfies RecordIntersection<
-  GenericResource,
+  Resource,
   string,
   { gender: GrammaticalGender } & Pluralized<Declensions>
 >;

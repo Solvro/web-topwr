@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
+import { useState } from "react";
 import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
@@ -39,7 +40,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
-import { RELATED_RESOURCE_METADATA } from "@/config/resources";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId, toTitleCase } from "@/lib/helpers";
@@ -49,14 +49,15 @@ import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { ModifyResourceResponse } from "@/types/api";
 import type {
   QueriedRelations,
-  RelationConfiguration,
   ResourceDataType,
+  ResourceFormSheetData,
   ResourceFormValues,
   ResourceRelation,
   ResourceRelations,
 } from "@/types/app";
 
 import type { ExistingImages } from ".";
+import { AbstractResourceFormSheet } from "./sheet";
 
 type WithOptionalId<T> = T & { id?: number };
 type SchemaWithOptionalId<T extends z.ZodType> = WithOptionalId<z.infer<T>>;
@@ -98,6 +99,9 @@ export function AbstractResourceFormInternal<T extends Resource>({
 }) {
   const schema = RESOURCE_SCHEMAS[resource];
   const router = useRouter();
+  const [sheet, setSheet] = useState<
+    ResourceFormSheetData<ResourceRelation<T>>
+  >({ visible: false });
   const form = useForm<ResourceFormValues<T>>({
     // Maybe try extracting the id from the defaultValues and passing it as an editedResourceId prop?
     // @ts-expect-error TODO: the schema is compatible but for some reason the types don't match
@@ -393,22 +397,21 @@ export function AbstractResourceFormInternal<T extends Resource>({
                   mapper={([relation]) => {
                     const resourceRelation = relation as ResourceRelation<T>;
                     const relationData = relatedResources[resourceRelation];
-                    const config = RELATED_RESOURCE_METADATA[relation];
+                    const config = getResourceMetadata(resourceRelation);
                     const relationDeclined = {
                       singular: declineNoun(relation, { plural: false }),
                       plural: declineNoun(relation, { plural: true }),
                     };
-                    const primaryKeyField =
-                      (config as RelationConfiguration<ResourceRelation<T>>)
-                        .pk ?? "id";
+                    const primaryKeyField = config.pk ?? "id";
                     const selectedValues = isExistingResourceItem(defaultValues)
                       ? (
                           defaultValues as unknown as ResourceDataType<T> &
                             QueriedRelations<T>
-                        )[config.name].map((item) =>
-                          String(
-                            get(item, primaryKeyField, "unknown-select-item"),
-                          ),
+                        )[config.queryName as keyof QueriedRelations<T>].map(
+                          (item) =>
+                            String(
+                              get(item, primaryKeyField, "unknown-select-item"),
+                            ),
                         )
                       : [];
                     return (
@@ -424,11 +427,9 @@ export function AbstractResourceFormInternal<T extends Resource>({
                             placeholder={`Wybierz ${relationDeclined.singular.accusative}`}
                             className="bg-background border-input"
                             options={relationData.map((option, index) => {
-                              const label: string = get(
-                                option,
-                                config.displayField,
-                                "",
-                              ) as string;
+                              const label =
+                                config.itemMapper(option).name ??
+                                JSON.stringify(option);
                               const value = String(
                                 get(
                                   option,
@@ -452,12 +453,41 @@ export function AbstractResourceFormInternal<T extends Resource>({
                               // eslint-disable-next-line no-console
                               console.log("new select values:", values);
                             }}
+                            onCreateItem={() => {
+                              setSheet({
+                                visible: true,
+                                content: {
+                                  resource: resourceRelation,
+                                  item: null,
+                                },
+                              });
+                            }}
+                            onEditItem={(value) => {
+                              setSheet({
+                                visible: true,
+                                content: {
+                                  resource: resourceRelation,
+                                  item: relationData.find(
+                                    (option) =>
+                                      value ===
+                                      String(get(option, primaryKeyField)),
+                                  ) as null | ResourceDataType<
+                                    typeof resourceRelation
+                                  >,
+                                },
+                              });
+                            }}
                             defaultValue={selectedValues}
                           />
                         </div>
                       </Label>
                     );
                   }}
+                />
+                <AbstractResourceFormSheet
+                  resource={resource}
+                  sheet={sheet}
+                  setSheet={setSheet}
                 />
               </div>
             </div>

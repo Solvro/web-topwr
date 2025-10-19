@@ -7,7 +7,6 @@ import { API_URL } from "@/config/constants";
 import { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
-import { getResourceRelations } from "@/lib/helpers/app";
 import { mockDatedResource } from "@/tests/helpers/mocks";
 import { renderWithProviders } from "@/tests/helpers/react";
 import { server } from "@/tests/mocks/server";
@@ -27,12 +26,11 @@ const MOCK_BANNER = {
 } satisfies ResourceDataType<Resource.Banners>;
 
 async function renderEditPage(bannerId: number) {
-  const relations = getResourceRelations(resource);
   const id = sanitizeId(bannerId);
 
   const response = await fetchQuery<
     GetResourceWithRelationsResponse<typeof resource>
-  >(id, { resource, relations });
+  >(id, { resource, includeRelations: true });
 
   const screen = renderWithProviders(
     await AbstractResourceForm({ resource, defaultValues: response.data }),

@@ -8,8 +8,11 @@
  */
 import { type VariantProps, cva } from "class-variance-authority";
 import {
+  BrushCleaningIcon,
   CheckIcon,
   ChevronDown,
+  EditIcon,
+  PlusIcon,
   WandSparkles,
   XCircle,
   XIcon,
@@ -142,6 +145,17 @@ interface MultiSelectProps
    * only when the entire selection changes.
    */
   onOptionToggled?: (optionValue: string, removed: boolean) => void;
+
+  /**
+   * When provided, renders a "Create" button at the bottom of the dropdown that triggers this callback when selected.
+   */
+  onCreateItem?: () => void;
+
+  /**
+   * When provided, renders an "Edit" button next to each option that triggers this callback when selected
+   * with the value of the clicked option.
+   */
+  onEditItem?: (itemValue: string) => void;
 
   /** The default selected values when the component mounts. */
   defaultValue?: string[];
@@ -323,12 +337,71 @@ export interface MultiSelectRef {
   focus: () => void;
 }
 
+function MultiSelectOptionItem({
+  option,
+  selectedValues,
+  onEditItem,
+  toggleOption,
+}: Pick<MultiSelectProps, "onEditItem"> & {
+  option: MultiSelectOption;
+  selectedValues: string[];
+  toggleOption: (optionValue: string) => void;
+}) {
+  const isSelected = selectedValues.includes(option.value);
+  return (
+    <div className="flex">
+      <CommandItem
+        onSelect={() => toggleOption(option.value)}
+        role="option"
+        aria-selected={isSelected}
+        aria-disabled={option.disabled}
+        aria-label={`${option.label}${
+          isSelected ? ", selected" : ", not selected"
+        }${option.disabled ? ", disabled" : ""}`}
+        className={cn(
+          "w-full cursor-pointer",
+          option.disabled && "cursor-not-allowed opacity-50",
+        )}
+        disabled={option.disabled}
+      >
+        <div
+          className={cn(
+            "border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
+            isSelected ? "bg-primary" : "opacity-50 [&_svg]:invisible",
+          )}
+          aria-hidden="true"
+        >
+          <CheckIcon className="text-primary-foreground h-4 w-4" />
+        </div>
+        {option.icon && (
+          <option.icon
+            className="text-muted-foreground mr-2 h-4 w-4"
+            aria-hidden="true"
+          />
+        )}
+        <span>{option.label}</span>
+      </CommandItem>
+      {onEditItem == null ? null : (
+        <Button
+          variant="icon"
+          size="sm"
+          onClick={() => onEditItem(option.value)}
+        >
+          <EditIcon />
+        </Button>
+      )}
+    </div>
+  );
+}
+
 export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
   (
     {
       options,
       onValueChange,
       onOptionToggled,
+      onCreateItem,
+      onEditItem,
       variant,
       defaultValue = [],
       placeholder = "Select options",
@@ -1100,12 +1173,12 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                           selectedValues.length ===
                             getAllOptions().filter((opt) => !opt.disabled)
                               .length
-                            ? "bg-primary text-primary-foreground"
+                            ? "bg-primary"
                             : "opacity-50 [&_svg]:invisible",
                         )}
                         aria-hidden="true"
                       >
-                        <CheckIcon className="h-4 w-4" />
+                        <CheckIcon className="text-primary-foreground h-4 w-4" />
                       </div>
                       <span>
                         (Wybierz wszystkie
@@ -1125,91 +1198,28 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                 {isGroupedOptions(filteredOptions) ? (
                   filteredOptions.map((group) => (
                     <CommandGroup key={group.heading} heading={group.heading}>
-                      {group.options.map((option) => {
-                        const isSelected = selectedValues.includes(
-                          option.value,
-                        );
-                        return (
-                          <CommandItem
-                            key={option.value}
-                            onSelect={() => toggleOption(option.value)}
-                            role="option"
-                            aria-selected={isSelected}
-                            aria-disabled={option.disabled}
-                            aria-label={`${option.label}${
-                              isSelected ? ", selected" : ", not selected"
-                            }${option.disabled ? ", disabled" : ""}`}
-                            className={cn(
-                              "cursor-pointer",
-                              option.disabled &&
-                                "cursor-not-allowed opacity-50",
-                            )}
-                            disabled={option.disabled}
-                          >
-                            <div
-                              className={cn(
-                                "border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
-                                isSelected
-                                  ? "bg-primary text-primary-foreground"
-                                  : "opacity-50 [&_svg]:invisible",
-                              )}
-                              aria-hidden="true"
-                            >
-                              <CheckIcon className="h-4 w-4" />
-                            </div>
-                            {option.icon && (
-                              <option.icon
-                                className="text-muted-foreground mr-2 h-4 w-4"
-                                aria-hidden="true"
-                              />
-                            )}
-                            <span>{option.label}</span>
-                          </CommandItem>
-                        );
-                      })}
+                      {group.options.map((option) => (
+                        <MultiSelectOptionItem
+                          key={option.value}
+                          option={option}
+                          selectedValues={selectedValues}
+                          toggleOption={toggleOption}
+                          onEditItem={onEditItem}
+                        />
+                      ))}
                     </CommandGroup>
                   ))
                 ) : (
                   <CommandGroup>
-                    {filteredOptions.map((option) => {
-                      const isSelected = selectedValues.includes(option.value);
-                      return (
-                        <CommandItem
-                          key={option.value}
-                          onSelect={() => toggleOption(option.value)}
-                          role="option"
-                          aria-selected={isSelected}
-                          aria-disabled={option.disabled}
-                          aria-label={`${option.label}${
-                            isSelected ? ", selected" : ", not selected"
-                          }${option.disabled ? ", disabled" : ""}`}
-                          className={cn(
-                            "cursor-pointer",
-                            option.disabled && "cursor-not-allowed opacity-50",
-                          )}
-                          disabled={option.disabled}
-                        >
-                          <div
-                            className={cn(
-                              "border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
-                              isSelected
-                                ? "bg-primary text-primary-foreground"
-                                : "opacity-50 [&_svg]:invisible",
-                            )}
-                            aria-hidden="true"
-                          >
-                            <CheckIcon className="h-4 w-4" />
-                          </div>
-                          {option.icon && (
-                            <option.icon
-                              className="text-muted-foreground mr-2 h-4 w-4"
-                              aria-hidden="true"
-                            />
-                          )}
-                          <span>{option.label}</span>
-                        </CommandItem>
-                      );
-                    })}
+                    {filteredOptions.map((option) => (
+                      <MultiSelectOptionItem
+                        key={option.value}
+                        option={option}
+                        selectedValues={selectedValues}
+                        toggleOption={toggleOption}
+                        onEditItem={onEditItem}
+                      />
+                    ))}
                   </CommandGroup>
                 )}
                 <CommandSeparator />
@@ -1221,7 +1231,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                           onSelect={handleClear}
                           className="flex-1 cursor-pointer justify-center"
                         >
-                          Wyczyść
+                          Wyczyść <BrushCleaningIcon />
                         </CommandItem>
                         <Separator
                           orientation="vertical"
@@ -1235,6 +1245,20 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                     >
                       Zamknij
                     </CommandItem>
+                    {onCreateItem != null && (
+                      <>
+                        <Separator
+                          orientation="vertical"
+                          className="flex h-full min-h-6"
+                        />
+                        <CommandItem
+                          onSelect={onCreateItem}
+                          className="flex-1 cursor-pointer justify-center"
+                        >
+                          Utwórz <PlusIcon />
+                        </CommandItem>
+                      </>
+                    )}
                   </div>
                 </CommandGroup>
               </CommandList>

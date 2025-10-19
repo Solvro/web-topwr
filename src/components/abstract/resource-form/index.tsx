@@ -4,13 +4,9 @@ import { get } from "react-hook-form";
 import { ApiImage } from "@/components/api-image/server";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
-import { typedEntries } from "@/lib/helpers";
-import {
-  getResourceMetadata,
-  getResourceRelationConfigurations,
-} from "@/lib/helpers/app";
+import { typedEntries, typedFromEntries } from "@/lib/helpers";
+import { getResourceMetadata } from "@/lib/helpers/app";
 import type {
-  LabelledRelationData,
   ResourceDataType,
   ResourceDefaultValues,
   ResourceRelation,
@@ -20,22 +16,27 @@ import type { ResourceSchemaKey } from "@/types/forms";
 
 import { AbstractResourceFormInternal } from "./client";
 
+type LabelledRelationData<T extends ResourceRelation<Resource>> = [
+  T,
+  ResourceDataType<T>[],
+];
+
 async function fetchRelatedResources<T extends Resource>(
   resource: T,
 ): Promise<ResourceRelations<T>> {
-  const relations = getResourceRelationConfigurations(resource);
+  const metadata = getResourceMetadata(resource);
   const responses = await Promise.all(
-    typedEntries(relations).map(
-      async ([relation, config]) =>
+    typedEntries(metadata.form.inputs.relationInputs ?? {}).map(
+      async ([relation]) =>
         [
           relation,
           await fetchQuery<{ data: ResourceDataType<typeof relation>[] }>(
-            config.apiPath,
+            getResourceMetadata(relation).apiPath,
           ).then(({ data }) => data),
         ] as LabelledRelationData<ResourceRelation<T>>,
     ),
   );
-  return Object.fromEntries(responses);
+  return typedFromEntries<ResourceRelations<T>>(responses);
 }
 
 export type ExistingImages<T extends Resource> = Partial<

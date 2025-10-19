@@ -1,14 +1,12 @@
 import { API_URL } from "@/config/constants";
 import type { Resource } from "@/config/enums";
+import { RESOURCE_METADATA } from "@/config/resources";
 import { getAuthState } from "@/stores/auth";
 import type { ErrorResponse, SuccessResponse } from "@/types/api";
 import type { ResourceRelation } from "@/types/app";
 
-import { removeLeadingSlash } from "./helpers";
-import {
-  getResourceMetadata,
-  getResourceRelationConfigurations,
-} from "./helpers/app";
+import { removeLeadingSlash, typedEntries } from "./helpers";
+import { getResourceMetadata } from "./helpers/app";
 
 interface BaseRequestOptions<T extends Resource>
   extends Omit<RequestInit, "headers" | "method" | "body"> {
@@ -20,14 +18,14 @@ interface QueryRequestOptions<T extends Resource>
   extends BaseRequestOptions<T> {
   method?: "GET";
   body?: never;
-  relations?: ResourceRelation<T>[];
+  includeRelations?: boolean;
 }
 
 interface MutationRequestOptions<T extends Resource>
   extends BaseRequestOptions<T> {
   method?: "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
-  relations?: never;
+  includeRelations?: never;
 }
 
 type FetchRequestOptions<T extends Resource> =
@@ -90,15 +88,19 @@ const getAccessToken = () => getAuthState()?.accessToken;
 const getResourceEndpointPrefix = (resource: Resource | undefined) =>
   resource == null ? "" : `${getResourceMetadata(resource).apiPath}/`;
 
-function getRelationQueryParameters<T extends Resource>(
-  resource: T | undefined,
-  relatedResources: ResourceRelation<T>[],
+function getRelationQueryParameters(
+  resource: Resource | undefined,
+  includeRelations: boolean,
 ): string {
-  if (resource == null || relatedResources.length === 0) {
+  if (resource == null || !includeRelations) {
     return "";
   }
-  const relations = getResourceRelationConfigurations(resource);
-  return `?${new URLSearchParams(relatedResources.map((relation) => [relations[relation].name, "true"])).toString()}`;
+  if (!("relationInputs" in RESOURCE_METADATA[resource].form.inputs)) {
+    return "";
+  }
+  const allRelations = RESOURCE_METADATA[resource].form.inputs
+    .relationInputs as Record<ResourceRelation<Resource>, true>;
+  return `?${new URLSearchParams(typedEntries(allRelations).map(([relation]) => [RESOURCE_METADATA[relation].queryName, "true"])).toString()}`;
 }
 
 function createRequest<T extends Resource>(
@@ -107,7 +109,7 @@ function createRequest<T extends Resource>(
     accessTokenOverride,
     resource,
     body,
-    relations = [],
+    includeRelations = false,
     ...options
   }: FetchRequestOptions<T>,
 ): Request {
@@ -124,7 +126,7 @@ function createRequest<T extends Resource>(
 
   const url = isAbsolutePath(endpoint)
     ? endpoint
-    : `${API_URL}/${getResourceEndpointPrefix(resource)}${removeLeadingSlash(endpoint)}${getRelationQueryParameters(resource, relations)}`;
+    : `${API_URL}/${getResourceEndpointPrefix(resource)}${removeLeadingSlash(endpoint)}${getRelationQueryParameters(resource, includeRelations)}`;
 
   const token = accessTokenOverride ?? getAccessToken();
   const isMultipart = body instanceof FormData;

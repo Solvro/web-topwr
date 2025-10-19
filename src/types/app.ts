@@ -3,7 +3,7 @@ import type { DefaultValues } from "react-hook-form";
 import type { z } from "zod";
 
 import type { ERROR_CODES } from "@/config/constants";
-import type { DeclensionCase, RelatedResource, Resource } from "@/config/enums";
+import type { DeclensionCase, Resource } from "@/config/enums";
 import type {
   DETERMINER_DECLENSIONS,
   NOUN_PHRASE_TRANSFORMATIONS,
@@ -11,10 +11,9 @@ import type {
 } from "@/config/polish";
 import type {
   ORDERABLE_RESOURCES,
-  RELATED_RESOURCE_METADATA,
   RESOURCE_METADATA,
 } from "@/config/resources";
-import type { RELATED_RESOURCE_SCHEMAS, RESOURCE_SCHEMAS } from "@/schemas";
+import type { RESOURCE_SCHEMAS } from "@/schemas";
 
 import type { DatedResource } from "./api";
 import type { AbstractResourceFormInputs, ResourceSchemaKey } from "./forms";
@@ -28,23 +27,14 @@ export interface ListItem {
 }
 export type AppZodObject = z.ZodObject<z.ZodRawShape>;
 
-export type GenericResource = Resource | RelatedResource;
-
 // Resource helpers
 export type OrderableResource = (typeof ORDERABLE_RESOURCES)[number];
-export type ResourceSchema<T extends GenericResource> = T extends Resource
-  ? (typeof RESOURCE_SCHEMAS)[T]
-  : T extends RelatedResource
-    ? (typeof RELATED_RESOURCE_SCHEMAS)[T]
-    : never;
-export type ResourceFormValues<T extends GenericResource> = z.infer<
-  ResourceSchema<T>
->;
-type PossiblyOrderable<
-  T extends GenericResource,
-  U,
-> = T extends OrderableResource ? U & { order: number } : U;
-export type ResourceDataType<T extends GenericResource> = PossiblyOrderable<
+export type ResourceSchema<T extends Resource> = (typeof RESOURCE_SCHEMAS)[T];
+export type ResourceFormValues<T extends Resource> = z.infer<ResourceSchema<T>>;
+type PossiblyOrderable<T extends Resource, U> = T extends OrderableResource
+  ? U & { order: number }
+  : U;
+export type ResourceDataType<T extends Resource> = PossiblyOrderable<
   T,
   DatedResource & ResourceFormValues<T> & { id: Id }
 >;
@@ -52,25 +42,9 @@ export type ResourceDefaultValues<R extends Resource> = ResourceFormValues<R> &
   DefaultValues<ResourceFormValues<R> | ResourceDataType<R>>;
 
 // Relations
-export type LabelledRelationData<T extends RelatedResource> = [
-  T,
-  ResourceDataType<T>[],
-];
-
-export type RelationConfiguration<T extends RelatedResource> = Readonly<{
-  /** The name of the query param used to fetch the related resource from the API. */
-  name: string;
-  /** The primary key field in the related resource schema, if not `"id"`. */
-  pk?: ResourceSchemaKey<T, z.ZodString | z.ZodNumber>;
-  /** The API path to fetch all entries of the related resource. */
-  apiPath: string;
-  /** The field which is representative of the resource's value. */
-  displayField: ResourceSchemaKey<T>;
-}>;
-
 export type ResourceRelation<T extends Resource> = {
-  [R in Resource]: (typeof RESOURCE_METADATA)[R] extends {
-    relations: Record<infer L, unknown>;
+  [R in Resource]: (typeof RESOURCE_METADATA)[R]["form"]["inputs"] extends {
+    relationInputs: Record<infer L, unknown>;
   }
     ? L
     : never;
@@ -78,16 +52,27 @@ export type ResourceRelation<T extends Resource> = {
 export type ResourceRelations<T extends Resource> = {
   [L in ResourceRelation<T>]: ResourceDataType<L>[];
 };
-type RelationQueryName<T extends RelatedResource> =
-  (typeof RELATED_RESOURCE_METADATA)[T]["name"];
+
+export type RelationResource = {
+  [R in Resource]: (typeof RESOURCE_METADATA)[R] extends { queryName: string }
+    ? R
+    : never;
+}[Resource];
+
+export type RelationQueryName<T extends RelationResource> =
+  (typeof RESOURCE_METADATA)[T]["queryName"];
 export type QueriedRelations<T extends Resource> = {
-  [L in RelatedResource as RelationQueryName<L>]: L extends ResourceRelation<T>
+  [L in RelationResource as RelationQueryName<L>]: L extends ResourceRelation<T>
     ? ResourceDataType<L>[]
     : never;
 };
 
 // Resource metadata
 export type ResourceMetadata<R extends Resource> = Readonly<{
+  /** The name of the query param used to fetch the related resource from the API, if this is a relation. */
+  queryName?: string;
+  /** The primary key field in the resource schema, if not `"id"`. */
+  pk?: ResourceSchemaKey<R, z.ZodString | z.ZodNumber>;
   /** A mapping of the client-side resources to their paths in the backend API. */
   apiPath: string;
   /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */
@@ -141,3 +126,18 @@ export type ResourcePageProps = Readonly<{
 export type LayoutProps = Readonly<{
   children: ReactNode;
 }>;
+
+export interface ResourceFormSheetDataContent<T extends Resource> {
+  resource: T;
+  item: ResourceDataType<T> | null;
+}
+
+export type ResourceFormSheetData<T extends Resource> =
+  | {
+      visible: true;
+      content: ResourceFormSheetDataContent<T>;
+    }
+  | {
+      visible: false;
+      content?: ResourceFormSheetDataContent<T>;
+    };

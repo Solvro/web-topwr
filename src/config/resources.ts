@@ -1,12 +1,12 @@
 import { getFutureDate } from "@/lib/helpers/calendar";
-import type { RelationConfiguration, ResourceMetadata } from "@/types/app";
+import type { ResourceMetadata } from "@/types/app";
 
 import {
   DepartmentIds,
+  LinkType,
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
-  RelatedResource,
   Resource,
 } from "./enums";
 
@@ -33,25 +33,42 @@ const SELECT_OPTION_LABELS = {
         "Wydział Elektroniki, Fotoniki i Mikrosystemów",
       [DepartmentIds.Mathematics]: "Wydział Matematyki",
       [DepartmentIds.Medical]: "Wydział Medyczny",
-    },
+    } satisfies Record<DepartmentIds, string>,
     SOURCE: {
       [OrganizationSource.StudentDepartment]: "Dział Studencki",
       [OrganizationSource.Manual]: "Ręcznie",
       [OrganizationSource.PwrActive]: "PWR Active",
-    },
+    } satisfies Record<OrganizationSource, string>,
     TYPE: {
       [OrganizationType.ScientificClub]: "Koło naukowe",
       [OrganizationType.StudentOrganization]: "Organizacja studencka",
       [OrganizationType.StudentMedium]: "Organizacja medialna",
       [OrganizationType.CultureAgenda]: "Organizacja kulturalna",
       [OrganizationType.StudentCouncil]: "Samorząd studencki",
-    },
+    } satisfies Record<OrganizationType, string>,
     STATUS: {
       [OrganizationStatus.Active]: "Aktywna",
       [OrganizationStatus.Inactive]: "Nieaktywna",
       [OrganizationStatus.Dissolved]: "Rozwiązana",
       [OrganizationStatus.Unknown]: "Nieznany",
-    },
+    } satisfies Record<OrganizationStatus, string>,
+  },
+  STUDENT_ORGANIZATION_LINKS: {
+    TYPE: {
+      [LinkType.Default]: "Strona internetowa",
+      [LinkType.Discord]: "Discord",
+      [LinkType.Facebook]: "Facebook",
+      [LinkType.Instagram]: "Instagram",
+      [LinkType.LinkedIn]: "LinkedIn",
+      [LinkType.YouTube]: "YouTube",
+      [LinkType.TikTok]: "TikTok",
+      [LinkType.TopwrBuildings]: "Budynek ToPWR",
+      [LinkType.Phone]: "Numer telefonu",
+      [LinkType.Mail]: "Adres e-mail",
+      [LinkType.GitHub]: "GitHub",
+      [LinkType.X]: "X (dawniej Twitter)",
+      [LinkType.Twitch]: "Twitch",
+    } satisfies Record<LinkType, string>,
   },
 };
 
@@ -59,25 +76,6 @@ const SELECT_OPTION_LABELS = {
 export const ORDERABLE_RESOURCES = [
   Resource.GuideArticles,
 ] satisfies Resource[];
-
-export const RELATED_RESOURCE_METADATA = {
-  [RelatedResource.GuideAuthors]: {
-    name: "guideAuthors",
-    apiPath: "guide_authors",
-    displayField: "name",
-  },
-  [RelatedResource.StudentOrganizationLinks]: {
-    name: "links",
-    apiPath: "student_organization_links",
-    displayField: "link",
-  },
-  [RelatedResource.StudentOrganizationTags]: {
-    name: "tags",
-    pk: "tag",
-    apiPath: "student_organization_tags",
-    displayField: "tag",
-  },
-} as const satisfies { [L in RelatedResource]: RelationConfiguration<L> };
 
 /** Required metadata for each resource. */
 export const RESOURCE_METADATA = {
@@ -98,7 +96,7 @@ export const RESOURCE_METADATA = {
         },
         richTextInputs: { description: { label: "Opis" } },
         relationInputs: {
-          [RelatedResource.GuideAuthors]: true,
+          [Resource.GuideAuthors]: true,
         },
       },
       defaultValues: {
@@ -106,6 +104,19 @@ export const RESOURCE_METADATA = {
         imageKey: "",
         description: "",
         shortDesc: "",
+      },
+    },
+  },
+  [Resource.GuideAuthors]: {
+    queryName: "guideAuthors",
+    apiPath: "guide_authors",
+    itemMapper: (item) => ({
+      name: item.name,
+    }),
+    form: {
+      inputs: {},
+      defaultValues: {
+        name: "",
       },
     },
   },
@@ -154,8 +165,8 @@ export const RESOURCE_METADATA = {
           isStrategic: { label: "Czy jest kołem strategicznym?" },
         },
         relationInputs: {
-          [RelatedResource.StudentOrganizationLinks]: true,
-          [RelatedResource.StudentOrganizationTags]: true,
+          [Resource.StudentOrganizationLinks]: true,
+          [Resource.StudentOrganizationTags]: true,
         },
       },
       defaultValues: {
@@ -171,6 +182,51 @@ export const RESOURCE_METADATA = {
         organizationStatus: OrganizationStatus.Active,
         isStrategic: false,
         branch: "main", // filia/oddział Politechniki
+      },
+    },
+  },
+  [Resource.StudentOrganizationLinks]: {
+    queryName: "links",
+    apiPath: "student_organization_links",
+    itemMapper: (item) => ({
+      name: item.link,
+      shortDescription: item.linkType,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          link: { label: "Link" },
+        },
+        selectInputs: {
+          linkType: {
+            label: "Typ linku",
+            placeholder: "Wybierz rodzaj linku",
+            optionEnum: LinkType,
+            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATION_LINKS.TYPE,
+          },
+        },
+      },
+      defaultValues: {
+        link: "",
+        linkType: LinkType.Default,
+      },
+    },
+  },
+  [Resource.StudentOrganizationTags]: {
+    queryName: "tags",
+    pk: "tag",
+    apiPath: "student_organization_tags",
+    itemMapper: (item) => ({
+      name: item.tag,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          tag: { label: "Tag" },
+        },
+      },
+      defaultValues: {
+        tag: "",
       },
     },
   },
@@ -240,6 +296,6 @@ export const RESOURCE_METADATA = {
       },
     },
   },
-} satisfies {
+} as const satisfies {
   [R in Resource]: ResourceMetadata<R>;
 };

@@ -14,6 +14,10 @@ export const typedEntries = <T extends EnumerableObject>(
 ): [keyof T, ValueOf<T>][] =>
   Object.entries(targetObject) as [keyof T, ValueOf<T>][];
 
+export const typedFromEntries = <T extends EnumerableObject>(
+  entries: [keyof T, ValueOf<T>][],
+): T => Object.fromEntries(entries) as T;
+
 export const isOrderableResource = (
   resource: Resource,
 ): resource is OrderableResource =>

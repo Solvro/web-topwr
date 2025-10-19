@@ -1,10 +1,10 @@
 import type { Path } from "react-hook-form";
 import type { z } from "zod";
 
-import type { RelatedResource, Resource } from "@/config/enums";
+import type { Resource } from "@/config/enums";
 import type { LoginSchema, SortFiltersSchema } from "@/schemas";
 
-import type { AppZodObject, GenericResource, ResourceSchema } from "./app";
+import type { AppZodObject, ResourceSchema } from "./app";
 
 export type LoginFormValues = z.infer<typeof LoginSchema>;
 export type SortFiltersFormValues = z.infer<typeof SortFiltersSchema>;
@@ -34,11 +34,11 @@ type TypedSchemaKey<
  * @example type BooleanPaths = ResourceSchemaKey<Resource.StudentOrganizations, z.ZodBoolean> // yields 'isStrategic' | 'coverPreview' as those are the only boolean fields defined in the schema
  */
 export type ResourceSchemaKey<
-  T extends GenericResource,
+  T extends Resource,
   Y extends z.ZodTypeAny = z.ZodString,
 > = TypedSchemaKey<ResourceSchema<T>, Y>;
 
-interface FormInputBase {
+export interface FormInputBase {
   label: string;
 }
 
@@ -82,5 +82,5 @@ export interface AbstractResourceFormInputs<T extends Resource> {
   /** Checkbox input fields for boolean values. */
   checkboxInputs?: FormInput<T, z.ZodBoolean>;
   /** Multiselect input boxes for related resources. */
-  relationInputs?: Partial<Record<RelatedResource, true>>;
+  relationInputs?: Partial<Record<Resource, true>>;
 }

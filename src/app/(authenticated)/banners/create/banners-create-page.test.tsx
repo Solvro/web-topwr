@@ -6,6 +6,7 @@ import { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resources";
 import { expectInputValue, renderWithProviders } from "@/tests/helpers/react";
 import type { ResourceFormValues } from "@/types/app";
+import type { FormInputBase } from "@/types/forms";
 
 const DEFAULT_BANNER: ResourceFormValues<Resource.Banners> = {
   ...RESOURCE_METADATA[Resource.Banners].form.defaultValues,
@@ -30,11 +31,15 @@ describe("new banner creation form", () => {
     expect(screen.getByLabelText("URL")).toHaveValue(DEFAULT_BANNER.url);
     expect(screen.getByLabelText("Wersja robocza")).toBeChecked();
     const inputSections = RESOURCE_METADATA[Resource.Banners].form.inputs;
-    const allInputs = Object.values(inputSections).flatMap((section) =>
-      Object.entries(section),
+    const allInputs = Object.values(inputSections).flatMap(
+      (section) =>
+        Object.entries(section) as [
+          keyof typeof DEFAULT_BANNER,
+          FormInputBase,
+        ][],
     );
     for (const [name, input] of allInputs) {
-      const value = DEFAULT_BANNER[name as keyof typeof DEFAULT_BANNER];
+      const value = DEFAULT_BANNER[name];
       const inputElement = screen.getByLabelText(input.label);
       expectInputValue(inputElement, value);
     }

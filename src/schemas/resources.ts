@@ -7,21 +7,15 @@ import {
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
-  RelatedResource,
   Resource,
 } from "@/config/enums";
-import {
-  colorField,
-  isoTimestamp,
-  numericId,
-  requiredString,
-} from "@/lib/helpers";
+import { colorField, isoTimestamp, requiredString } from "@/lib/helpers";
 import type { AppZodObject } from "@/types/app";
 
 const StudentOrganizationLinkSchema = z.object({
   linkType: z.nativeEnum(LinkType),
   link: requiredString().url(),
-  studentOrganizationId: numericId(),
+  // studentOrganizationId: numericId(),
 });
 
 const StudentOrganizationTagSchema = z.object({
@@ -86,15 +80,12 @@ const BannerSchema = z.object({
   shouldRender: z.boolean().default(false),
 });
 
-export const RELATED_RESOURCE_SCHEMAS = {
-  [RelatedResource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
-  [RelatedResource.StudentOrganizationTags]: StudentOrganizationTagSchema,
-  [RelatedResource.GuideAuthors]: GuideAuthorSchema,
-} satisfies Record<RelatedResource, AppZodObject>;
-
 export const RESOURCE_SCHEMAS = {
   [Resource.GuideArticles]: GuideArticleSchema,
+  [Resource.GuideAuthors]: GuideAuthorSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
+  [Resource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
+  [Resource.StudentOrganizationTags]: StudentOrganizationTagSchema,
   [Resource.CalendarEvents]: EventCalendarSchema,
   [Resource.Banners]: BannerSchema,
 } satisfies Record<Resource, AppZodObject>;

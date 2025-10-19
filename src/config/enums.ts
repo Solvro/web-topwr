@@ -1,14 +1,11 @@
 export enum Resource {
   GuideArticles = "guide_articles",
+  GuideAuthors = "guide_authors",
   StudentOrganizations = "student_organizations",
-  Banners = "banners",
-  CalendarEvents = "calendar_events",
-}
-
-export enum RelatedResource {
   StudentOrganizationLinks = "student_organization_links",
   StudentOrganizationTags = "student_organization_tags",
-  GuideAuthors = "guide_authors",
+  Banners = "banners",
+  CalendarEvents = "calendar_events",
 }
 
 export enum OrganizationType {
