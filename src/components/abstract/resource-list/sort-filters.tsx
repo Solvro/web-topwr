@@ -5,7 +5,6 @@ import type { ClassValue } from "clsx";
 import { Check } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
-import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 
 import { SelectClear } from "@/components/select-clear";
@@ -36,14 +35,13 @@ import type { Resource } from "@/config/enums";
 import { declineNoun } from "@/lib/polish";
 import { cn } from "@/lib/utils";
 import { SortFiltersSchema } from "@/schemas";
-import type { ResourceDeclinableField } from "@/types/app";
+import type { LayoutProps, ResourceDeclinableField } from "@/types/app";
 import type { SortFiltersFormValues } from "@/types/forms";
 
 function FieldGroup({
   children,
   className,
-}: {
-  children: ReactNode;
+}: LayoutProps & {
   className?: ClassValue;
 }) {
   return <div className={cn("flex gap-[inherit]", className)}>{children}</div>;

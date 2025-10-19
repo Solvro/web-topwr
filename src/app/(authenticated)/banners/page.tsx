@@ -1,17 +1,14 @@
 import { AbstractResourceList } from "@/components/abstract/resource-list";
 import { Resource } from "@/config/enums";
+import type { ResourcePageProps } from "@/types/app";
 
-export default function BannerPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
+export default function BannerPage(props: ResourcePageProps) {
   return (
     <AbstractResourceList
       resource={Resource.Banners}
-      searchParams={searchParams}
       sortableFields={["title", "description"]}
       searchableFields={["title", "description"]}
+      {...props}
     />
   );
 }

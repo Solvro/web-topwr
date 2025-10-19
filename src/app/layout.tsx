@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
-import type { ReactNode } from "react";
 
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
+import type { LayoutProps } from "@/types/app";
 
 import "./globals.css";
 
@@ -20,11 +20,7 @@ export const metadata: Metadata = {
     "The ToPWR Admin Panel by KN Solvro is a powerful CMS for managing the ToPWR mobile app. Control content, users, and app settings with ease in one intuitive dashboard.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: ReactNode;
-}>) {
+export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang="en" className="overflow-hidden">
       <Providers>

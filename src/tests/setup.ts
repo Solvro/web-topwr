@@ -6,6 +6,7 @@ import { afterAll, afterEach, beforeAll, vi } from "vitest";
 import {
   MOCK_INTERSECTION_OBSERVER,
   MOCK_NOT_FOUND,
+  MOCK_USE_PATHNAME,
   MOCK_USE_ROUTER,
   MOCK_USE_SEARCH_PARAMS,
 } from "./mocks/functions";
@@ -31,6 +32,7 @@ vi.mock("next/navigation", async (importOriginal) => {
     ...original,
     notFound: MOCK_NOT_FOUND,
     useRouter: () => MOCK_USE_ROUTER,
+    usePathname: MOCK_USE_PATHNAME,
     useSearchParams: MOCK_USE_SEARCH_PARAMS,
   } satisfies NextNavigationModule;
 });

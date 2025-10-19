@@ -1,17 +1,14 @@
 import { AbstractResourceList } from "@/components/abstract/resource-list";
 import { Resource } from "@/config/enums";
+import type { ResourcePageProps } from "@/types/app";
 
-export default function GuideArticlesPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
+export default function GuideArticlesPage(props: ResourcePageProps) {
   return (
     <AbstractResourceList
       resource={Resource.GuideArticles}
-      searchParams={searchParams}
       sortableFields={["title", "description"]}
       searchableFields={["title", "description"]}
+      {...props}
     />
   );
 }

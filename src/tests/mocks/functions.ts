@@ -10,6 +10,8 @@ export const MOCK_USE_ROUTER: AppRouterInstance = {
   refresh: vi.fn(),
 };
 
+export const MOCK_USE_PATHNAME = vi.fn();
+
 export const MOCK_USE_SEARCH_PARAMS = vi.fn(() => {
   const { ReadonlyURLSearchParams } =
     // Need to use 'require' because an async import would force the implementation to be a Promise

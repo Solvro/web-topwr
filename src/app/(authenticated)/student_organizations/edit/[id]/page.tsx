@@ -2,13 +2,13 @@ import { AbstractResourceEditPage } from "@/components/abstract/abstract-resourc
 import { Resource } from "@/config/enums";
 import type { ResourceEditPageProps } from "@/types/app";
 
-export default function EditStudentOrganizationPage({
-  params,
-}: ResourceEditPageProps) {
+export default function EditStudentOrganizationPage(
+  props: ResourceEditPageProps,
+) {
   return (
     <AbstractResourceEditPage
       resource={Resource.StudentOrganizations}
-      params={params}
+      {...props}
     />
   );
 }
