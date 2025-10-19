@@ -4,7 +4,7 @@ import type { z } from "zod";
 import type { Resource } from "@/config/enums";
 import type { LoginSchema, SortFiltersSchema } from "@/schemas";
 
-import type { AppZodObject, ResourceSchema } from "./app";
+import type { AppZodObject, RelationDefinition, ResourceSchema } from "./app";
 
 export type LoginFormValues = z.infer<typeof LoginSchema>;
 export type SortFiltersFormValues = z.infer<typeof SortFiltersSchema>;
@@ -82,5 +82,5 @@ export interface AbstractResourceFormInputs<T extends Resource> {
   /** Checkbox input fields for boolean values. */
   checkboxInputs?: FormInput<T, z.ZodBoolean>;
   /** Multiselect input boxes for related resources. */
-  relationInputs?: Partial<Record<Resource, true>>;
+  relationInputs?: Partial<Record<Resource, RelationDefinition<T>>>;
 }

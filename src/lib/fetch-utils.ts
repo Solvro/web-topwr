@@ -3,10 +3,12 @@ import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resources";
 import { getAuthState } from "@/stores/auth";
 import type { ErrorResponse, SuccessResponse } from "@/types/api";
-import type { ResourceRelation } from "@/types/app";
 
 import { removeLeadingSlash, typedEntries } from "./helpers";
-import { getResourceMetadata } from "./helpers/app";
+import {
+  getResourceMetadata,
+  getResourceRelationDefinitions,
+} from "./helpers/app";
 
 interface BaseRequestOptions<T extends Resource>
   extends Omit<RequestInit, "headers" | "method" | "body"> {
@@ -98,9 +100,13 @@ function getRelationQueryParameters(
   if (!("relationInputs" in RESOURCE_METADATA[resource].form.inputs)) {
     return "";
   }
-  const allRelations = RESOURCE_METADATA[resource].form.inputs
-    .relationInputs as Record<ResourceRelation<Resource>, true>;
-  return `?${new URLSearchParams(typedEntries(allRelations).map(([relation]) => [RESOURCE_METADATA[relation].queryName, "true"])).toString()}`;
+  const relationSearchParameters = typedEntries(
+    getResourceRelationDefinitions(resource),
+  ).map(([relation]) => [
+    getResourceMetadata(relation).queryName ?? relation,
+    "true",
+  ]);
+  return `?${new URLSearchParams(relationSearchParameters).toString()}`;
 }
 
 function createRequest<T extends Resource>(

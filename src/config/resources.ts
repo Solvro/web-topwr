@@ -2,38 +2,17 @@ import { getFutureDate } from "@/lib/helpers/calendar";
 import type { ResourceMetadata } from "@/types/app";
 
 import {
-  DepartmentIds,
   LinkType,
   OrganizationSource,
   OrganizationStatus,
   OrganizationType,
+  RelationType,
   Resource,
+  UniversityBranch,
 } from "./enums";
 
 const SELECT_OPTION_LABELS = {
   STUDENT_ORGANIZATIONS: {
-    DEPARTMENT: {
-      [DepartmentIds.Architecture]: "Wydział Architektury",
-      [DepartmentIds.CivilEngineering]:
-        "Wydział Budownictwa Lądowego i Wodnego",
-      [DepartmentIds.Chemistry]: "Wydział Chemiczny",
-      [DepartmentIds.ComputerScienceAndTelecommunications]:
-        "Wydział Informatyki i Telekomunikacji",
-      [DepartmentIds.ElectricalEngineering]: "Wydział Elektryczny",
-      [DepartmentIds.GeoengineeringMiningAndGeology]:
-        "Wydział Geoinżynierii, Górnictwa i Geologii",
-      [DepartmentIds.EnvironmentalEngineering]: "Wydział Inżynierii Środowiska",
-      [DepartmentIds.Management]: "Wydział Zarządzania",
-      [DepartmentIds.MechanicalAndPowerEngineering]:
-        "Wydział Mechaniczno-Energetyczny",
-      [DepartmentIds.Mechanical]: "Wydział Mechaniczny",
-      [DepartmentIds.FundamentalProblemsOfTechnology]:
-        "Wydział Podstawowych Problemów Techniki",
-      [DepartmentIds.ElectronicsPhotonicsAndMicrosystems]:
-        "Wydział Elektroniki, Fotoniki i Mikrosystemów",
-      [DepartmentIds.Mathematics]: "Wydział Matematyki",
-      [DepartmentIds.Medical]: "Wydział Medyczny",
-    } satisfies Record<DepartmentIds, string>,
     SOURCE: {
       [OrganizationSource.StudentDepartment]: "Dział Studencki",
       [OrganizationSource.Manual]: "Ręcznie",
@@ -79,6 +58,46 @@ export const ORDERABLE_RESOURCES = [
 
 /** Required metadata for each resource. */
 export const RESOURCE_METADATA = {
+  [Resource.Departments]: {
+    apiPath: "departments",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.description,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa" },
+          code: { label: "Kod wydziału (z numerem)" },
+          betterCode: { label: "Kod wydziału (ze skrótem)" },
+        },
+        textareaInputs: {
+          addressLine1: { label: "Adres - linia 1" },
+          addressLine2: { label: "Adres - linia 2" },
+        },
+        imageInputs: {
+          logoKey: { label: "Logo" },
+        },
+        richTextInputs: { description: { label: "Opis" } },
+        colorInputs: {
+          gradientStart: { label: "Kolor początkowy gradientu" },
+          gradientEnd: { label: "Kolor końcowy gradientu" },
+        },
+      },
+      defaultValues: {
+        name: "",
+        addressLine1: "",
+        addressLine2: "",
+        description: null,
+        code: "",
+        betterCode: "",
+        logoKey: "",
+        gradientStart: "",
+        gradientEnd: "",
+        branch: UniversityBranch.MainCampus,
+      },
+    },
+  },
   [Resource.GuideArticles]: {
     apiPath: "guide_articles",
     itemMapper: (item) => ({
@@ -96,7 +115,7 @@ export const RESOURCE_METADATA = {
         },
         richTextInputs: { description: { label: "Opis" } },
         relationInputs: {
-          [Resource.GuideAuthors]: true,
+          [Resource.GuideAuthors]: { type: RelationType.ManyToMany },
         },
       },
       defaultValues: {
@@ -136,12 +155,6 @@ export const RESOURCE_METADATA = {
         textareaInputs: { shortDescription: { label: "Krótki opis" } },
         richTextInputs: { description: { label: "Opis" } },
         selectInputs: {
-          departmentId: {
-            label: "Wydział",
-            placeholder: "Wybierz wydział",
-            optionEnum: DepartmentIds,
-            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.DEPARTMENT,
-          },
           source: {
             label: "Źródło",
             placeholder: "Wybierz źródło",
@@ -165,8 +178,14 @@ export const RESOURCE_METADATA = {
           isStrategic: { label: "Czy jest kołem strategicznym?" },
         },
         relationInputs: {
-          [Resource.StudentOrganizationLinks]: true,
-          [Resource.StudentOrganizationTags]: true,
+          [Resource.Departments]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "departmentId",
+          },
+          [Resource.StudentOrganizationLinks]: {
+            type: RelationType.ManyToMany,
+          },
+          [Resource.StudentOrganizationTags]: { type: RelationType.ManyToMany },
         },
       },
       defaultValues: {
@@ -181,7 +200,7 @@ export const RESOURCE_METADATA = {
         organizationType: OrganizationType.ScientificClub,
         organizationStatus: OrganizationStatus.Active,
         isStrategic: false,
-        branch: "main", // filia/oddział Politechniki
+        branch: UniversityBranch.MainCampus,
       },
     },
   },

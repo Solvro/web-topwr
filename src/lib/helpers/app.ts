@@ -1,6 +1,11 @@
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resources";
-import type { Id, ResourceMetadata } from "@/types/app";
+import type {
+  Id,
+  RelationDefinition,
+  ResourceMetadata,
+  ResourceRelation,
+} from "@/types/app";
 
 import { sanitizeId } from "./transformations";
 
@@ -21,3 +26,15 @@ export const TANSTACK_KEYS = {
  */
 export const getResourceMetadata = <R extends Resource>(resource: R) =>
   RESOURCE_METADATA[resource] as unknown as ResourceMetadata<R>;
+
+/**
+ * This helper function retrieves the relation definitions for a given resource,
+ * typed as `Record<ResourceRelation<R>, RelationDefinition<R>>`.
+ */
+export const getResourceRelationDefinitions = <R extends Resource>(
+  resource: R,
+) =>
+  (getResourceMetadata(resource).form.inputs.relationInputs ?? {}) as Record<
+    ResourceRelation<R>,
+    RelationDefinition<R>
+  >;

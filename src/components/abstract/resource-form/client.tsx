@@ -38,14 +38,16 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { TOAST_MESSAGES } from "@/config/constants";
-import { DeclensionCase } from "@/config/enums";
+import { DeclensionCase, RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
-import { RESOURCE_METADATA } from "@/config/resources";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { renderAbstractResourceForm } from "@/lib/actions";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId, toTitleCase } from "@/lib/helpers";
-import { getResourceMetadata } from "@/lib/helpers/app";
+import {
+  getResourceMetadata,
+  getResourceRelationDefinitions,
+} from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 import { cn } from "@/lib/utils";
 import { RESOURCE_SCHEMAS } from "@/schemas";
@@ -53,7 +55,6 @@ import type { ModifyResourceResponse } from "@/types/api";
 import type {
   Id,
   QueriedRelations,
-  RelationResource,
   ResourceDataType,
   ResourceDefaultValues,
   ResourceFormSheetData,
@@ -141,16 +142,28 @@ export function AbstractResourceFormInternal<T extends Resource>({
     return response;
   });
 
+  const declensions = declineNoun(resource);
+  const metadata = getResourceMetadata(resource);
+
   const relationMutation = useMutationWrapper<
     ModifyResourceResponse<T>,
-    { deleted: boolean; id: Id; resourceRelation: ResourceRelation<T> }
+    {
+      deleted: boolean;
+      id: Id;
+      resourceRelation: ResourceRelation<T>;
+    }
   >(
     `update__${resource}__relation`,
     async ({ deleted, id, resourceRelation }) => {
-      const relationMetadata =
-        RESOURCE_METADATA[resourceRelation as RelationResource];
+      const relationInputs = getResourceRelationDefinitions(resource);
+      const relationDefinition = relationInputs[resourceRelation];
+      if (relationDefinition.type !== RelationType.ManyToMany) {
+        throw new Error("Only many-to-one relations are supported here.");
+      }
+      const relationMetadata = getResourceMetadata(resourceRelation);
+      const queryName = relationMetadata.queryName ?? relationMetadata.apiPath;
       const response = await fetchMutation<ModifyResourceResponse<T>>(
-        `${endpoint}/${relationMetadata.queryName}/${sanitizeId(String(id))}`,
+        `${endpoint}/${queryName}/${sanitizeId(String(id))}`,
         {
           method: deleted ? "DELETE" : "POST",
           resource,
@@ -159,10 +172,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
       return response;
     },
   );
-
-  const declensions = declineNoun(resource);
-
-  const metadata = getResourceMetadata(resource);
   const {
     imageInputs,
     textInputs,
@@ -365,47 +374,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                   )}
                 />
                 <Inputs
-                  container
-                  className="grid grid-cols-1 lg:grid-cols-2"
-                  inputs={selectInputs}
-                  mapper={([name, input]) => (
-                    <FormField
-                      key={name}
-                      control={form.control}
-                      name={name}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{input.label}</FormLabel>
-                          <Select
-                            value={String(field.value ?? "")}
-                            onValueChange={(value) => {
-                              field.onChange(
-                                Number.isNaN(Number.parseInt(value))
-                                  ? value
-                                  : Number.parseInt(value),
-                              );
-                            }}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="bg-background w-full">
-                                <SelectValue placeholder={input.placeholder} />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="border-input">
-                              {Object.values(input.optionEnum).map((option) => (
-                                <SelectItem key={option} value={String(option)}>
-                                  {input.optionLabels[option]}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-                />
-                <Inputs
                   inputs={checkboxInputs}
                   mapper={([name, input]) => (
                     <FormField
@@ -430,138 +398,204 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     />
                   )}
                 />
-                <Inputs
-                  container
-                  className="grid grid-cols-1 lg:grid-cols-2"
-                  inputs={relationInputs}
-                  mapper={([relation]) => {
-                    const resourceRelation = relation as ResourceRelation<T>;
-                    const relationData = relatedResources[resourceRelation];
-                    const config = getResourceMetadata(resourceRelation);
-                    const relationDeclined = {
-                      singular: declineNoun(relation, { plural: false }),
-                      plural: declineNoun(relation, { plural: true }),
-                    };
-                    const primaryKeyField = config.pk ?? "id";
-                    const selectedValues = isExistingResourceItem(defaultValues)
-                      ? (
-                          defaultValues as unknown as ResourceDataType<T> &
-                            QueriedRelations<T>
-                        )[config.queryName as keyof QueriedRelations<T>].map(
-                          (item) =>
-                            String(
-                              get(item, primaryKeyField, "unknown-select-item"),
-                            ),
-                        )
-                      : [];
-                    const formProps: AbstractResourceFormProps<Resource> = {
-                      resource: relation,
-                      isEmbedded: true,
-                      className: "w-full px-4",
-                    };
-                    return (
-                      <Label
-                        asChild
-                        key={`${resource}-multiselect-${relation}`}
-                      >
-                        <div className="flex-col items-start">
-                          {toTitleCase(relationDeclined.plural.nominative)}
-                          <MultiSelect
-                            deduplicateOptions
-                            hideSelectAll
-                            placeholder={`Wybierz ${relationDeclined.singular.accusative}`}
-                            className="bg-background border-input"
-                            options={relationData.map((option, index) => {
-                              const label =
-                                config.itemMapper(option).name ??
-                                JSON.stringify(option);
-                              const value = String(
-                                get(
-                                  option,
-                                  primaryKeyField,
-                                  `item-${String(index)}`,
+                {selectInputs == null && relationInputs == null ? null : (
+                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    <Inputs
+                      inputs={selectInputs}
+                      mapper={([name, input]) => (
+                        <FormField
+                          key={name}
+                          control={form.control}
+                          name={name}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{input.label}</FormLabel>
+                              <Select
+                                value={String(field.value ?? "")}
+                                onValueChange={(value) => {
+                                  field.onChange(
+                                    Number.isNaN(Number.parseInt(value))
+                                      ? value
+                                      : Number.parseInt(value),
+                                  );
+                                }}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="bg-background w-full">
+                                    <SelectValue
+                                      placeholder={input.placeholder}
+                                    />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent className="border-input">
+                                  {Object.values(input.optionEnum).map(
+                                    (option) => (
+                                      <SelectItem
+                                        key={option}
+                                        value={String(option)}
+                                      >
+                                        {input.optionLabels[option]}
+                                      </SelectItem>
+                                    ),
+                                  )}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                    />
+                    <Inputs
+                      inputs={relationInputs}
+                      mapper={([relation, relationDefinition]) => {
+                        // TODO: render a select instead of a multiselect if relationDefinition.type is RelationType.ManyToOne
+                        const resourceRelation =
+                          relation as ResourceRelation<T>;
+                        const relationData = relatedResources[resourceRelation];
+                        const config = getResourceMetadata(resourceRelation);
+                        const relationDeclined = {
+                          singular: declineNoun(relation, { plural: false }),
+                          plural: declineNoun(relation, { plural: true }),
+                        };
+                        const primaryKeyField = config.pk ?? "id";
+                        const selectedValues =
+                          isExistingResourceItem(defaultValues) &&
+                          config.queryName != null
+                            ? (
+                                defaultValues as unknown as ResourceDataType<T> &
+                                  QueriedRelations<T>
+                              )[
+                                config.queryName as keyof QueriedRelations<T>
+                              ].map((item) =>
+                                String(
+                                  get(
+                                    item,
+                                    primaryKeyField,
+                                    "unknown-select-item",
+                                  ),
                                 ),
-                              );
-                              return { label, value };
-                            })}
-                            onOptionToggled={async (value, removed) => {
-                              if (!isExistingResourceItem(defaultValues)) {
-                                toast.error(
-                                  `Najpierw utwórz ${declensions.accusative}, a następnie dopiero będziesz mógł dodać powiązane pola.`,
-                                );
-                                return false;
-                              }
-                              const { unwrap } = toast.promise(
-                                relationMutation.mutateAsync({
-                                  id: value,
-                                  deleted: removed,
-                                  resourceRelation,
-                                }),
-                                TOAST_MESSAGES.object(relationDeclined.singular)
-                                  .modify,
-                              );
-                              try {
-                                await unwrap();
-                                return true;
-                              } catch {
-                                return false;
-                              }
-                            }}
-                            onValueChange={() => {
-                              toast.info(
-                                "Zmiana wszystkich wartości na raz nie jest jeszcze dostępna. Dodawaj lub usuwaj pojedynczo.",
-                              );
-                              return false;
-                            }}
-                            onCreateItem={() => {
-                              showSheet(
-                                {
-                                  item: null,
-                                  resource: resourceRelation,
-                                },
-                                formProps,
-                              );
-                            }}
-                            onEditItem={(value) => {
-                              const relationDefaultValues = relationData.find(
-                                (option) =>
-                                  value ===
-                                  String(get(option, primaryKeyField)),
-                              );
-                              const label =
-                                relationDefaultValues == null
-                                  ? undefined
-                                  : config.itemMapper(relationDefaultValues)
-                                      .name;
-                              showSheet(
-                                {
-                                  item: {
-                                    name: label,
-                                    id: value,
-                                  },
-                                  resource: resourceRelation,
-                                },
-                                {
-                                  ...formProps,
-                                  defaultValues: {
-                                    ...(relationDefaultValues as ResourceDataType<
-                                      typeof relation
-                                    >),
-                                    // ! for now I am overriding the id to always use the PK field
-                                    // ! this may break something down the line but it should work for now,
-                                    // ! assuming the backend doesn't do some crazy stuff with IDs and PKs
-                                    id: value,
-                                  } as ResourceDefaultValues<Resource>,
-                                },
-                              );
-                            }}
-                            defaultValue={selectedValues}
-                          />
-                        </div>
-                      </Label>
-                    );
-                  }}
-                />
+                              )
+                            : [];
+                        const formProps: AbstractResourceFormProps<Resource> = {
+                          resource: relation,
+                          isEmbedded: true,
+                          className: "w-full px-4",
+                        };
+                        return (
+                          <Label
+                            asChild
+                            key={`${resource}-multiselect-${relation}`}
+                          >
+                            <div className="flex-col items-start">
+                              {toTitleCase(
+                                relationDeclined[
+                                  relationDefinition.type ===
+                                  RelationType.ManyToMany
+                                    ? "plural"
+                                    : "singular"
+                                ].nominative,
+                              )}
+                              <MultiSelect
+                                deduplicateOptions
+                                hideSelectAll
+                                placeholder={`Wybierz ${relationDeclined.singular.accusative}`}
+                                className="bg-background border-input"
+                                options={relationData.map((option, index) => {
+                                  const label =
+                                    config.itemMapper(option).name ??
+                                    JSON.stringify(option);
+                                  const value = String(
+                                    get(
+                                      option,
+                                      primaryKeyField,
+                                      `item-${String(index)}`,
+                                    ),
+                                  );
+                                  return { label, value };
+                                })}
+                                onOptionToggled={async (value, removed) => {
+                                  if (!isExistingResourceItem(defaultValues)) {
+                                    toast.error(
+                                      `Najpierw utwórz ${declensions.accusative}, a następnie dopiero będziesz mógł dodać powiązane pola.`,
+                                    );
+                                    return false;
+                                  }
+                                  const { unwrap } = toast.promise(
+                                    relationMutation.mutateAsync({
+                                      id: value,
+                                      deleted: removed,
+                                      resourceRelation,
+                                    }),
+                                    TOAST_MESSAGES.object(
+                                      relationDeclined.singular,
+                                    ).modify,
+                                  );
+                                  try {
+                                    await unwrap();
+                                    return true;
+                                  } catch {
+                                    return false;
+                                  }
+                                }}
+                                onValueChange={() => {
+                                  toast.info(
+                                    "Zmiana wszystkich wartości na raz nie jest jeszcze dostępna. Dodawaj lub usuwaj pojedynczo.",
+                                  );
+                                  return false;
+                                }}
+                                onCreateItem={() => {
+                                  showSheet(
+                                    {
+                                      item: null,
+                                      resource: resourceRelation,
+                                    },
+                                    formProps,
+                                  );
+                                }}
+                                onEditItem={(value) => {
+                                  const relationDefaultValues =
+                                    relationData.find(
+                                      (option) =>
+                                        value ===
+                                        String(get(option, primaryKeyField)),
+                                    );
+                                  const label =
+                                    relationDefaultValues == null
+                                      ? undefined
+                                      : config.itemMapper(relationDefaultValues)
+                                          .name;
+                                  showSheet(
+                                    {
+                                      item: {
+                                        name: label,
+                                        id: value,
+                                      },
+                                      resource: resourceRelation,
+                                    },
+                                    {
+                                      ...formProps,
+                                      defaultValues: {
+                                        ...(relationDefaultValues as ResourceDataType<
+                                          typeof relation
+                                        >),
+                                        // ! for now I am overriding the id to always use the PK field
+                                        // ! this may break something down the line but it should work for now,
+                                        // ! assuming the backend doesn't do some crazy stuff with IDs and PKs
+                                        id: value,
+                                      } as ResourceDefaultValues<Resource>,
+                                    },
+                                  );
+                                }}
+                                defaultValue={selectedValues}
+                              />
+                            </div>
+                          </Label>
+                        );
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>

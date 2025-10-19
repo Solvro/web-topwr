@@ -3,7 +3,7 @@ import type { DefaultValues } from "react-hook-form";
 import type { z } from "zod";
 
 import type { ERROR_CODES } from "@/config/constants";
-import type { DeclensionCase, Resource } from "@/config/enums";
+import type { DeclensionCase, RelationType, Resource } from "@/config/enums";
 import type {
   DETERMINER_DECLENSIONS,
   NOUN_PHRASE_TRANSFORMATIONS,
@@ -42,6 +42,7 @@ export type ResourceDefaultValues<R extends Resource> = ResourceFormValues<R> &
   DefaultValues<ResourceFormValues<R> | ResourceDataType<R>>;
 
 // Relations
+/** For a given resource `T`, this type returns the union of all resources to which it is related. */
 export type ResourceRelation<T extends Resource> = {
   [R in Resource]: (typeof RESOURCE_METADATA)[R]["form"]["inputs"] extends {
     relationInputs: Record<infer L, unknown>;
@@ -49,24 +50,33 @@ export type ResourceRelation<T extends Resource> = {
     ? L
     : never;
 }[T];
+export type RelationDefinition<T extends Resource> =
+  | {
+      type: RelationType.ManyToMany;
+      foreignKey?: never;
+    }
+  | {
+      type: RelationType.ManyToOne;
+      foreignKey: ResourceSchemaKey<T, z.ZodString | z.ZodNumber>;
+    };
 
-export type RelationResource = {
+export type ManyToManyResource = {
   [R in Resource]: (typeof RESOURCE_METADATA)[R] extends { queryName: string }
     ? R
     : never;
 }[Resource];
 
-export type RelationQueryName<T extends RelationResource> =
+export type RelationQueryName<T extends ManyToManyResource> =
   (typeof RESOURCE_METADATA)[T]["queryName"];
 export type QueriedRelations<T extends Resource> = {
-  [L in RelationResource as RelationQueryName<L>]: L extends ResourceRelation<T>
+  [L in ManyToManyResource as RelationQueryName<L>]: L extends ResourceRelation<T>
     ? ResourceDataType<L>[]
     : never;
 };
 
 // Resource metadata
 export type ResourceMetadata<R extends Resource> = Readonly<{
-  /** The name of the query param used to fetch the related resource from the API, if this is a relation. */
+  /** The name of the query param used to fetch the related resource from the API, if this is the related resource in a m:n relation. */
   queryName?: string;
   /** The primary key field in the resource schema, if not `"id"`. */
   pk?: ResourceSchemaKey<R, z.ZodString | z.ZodNumber>;

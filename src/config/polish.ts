@@ -5,6 +5,27 @@ import { GrammaticalGender, Resource } from "./enums";
 
 /** A dictionary of Polish language declensions of all resource names & other nouns, as well as their genders for use with determiners. */
 export const SIMPLE_NOUN_DECLENSIONS = {
+  [Resource.Departments]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "wydział",
+      genitive: "wydziału",
+      dative: "wydziałowi",
+      accusative: "wydział",
+      instrumental: "wydziałem",
+      locative: "wydziale",
+      vocative: "wydziale",
+    },
+    plural: {
+      nominative: "wydziały",
+      genitive: "wydziałów",
+      dative: "wydziałom",
+      accusative: "wydziały",
+      instrumental: "wydziałami",
+      locative: "wydziałach",
+      vocative: "wydziały",
+    },
+  },
   [Resource.GuideArticles]: {
     gender: GrammaticalGender.Masculine,
     singular: {
