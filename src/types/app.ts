@@ -5,6 +5,7 @@ import type { z } from "zod";
 import type { ERROR_CODES } from "@/config/constants";
 import type { DeclensionCase, Resource } from "@/config/enums";
 import type {
+  DETERMINER_DECLENSIONS,
   NOUN_PHRASE_TRANSFORMATIONS,
   SIMPLE_NOUN_DECLENSIONS,
 } from "@/config/polish";
@@ -55,6 +56,7 @@ export type DeclinableNoun = DeclinableSimpleNoun | DeclinableNounPhrase;
 /** Extracts from the fields of a resource only those which have defined translations and declinations in Polish. */
 export type ResourceDeclinableField<T extends Resource> =
   keyof ResourceDataType<T> & DeclinableNoun;
+export type Determiner = keyof typeof DETERMINER_DECLENSIONS;
 
 // Component types
 export type ErrorCode = keyof typeof ERROR_CODES;

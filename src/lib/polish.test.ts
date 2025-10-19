@@ -14,12 +14,31 @@ describe("Polish language utilities", () => {
     expect(result).toBe("organizacji studenckiej");
   });
 
-  it("should decline 'artykuł' correctly in nominative case with determiner", () => {
-    const result = declineNoun(Resource.GuideArticles, {
-      case: DeclensionCase.Nominative,
-      prependDeterminer: true,
-    });
-    expect(result).toBe("ten artykuł");
+  it("should decline 'artykuł' with determiner 'ten' correctly in nominative case", () => {
+    expect(
+      declineNoun(Resource.GuideArticles, {
+        case: DeclensionCase.Nominative,
+        prependDeterminer: "this",
+      }),
+    ).toBe("ten artykuł");
+  });
+
+  it("should decline 'organizacja studencka' with determiner 'nowy' correctly in dative case", () => {
+    expect(
+      declineNoun(Resource.StudentOrganizations, {
+        case: DeclensionCase.Dative,
+        prependDeterminer: "new",
+      }),
+    ).toBe("nowej organizacji studenckiej");
+  });
+
+  it("should decline 'baner' with determiner 'istniejący' correctly in genitive case", () => {
+    expect(
+      declineNoun(Resource.Banners, {
+        case: DeclensionCase.Genitive,
+        prependDeterminer: "existing",
+      }),
+    ).toBe("istniejącego baneru");
   });
 
   it("should return all declensions for 'artykuł' when no case is specified", () => {
@@ -36,6 +55,22 @@ describe("Polish language utilities", () => {
     });
   });
 
+  it("should return all declensions for 'organizacja studencka' with determiner 'istniejący' when no case is specified", () => {
+    const result = declineNoun(Resource.StudentOrganizations, {
+      prependDeterminer: "existing",
+    });
+    expect(result).toEqual({
+      gender: GrammaticalGender.Feminine,
+      nominative: "istniejąca organizacja studencka",
+      genitive: "istniejącej organizacji studenckiej",
+      dative: "istniejącej organizacji studenckiej",
+      accusative: "istniejącą organizację studencką",
+      instrumental: "istniejącą organizacją studencką",
+      locative: "istniejącej organizacji studenckiej",
+      vocative: "istniejąca organizacjo studencka",
+    });
+  });
+
   it("should decline 'organizacje studenckie' correctly in instrumental case with plural", () => {
     const result = declineNoun(Resource.StudentOrganizations, {
       case: DeclensionCase.Instrumental,
@@ -44,7 +79,7 @@ describe("Polish language utilities", () => {
     expect(result).toBe("organizacjami studenckimi");
   });
 
-  it("should decline compound nouns correctly", () => {
+  it("should decline noun phrases correctly", () => {
     const compoundNoun: DeclinableNounPhrase = "createdAt";
     const { base, transform } = NOUN_PHRASE_TRANSFORMATIONS[compoundNoun];
     const baseDeclensions = declineNoun(base);

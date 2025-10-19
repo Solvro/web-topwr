@@ -87,7 +87,7 @@ export function DeleteButtonWithDialog({
               itemName == null
                 ? declineNoun(resource, {
                     case: DeclensionCase.Accusative,
-                    prependDeterminer: true,
+                    prependDeterminer: "this",
                   }) // e.g. tę organizację studencką
                 : `${declensions.accusative} „${itemName}”` // e.g. organizację studencką „KN Solvro”
             }
