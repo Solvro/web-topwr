@@ -2,10 +2,8 @@
 
 import { Save } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
-import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
 import {
   Sheet,
   SheetClose,
@@ -21,7 +19,6 @@ import { declineNoun } from "@/lib/polish";
 import type {
   ResourceFormSheetData,
   ResourceFormSheetDataContent,
-  ResourceRelation,
 } from "@/types/app";
 
 function AbstractResourceFormSheetContent<T extends Resource>({
@@ -29,30 +26,27 @@ function AbstractResourceFormSheetContent<T extends Resource>({
   content,
 }: {
   resource: T;
-  content: ResourceFormSheetDataContent<ResourceRelation<T>>;
+  content: ResourceFormSheetDataContent<T>;
 }) {
-  const genericRelatedResource = content.resource as Resource;
-  const relationDeclensions = declineNoun(genericRelatedResource);
+  const contentResource = content.resource as Resource;
+  const relationDeclensions = declineNoun(contentResource);
+
   const [sheetTitle, sheetDescription] =
-    content.item == null
+    content.type === "create"
       ? [
           `Utwórz ${relationDeclensions.accusative}`,
-          `Stwórz ${declineNoun(genericRelatedResource, {
+          `Stwórz ${declineNoun(contentResource, {
             prependDeterminer: "new",
             case: DeclensionCase.Nominative,
           })} dla ${declineNoun(resource, { case: DeclensionCase.Genitive, plural: true })}.`,
         ]
       : [
           `Edycja ${relationDeclensions.genitive}`,
-          `Zmień dane ${declineNoun(genericRelatedResource, {
+          `Zmień dane ${declineNoun(contentResource, {
             prependDeterminer: "existing",
             case: DeclensionCase.Genitive,
           })} ${declineNoun(resource, { case: DeclensionCase.Dative })}.`,
         ];
-
-  const form = useForm({
-    defaultValues: content.item ?? {},
-  });
 
   return (
     <SheetContent className="lg:min-w-1/3">
@@ -60,9 +54,7 @@ function AbstractResourceFormSheetContent<T extends Resource>({
         <SheetTitle>{sheetTitle}</SheetTitle>
         <SheetDescription>{sheetDescription}</SheetDescription>
       </SheetHeader>
-      <Form {...form}>
-        <form className="px-4">This is the content</form>
-      </Form>
+      {content.form}
       <SheetFooter>
         <Button>
           Zapisz <Save />
@@ -81,10 +73,8 @@ export function AbstractResourceFormSheet<T extends Resource>({
   setSheet,
 }: {
   resource: T;
-  sheet: ResourceFormSheetData<ResourceRelation<T>>;
-  setSheet: Dispatch<
-    SetStateAction<ResourceFormSheetData<ResourceRelation<T>>>
-  >;
+  sheet: ResourceFormSheetData<T>;
+  setSheet: Dispatch<SetStateAction<ResourceFormSheetData<T>>>;
 }) {
   return (
     <Sheet

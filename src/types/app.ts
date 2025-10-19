@@ -49,9 +49,6 @@ export type ResourceRelation<T extends Resource> = {
     ? L
     : never;
 }[T];
-export type ResourceRelations<T extends Resource> = {
-  [L in ResourceRelation<T>]: ResourceDataType<L>[];
-};
 
 export type RelationResource = {
   [R in Resource]: (typeof RESOURCE_METADATA)[R] extends { queryName: string }
@@ -128,8 +125,9 @@ export type LayoutProps = Readonly<{
 }>;
 
 export interface ResourceFormSheetDataContent<T extends Resource> {
-  resource: T;
-  item: ResourceDataType<T> | null;
+  resource: ResourceRelation<T>;
+  form: ReactNode;
+  type: "create" | "edit";
 }
 
 export type ResourceFormSheetData<T extends Resource> =

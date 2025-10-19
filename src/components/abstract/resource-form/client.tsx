@@ -41,23 +41,31 @@ import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
+import { renderAbstractResourceForm } from "@/lib/actions";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId, toTitleCase } from "@/lib/helpers";
 import { getResourceMetadata } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
+import { cn } from "@/lib/utils";
 import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { ModifyResourceResponse } from "@/types/api";
 import type {
   QueriedRelations,
   ResourceDataType,
+  ResourceDefaultValues,
   ResourceFormSheetData,
+  ResourceFormSheetDataContent,
   ResourceFormValues,
   ResourceRelation,
-  ResourceRelations,
 } from "@/types/app";
 
-import type { ExistingImages } from ".";
+import type {
+  AbstractResourceFormProps,
+  ExistingImages,
+  ResourceRelations,
+} from ".";
 import { AbstractResourceFormSheet } from "./sheet";
+import { AbstractResourceFormSkeleton } from "./skeleton";
 
 type WithOptionalId<T> = T & { id?: number };
 type SchemaWithOptionalId<T extends z.ZodType> = WithOptionalId<z.infer<T>>;
@@ -91,17 +99,18 @@ export function AbstractResourceFormInternal<T extends Resource>({
   defaultValues,
   existingImages,
   relatedResources,
-}: {
-  resource: T;
-  defaultValues: DefaultValues<ResourceDataType<T> | ResourceFormValues<T>>;
+  renderButtons = true,
+  className,
+}: AbstractResourceFormProps<T> & {
+  defaultValues: ResourceDefaultValues<T>;
   existingImages: ExistingImages<T>;
   relatedResources: ResourceRelations<T>;
 }) {
   const schema = RESOURCE_SCHEMAS[resource];
   const router = useRouter();
-  const [sheet, setSheet] = useState<
-    ResourceFormSheetData<ResourceRelation<T>>
-  >({ visible: false });
+  const [sheet, setSheet] = useState<ResourceFormSheetData<T>>({
+    visible: false,
+  });
   const form = useForm<ResourceFormValues<T>>({
     // Maybe try extracting the id from the defaultValues and passing it as an editedResourceId prop?
     // @ts-expect-error TODO: the schema is compatible but for some reason the types don't match
@@ -144,8 +153,24 @@ export function AbstractResourceFormInternal<T extends Resource>({
     relationInputs,
   } = metadata.form.inputs;
 
+  async function showSheet(
+    options: Omit<ResourceFormSheetDataContent<T>, "form">,
+    ...formProps: Parameters<typeof renderAbstractResourceForm>
+  ) {
+    // TODO?: use Suspense in sheet.tsx instead of showing skeleton first
+    setSheet({
+      visible: true,
+      content: {
+        ...options,
+        form: <AbstractResourceFormSkeleton />,
+      },
+    });
+    const renderedForm = await renderAbstractResourceForm(...formProps);
+    setSheet({ visible: true, content: { ...options, form: renderedForm } });
+  }
+
   return (
-    <div className="mx-auto flex h-full flex-col">
+    <div className={cn("mx-auto flex h-full flex-col", className)}>
       <Form {...form}>
         <form
           className="flex grow flex-col gap-4"
@@ -158,28 +183,28 @@ export function AbstractResourceFormInternal<T extends Resource>({
         >
           <div className="grow basis-0 overflow-y-auto">
             <div className="bg-background-secondary flex min-h-full flex-col gap-4 rounded-xl p-4 md:flex-row">
-              <div className="space-y-4">
-                <Inputs
-                  inputs={imageInputs}
-                  mapper={([name, input]) => (
-                    <FormField
-                      key={name}
-                      control={form.control}
-                      name={name}
-                      render={({ field }) => (
-                        <FormItem>
-                          <ImageUpload
-                            {...field}
-                            label={input.label}
-                            existingImage={existingImages[field.name]}
-                          />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-                />
-              </div>
+              <Inputs
+                container
+                className="flex-col"
+                inputs={imageInputs}
+                mapper={([name, input]) => (
+                  <FormField
+                    key={name}
+                    control={form.control}
+                    name={name}
+                    render={({ field }) => (
+                      <FormItem>
+                        <ImageUpload
+                          {...field}
+                          label={input.label}
+                          existingImage={existingImages[field.name]}
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+              />
               <div className="w-full space-y-4">
                 <Inputs
                   inputs={textInputs}
@@ -414,6 +439,11 @@ export function AbstractResourceFormInternal<T extends Resource>({
                             ),
                         )
                       : [];
+                    const formProps: AbstractResourceFormProps<Resource> = {
+                      resource: relation,
+                      renderButtons: false,
+                      className: "w-full px-4",
+                    };
                     return (
                       <Label
                         asChild
@@ -453,29 +483,33 @@ export function AbstractResourceFormInternal<T extends Resource>({
                               // eslint-disable-next-line no-console
                               console.log("new select values:", values);
                             }}
-                            onCreateItem={() => {
-                              setSheet({
-                                visible: true,
-                                content: {
+                            onCreateItem={async () => {
+                              await showSheet(
+                                {
+                                  type: "create",
                                   resource: resourceRelation,
-                                  item: null,
                                 },
-                              });
+                                formProps,
+                              );
                             }}
-                            onEditItem={(value) => {
-                              setSheet({
-                                visible: true,
-                                content: {
+                            onEditItem={async (value) => {
+                              const relationDefaultValues = relationData.find(
+                                (option) =>
+                                  value ===
+                                  String(get(option, primaryKeyField)),
+                              ) as
+                                | undefined
+                                | ResourceDataType<typeof relation>;
+                              await showSheet(
+                                {
+                                  type: "edit",
                                   resource: resourceRelation,
-                                  item: relationData.find(
-                                    (option) =>
-                                      value ===
-                                      String(get(option, primaryKeyField)),
-                                  ) as null | ResourceDataType<
-                                    typeof resourceRelation
-                                  >,
                                 },
-                              });
+                                {
+                                  ...formProps,
+                                  defaultValues: relationDefaultValues,
+                                },
+                              );
                             }}
                             defaultValue={selectedValues}
                           />
@@ -492,29 +526,31 @@ export function AbstractResourceFormInternal<T extends Resource>({
               </div>
             </div>
           </div>
-          <div className="flex w-full justify-between">
-            <Button
-              variant="ghost"
-              className="text-primary hover:text-primary w-min"
-              asChild
-            >
-              <Link href={`/${resource}`} className="">
-                <ChevronLeft />
-                Wróć do{" "}
-                {declineNoun(resource, {
-                  case: DeclensionCase.Genitive,
-                  plural: true,
-                })}
-              </Link>
-            </Button>
-            <Button
-              type="submit"
-              loading={isPending}
-              disabled={!form.formState.isDirty}
-            >
-              Zapisz
-            </Button>
-          </div>
+          {renderButtons ? (
+            <div className="flex w-full justify-between">
+              <Button
+                variant="ghost"
+                className="text-primary hover:text-primary w-min"
+                asChild
+              >
+                <Link href={`/${resource}`} className="">
+                  <ChevronLeft />
+                  Wróć do{" "}
+                  {declineNoun(resource, {
+                    case: DeclensionCase.Genitive,
+                    plural: true,
+                  })}
+                </Link>
+              </Button>
+              <Button
+                type="submit"
+                loading={isPending}
+                disabled={!form.formState.isDirty}
+              >
+                Zapisz
+              </Button>
+            </div>
+          ) : null}
         </form>
       </Form>
     </div>

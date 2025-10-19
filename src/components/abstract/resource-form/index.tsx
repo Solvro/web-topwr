@@ -10,7 +10,6 @@ import type {
   ResourceDataType,
   ResourceDefaultValues,
   ResourceRelation,
-  ResourceRelations,
 } from "@/types/app";
 import type { ResourceSchemaKey } from "@/types/forms";
 
@@ -20,6 +19,19 @@ type LabelledRelationData<T extends ResourceRelation<Resource>> = [
   T,
   ResourceDataType<T>[],
 ];
+
+export type ExistingImages<T extends Resource> = Partial<
+  Record<ResourceSchemaKey<T>, ReactNode>
+>;
+export type ResourceRelations<T extends Resource> = {
+  [L in ResourceRelation<T>]: ResourceDataType<L>[];
+};
+
+export interface AbstractResourceFormProps<T extends Resource> {
+  resource: T;
+  renderButtons?: boolean;
+  className?: string;
+}
 
 async function fetchRelatedResources<T extends Resource>(
   resource: T,
@@ -39,14 +51,11 @@ async function fetchRelatedResources<T extends Resource>(
   return typedFromEntries<ResourceRelations<T>>(responses);
 }
 
-export type ExistingImages<T extends Resource> = Partial<
-  Record<ResourceSchemaKey<T>, ReactNode>
->;
 export async function AbstractResourceForm<T extends Resource>({
   resource,
   defaultValues = getResourceMetadata(resource).form.defaultValues,
-}: {
-  resource: T;
+  ...props
+}: AbstractResourceFormProps<T> & {
   defaultValues?: ResourceDefaultValues<T>;
 }) {
   const existingImages: ExistingImages<T> = {};
@@ -73,6 +82,7 @@ export async function AbstractResourceForm<T extends Resource>({
       defaultValues={defaultValues}
       existingImages={existingImages}
       relatedResources={relatedResources}
+      {...props}
     />
   );
 }
