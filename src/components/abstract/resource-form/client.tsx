@@ -68,7 +68,6 @@ import type {
   ResourceRelations,
 } from ".";
 import { AbstractResourceFormSheet } from "./sheet";
-import { AbstractResourceFormSkeleton } from "./skeleton";
 
 type WithOptionalId<T> = T & { id?: number };
 type SchemaWithOptionalId<T extends z.ZodType> = WithOptionalId<z.infer<T>>;
@@ -177,20 +176,12 @@ export function AbstractResourceFormInternal<T extends Resource>({
     relationInputs,
   } = metadata.form.inputs;
 
-  async function showSheet(
+  function showSheet(
     options: Omit<ResourceFormSheetDataContent<T>, "form">,
     ...formProps: Parameters<typeof renderAbstractResourceForm>
   ) {
-    // TODO?: use Suspense in sheet.tsx instead of showing skeleton first
-    setSheet({
-      visible: true,
-      content: {
-        ...options,
-        form: <AbstractResourceFormSkeleton />,
-      },
-    });
-    const renderedForm = await renderAbstractResourceForm(...formProps);
-    setSheet({ visible: true, content: { ...options, form: renderedForm } });
+    const formPromise = renderAbstractResourceForm(...formProps);
+    setSheet({ visible: true, content: { ...options, form: formPromise } });
   }
 
   return (
@@ -522,8 +513,8 @@ export function AbstractResourceFormInternal<T extends Resource>({
                               );
                               return false;
                             }}
-                            onCreateItem={async () => {
-                              await showSheet(
+                            onCreateItem={() => {
+                              showSheet(
                                 {
                                   item: null,
                                   resource: resourceRelation,
@@ -531,7 +522,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                                 formProps,
                               );
                             }}
-                            onEditItem={async (value) => {
+                            onEditItem={(value) => {
                               const relationDefaultValues = relationData.find(
                                 (option) =>
                                   value ===
@@ -542,7 +533,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                                   ? undefined
                                   : config.itemMapper(relationDefaultValues)
                                       .name;
-                              await showSheet(
+                              showSheet(
                                 {
                                   item: {
                                     name: label,

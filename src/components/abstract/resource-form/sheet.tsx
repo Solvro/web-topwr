@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
 import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
@@ -20,6 +21,8 @@ import type {
   ResourceFormSheetData,
   ResourceFormSheetDataContent,
 } from "@/types/app";
+
+import { AbstractResourceFormSkeleton } from "./skeleton";
 
 function AbstractResourceFormSheetContent<T extends Resource>({
   resource,
@@ -56,7 +59,9 @@ function AbstractResourceFormSheetContent<T extends Resource>({
         <SheetTitle>{sheetTitle}</SheetTitle>
         <SheetDescription>{sheetDescription}</SheetDescription>
       </SheetHeader>
-      {content.form}
+      <Suspense fallback={<AbstractResourceFormSkeleton />}>
+        {content.form}
+      </Suspense>
       <SheetFooter className="pt-0">
         {content.item == null ? null : (
           <DeleteButtonWithDialog

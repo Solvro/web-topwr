@@ -2,6 +2,7 @@
 
 import type { ComponentProps } from "react";
 
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
@@ -31,59 +32,64 @@ function LabelSkeleton({
 
 export function AbstractResourceFormSkeleton() {
   return (
-    <div className="bg-background-secondary mx-4 h-full gap-4 rounded-xl p-4">
-      <div className="w-full space-y-4">
-        {/* Text input */}
-        <div>
-          <LabelSkeleton />
-          <InputSkeleton />
-        </div>
-
-        {/* Textarea */}
-        <div>
-          <LabelSkeleton />
-          <InputSkeleton className="h-24" />
-        </div>
-
-        {/* Rich text editor */}
-        <div>
-          <LabelSkeleton />
-          <InputSkeleton className="h-32" />
-        </div>
-
-        {/* Selects grid */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <div className="mx-4 flex h-full flex-col gap-4">
+      <div className="bg-background-secondary h-full rounded-xl p-4">
+        <div className="w-full space-y-4">
+          {/* Text input */}
           <div>
             <LabelSkeleton />
             <InputSkeleton />
           </div>
-          <div>
-            <LabelSkeleton />
-            <InputSkeleton />
-          </div>
-        </div>
 
-        {/* Checkbox row */}
-        <div>
-          <LabelSkeleton />
-          <div className="flex items-center space-x-2">
-            <InputSkeleton className="h-5 w-5 rounded-sm" />
-            <InputSkeleton className="h-5 w-40" />
+          {/* Textarea */}
+          <div>
+            <LabelSkeleton />
+            <InputSkeleton className="h-24" />
           </div>
-        </div>
 
-        {/* Relations multiselects */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          {/* Rich text editor */}
           <div>
             <LabelSkeleton />
-            <InputSkeleton />
+            <InputSkeleton className="h-32" />
           </div>
+
+          {/* Selects grid */}
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div>
+              <LabelSkeleton />
+              <InputSkeleton />
+            </div>
+            <div>
+              <LabelSkeleton />
+              <InputSkeleton />
+            </div>
+          </div>
+
+          {/* Checkbox row */}
           <div>
             <LabelSkeleton />
-            <InputSkeleton />
+            <div className="flex items-center space-x-2">
+              <InputSkeleton className="h-5 w-5 rounded-sm" />
+              <InputSkeleton className="h-5 w-40" />
+            </div>
+          </div>
+
+          {/* Relations multiselects */}
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div>
+              <LabelSkeleton />
+              <InputSkeleton />
+            </div>
+            <div>
+              <LabelSkeleton />
+              <InputSkeleton />
+            </div>
           </div>
         </div>
       </div>
+      <Button className="bg-primary/50" asChild>
+        <Skeleton />
+      </Button>
     </div>
   );
 }
