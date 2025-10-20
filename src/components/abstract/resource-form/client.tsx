@@ -9,6 +9,7 @@ import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 
+import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { CheckboxInput } from "@/components/inputs/checkbox-input";
 import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";
@@ -743,14 +744,22 @@ export function AbstractResourceFormInternal<T extends Resource>({
                 </Link>
               </Button>
             )}
-            <Button
-              type="submit"
-              loading={isPending}
-              disabled={!form.formState.isDirty}
-              className={cn({ "w-full": isEmbedded })}
-            >
-              {submitLabel} {declensions.accusative} <SubmitIconComponent />
-            </Button>
+            <div className="flex gap-4">
+              {typeof (defaultValues as { id?: number }).id === "number" && (
+                <DeleteButtonWithDialog
+                  resource={resource}
+                  id={(defaultValues as { id: number }).id}
+                />
+              )}
+              <Button
+                type="submit"
+                loading={isPending}
+                disabled={!form.formState.isDirty}
+                className={cn({ "w-full": isEmbedded })}
+              >
+                {submitLabel} {declensions.accusative} <SubmitIconComponent />
+              </Button>
+            </div>
           </div>
         </form>
       </Form>

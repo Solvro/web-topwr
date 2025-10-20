@@ -132,7 +132,8 @@ describe("OrderableItemWrapper for AbstractResourceList", () => {
     });
 
     const reorderedItems = screen.getAllByRole("listitem");
-    expect(reorderedItems).toHaveLength(MOCK_DATA.length);
+    //KD: I added one more button to that component, so the length increased by 1
+    expect(reorderedItems).toHaveLength(MOCK_DATA.length + 1);
     expect(reorderedItems[0]).toHaveTextContent(
       RESOURCE_METADATA[resource].itemMapper(MOCK_DATA[1]).name,
     );

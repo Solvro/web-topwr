@@ -1,7 +1,9 @@
 import type { ComponentType, Ref } from "react";
 
+import { ToggleOrganizationStatusButton } from "@/app/(private)/student_organizations/edit/[id]/archive";
 import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { Badge } from "@/components/ui/badge";
+import { Resource } from "@/config/enums";
 import { getResourceMetadata } from "@/lib/helpers/app";
 import type { ListItem, ResourceDataType, RoutableResource } from "@/types/app";
 
@@ -26,6 +28,7 @@ export function AbstractResourceListItem<T extends RoutableResource>({
     id: item.id,
     ...metadata.itemMapper(item),
   };
+
   return (
     <li
       ref={ref}
@@ -48,7 +51,19 @@ export function AbstractResourceListItem<T extends RoutableResource>({
       </span>
       <div className="space-x-0.5 sm:space-x-2">
         <EditButton resource={resource} id={listItem.id} />
-        <DeleteButtonWithDialog resource={resource} id={listItem.id} />
+
+        {resource === Resource.StudentOrganizations ? (
+          <ToggleOrganizationStatusButton
+            id={Number(listItem.id)}
+            resource={resource}
+            organizationStatus={
+              (item as { organizationStatus: "active" | "inactive" })
+                .organizationStatus
+            }
+          />
+        ) : (
+          <DeleteButtonWithDialog resource={resource} id={listItem.id} />
+        )}
       </div>
     </li>
   );
