@@ -227,7 +227,7 @@ interface MultiSelectProps
 
   /**
    * Custom empty state message when no options match search.
-   * Optional, defaults to "No results found."
+   * Optional, defaults to "Brak wyników."
    */
   emptyIndicator?: React.ReactNode;
 
@@ -719,12 +719,13 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
     ) => {
       if (event.key === "Enter") {
         setIsPopoverOpen(true);
-      } else if (event.key === "Backspace" && !event.currentTarget.value) {
-        const newSelectedValues = [...selectedValues];
-        newSelectedValues.pop();
-        if (onValueChange(newSelectedValues) !== false) {
-          setSelectedValues(newSelectedValues);
-        }
+        // disable removing the last item with backspace
+        // } else if (event.key === "Backspace" && !event.currentTarget.value) {
+        //   const newSelectedValues = [...selectedValues];
+        //   newSelectedValues.pop();
+        //   if (onValueChange(newSelectedValues) !== false) {
+        //     setSelectedValues(newSelectedValues);
+        //   }
       }
     };
 
@@ -1173,9 +1174,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                   "overscroll-behavior-y-contain",
                 )}
               >
-                <CommandEmpty>
-                  {emptyIndicator || "No results found."}
-                </CommandEmpty>{" "}
+                <CommandEmpty>{emptyIndicator || "Brak wyników."}</CommandEmpty>{" "}
                 {!hideSelectAll && !searchValue && (
                   <CommandGroup>
                     <CommandItem
@@ -1248,46 +1247,46 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                     ))}
                   </CommandGroup>
                 )}
-                <CommandSeparator />
-                <CommandGroup>
-                  <div className="flex items-center justify-between">
-                    {selectedValues.length > 0 && (
-                      <>
-                        <CommandItem
-                          onSelect={handleClear}
-                          className="flex-1 cursor-pointer justify-center"
-                        >
-                          Wyczyść <BrushCleaningIcon />
-                        </CommandItem>
-                        <Separator
-                          orientation="vertical"
-                          className="flex h-full min-h-6"
-                        />
-                      </>
-                    )}
-                    <CommandItem
-                      onSelect={() => setIsPopoverOpen(false)}
-                      className="max-w-full flex-1 cursor-pointer justify-center"
-                    >
-                      Zamknij
-                    </CommandItem>
-                    {onCreateItem != null && (
-                      <>
-                        <Separator
-                          orientation="vertical"
-                          className="flex h-full min-h-6"
-                        />
-                        <CommandItem
-                          onSelect={onCreateItem}
-                          className="flex-1 cursor-pointer justify-center"
-                        >
-                          Utwórz <PlusIcon />
-                        </CommandItem>
-                      </>
-                    )}
-                  </div>
-                </CommandGroup>
               </CommandList>
+              <CommandSeparator />
+              <CommandGroup>
+                <div className="flex items-center justify-between">
+                  {selectedValues.length > 0 && (
+                    <>
+                      <CommandItem
+                        onSelect={handleClear}
+                        className="flex-1 cursor-pointer justify-center"
+                      >
+                        Wyczyść <BrushCleaningIcon />
+                      </CommandItem>
+                      <Separator
+                        orientation="vertical"
+                        className="flex h-full min-h-6"
+                      />
+                    </>
+                  )}
+                  <CommandItem
+                    onSelect={() => setIsPopoverOpen(false)}
+                    className="max-w-full flex-1 cursor-pointer justify-center"
+                  >
+                    Zamknij
+                  </CommandItem>
+                  {onCreateItem != null && (
+                    <>
+                      <Separator
+                        orientation="vertical"
+                        className="flex h-full min-h-6"
+                      />
+                      <CommandItem
+                        onSelect={onCreateItem}
+                        className="flex-1 cursor-pointer justify-center"
+                      >
+                        Utwórz <PlusIcon />
+                      </CommandItem>
+                    </>
+                  )}
+                </div>
+              </CommandGroup>
             </Command>
           </PopoverContent>
           {animation > 0 && selectedValues.length > 0 && (

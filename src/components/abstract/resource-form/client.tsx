@@ -438,7 +438,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                   )}
                 />
                 {selectInputs == null && relationInputs == null ? null : (
-                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                  <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
                     <Inputs
                       inputs={selectInputs}
                       mapper={([name, input]) => (
@@ -559,6 +559,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                               }
                               placeholder={inputPlaceholder}
                               className="bg-background border-input"
+                              emptyIndicator={`Brak ${relationDeclined.plural.genitive} spełniających wyszukanie.`}
                               options={relationDataOptions.map(
                                 (option, index) => {
                                   const label =
