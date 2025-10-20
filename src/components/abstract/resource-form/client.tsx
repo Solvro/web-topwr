@@ -472,7 +472,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           resource,
                           defaultValues,
                         );
-                        const inputPlaceholder = `Wybierz ${relationDeclined.singular.accusative}`;
                         if (
                           relationDefinition.type === RelationType.ManyToOne
                         ) {
@@ -498,32 +497,48 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           );
                         }
                         const primaryKeyField = getResourcePk(relation);
-                        const [selectedValues, relationDataOptions] =
-                          isEditingParentResource
-                            ? [
-                                defaultValues[
-                                  getResourceQueryName(
-                                    relation as XToManyResource,
-                                  )
-                                ].map((item) =>
-                                  String(
-                                    get(
-                                      item,
-                                      primaryKeyField,
-                                      "unknown-select-item",
-                                    ),
-                                  ),
-                                ),
-                                relationDefinition.type ===
-                                RelationType.OneToMany
-                                  ? (defaultValues[
-                                      getResourceQueryName(
-                                        relation as XToManyResource,
-                                      )
-                                    ] as ResourceDataType<typeof relation>[])
-                                  : relationData,
-                              ]
-                            : [[], []];
+                        const inputLabel = toTitleCase(
+                          relationDeclined.plural.nominative,
+                        );
+                        const elementKey = `${resource}-multiselect-${relation}`;
+                        if (!isEditingParentResource) {
+                          return (
+                            <Label key={elementKey} asChild>
+                              <div className="flex-col items-stretch">
+                                {inputLabel}
+                                <div className="text-foreground/50 py-2 text-center">
+                                  {toTitleCase(
+                                    relationDeclined.plural.accusative,
+                                  )}{" "}
+                                  można dodać po utworzeniu{" "}
+                                  {declensions.genitive}.
+                                </div>
+                              </div>
+                            </Label>
+                          );
+                        }
+                        // When it's a m:n relation, we can reuse relation data that already exists
+                        // For 1:n relation, we will be creating items specifically for this resource
+                        const action =
+                          relationDefinition.type === RelationType.OneToMany
+                            ? "Dodaj"
+                            : "Wybierz";
+                        const inputPlaceholder = `${action} ${relationDeclined.singular.accusative}`;
+                        const selectedValues = defaultValues[
+                          getResourceQueryName(relation as XToManyResource)
+                        ].map((item) =>
+                          String(
+                            get(item, primaryKeyField, "unknown-select-item"),
+                          ),
+                        );
+                        const relationDataOptions =
+                          relationDefinition.type === RelationType.OneToMany
+                            ? (defaultValues[
+                                getResourceQueryName(
+                                  relation as XToManyResource,
+                                )
+                              ] as ResourceDataType<typeof relation>[])
+                            : relationData;
                         const formProps: AbstractResourceFormProps<Resource> = {
                           resource: relation,
                           isEmbedded: true,
@@ -531,126 +546,105 @@ export function AbstractResourceFormInternal<T extends Resource>({
                         };
                         return (
                           <Label
-                            asChild
-                            key={`${resource}-multiselect-${relation}`}
+                            key={elementKey}
+                            className="flex-col items-start"
                           >
-                            <div className="flex-col items-start">
-                              {toTitleCase(relationDeclined.plural.nominative)}
-                              <MultiSelect
-                                deduplicateOptions
-                                hideSelectAll
-                                isReadOnly={
-                                  relationDefinition.type ===
-                                  RelationType.OneToMany
-                                }
-                                placeholder={inputPlaceholder}
-                                className="bg-background border-input"
-                                options={relationDataOptions.map(
-                                  (option, index) => {
-                                    const label =
-                                      config.itemMapper(
-                                        option as ResourceDataType<
-                                          typeof resourceRelation
-                                        >,
-                                      ).name ?? JSON.stringify(option);
-                                    const value = String(
-                                      get(
-                                        option,
-                                        primaryKeyField,
-                                        `item-${String(index)}`,
-                                      ),
-                                    );
-                                    return { label, value };
-                                  },
-                                )}
-                                onOptionToggled={async (value, removed) => {
-                                  if (!isEditingParentResource) {
-                                    toast.error(
-                                      `Najpierw utwórz ${declensions.accusative}, a następnie dopiero będziesz mógł wybrać powiązane pola.`,
-                                    );
-                                    return false;
-                                  }
-                                  const { unwrap } = toast.promise(
-                                    relationMutation.mutateAsync({
-                                      id: value,
-                                      deleted: removed,
-                                      resourceRelation,
-                                    }),
-                                    TOAST_MESSAGES.object(
-                                      relationDeclined.singular,
-                                    ).modify,
+                            {inputLabel}
+                            <MultiSelect
+                              deduplicateOptions
+                              hideSelectAll
+                              isReadOnly={
+                                relationDefinition.type ===
+                                RelationType.OneToMany
+                              }
+                              placeholder={inputPlaceholder}
+                              className="bg-background border-input"
+                              options={relationDataOptions.map(
+                                (option, index) => {
+                                  const label =
+                                    config.itemMapper(
+                                      option as ResourceDataType<
+                                        typeof resourceRelation
+                                      >,
+                                    ).name ?? JSON.stringify(option);
+                                  const value = String(
+                                    get(
+                                      option,
+                                      primaryKeyField,
+                                      `item-${String(index)}`,
+                                    ),
                                   );
-                                  try {
-                                    await unwrap();
-                                    return true;
-                                  } catch {
-                                    return false;
-                                  }
-                                }}
-                                onValueChange={() => {
-                                  toast.info(
-                                    "Zmiana wszystkich wartości na raz nie jest jeszcze dostępna. Dodawaj lub usuwaj pojedynczo.",
-                                  );
+                                  return { label, value };
+                                },
+                              )}
+                              onOptionToggled={async (value, removed) => {
+                                const { unwrap } = toast.promise(
+                                  relationMutation.mutateAsync({
+                                    id: value,
+                                    deleted: removed,
+                                    resourceRelation,
+                                  }),
+                                  TOAST_MESSAGES.object(
+                                    relationDeclined.singular,
+                                  ).modify,
+                                );
+                                try {
+                                  await unwrap();
+                                  return true;
+                                } catch {
                                   return false;
-                                }}
-                                onCreateItem={
-                                  isEditingParentResource
-                                    ? () => {
-                                        showSheet(
-                                          {
-                                            item: null,
-                                            childResource: resourceRelation,
-                                            parentResourceData: defaultValues,
-                                          },
-                                          formProps,
-                                        );
-                                      }
-                                    : undefined
                                 }
-                                onEditItem={
-                                  isEditingParentResource
-                                    ? (value) => {
-                                        const relationDefaultValues =
-                                          relationDataOptions.find(
-                                            (option) =>
-                                              value ===
-                                              String(
-                                                get(option, primaryKeyField),
-                                              ),
-                                          ) as
-                                            | ResourceDataType<
-                                                typeof resourceRelation
-                                              >
-                                            | undefined;
-                                        const label =
-                                          relationDefaultValues == null
-                                            ? undefined
-                                            : config.itemMapper(
-                                                relationDefaultValues,
-                                              ).name;
-                                        showSheet(
-                                          {
-                                            item: {
-                                              name: label,
-                                              id: value,
-                                            },
-                                            childResource: resourceRelation,
-                                            parentResourceData: defaultValues,
-                                          },
-                                          {
-                                            ...formProps,
-                                            defaultValues: {
-                                              ...relationDefaultValues,
-                                              [getResourcePk(relation)]: value,
-                                            } as ResourceDefaultValues<Resource>,
-                                          },
-                                        );
-                                      }
-                                    : undefined
-                                }
-                                defaultValue={selectedValues}
-                              />
-                            </div>
+                              }}
+                              onValueChange={() => {
+                                toast.info(
+                                  "Zmiana wszystkich wartości na raz nie jest jeszcze dostępna. Dodawaj lub usuwaj pojedynczo.",
+                                );
+                                return false;
+                              }}
+                              onCreateItem={() => {
+                                showSheet(
+                                  {
+                                    item: null,
+                                    childResource: resourceRelation,
+                                    parentResourceData: defaultValues,
+                                  },
+                                  formProps,
+                                );
+                              }}
+                              onEditItem={(value) => {
+                                const relationDefaultValues =
+                                  relationDataOptions.find(
+                                    (option) =>
+                                      value ===
+                                      String(get(option, primaryKeyField)),
+                                  ) as
+                                    | ResourceDataType<typeof resourceRelation>
+                                    | undefined;
+                                const label =
+                                  relationDefaultValues == null
+                                    ? undefined
+                                    : config.itemMapper(relationDefaultValues)
+                                        .name;
+                                showSheet(
+                                  {
+                                    item: {
+                                      name: label,
+                                      id: value,
+                                    },
+                                    childResource: resourceRelation,
+                                    parentResourceData: defaultValues,
+                                  },
+                                  {
+                                    ...formProps,
+                                    defaultValues: {
+                                      ...relationDefaultValues,
+                                      [getResourcePk(relation)]: value,
+                                    } as ResourceDefaultValues<Resource>,
+                                  },
+                                );
+                              }}
+                              defaultValue={selectedValues}
+                            />
                           </Label>
                         );
                       }}
