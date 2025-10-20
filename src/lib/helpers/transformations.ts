@@ -35,3 +35,6 @@ export const sanitizeId = (id: Id): string =>
 
 export const toTitleCase = (text: string): string =>
   text === "" ? "" : text[0].toUpperCase() + text.slice(1).toLowerCase();
+
+export const tryParseNumber = (value: string): number | string =>
+  Number.isNaN(Number.parseInt(value)) ? value : Number.parseInt(value);

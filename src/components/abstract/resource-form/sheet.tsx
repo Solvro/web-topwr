@@ -39,6 +39,7 @@ function AbstractResourceFormSheetContent<T extends Resource>({
 }) {
   const relatedResource = content.childResource as Resource;
   const relationDeclensions = declineNoun(relatedResource);
+  const resourceDeclensions = declineNoun(resource);
 
   const [sheetTitle, sheetDescription] =
     content.item == null
@@ -47,14 +48,14 @@ function AbstractResourceFormSheetContent<T extends Resource>({
           `Stwórz ${declineNoun(relatedResource, {
             prependDeterminer: "new",
             case: DeclensionCase.Nominative,
-          })} dla ${declineNoun(resource, { case: DeclensionCase.Genitive, plural: true })}.`,
+          })} dla ${resourceDeclensions.genitive}.`,
         ]
       : [
           `Edycja ${relationDeclensions.genitive}`,
           `Zmień dane ${declineNoun(relatedResource, {
             prependDeterminer: "existing",
             case: DeclensionCase.Genitive,
-          })} ${declineNoun(resource, { case: DeclensionCase.Dative })}.`,
+          })} ${resourceDeclensions.dative}.`,
         ];
 
   const parentResourceId = get(

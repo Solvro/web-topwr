@@ -14,6 +14,7 @@ import { DatePicker } from "@/components/inputs/date-picker";
 import { DateTimePicker } from "@/components/inputs/date-time-picker";
 import { ImageUpload } from "@/components/inputs/image-upload";
 import { Inputs } from "@/components/inputs/input-row";
+import { SelectInput } from "@/components/inputs/select-input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -28,13 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MinimalTiptapEditor } from "@/components/ui/minimal-tiptap";
 import { MultiSelect } from "@/components/ui/multi-select";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { SelectItem } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase, RelationType } from "@/config/enums";
@@ -159,12 +154,12 @@ export function AbstractResourceFormInternal<T extends Resource>({
     ModifyResourceResponse<T>,
     ResourceFormValues<T>
   >(mutationKey, async (body) => {
-    const shouldFetchOnChildResource =
+    const shouldFetchOnParentResource =
       relationContext == null ||
       getResourceRelationDefinitions(relationContext.parentResource)[
         relationContext.childResource
       ].type !== RelationType.OneToMany;
-    const response = await (shouldFetchOnChildResource
+    const response = await (shouldFetchOnParentResource
       ? fetchMutation<ModifyResourceResponse<T>>(endpoint, {
           body,
           method,
@@ -174,8 +169,13 @@ export function AbstractResourceFormInternal<T extends Resource>({
           `${sanitizeId(relationContext.parentResourceId)}/${getResourceQueryName(relationContext.childResource as XToManyResource)}`,
           { body, method, resource: relationContext.parentResource },
         ));
-    router.refresh();
-    form.reset(response.data);
+    if (relationContext == null && method === "POST") {
+      form.reset();
+      router.push(`/${resource}/edit/${sanitizeId(String(response.data.id))}`);
+    } else {
+      form.reset(response.data);
+      router.refresh();
+    }
     return response;
   });
 
@@ -440,45 +440,17 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     <Inputs
                       inputs={selectInputs}
                       mapper={([name, input]) => (
-                        <FormField
+                        <SelectInput
                           key={name}
                           control={form.control}
                           name={name}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{input.label}</FormLabel>
-                              <Select
-                                value={String(field.value ?? "")}
-                                onValueChange={(value) => {
-                                  field.onChange(
-                                    Number.isNaN(Number.parseInt(value))
-                                      ? value
-                                      : Number.parseInt(value),
-                                  );
-                                }}
-                              >
-                                <FormControl>
-                                  <SelectTrigger className="bg-background w-full">
-                                    <SelectValue
-                                      placeholder={input.placeholder}
-                                    />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent className="border-input">
-                                  {Object.values(input.optionEnum).map(
-                                    (option) => (
-                                      <SelectItem
-                                        key={option}
-                                        value={String(option)}
-                                      >
-                                        {input.optionLabels[option]}
-                                      </SelectItem>
-                                    ),
-                                  )}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
+                          label={input.label}
+                          options={Object.values(input.optionEnum).map(
+                            (option) => (
+                              <SelectItem key={option} value={String(option)}>
+                                {input.optionLabels[option]}
+                              </SelectItem>
+                            ),
                           )}
                         />
                       )}
@@ -486,7 +458,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     <Inputs
                       inputs={relationInputs}
                       mapper={([relation, relationDefinition]) => {
-                        // TODO: render a select instead of a multiselect if relationDefinition.type is RelationType.ManyToOne
                         const resourceRelation =
                           relation as ResourceRelation<T>;
                         const relationData = relatedResources[resourceRelation];
@@ -495,16 +466,39 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           singular: declineNoun(relation, { plural: false }),
                           plural: declineNoun(relation, { plural: true }),
                         };
-                        const primaryKeyField = config.pk ?? "id";
                         const isEditingParentResource = isExistingResourceItem(
                           resource,
                           defaultValues,
                         );
+                        const inputPlaceholder = `Wybierz ${relationDeclined.singular.accusative}`;
+                        if (
+                          relationDefinition.type === RelationType.ManyToOne
+                        ) {
+                          return (
+                            <SelectInput
+                              control={form.control}
+                              key={relationDefinition.foreignKey}
+                              name={relationDefinition.foreignKey}
+                              label={toTitleCase(
+                                relationDeclined.singular.nominative,
+                              )}
+                              options={Object.values(relationData).map(
+                                (option) => (
+                                  <SelectItem
+                                    key={option.id}
+                                    value={sanitizeId(option.id)}
+                                  >
+                                    {config.itemMapper(option).name}
+                                  </SelectItem>
+                                ),
+                              )}
+                            />
+                          );
+                        }
+                        const primaryKeyField = getResourcePk(relation);
                         const [selectedValues, relationDataOptions] =
-                          relationDefinition.type === RelationType.ManyToOne ||
-                          !isEditingParentResource
-                            ? [[], []]
-                            : [
+                          isEditingParentResource
+                            ? [
                                 defaultValues[
                                   getResourceQueryName(
                                     relation as XToManyResource,
@@ -526,7 +520,8 @@ export function AbstractResourceFormInternal<T extends Resource>({
                                       )
                                     ] as ResourceDataType<typeof relation>[])
                                   : relationData,
-                              ];
+                              ]
+                            : [[], []];
                         const formProps: AbstractResourceFormProps<Resource> = {
                           resource: relation,
                           isEmbedded: true,
@@ -538,14 +533,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                             key={`${resource}-multiselect-${relation}`}
                           >
                             <div className="flex-col items-start">
-                              {toTitleCase(
-                                relationDeclined[
-                                  relationDefinition.type ===
-                                  RelationType.ManyToOne
-                                    ? "singular"
-                                    : "plural"
-                                ].nominative,
-                              )}
+                              {toTitleCase(relationDeclined.plural.nominative)}
                               <MultiSelect
                                 deduplicateOptions
                                 hideSelectAll
@@ -553,7 +541,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                                   relationDefinition.type ===
                                   RelationType.OneToMany
                                 }
-                                placeholder={`Wybierz ${relationDeclined.singular.accusative}`}
+                                placeholder={inputPlaceholder}
                                 className="bg-background border-input"
                                 options={relationDataOptions.map(
                                   (option, index) => {

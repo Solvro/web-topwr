@@ -157,19 +157,16 @@ export const RESOURCE_METADATA = {
         selectInputs: {
           source: {
             label: "Źródło",
-            placeholder: "Wybierz źródło",
             optionEnum: OrganizationSource,
             optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.SOURCE,
           },
           organizationType: {
             label: "Typ",
-            placeholder: "Wybierz typ",
             optionEnum: OrganizationType,
             optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.TYPE,
           },
           organizationStatus: {
             label: "Status",
-            placeholder: "Wybierz status",
             optionEnum: OrganizationStatus,
             optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
           },
@@ -219,8 +216,7 @@ export const RESOURCE_METADATA = {
         },
         selectInputs: {
           linkType: {
-            label: "Typ linku",
-            placeholder: "Wybierz rodzaj linku",
+            label: "Rodzaj linku",
             optionEnum: LinkType,
             optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATION_LINKS.TYPE,
           },

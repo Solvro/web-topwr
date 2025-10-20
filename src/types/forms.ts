@@ -45,18 +45,17 @@ export interface FormInputBase {
 type FormInput<
   T extends Resource,
   S extends z.ZodTypeAny = z.ZodString,
-  P extends FormInputBase = FormInputBase,
-> = Partial<Record<ResourceSchemaKey<T, S>, P>>;
+  P = unknown,
+> = Partial<Record<ResourceSchemaKey<T, S>, P & FormInputBase>>;
 
-type FormSelectInput<
+export type FormSelectInput<
   T extends Resource,
   Y extends string | number = string | number,
 > = FormInput<
   T,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   z.ZodNativeEnum<any> | z.ZodEnum<any>,
-  FormInputBase & {
-    placeholder: string;
+  {
     optionEnum: Record<string, Y>;
     optionLabels: Record<Y, string>;
   }
