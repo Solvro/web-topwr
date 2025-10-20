@@ -1,12 +1,8 @@
 import { getErrorMessage } from "@/lib/error-handling";
 import { removeTrailingSlash } from "@/lib/helpers/transformations";
 import type { AuthState } from "@/types/api";
-import type {
-  Declensions,
-  DeclinableNoun,
-  SortDirection,
-  SortFiltersOptions,
-} from "@/types/app";
+import type { SortDirection, SortFiltersOptions } from "@/types/components";
+import type { Declensions, DeclinableNoun } from "@/types/polish";
 
 import { DeclensionCase } from "./enums";
 

@@ -1,8 +1,5 @@
 import type { Id } from "@/types/app";
 
-export const sanitizeId = (id: Id): string =>
-  String(id).trim().replaceAll(/[^\d]/g, "");
-
 export const removeTrailingSlash = (path: string): string =>
   path.replace(/\/+$/, "");
 
@@ -29,3 +26,15 @@ export const encodeQueryParameters = (
   );
   return pairArray.join("&");
 };
+
+// TODO: narrow this down to just resource IDs (e.g. using a regex)
+// keep in mind this cannot be just integers because resources like
+// student_organization_tags use the tag (alphanumeric string) as the primary key
+export const sanitizeId = (id: Id): string =>
+  encodeURIComponent(String(id).trim());
+
+export const toTitleCase = (text: string): string =>
+  text === "" ? "" : text[0].toUpperCase() + text.slice(1).toLowerCase();
+
+export const tryParseNumber = (value: string): number | string =>
+  Number.isNaN(Number.parseInt(value)) ? value : Number.parseInt(value);

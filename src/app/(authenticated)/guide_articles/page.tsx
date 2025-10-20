@@ -1,6 +1,6 @@
 import { AbstractResourceList } from "@/components/abstract/resource-list";
 import { Resource } from "@/config/enums";
-import type { ResourcePageProps } from "@/types/app";
+import type { ResourcePageProps } from "@/types/components";
 
 export default function GuideArticlesPage(props: ResourcePageProps) {
   return (

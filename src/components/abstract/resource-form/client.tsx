@@ -1,19 +1,20 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, FilePlus2, Save } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
-import type { z } from "zod";
 
 import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";
 import { DateTimePicker } from "@/components/inputs/date-time-picker";
 import { ImageUpload } from "@/components/inputs/image-upload";
-import { OptionalInputRow } from "@/components/inputs/input-row";
+import { Inputs } from "@/components/inputs/input-row";
+import { SelectInput } from "@/components/inputs/select-input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -25,110 +26,214 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { MinimalTiptapEditor } from "@/components/ui/minimal-tiptap";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { SelectItem } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { TOAST_MESSAGES } from "@/config/constants";
-import { DeclensionCase } from "@/config/enums";
+import { DeclensionCase, RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { useArfContext } from "@/hooks/use-abstract-resource-form";
+import type { RelationContext } from "@/hooks/use-abstract-resource-form";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
+import { renderAbstractResourceForm } from "@/lib/actions";
 import { fetchMutation } from "@/lib/fetch-utils";
-import { sanitizeId } from "@/lib/helpers";
-import { getResourceMetadata } from "@/lib/helpers/app";
+import { sanitizeId, toTitleCase } from "@/lib/helpers";
+import {
+  getResourceMetadata,
+  getResourcePk,
+  getResourceQueryName,
+  getResourceRelationDefinitions,
+} from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
+import { cn } from "@/lib/utils";
 import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { ModifyResourceResponse } from "@/types/api";
-import type { ResourceDataType, ResourceFormValues } from "@/types/app";
+import type {
+  Id,
+  QueriedRelations,
+  ResourceDataType,
+  ResourceDefaultValues,
+  ResourceFormValues,
+  ResourceRelation,
+  XToManyResource,
+} from "@/types/app";
+import type {
+  ResourceFormSheetData,
+  ResourceFormSheetDataContent,
+} from "@/types/components";
 
-import type { ExistingImages } from ".";
+import type {
+  AbstractResourceFormProps,
+  ExistingImages,
+  ResourceRelations,
+} from ".";
+import { AbstractResourceFormSheet } from "./sheet";
 
-type WithOptionalId<T> = T & { id?: number };
-type SchemaWithOptionalId<T extends z.ZodType> = WithOptionalId<z.infer<T>>;
+const isExistingResourceItem = <T extends Resource>(
+  resource: T,
+  item: ResourceDefaultValues<T>,
+): item is ResourceDataType<T> & QueriedRelations<T> =>
+  get(item, getResourcePk(resource)) != null;
 
-const isExistingResourceItem = <T extends z.ZodType>(
-  defaultValues?: SchemaWithOptionalId<T>,
-): defaultValues is Omit<z.infer<T>, "id"> & { id: number } =>
-  defaultValues != null &&
-  "id" in defaultValues &&
-  defaultValues.id !== undefined &&
-  typeof defaultValues.id === "number";
-
-const getMutationConfig = <T extends z.ZodType>(
-  resource: Resource,
-  defaultValues?: SchemaWithOptionalId<T>,
+const getMutationConfig = <T extends Resource>(
+  resource: T,
+  defaultValues: ResourceDefaultValues<T>,
 ) =>
-  isExistingResourceItem(defaultValues)
+  isExistingResourceItem(resource, defaultValues)
     ? ({
         mutationKey: `update__${resource}__${String(defaultValues.id)}`,
         endpoint: sanitizeId(String(defaultValues.id)),
         method: "PATCH",
+        submitLabel: "Zapisz",
+        SubmitIconComponent: Save,
       } as const)
     : ({
         mutationKey: `create__${resource}`,
         endpoint: "/",
         method: "POST",
+        submitLabel: "Utwórz",
+        SubmitIconComponent: FilePlus2,
       } as const);
+
+const getDefaultValues = <T extends Resource>(
+  defaultValues: ResourceDefaultValues<T>,
+  relationContext: RelationContext<T> | null,
+) => {
+  if (relationContext == null) {
+    return defaultValues;
+  }
+  const {
+    parentResource,
+    childResource,
+    parentResourceId: parentResourcePkValue,
+  } = relationContext;
+  const relationDefinitions = getResourceRelationDefinitions(parentResource);
+  const relationDefinition = relationDefinitions[childResource];
+  if (relationDefinition.type !== RelationType.OneToMany) {
+    return defaultValues;
+  }
+  const foreignKey = relationDefinition.foreignKey;
+  return {
+    ...defaultValues,
+    [foreignKey]: parentResourcePkValue,
+  };
+};
 
 export function AbstractResourceFormInternal<T extends Resource>({
   resource,
   defaultValues,
   existingImages,
-}: {
-  resource: T;
-  defaultValues: DefaultValues<ResourceDataType<T> | ResourceFormValues<T>>;
+  relatedResources,
+  isEmbedded = false,
+  className,
+}: AbstractResourceFormProps<T> & {
+  defaultValues: ResourceDefaultValues<T>;
   existingImages: ExistingImages<T>;
+  relatedResources: ResourceRelations<T>;
 }) {
   const schema = RESOURCE_SCHEMAS[resource];
   const router = useRouter();
+  const [sheet, setSheet] = useState<ResourceFormSheetData<T>>({
+    visible: false,
+  });
+  const { relationContext } = useArfContext();
   const form = useForm<ResourceFormValues<T>>({
     // Maybe try extracting the id from the defaultValues and passing it as an editedResourceId prop?
     // @ts-expect-error TODO: the schema is compatible but for some reason the types don't match
     resolver: zodResolver(schema) as Resolver<ResourceFormValues<T>>,
-    defaultValues: defaultValues as DefaultValues<ResourceFormValues<T>>,
+    defaultValues: getDefaultValues(
+      defaultValues,
+      relationContext,
+    ) as DefaultValues<ResourceFormValues<T>>,
   });
 
-  const { mutationKey, endpoint, method } = getMutationConfig(
-    resource,
-    defaultValues,
-  );
+  const { mutationKey, endpoint, method, submitLabel, SubmitIconComponent } =
+    getMutationConfig(resource, defaultValues);
 
   const { mutateAsync, isPending } = useMutationWrapper<
     ModifyResourceResponse<T>,
     ResourceFormValues<T>
   >(mutationKey, async (body) => {
-    const response = await fetchMutation<ModifyResourceResponse<T>>(endpoint, {
-      body,
-      method,
-      resource,
-    });
-    router.refresh();
-    form.reset(response.data);
+    const shouldFetchOnParentResource =
+      relationContext == null ||
+      getResourceRelationDefinitions(relationContext.parentResource)[
+        relationContext.childResource
+      ].type !== RelationType.OneToMany;
+    const response = await (shouldFetchOnParentResource
+      ? fetchMutation<ModifyResourceResponse<T>>(endpoint, {
+          body,
+          method,
+          resource,
+        })
+      : fetchMutation<ModifyResourceResponse<T>>(
+          `${sanitizeId(relationContext.parentResourceId)}/${getResourceQueryName(relationContext.childResource as XToManyResource)}`,
+          { body, method, resource: relationContext.parentResource },
+        ));
+    if (relationContext == null && method === "POST") {
+      form.reset();
+      router.push(`/${resource}/edit/${sanitizeId(String(response.data.id))}`);
+    } else {
+      form.reset(response.data);
+      router.refresh();
+    }
     return response;
   });
 
   const declensions = declineNoun(resource);
-
   const metadata = getResourceMetadata(resource);
+
+  const relationMutation = useMutationWrapper<
+    ModifyResourceResponse<T>,
+    {
+      deleted: boolean;
+      id: Id;
+      resourceRelation: ResourceRelation<T>;
+    }
+  >(
+    `update__${resource}__relation`,
+    async ({ deleted, id, resourceRelation }) => {
+      const relationInputs = getResourceRelationDefinitions(resource);
+      const relationDefinition = relationInputs[resourceRelation];
+      if (relationDefinition.type !== RelationType.ManyToMany) {
+        throw new Error("Only many-to-one relations are supported here.");
+      }
+      const relationMetadata = getResourceMetadata(resourceRelation);
+      const queryName = relationMetadata.queryName ?? relationMetadata.apiPath;
+      const response = await fetchMutation<ModifyResourceResponse<T>>(
+        `${endpoint}/${queryName}/${sanitizeId(String(id))}`,
+        {
+          method: deleted ? "DELETE" : "POST",
+          resource,
+        },
+      );
+      return response;
+    },
+  );
   const {
-    imageInputs = [],
-    textInputs = [],
-    textareaInputs = [],
-    richTextInputs = [],
-    dateInputs = [],
-    dateTimeInputs = [],
-    colorInputs = [],
-    selectInputs = [],
-    checkboxInputs = [],
+    imageInputs,
+    textInputs,
+    textareaInputs,
+    richTextInputs,
+    dateInputs,
+    dateTimeInputs,
+    colorInputs,
+    selectInputs,
+    checkboxInputs,
+    relationInputs,
   } = metadata.form.inputs;
 
+  function showSheet(
+    options: Omit<ResourceFormSheetDataContent<T>, "form">,
+    ...formProps: Parameters<typeof renderAbstractResourceForm>
+  ) {
+    const formPromise = renderAbstractResourceForm(...formProps);
+    setSheet({ visible: true, content: { ...options, form: formPromise } });
+  }
+
   return (
-    <div className="mx-auto flex h-full flex-col">
+    <div className={cn("mx-auto flex h-full flex-col", className)}>
       <Form {...form}>
         <form
           className="flex grow flex-col gap-4"
@@ -141,12 +246,15 @@ export function AbstractResourceFormInternal<T extends Resource>({
         >
           <div className="grow basis-0 overflow-y-auto">
             <div className="bg-background-secondary flex min-h-full flex-col gap-4 rounded-xl p-4 md:flex-row">
-              <div className="space-y-4">
-                {imageInputs.map((input) => (
+              <Inputs
+                container
+                className="flex-col"
+                inputs={imageInputs}
+                mapper={([name, input]) => (
                   <FormField
-                    key={input.name}
+                    key={name}
                     control={form.control}
-                    name={input.name}
+                    name={name}
                     render={({ field }) => (
                       <FormItem>
                         <ImageUpload
@@ -158,57 +266,65 @@ export function AbstractResourceFormInternal<T extends Resource>({
                       </FormItem>
                     )}
                   />
-                ))}
-              </div>
-
+                )}
+              />
               <div className="w-full space-y-4">
-                {textInputs.map((input) => (
-                  <FormField
-                    key={input.name}
-                    control={form.control}
-                    name={input.name}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{input.label}</FormLabel>
-                        <FormControl>
-                          <Input
-                            className="bg-background placeholder:text-foreground shadow-none"
-                            {...field}
-                            value={(field.value ?? "") as string}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-                {textareaInputs.map((input) => (
-                  <FormField
-                    key={input.name}
-                    control={form.control}
-                    name={input.name}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{input.label}</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            className="bg-background placeholder:text-foreground shadow-none"
-                            {...field}
-                            value={(field.value ?? "") as string}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-                <OptionalInputRow
-                  inputs={dateInputs}
-                  mapper={(input) => (
+                <Inputs
+                  inputs={textInputs}
+                  mapper={([name, input]) => (
                     <FormField
-                      key={input.name}
+                      key={name}
                       control={form.control}
-                      name={input.name}
+                      name={name}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{input.label}</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Wpisz tekst..."
+                              className="bg-background"
+                              {...field}
+                              value={(field.value ?? "") as string}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                />
+                <Inputs
+                  inputs={textareaInputs}
+                  mapper={([name, input]) => (
+                    <FormField
+                      key={name}
+                      control={form.control}
+                      name={name}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{input.label}</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Wpisz tekst..."
+                              className="bg-background"
+                              {...field}
+                              value={(field.value ?? "") as string}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                />
+                <Inputs
+                  container
+                  inputs={dateInputs}
+                  mapper={([name, input]) => (
+                    <FormField
+                      key={name}
+                      control={form.control}
+                      name={name}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>{input.label}</FormLabel>
@@ -222,58 +338,65 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     />
                   )}
                 />
-                {dateTimeInputs.map((input) => (
-                  <FormField
-                    key={input.name}
-                    control={form.control}
-                    name={input.name}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{input.label}</FormLabel>
-                        <FormControl>
-                          <DateTimePicker
-                            value={field.value as string | null}
-                            onChange={field.onChange}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-                {richTextInputs.map((input) => (
-                  <FormField
-                    key={input.name}
-                    control={form.control}
-                    name={input.name}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{input.label}</FormLabel>
-                        <FormControl>
-                          <MinimalTiptapEditor
-                            // @ts-expect-error types not matching
-                            value={field.value ?? ""}
-                            onChange={field.onChange}
-                            className="w-full"
-                            editorContentClassName="p-5"
-                            output="html"
-                            placeholder="Enter your description..."
-                            editable
-                            editorClassName="focus:outline-hidden"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-                <OptionalInputRow
-                  inputs={colorInputs}
-                  mapper={(input) => (
+                <Inputs
+                  inputs={dateTimeInputs}
+                  mapper={([name, input]) => (
                     <FormField
-                      key={input.name}
+                      key={name}
                       control={form.control}
-                      name={input.name}
+                      name={name}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{input.label}</FormLabel>
+                          <FormControl>
+                            <DateTimePicker
+                              value={field.value as string | null}
+                              onChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                />
+                <Inputs
+                  inputs={richTextInputs}
+                  mapper={([name, input]) => (
+                    <FormField
+                      key={name}
+                      control={form.control}
+                      name={name}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{input.label}</FormLabel>
+                          <FormControl>
+                            <MinimalTiptapEditor
+                              // @ts-expect-error types not matching
+                              value={field.value ?? ""}
+                              onChange={field.onChange}
+                              className="w-full"
+                              editorContentClassName="p-5"
+                              output="html"
+                              placeholder="Wpisz opis..."
+                              editable
+                              editorClassName="focus:outline-hidden"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                />
+                <Inputs
+                  container
+                  inputs={colorInputs}
+                  mapper={([name, input]) => (
+                    <FormField
+                      key={name}
+                      control={form.control}
+                      name={name}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>{input.label}</FormLabel>
@@ -289,96 +412,282 @@ export function AbstractResourceFormInternal<T extends Resource>({
                     />
                   )}
                 />
-                <OptionalInputRow
-                  className="grid grid-cols-1 lg:grid-cols-2"
-                  inputs={selectInputs}
-                  mapper={(input) => (
+                <Inputs
+                  inputs={checkboxInputs}
+                  mapper={([name, input]) => (
                     <FormField
-                      key={input.name}
+                      key={name}
                       control={form.control}
-                      name={input.name}
+                      name={name}
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="flex flex-row space-x-2">
                           <FormLabel>{input.label}</FormLabel>
-                          <Select
-                            value={String(field.value ?? "")}
-                            onValueChange={(value) => {
-                              field.onChange(
-                                Number.isNaN(Number.parseInt(value))
-                                  ? value
-                                  : Number.parseInt(value),
-                              );
-                            }}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="bg-background w-full shadow-none">
-                                <SelectValue placeholder={input.placeholder} />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="border-input">
-                              {Object.values(input.optionEnum).map((option) => (
-                                <SelectItem key={option} value={String(option)}>
-                                  {input.optionLabels[option]}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <FormControl>
+                            <Checkbox
+                              checked={(field.value ?? false) as boolean}
+                              className="bg-background"
+                              onCheckedChange={(checked) => {
+                                field.onChange(Boolean(checked));
+                              }}
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   )}
                 />
-                {checkboxInputs.map((input) => (
-                  <FormField
-                    key={input.name}
-                    control={form.control}
-                    name={input.name}
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row space-x-2">
-                        <FormLabel>{input.label}</FormLabel>
-                        <FormControl>
-                          <Checkbox
-                            checked={(field.value ?? false) as boolean}
-                            className="bg-background"
-                            onCheckedChange={(checked) => {
-                              field.onChange(Boolean(checked));
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
+                {selectInputs == null && relationInputs == null ? null : (
+                  <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
+                    <Inputs
+                      inputs={selectInputs}
+                      mapper={([name, input]) => (
+                        <SelectInput
+                          key={name}
+                          control={form.control}
+                          name={name}
+                          label={input.label}
+                          options={Object.values(input.optionEnum).map(
+                            (option) => (
+                              <SelectItem key={option} value={String(option)}>
+                                {input.optionLabels[option]}
+                              </SelectItem>
+                            ),
+                          )}
+                        />
+                      )}
+                    />
+                    <Inputs
+                      inputs={relationInputs}
+                      mapper={([relation, relationDefinition]) => {
+                        const resourceRelation =
+                          relation as ResourceRelation<T>;
+                        const relationData = relatedResources[resourceRelation];
+                        const config = getResourceMetadata(resourceRelation);
+                        const relationDeclined = {
+                          singular: declineNoun(relation, { plural: false }),
+                          plural: declineNoun(relation, { plural: true }),
+                        };
+                        const isEditingParentResource = isExistingResourceItem(
+                          resource,
+                          defaultValues,
+                        );
+                        if (
+                          relationDefinition.type === RelationType.ManyToOne
+                        ) {
+                          return (
+                            <SelectInput
+                              control={form.control}
+                              key={relationDefinition.foreignKey}
+                              name={relationDefinition.foreignKey}
+                              label={toTitleCase(
+                                relationDeclined.singular.nominative,
+                              )}
+                              options={Object.values(relationData).map(
+                                (option) => (
+                                  <SelectItem
+                                    key={option.id}
+                                    value={sanitizeId(option.id)}
+                                  >
+                                    {config.itemMapper(option).name}
+                                  </SelectItem>
+                                ),
+                              )}
+                            />
+                          );
+                        }
+                        const primaryKeyField = getResourcePk(relation);
+                        const inputLabel = toTitleCase(
+                          relationDeclined.plural.nominative,
+                        );
+                        const elementKey = `${resource}-multiselect-${relation}`;
+                        if (!isEditingParentResource) {
+                          return (
+                            <Label key={elementKey} asChild>
+                              <div className="flex-col items-stretch">
+                                {inputLabel}
+                                <div className="text-foreground/50 py-2 text-center">
+                                  {toTitleCase(
+                                    relationDeclined.plural.accusative,
+                                  )}{" "}
+                                  można dodać po utworzeniu{" "}
+                                  {declensions.genitive}.
+                                </div>
+                              </div>
+                            </Label>
+                          );
+                        }
+                        // When it's a m:n relation, we can reuse relation data that already exists
+                        // For 1:n relation, we will be creating items specifically for this resource
+                        const action =
+                          relationDefinition.type === RelationType.OneToMany
+                            ? "Dodaj"
+                            : "Wybierz";
+                        const inputPlaceholder = `${action} ${relationDeclined.singular.accusative}`;
+                        const selectedValues = defaultValues[
+                          getResourceQueryName(relation as XToManyResource)
+                        ].map((item) =>
+                          String(
+                            get(item, primaryKeyField, "unknown-select-item"),
+                          ),
+                        );
+                        const relationDataOptions =
+                          relationDefinition.type === RelationType.OneToMany
+                            ? (defaultValues[
+                                getResourceQueryName(
+                                  relation as XToManyResource,
+                                )
+                              ] as ResourceDataType<typeof relation>[])
+                            : relationData;
+                        const formProps: AbstractResourceFormProps<Resource> = {
+                          resource: relation,
+                          isEmbedded: true,
+                          className: "w-full px-4",
+                        };
+                        return (
+                          <Label
+                            key={elementKey}
+                            className="flex-col items-start"
+                          >
+                            {inputLabel}
+                            <MultiSelect
+                              deduplicateOptions
+                              hideSelectAll
+                              isReadOnly={
+                                relationDefinition.type ===
+                                RelationType.OneToMany
+                              }
+                              placeholder={inputPlaceholder}
+                              className="bg-background border-input"
+                              emptyIndicator={`Brak ${relationDeclined.plural.genitive} spełniających wyszukanie.`}
+                              options={relationDataOptions.map(
+                                (option, index) => {
+                                  const label =
+                                    config.itemMapper(
+                                      option as ResourceDataType<
+                                        typeof resourceRelation
+                                      >,
+                                    ).name ?? JSON.stringify(option);
+                                  const value = String(
+                                    get(
+                                      option,
+                                      primaryKeyField,
+                                      `item-${String(index)}`,
+                                    ),
+                                  );
+                                  return { label, value };
+                                },
+                              )}
+                              onOptionToggled={async (value, removed) => {
+                                const { unwrap } = toast.promise(
+                                  relationMutation.mutateAsync({
+                                    id: value,
+                                    deleted: removed,
+                                    resourceRelation,
+                                  }),
+                                  TOAST_MESSAGES.object(
+                                    relationDeclined.singular,
+                                  ).modify,
+                                );
+                                try {
+                                  await unwrap();
+                                  return true;
+                                } catch {
+                                  return false;
+                                }
+                              }}
+                              onValueChange={() => {
+                                toast.info(
+                                  "Zmiana wszystkich wartości na raz nie jest jeszcze dostępna. Dodawaj lub usuwaj pojedynczo.",
+                                );
+                                return false;
+                              }}
+                              onCreateItem={() => {
+                                showSheet(
+                                  {
+                                    item: null,
+                                    childResource: resourceRelation,
+                                    parentResourceData: defaultValues,
+                                  },
+                                  formProps,
+                                );
+                              }}
+                              onEditItem={(value) => {
+                                const relationDefaultValues =
+                                  relationDataOptions.find(
+                                    (option) =>
+                                      value ===
+                                      String(get(option, primaryKeyField)),
+                                  ) as
+                                    | ResourceDataType<typeof resourceRelation>
+                                    | undefined;
+                                const label =
+                                  relationDefaultValues == null
+                                    ? undefined
+                                    : config.itemMapper(relationDefaultValues)
+                                        .name;
+                                showSheet(
+                                  {
+                                    item: {
+                                      name: label,
+                                      id: value,
+                                    },
+                                    childResource: resourceRelation,
+                                    parentResourceData: defaultValues,
+                                  },
+                                  {
+                                    ...formProps,
+                                    defaultValues: {
+                                      ...relationDefaultValues,
+                                      [getResourcePk(relation)]: value,
+                                    } as ResourceDefaultValues<Resource>,
+                                  },
+                                );
+                              }}
+                              defaultValue={selectedValues}
+                            />
+                          </Label>
+                        );
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
           <div className="flex w-full justify-between">
-            <Button
-              variant="ghost"
-              className="text-primary hover:text-primary w-min"
-              asChild
-            >
-              <Link href={`/${resource}`} className="">
-                <ChevronLeft />
-                Wróć do{" "}
-                {declineNoun(resource, {
-                  case: DeclensionCase.Genitive,
-                  plural: true,
-                })}
-              </Link>
-            </Button>
+            {isEmbedded ? null : (
+              <Button
+                variant="ghost"
+                className="text-primary hover:text-primary w-min"
+                asChild
+              >
+                <Link href={`/${resource}`} className="">
+                  <ChevronLeft />
+                  Wróć do{" "}
+                  {declineNoun(resource, {
+                    case: DeclensionCase.Genitive,
+                    plural: true,
+                  })}
+                </Link>
+              </Button>
+            )}
             <Button
               type="submit"
               loading={isPending}
               disabled={!form.formState.isDirty}
+              className={cn({ "w-full": isEmbedded })}
             >
-              Zapisz
+              {submitLabel} {declensions.accusative} <SubmitIconComponent />
             </Button>
           </div>
         </form>
       </Form>
+      <AbstractResourceFormSheet
+        resource={resource}
+        sheet={sheet}
+        setSheet={setSheet}
+      />
     </div>
   );
 }

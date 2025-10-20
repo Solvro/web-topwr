@@ -4,7 +4,7 @@ import type { z } from "zod";
 import type { Resource } from "@/config/enums";
 import type { LoginSchema, SortFiltersSchema } from "@/schemas";
 
-import type { ResourceFormValues, ResourceSchema } from "./app";
+import type { AppZodObject, RelationDefinitions, ResourceSchema } from "./app";
 
 export type LoginFormValues = z.infer<typeof LoginSchema>;
 export type SortFiltersFormValues = z.infer<typeof SortFiltersSchema>;
@@ -21,6 +21,14 @@ type BaseZodType<T extends z.ZodTypeAny> = T extends
   ? BaseZodType<U>
   : T;
 
+/** Extracts all path values of schema S, such that the schema type of the value at that path extends Y. */
+type TypedSchemaKey<
+  S extends AppZodObject,
+  Y extends z.ZodTypeAny = z.ZodString,
+> = {
+  [K in Path<z.infer<S>>]: K extends KeysOfType<S["shape"], Y> ? K : never;
+}[Path<z.infer<S>>];
+
 /** Extracts all paths to the form values of T, such that the type of the value at that path extends Y.
  *
  * @example type BooleanPaths = ResourceSchemaKey<Resource.StudentOrganizations, z.ZodBoolean> // yields 'isStrategic' | 'coverPreview' as those are the only boolean fields defined in the schema
@@ -28,66 +36,50 @@ type BaseZodType<T extends z.ZodTypeAny> = T extends
 export type ResourceSchemaKey<
   T extends Resource,
   Y extends z.ZodTypeAny = z.ZodString,
-> = {
-  [K in Path<ResourceFormValues<T>>]: K extends KeysOfType<
-    ResourceSchema<T>["shape"],
-    Y
-  >
-    ? K
-    : never;
-}[Path<ResourceFormValues<T>>];
+> = TypedSchemaKey<ResourceSchema<T>, Y>;
 
-interface FormInputBase<
-  T extends Resource,
-  Y extends z.ZodTypeAny = z.ZodString,
-> {
-  name: ResourceSchemaKey<T, Y>;
+export interface FormInputBase {
   label: string;
 }
 
-interface FormImageInput<T extends Resource> extends FormInputBase<T> {}
+type FormInput<
+  T extends Resource,
+  S extends z.ZodTypeAny = z.ZodString,
+  P = unknown,
+> = Partial<Record<ResourceSchemaKey<T, S>, P & FormInputBase>>;
 
-interface FormTextInput<T extends Resource> extends FormInputBase<T> {}
-interface FormTextareaInput<T extends Resource> extends FormInputBase<T> {}
-
-interface FormDateInput<T extends Resource> extends FormInputBase<T> {}
-
-interface FormRichTextInput<T extends Resource> extends FormInputBase<T> {}
-
-interface FormSelectInput<
+export type FormSelectInput<
   T extends Resource,
   Y extends string | number = string | number,
+> = FormInput<
+  T,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-> extends FormInputBase<T, z.ZodNativeEnum<any> | z.ZodEnum<any>> {
-  placeholder: string;
-  optionEnum: Record<string, Y>;
-  optionLabels: Record<Y, string>;
-}
-
-interface FormColorInput<T extends Resource> extends FormInputBase<T> {}
-
-interface FormDateTimeInput<T extends Resource> extends FormInputBase<T> {}
-
-interface FormCheckboxInput<T extends Resource>
-  extends FormInputBase<T, z.ZodBoolean> {}
+  z.ZodNativeEnum<any> | z.ZodEnum<any>,
+  {
+    optionEnum: Record<string, Y>;
+    optionLabels: Record<Y, string>;
+  }
+>;
 
 export interface AbstractResourceFormInputs<T extends Resource> {
   /** Image upload inputs for image key fields. */
-  imageInputs?: FormImageInput<T>[];
+  imageInputs?: FormInput<T>;
   /** Standard text input fields. */
-  textInputs?: FormTextInput<T>[];
+  textInputs?: FormInput<T>;
   /** Resizable longer text input fields. */
-  textareaInputs?: FormTextareaInput<T>[];
+  textareaInputs?: FormInput<T>;
   /** Date input fields, without time. */
-  dateInputs?: FormDateInput<T>[];
+  dateInputs?: FormInput<T>;
   /** Date and time input fields. */
-  dateTimeInputs?: FormDateTimeInput<T>[];
+  dateTimeInputs?: FormInput<T>;
   /** Rich text editor input for HTML string fields. */
-  richTextInputs?: FormRichTextInput<T>[];
+  richTextInputs?: FormInput<T>;
   /** Color picker input fields for HEX string fields. */
-  colorInputs?: FormColorInput<T>[];
+  colorInputs?: FormInput<T>;
   /** Select input fields for dropdowns. */
-  selectInputs?: FormSelectInput<T>[];
+  selectInputs?: FormSelectInput<T>;
   /** Checkbox input fields for boolean values. */
-  checkboxInputs?: FormCheckboxInput<T>[];
+  checkboxInputs?: FormInput<T, z.ZodBoolean>;
+  /** Multiselect input boxes for related resources. */
+  relationInputs?: RelationDefinitions<T>;
 }

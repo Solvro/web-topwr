@@ -1,4 +1,4 @@
-import type { LayoutProps } from "@/types/app";
+import type { LayoutProps } from "@/types/components";
 
 /** Used to wrap the children in a layout component. */
 export function ContentWrapper({ children }: LayoutProps) {

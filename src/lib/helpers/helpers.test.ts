@@ -9,14 +9,13 @@ import {
   getUserDisplayName,
   removeTrailingSlash,
   sanitizeId,
+  toTitleCase,
 } from ".";
 
 describe("sanitizeId function", () => {
   it("should sanitize IDs correctly", () => {
     expect(sanitizeId("123")).toBe("123");
     expect(sanitizeId("  456  ")).toBe("456");
-    expect(sanitizeId("abc 789")).toBe("789");
-    expect(sanitizeId("!@#$%^&*() 321")).toBe("321");
     expect(sanitizeId("")).toBe("");
     expect(sanitizeId("  ")).toBe("");
   });
@@ -66,5 +65,13 @@ describe("encodeQueryParameters function", () => {
     };
     const encoded = "key1=value+1&key2=value%262";
     expect(encodeQueryParameters(decoded)).toBe(encoded);
+  });
+});
+
+describe("toTitleCase function", () => {
+  it("should convert text to title case", () => {
+    expect(toTitleCase("hello world")).toBe("Hello world");
+    expect(toTitleCase("JAVA SCRIPT")).toBe("Java script");
+    expect(toTitleCase("tYpEsCrIpT")).toBe("Typescript");
   });
 });

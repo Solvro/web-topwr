@@ -2,13 +2,18 @@ import { faker } from "@faker-js/faker";
 import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
-import { AbstractResourceEditPage } from "@/components/abstract/abstract-resource-edit-page";
+import { AbstractResourceForm } from "@/components/abstract/resource-form";
 import { API_URL } from "@/config/constants";
 import { Resource } from "@/config/enums";
+import { fetchQuery } from "@/lib/fetch-utils";
+import { sanitizeId } from "@/lib/helpers";
 import { mockDatedResource } from "@/tests/helpers/mocks";
 import { renderWithProviders } from "@/tests/helpers/react";
 import { server } from "@/tests/mocks/server";
+import type { GetResourceWithRelationsResponse } from "@/types/api";
 import type { ResourceDataType } from "@/types/app";
+
+const resource = Resource.Banners;
 
 const MOCK_BANNER = {
   id: 1,
@@ -21,11 +26,14 @@ const MOCK_BANNER = {
 } satisfies ResourceDataType<Resource.Banners>;
 
 async function renderEditPage(bannerId: number) {
+  const id = sanitizeId(bannerId);
+
+  const response = await fetchQuery<
+    GetResourceWithRelationsResponse<typeof resource>
+  >(id, { resource, includeRelations: true });
+
   const screen = renderWithProviders(
-    await AbstractResourceEditPage({
-      resource: Resource.Banners,
-      params: Promise.resolve({ id: bannerId.toString() }),
-    }),
+    await AbstractResourceForm({ resource, defaultValues: response.data }),
   );
   return { screen };
 }

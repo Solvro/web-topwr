@@ -1,6 +1,6 @@
 import { ContentWrapper } from "@/components/content-wrapper";
 import { Navbar } from "@/components/navbar";
-import type { LayoutProps } from "@/types/app";
+import type { LayoutProps } from "@/types/components";
 
 export default function AuthenticatedLayout({ children }: LayoutProps) {
   return (

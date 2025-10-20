@@ -4,7 +4,7 @@ import { Provider } from "jotai";
 
 import { QueryProvider } from "@/lib/query-client";
 import { globalStore } from "@/stores/global";
-import type { LayoutProps } from "@/types/app";
+import type { LayoutProps } from "@/types/components";
 
 export function Providers({ children }: LayoutProps) {
   return (

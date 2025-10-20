@@ -1,19 +1,14 @@
-import type { ReactNode } from "react";
-import type { DefaultValues } from "react-hook-form";
 import type { z } from "zod";
 
-import type { ERROR_CODES } from "@/config/constants";
-import type { DeclensionCase, Resource } from "@/config/enums";
+import type { RelationType, Resource } from "@/config/enums";
 import type {
-  DETERMINER_DECLENSIONS,
-  NOUN_PHRASE_TRANSFORMATIONS,
-  SIMPLE_NOUN_DECLENSIONS,
-} from "@/config/polish";
-import type { ORDERABLE_RESOURCES } from "@/config/resources";
+  ORDERABLE_RESOURCES,
+  RESOURCE_METADATA,
+} from "@/config/resources";
 import type { RESOURCE_SCHEMAS } from "@/schemas";
 
 import type { DatedResource } from "./api";
-import type { AbstractResourceFormInputs } from "./forms";
+import type { AbstractResourceFormInputs, ResourceSchemaKey } from "./forms";
 
 // Data types
 export type Id = string | number;
@@ -28,14 +23,65 @@ export type AppZodObject = z.ZodObject<z.ZodRawShape>;
 export type OrderableResource = (typeof ORDERABLE_RESOURCES)[number];
 export type ResourceSchema<T extends Resource> = (typeof RESOURCE_SCHEMAS)[T];
 export type ResourceFormValues<T extends Resource> = z.infer<ResourceSchema<T>>;
-export type ResourceDataType<T extends Resource> = DatedResource &
-  ResourceFormValues<T> &
-  (T extends OrderableResource ? { id: Id; order: number } : { id: Id });
-export type ResourceDefaultValues<R extends Resource> = ResourceFormValues<R> &
-  DefaultValues<ResourceFormValues<R> | ResourceDataType<R>>;
+type PossiblyOrderable<T extends Resource, U> = T extends OrderableResource
+  ? U & { order: number }
+  : U;
+export type ResourceDataType<T extends Resource> = PossiblyOrderable<
+  T,
+  DatedResource & ResourceFormValues<T> & { id: Id }
+>;
+
+// Relations
+/** For a given resource `T`, this type returns the union of all resources to which it is related. */
+export type ResourceRelation<T extends Resource> = {
+  [R in Resource]: (typeof RESOURCE_METADATA)[R]["form"]["inputs"] extends {
+    relationInputs: Record<infer L, unknown>;
+  }
+    ? L
+    : never;
+}[T];
+/** Relation definitions between T and L, where T is the main resource and L is the related resource. */
+export type RelationDefinition<T extends Resource, L extends Resource> =
+  | {
+      type: RelationType.ManyToMany;
+      foreignKey?: never;
+    }
+  | {
+      type: RelationType.OneToMany;
+      foreignKey: ResourceSchemaKey<L, z.ZodString | z.ZodNumber>;
+    }
+  | {
+      type: RelationType.ManyToOne;
+      foreignKey: ResourceSchemaKey<T, z.ZodString | z.ZodNumber>;
+    };
+export type RelationDefinitions<T extends Resource> = {
+  [L in Resource]?: RelationDefinition<T, L>;
+};
+
+/** Represents Resources which are part of a one-to-many or many-to-many relation. */
+export type XToManyResource = {
+  [R in Resource]: (typeof RESOURCE_METADATA)[R] extends { queryName: string }
+    ? R
+    : never;
+}[Resource];
+
+export type RelationQueryName<T extends XToManyResource> =
+  (typeof RESOURCE_METADATA)[T]["queryName"];
+export type QueriedRelations<T extends Resource> = {
+  [L in XToManyResource as RelationQueryName<L>]: L extends ResourceRelation<T>
+    ? ResourceDataType<L>[]
+    : never;
+};
+export type ResourceDefaultValues<R extends Resource> =
+  | ResourceFormValues<R>
+  | (ResourceDataType<R> & QueriedRelations<R>);
 
 // Resource metadata
 export type ResourceMetadata<R extends Resource> = Readonly<{
+  /** The name of the query param used to fetch the related resource from the API, if this is the related resource in a m:n relation. */
+  queryName?: string;
+  /** The primary key field in the resource schema, if not `"id"`. */
+  pk?: ResourceSchemaKey<R, z.ZodString | z.ZodNumber>;
   /** A mapping of the client-side resources to their paths in the backend API. */
   apiPath: string;
   /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */
@@ -44,48 +90,6 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
     /** The inputs to be used in the form for the resource. */
     inputs: AbstractResourceFormInputs<R>;
     /** The default values to be used in the form for the resource. */
-    defaultValues: ResourceDefaultValues<R>;
+    defaultValues: ResourceFormValues<R>;
   };
-}>;
-
-// Polish grammar
-export type Declensions = Record<DeclensionCase, string>;
-export type DeclinableSimpleNoun = keyof typeof SIMPLE_NOUN_DECLENSIONS;
-export type DeclinableNounPhrase = keyof typeof NOUN_PHRASE_TRANSFORMATIONS;
-export type DeclinableNoun = DeclinableSimpleNoun | DeclinableNounPhrase;
-/** Extracts from the fields of a resource only those which have defined translations and declinations in Polish. */
-export type ResourceDeclinableField<T extends Resource> =
-  keyof ResourceDataType<T> & DeclinableNoun;
-export type Determiner = keyof typeof DETERMINER_DECLENSIONS;
-
-// Component types
-export type ErrorCode = keyof typeof ERROR_CODES;
-export type SortDirection = "asc" | "desc";
-
-export interface SortFiltersOptions {
-  sortBy: DeclinableNoun | "";
-  sortDirection: SortDirection;
-  searchField: DeclinableNoun | "";
-  searchTerm: string;
-}
-
-/** The accepted search parameters for the abstract resource list. */
-export interface ListSearchParameters {
-  page?: string;
-  sortBy?: string;
-  sortDirection?: SortDirection;
-  searchField?: string;
-  searchTerm?: string;
-}
-
-export type ResourceEditPageProps = Readonly<{
-  params: Promise<{ id: string }>;
-}>;
-
-export type ResourcePageProps = Readonly<{
-  searchParams: Promise<{ page?: string }>;
-}>;
-
-export type LayoutProps = Readonly<{
-  children: ReactNode;
 }>;

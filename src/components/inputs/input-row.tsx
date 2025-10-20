@@ -1,16 +1,13 @@
 import type { ReactNode } from "react";
 
 import type { Resource } from "@/config/enums";
+import { typedEntries } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
-import type { LayoutProps } from "@/types/app";
+import type { LayoutProps } from "@/types/components";
 import type { AbstractResourceFormInputs } from "@/types/forms";
+import type { ValueOf } from "@/types/helpers";
 
 type SynchronousReactNode = Exclude<ReactNode, Promise<ReactNode>>;
-
-type AbstractResourceFormInput<T extends Resource> = Exclude<
-  AbstractResourceFormInputs<T>[keyof AbstractResourceFormInputs<T>],
-  undefined
->[number];
 
 export function InputRow({
   children,
@@ -21,21 +18,31 @@ export function InputRow({
   return <div className={cn("flex flex-row gap-4", className)}>{children}</div>;
 }
 
-export function OptionalInputRow<
-  Y extends AbstractResourceFormInput<T>,
-  T extends Resource = Y extends AbstractResourceFormInput<infer U> ? U : never,
+export function Inputs<
+  T extends Resource,
+  Y extends ValueOf<AbstractResourceFormInputs<T>>,
 >({
   mapper,
   inputs,
   className,
+  container = false,
 }: {
-  mapper: (input: Y) => SynchronousReactNode;
-  inputs: Y[];
+  mapper: (
+    input: [keyof NonNullable<Y>, NonNullable<ValueOf<NonNullable<Y>>>],
+  ) => SynchronousReactNode;
+  inputs: Y;
   className?: string;
+  container?: boolean;
 }) {
-  return inputs.length === 0 ? null : (
-    <InputRow className={className}>
-      {inputs.map((input) => mapper(input))}
-    </InputRow>
+  if (inputs == null) {
+    return null;
+  }
+  const mapped = typedEntries(inputs).map(([key, options]) =>
+    options == null ? null : mapper([key, options]),
+  );
+  return container ? (
+    <InputRow className={className}>{mapped}</InputRow>
+  ) : (
+    mapped
   );
 }

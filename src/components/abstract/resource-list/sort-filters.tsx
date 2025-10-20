@@ -31,12 +31,12 @@ import {
   SORT_FILTER_LABEL_DECLENSION_CASES,
   SORT_FILTER_PLACEHOLDER,
 } from "@/config/constants";
-import type { Resource } from "@/config/enums";
 import { declineNoun } from "@/lib/polish";
 import { cn } from "@/lib/utils";
 import { SortFiltersSchema } from "@/schemas";
-import type { LayoutProps, ResourceDeclinableField } from "@/types/app";
+import type { LayoutProps } from "@/types/components";
 import type { SortFiltersFormValues } from "@/types/forms";
+import type { DeclinableNoun } from "@/types/polish";
 
 function FieldGroup({
   children,
@@ -47,12 +47,12 @@ function FieldGroup({
   return <div className={cn("flex gap-[inherit]", className)}>{children}</div>;
 }
 
-export function SortFilters<T extends Resource>({
+export function SortFilters({
   sortableFields = [],
   searchableFields = [],
 }: {
-  sortableFields?: readonly ResourceDeclinableField<T>[];
-  searchableFields?: readonly ResourceDeclinableField<T>[];
+  sortableFields?: readonly DeclinableNoun[];
+  searchableFields?: readonly DeclinableNoun[];
 }) {
   const router = useRouter();
   const searchParameters = useSearchParams();
@@ -94,11 +94,11 @@ export function SortFilters<T extends Resource>({
   }
 
   return (
-    <form
-      className="flex flex-wrap items-start gap-2"
-      onSubmit={form.handleSubmit(handleSubmit)}
-    >
-      <Form {...form}>
+    <Form {...form}>
+      <form
+        className="flex flex-wrap items-start gap-2"
+        onSubmit={form.handleSubmit(handleSubmit)}
+      >
         <FieldGroup>
           <FormField
             control={form.control}
@@ -232,7 +232,7 @@ export function SortFilters<T extends Resource>({
             <Check />
           </Button>
         </FieldGroup>
-      </Form>
-    </form>
+      </form>
+    </Form>
   );
 }

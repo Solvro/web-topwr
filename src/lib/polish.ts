@@ -1,15 +1,16 @@
-import type { DeclensionCase, GrammaticalGender } from "@/config/enums";
+import { DeclensionCase, GrammaticalGender } from "@/config/enums";
 import {
   DETERMINER_DECLENSIONS,
   NOUN_PHRASE_TRANSFORMATIONS,
   SIMPLE_NOUN_DECLENSIONS,
 } from "@/config/polish";
 import type {
+  DeclensionData,
   Declensions,
   DeclinableNoun,
   DeclinableSimpleNoun,
   Determiner,
-} from "@/types/app";
+} from "@/types/polish";
 
 import { typedEntries } from "./helpers";
 
@@ -24,7 +25,7 @@ const isSimpleNoun = (noun: DeclinableNoun): noun is DeclinableSimpleNoun =>
 export function declineNoun(
   noun: DeclinableNoun,
   declensionOptions?: DeclensionOptions,
-): Declensions & { gender: GrammaticalGender };
+): Declensions & DeclensionData;
 
 export function declineNoun(
   noun: DeclinableNoun,
@@ -54,7 +55,7 @@ export function declineNoun(
     prependDeterminer = null,
     plural = false,
   }: DeclensionOptions & { case?: DeclensionCase } = {},
-): string | (Declensions & { gender: GrammaticalGender }) {
+): string | (Declensions & DeclensionData) {
   const plurality = plural ? "plural" : "singular";
   const isSimple = isSimpleNoun(noun);
   const base = isSimple ? noun : NOUN_PHRASE_TRANSFORMATIONS[noun].base;
@@ -69,10 +70,25 @@ export function declineNoun(
     }
   }
   if (prependDeterminer != null) {
+    const isMasculine = gender === GrammaticalGender.Masculine;
+    const isAnimate = declensions.accusative === declensions.genitive;
+    const determinerGender =
+      // Exception for inanimate plural masculine nouns
+      // https://extra-zgierz.pl/jak-okreslic-rodzaj-rzeczownika-w-liczbie-mnogiej-przewodnik
+      plural && isMasculine && !isAnimate ? GrammaticalGender.Feminine : gender;
     const determiner =
-      DETERMINER_DECLENSIONS[prependDeterminer][gender][plurality];
+      DETERMINER_DECLENSIONS[prependDeterminer][determinerGender][plurality];
+    const declensionsWithoutDeterminer = { ...declensions };
     for (const [key, value] of typedEntries(declensions)) {
       declensions[key] = `${determiner[key]} ${value}`;
+    }
+    if (isMasculine && !plural) {
+      // Exception for animate singular masculine nouns in accusative case
+      // more details: https://chatgpt.com/share/68f6707c-562c-8002-a1e6-18a68065ae51
+      const determinerCase = isAnimate
+        ? DeclensionCase.Genitive
+        : DeclensionCase.Nominative;
+      declensions.accusative = `${determiner[determinerCase]} ${declensionsWithoutDeterminer.accusative}`;
     }
   }
   if (declensionCase == null) {
@@ -80,4 +96,29 @@ export function declineNoun(
   }
   const declined = declensions[declensionCase];
   return declined;
+}
+
+/**
+ * Conjugates a quantitative noun based on its count.
+ * (1, 'jabłko', 'jabłka', 'jabłek') => '1 jabłko'
+ * (2, 'jabłko', 'jabłka', 'jabłek') => '2 jabłka'
+ * (5, 'jabłko', 'jabłka', 'jabłek') => '5 jabłek'
+ */
+export function conjugateNumeric(
+  count: number,
+  singular: string,
+  double: string,
+  plural: string,
+) {
+  const countString = count.toString();
+  if (count === 1) {
+    return `${countString} ${singular}`;
+  }
+  const remainder = count % 10;
+  if (count >= 12 && count <= 14) {
+    // Exception for numbers 12, 13 and 14, which are conjugated differently
+    return `${countString} ${plural}`;
+  }
+  const useSuffixB = remainder <= 1 || remainder >= 5;
+  return `${countString} ${useSuffixB ? plural : double}`;
 }

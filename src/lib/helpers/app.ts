@@ -1,6 +1,16 @@
+import type { z } from "zod";
+
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resources";
-import type { Id, ResourceMetadata } from "@/types/app";
+import type {
+  Id,
+  RelationDefinition,
+  RelationQueryName,
+  ResourceMetadata,
+  ResourceRelation,
+  XToManyResource,
+} from "@/types/app";
+import type { ResourceSchemaKey } from "@/types/forms";
 
 import { sanitizeId } from "./transformations";
 
@@ -21,3 +31,30 @@ export const TANSTACK_KEYS = {
  */
 export const getResourceMetadata = <R extends Resource>(resource: R) =>
   RESOURCE_METADATA[resource] as unknown as ResourceMetadata<R>;
+
+/**
+ * This helper function retrieves the relation definitions for a given resource,
+ * typed as `Record<ResourceRelation<R>, RelationDefinition<R>>`.
+ */
+export const getResourceRelationDefinitions = <R extends Resource>(
+  resource: R,
+) =>
+  (getResourceMetadata(resource).form.inputs.relationInputs ?? {}) as {
+    [L in ResourceRelation<R>]: RelationDefinition<R, L>;
+  };
+
+/**
+ * Returns the query name for a many-to-many resource, typed as definite.
+ */
+export const getResourceQueryName = <R extends XToManyResource>(resource: R) =>
+  getResourceMetadata(resource).queryName as RelationQueryName<R>;
+
+/** Gets the field value of the resource's primary key (usually literal `"id"`). */
+export const getResourcePk = <T extends Resource>(
+  resource: T,
+): ResourceSchemaKey<T, z.ZodString | z.ZodNumber> => {
+  const metadata = getResourceMetadata(resource);
+  return (
+    metadata.pk ?? ("id" as ResourceSchemaKey<T, z.ZodString | z.ZodNumber>)
+  );
+};

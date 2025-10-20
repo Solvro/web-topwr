@@ -3,6 +3,10 @@ export interface Pluralized<T extends Record<string, unknown>> {
   plural: { [K in keyof T]: T[K] };
 }
 
+export type Defined<T> = Exclude<T, undefined>;
+
+export type ValueOf<T> = T[keyof T];
+
 /**
  * A record which must contain all keys from type K and all keys from type J.
  * Useful when combining a record of a specific type and a record of strings,
@@ -14,3 +18,5 @@ export type RecordIntersection<
   J extends string | number | symbol,
   V,
 > = Record<K, V> & Record<J, V>;
+
+export type OptionalPromise<T> = T | Promise<T>;

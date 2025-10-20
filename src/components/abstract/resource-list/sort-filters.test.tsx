@@ -13,7 +13,8 @@ import {
 } from "@/config/constants";
 import { declineNoun } from "@/lib/polish";
 import { MOCK_USE_SEARCH_PARAMS } from "@/tests/mocks/functions";
-import type { DeclinableNoun, SortFiltersOptions } from "@/types/app";
+import type { SortFiltersOptions } from "@/types/components";
+import type { DeclinableNoun } from "@/types/polish";
 
 import { SortFilters } from "./sort-filters";
 

@@ -5,7 +5,7 @@ import NextTopLoader from "nextjs-toploader";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
-import type { LayoutProps } from "@/types/app";
+import type { LayoutProps } from "@/types/components";
 
 import "./globals.css";
 
