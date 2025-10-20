@@ -9,6 +9,7 @@ import {
   RefreshCcw,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { Route } from "next";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ import { DeclensionCase, Resource } from "@/config/enums";
 import { useAuth } from "@/hooks/use-auth";
 import { getUserDisplayName } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
+import type { RoutableResource } from "@/types/app";
 
 export default function Home() {
   const auth = useAuth();
@@ -78,13 +80,13 @@ function DashboardButton({
   icon: LucideIcon;
   className?: string;
 } & (
-    | { href?: never; label?: never; resource: Resource }
-    | { href: string; label: string; resource?: never }
+    | { href?: never; label?: never; resource: RoutableResource }
+    | { href: Route; label: string; resource?: never }
   )) {
   const [href, label] =
     resource == null
       ? [hrefOverride, labelOverride]
-      : [`/${resource}`, getLabelFromResource(resource)];
+      : ([`/${resource}`, getLabelFromResource(resource)] as const);
   return (
     <Button
       className={`h-20 w-full justify-start space-x-2 rounded-xl ${className}`}

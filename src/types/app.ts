@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import type { z } from "zod";
 
 import type { RelationType, Resource } from "@/config/enums";
@@ -33,6 +34,9 @@ export type ResourceDataType<T extends Resource> = PossiblyOrderable<
   T,
   UnorderableResourceDataType<T>
 >;
+export type RoutableResource = {
+  [R in Resource]: `/${R}` extends Route ? R : never;
+}[Resource];
 
 // Relations
 /** For a given resource `T`, this type returns the union of all resources to which it is related. */

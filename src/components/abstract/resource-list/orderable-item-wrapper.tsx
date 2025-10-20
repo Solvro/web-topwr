@@ -22,13 +22,17 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { TOAST_MESSAGES } from "@/config/constants";
-import type { Resource } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { ModifyResourceResponse } from "@/types/api";
-import type { Id, OrderableResource, ResourceDataType } from "@/types/app";
+import type {
+  Id,
+  OrderableResource,
+  ResourceDataType,
+  RoutableResource,
+} from "@/types/app";
 
 import { AbstractResourceListItem, AbstractResourceListItems } from "./item";
 
@@ -176,7 +180,7 @@ export function OrderableItemWrapper<T extends OrderableResource>({
   );
 }
 
-function SortableItem<T extends Resource>({
+function SortableItem<T extends RoutableResource>({
   item,
   resource,
 }: {

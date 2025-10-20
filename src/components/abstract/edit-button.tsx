@@ -3,12 +3,17 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { DeclensionCase } from "@/config/enums";
-import type { Resource } from "@/config/enums";
 import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import type { Id } from "@/types/app";
+import type { Id, RoutableResource } from "@/types/app";
 
-export function EditButton({ resource, id }: { resource: Resource; id: Id }) {
+export function EditButton({
+  resource,
+  id,
+}: {
+  resource: RoutableResource;
+  id: Id;
+}) {
   const resourceAccusative = declineNoun(resource, {
     case: DeclensionCase.Accusative,
   });

@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  typedRoutes: true,
 };
 
 export default nextConfig;
