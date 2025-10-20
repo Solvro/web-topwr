@@ -9,11 +9,8 @@ import type { Resource } from "@/config/enums";
 import { fetchResources, isOrderableResource } from "@/lib/helpers";
 import { TANSTACK_KEYS } from "@/lib/helpers/app";
 import type { GetResourcesResponse } from "@/types/api";
-import type {
-  ListSearchParameters,
-  OrderableResource,
-  ResourceDataType,
-} from "@/types/app";
+import type { OrderableResource, ResourceDataType } from "@/types/app";
+import type { ListSearchParameters } from "@/types/components";
 
 import { AbstractResourceListItems } from "./item";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";

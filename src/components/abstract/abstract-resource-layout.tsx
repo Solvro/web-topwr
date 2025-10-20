@@ -1,5 +1,5 @@
 import type { Resource } from "@/config/enums";
-import type { LayoutProps } from "@/types/app";
+import type { LayoutProps } from "@/types/components";
 
 import { AbstractResourceLayoutTitle } from "./abstract-resource-layout-title";
 

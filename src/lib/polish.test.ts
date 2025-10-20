@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { DeclensionCase, GrammaticalGender, Resource } from "@/config/enums";
 import { NOUN_PHRASE_TRANSFORMATIONS } from "@/config/polish";
-import type { DeclinableNounPhrase } from "@/types/app";
+import type { DeclinableNounPhrase } from "@/types/polish";
 
 import { declineNoun } from "./polish";
 
@@ -89,5 +89,92 @@ describe("Polish language utilities", () => {
       const baseTransformation = transform(baseDeclensions[declensionCase]);
       expect(declinedForm).toBe(baseTransformation);
     }
+  });
+
+  it("should handle singular animate masculine nouns correctly in accusative case", () => {
+    expect(
+      declineNoun(Resource.GuideAuthors, {
+        case: DeclensionCase.Accusative,
+        prependDeterminer: "this",
+      }),
+    ).toBe("tego autora");
+    expect(
+      declineNoun(Resource.GuideAuthors, {
+        case: DeclensionCase.Accusative,
+        prependDeterminer: "new",
+      }),
+    ).toBe("nowego autora");
+    expect(
+      declineNoun(Resource.GuideAuthors, {
+        case: DeclensionCase.Accusative,
+        prependDeterminer: "existing",
+      }),
+    ).toBe("istniejącego autora");
+  });
+
+  it("should handle singular inanimate masculine nouns correctly in accusative case", () => {
+    expect(
+      declineNoun(Resource.StudentOrganizationTags, {
+        case: DeclensionCase.Accusative,
+        prependDeterminer: "this",
+      }),
+    ).toBe("ten tag");
+    expect(
+      declineNoun(Resource.StudentOrganizationTags, {
+        case: DeclensionCase.Accusative,
+        prependDeterminer: "new",
+      }),
+    ).toBe("nowy tag");
+    expect(
+      declineNoun(Resource.StudentOrganizationTags, {
+        case: DeclensionCase.Accusative,
+        prependDeterminer: "existing",
+      }),
+    ).toBe("istniejący tag");
+  });
+
+  it("should handle plural masculine nouns correctly in accusative case", () => {
+    expect(
+      declineNoun(Resource.GuideAuthors, {
+        case: DeclensionCase.Accusative,
+        plural: true,
+        prependDeterminer: "this",
+      }),
+    ).toBe("tych autorów");
+    expect(
+      declineNoun(Resource.GuideAuthors, {
+        case: DeclensionCase.Accusative,
+        plural: true,
+        prependDeterminer: "new",
+      }),
+    ).toBe("nowych autorów");
+    expect(
+      declineNoun(Resource.GuideAuthors, {
+        case: DeclensionCase.Accusative,
+        plural: true,
+        prependDeterminer: "existing",
+      }),
+    ).toBe("istniejących autorów");
+    expect(
+      declineNoun(Resource.StudentOrganizationTags, {
+        case: DeclensionCase.Accusative,
+        plural: true,
+        prependDeterminer: "this",
+      }),
+    ).toBe("te tagi");
+    expect(
+      declineNoun(Resource.StudentOrganizationTags, {
+        case: DeclensionCase.Accusative,
+        plural: true,
+        prependDeterminer: "new",
+      }),
+    ).toBe("nowe tagi");
+    expect(
+      declineNoun(Resource.StudentOrganizationTags, {
+        case: DeclensionCase.Accusative,
+        plural: true,
+        prependDeterminer: "existing",
+      }),
+    ).toBe("istniejące tagi");
   });
 });

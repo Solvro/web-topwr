@@ -1,5 +1,9 @@
-import type { Declensions, DeclinableSimpleNoun } from "@/types/app";
 import type { Pluralized, RecordIntersection } from "@/types/helpers";
+import type {
+  DeclensionData,
+  Declensions,
+  DeclinableSimpleNoun,
+} from "@/types/polish";
 
 import { GrammaticalGender, Resource } from "./enums";
 
@@ -323,7 +327,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
 } satisfies RecordIntersection<
   Resource,
   string,
-  { gender: GrammaticalGender } & Pluralized<Declensions>
+  Pluralized<Declensions> & DeclensionData
 >;
 
 /** Noun phrase mappings that inflect like their base noun with genitive transformations (e.g. 'data' → 'data utworzenia'). */

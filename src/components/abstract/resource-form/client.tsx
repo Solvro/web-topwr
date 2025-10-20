@@ -55,12 +55,14 @@ import type {
   QueriedRelations,
   ResourceDataType,
   ResourceDefaultValues,
-  ResourceFormSheetData,
-  ResourceFormSheetDataContent,
   ResourceFormValues,
   ResourceRelation,
   XToManyResource,
 } from "@/types/app";
+import type {
+  ResourceFormSheetData,
+  ResourceFormSheetDataContent,
+} from "@/types/components";
 
 import type {
   AbstractResourceFormProps,

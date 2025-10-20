@@ -4,7 +4,7 @@ import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import type { GetResourceWithRelationsResponse } from "@/types/api";
-import type { ResourceEditPageProps } from "@/types/app";
+import type { ResourceEditPageProps } from "@/types/components";
 
 import { AbstractResourceForm } from "./resource-form";
 

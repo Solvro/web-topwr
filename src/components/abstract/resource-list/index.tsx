@@ -4,10 +4,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { Resource } from "@/config/enums";
 import { fetchResources } from "@/lib/helpers";
-import type {
-  ListSearchParameters,
-  ResourceDeclinableField,
-} from "@/types/app";
+import type { ListSearchParameters } from "@/types/components";
+import type { ResourceDeclinableField } from "@/types/polish";
 
 import { CreateButton } from "../create-button";
 import { InfiniteScroller } from "./infinite-scroller";

@@ -24,7 +24,7 @@ import { declineNoun } from "@/lib/polish";
 import type {
   ResourceFormSheetData,
   ResourceFormSheetDataContent,
-} from "@/types/app";
+} from "@/types/components";
 
 import { AbstractResourceFormSkeleton } from "./skeleton";
 
@@ -47,7 +47,7 @@ function AbstractResourceFormSheetContent<T extends Resource>({
           `Utwórz ${relationDeclensions.accusative}`,
           `Stwórz ${declineNoun(relatedResource, {
             prependDeterminer: "new",
-            case: DeclensionCase.Nominative,
+            case: DeclensionCase.Accusative,
           })} dla ${resourceDeclensions.genitive}.`,
         ]
       : [

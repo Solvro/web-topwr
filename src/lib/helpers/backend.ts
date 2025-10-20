@@ -3,7 +3,7 @@ import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { encodeQueryComponent } from "@/lib/helpers";
 import type { GetResourcesResponse } from "@/types/api";
-import type { ListSearchParameters } from "@/types/app";
+import type { ListSearchParameters } from "@/types/components";
 
 import { fetchMutation } from "../fetch-utils";
 

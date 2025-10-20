@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import type { Resource } from "@/config/enums";
 import { typedEntries } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
-import type { LayoutProps } from "@/types/app";
+import type { LayoutProps } from "@/types/components";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 import type { ValueOf } from "@/types/helpers";
 

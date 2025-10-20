@@ -1,13 +1,6 @@
-import type { ReactNode } from "react";
 import type { z } from "zod";
 
-import type { ERROR_CODES } from "@/config/constants";
-import type { DeclensionCase, RelationType, Resource } from "@/config/enums";
-import type {
-  DETERMINER_DECLENSIONS,
-  NOUN_PHRASE_TRANSFORMATIONS,
-  SIMPLE_NOUN_DECLENSIONS,
-} from "@/config/polish";
+import type { RelationType, Resource } from "@/config/enums";
 import type {
   ORDERABLE_RESOURCES,
   RESOURCE_METADATA,
@@ -100,65 +93,3 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
     defaultValues: ResourceFormValues<R>;
   };
 }>;
-
-// Polish grammar
-export type Declensions = Record<DeclensionCase, string>;
-export type DeclinableSimpleNoun = keyof typeof SIMPLE_NOUN_DECLENSIONS;
-export type DeclinableNounPhrase = keyof typeof NOUN_PHRASE_TRANSFORMATIONS;
-export type DeclinableNoun = DeclinableSimpleNoun | DeclinableNounPhrase;
-/** Extracts from the fields of a resource only those which have defined translations and declinations in Polish. */
-export type ResourceDeclinableField<T extends Resource> =
-  keyof ResourceDataType<T> & DeclinableNoun;
-export type Determiner = keyof typeof DETERMINER_DECLENSIONS;
-
-// Component types
-export type ErrorCode = keyof typeof ERROR_CODES;
-export type SortDirection = "asc" | "desc";
-
-export interface SortFiltersOptions {
-  sortBy: DeclinableNoun | "";
-  sortDirection: SortDirection;
-  searchField: DeclinableNoun | "";
-  searchTerm: string;
-}
-
-/** The accepted search parameters for the abstract resource list. */
-export interface ListSearchParameters {
-  page?: string;
-  sortBy?: string;
-  sortDirection?: SortDirection;
-  searchField?: string;
-  searchTerm?: string;
-}
-
-export type ResourceEditPageProps = Readonly<{
-  params: Promise<{ id: string }>;
-}>;
-
-export type ResourcePageProps = Readonly<{
-  searchParams: Promise<{ page?: string }>;
-}>;
-
-export type LayoutProps = Readonly<{
-  children: ReactNode;
-}>;
-
-export interface ResourceFormSheetDataContent<T extends Resource> {
-  childResource: ResourceRelation<T>;
-  parentResourceData: ResourceDataType<T>;
-  form: ReactNode;
-  item: {
-    id: Id;
-    name: string | undefined;
-  } | null;
-}
-
-export type ResourceFormSheetData<T extends Resource> =
-  | {
-      visible: true;
-      content: ResourceFormSheetDataContent<T>;
-    }
-  | {
-      visible: false;
-      content?: ResourceFormSheetDataContent<T>;
-    };

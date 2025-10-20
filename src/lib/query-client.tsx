@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import type { LayoutProps } from "@/types/app";
+import type { LayoutProps } from "@/types/components";
 
 const queryClient = new QueryClient({
   defaultOptions: {

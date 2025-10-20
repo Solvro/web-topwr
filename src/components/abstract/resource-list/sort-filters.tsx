@@ -34,8 +34,9 @@ import {
 import { declineNoun } from "@/lib/polish";
 import { cn } from "@/lib/utils";
 import { SortFiltersSchema } from "@/schemas";
-import type { DeclinableNoun, LayoutProps } from "@/types/app";
+import type { LayoutProps } from "@/types/components";
 import type { SortFiltersFormValues } from "@/types/forms";
+import type { DeclinableNoun } from "@/types/polish";
 
 function FieldGroup({
   children,
