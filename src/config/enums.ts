@@ -1,12 +1,12 @@
 export enum Resource {
+  Banners = "banners",
+  CalendarEvents = "calendar_events",
   Departments = "departments",
   GuideArticles = "guide_articles",
   GuideAuthors = "guide_authors",
   StudentOrganizations = "student_organizations",
   StudentOrganizationLinks = "student_organization_links",
   StudentOrganizationTags = "student_organization_tags",
-  Banners = "banners",
-  CalendarEvents = "calendar_events",
 }
 
 export enum OrganizationType {

@@ -11,10 +11,10 @@ import { getCurrentUser } from "./lib/helpers";
 const REQUIRED_ROUTE_PERMISSIONS: Record<string, string[] | undefined> = {
   "/login": [],
   "/": ["user", "admin"],
-  [`/${Resource.GuideArticles}`]: ["user", "admin"],
-  [`/${Resource.StudentOrganizations}`]: ["user", "admin"],
   [`/${Resource.Banners}`]: ["user", "admin"],
   [`/${Resource.CalendarEvents}`]: ["user", "admin"],
+  [`/${Resource.GuideArticles}`]: ["user", "admin"],
+  [`/${Resource.StudentOrganizations}`]: ["user", "admin"],
   "/change_review": ["admin"],
 };
 

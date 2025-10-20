@@ -4,6 +4,7 @@ import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resources";
 import type {
   Id,
+  OrderableResource,
   RelationDefinition,
   RelationQueryName,
   ResourceMetadata,
@@ -14,7 +15,8 @@ import type { ResourceSchemaKey } from "@/types/forms";
 
 import { sanitizeId } from "./transformations";
 
-export const TANSTACK_KEYS = {
+/** Generates the key for Tanstack query or mutation operations. */
+export const getKey = {
   query: {
     resourceList: (resource: Resource) => `${resource}-list-page`,
   },
@@ -58,3 +60,8 @@ export const getResourcePk = <T extends Resource>(
     metadata.pk ?? ("id" as ResourceSchemaKey<T, z.ZodString | z.ZodNumber>)
   );
 };
+
+export const isOrderableResource = (
+  resource: Resource,
+): resource is OrderableResource =>
+  getResourceMetadata(resource).orderable === true;

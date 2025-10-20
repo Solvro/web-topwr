@@ -23,7 +23,7 @@ import type { Resource } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
-import { TANSTACK_KEYS } from "@/lib/helpers/app";
+import { getKey } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 import type { MessageResponse } from "@/types/api";
 import type { Id } from "@/types/app";
@@ -49,23 +49,20 @@ export function DeleteButtonWithDialog({
   const { mutateAsync, isPending, isSuccess } = useMutationWrapper<
     MessageResponse,
     string
-  >(
-    TANSTACK_KEYS.mutation.deleteResource(resource, id),
-    async (sanitizedId) => {
-      const response = await fetchMutation<MessageResponse>(sanitizedId, {
-        resource,
-        method: "DELETE",
-      });
-      setIsDialogOpen(false);
-      await queryClient.invalidateQueries({
-        queryKey: [TANSTACK_KEYS.query.resourceList(resource)],
-        exact: false,
-      });
-      router.refresh();
-      await onDeleteSuccess?.();
-      return response;
-    },
-  );
+  >(getKey.mutation.deleteResource(resource, id), async (sanitizedId) => {
+    const response = await fetchMutation<MessageResponse>(sanitizedId, {
+      resource,
+      method: "DELETE",
+    });
+    setIsDialogOpen(false);
+    await queryClient.invalidateQueries({
+      queryKey: [getKey.query.resourceList(resource)],
+      exact: false,
+    });
+    router.refresh();
+    await onDeleteSuccess?.();
+    return response;
+  });
 
   const declensions = declineNoun(resource);
 

@@ -9,6 +9,48 @@ import { GrammaticalGender, Resource } from "./enums";
 
 /** A dictionary of Polish language declensions of all resource names & other nouns, as well as their genders for use with determiners. */
 export const SIMPLE_NOUN_DECLENSIONS = {
+  [Resource.Banners]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "baner",
+      genitive: "baneru",
+      dative: "banerowi",
+      accusative: "baner",
+      instrumental: "banerem",
+      locative: "banerze",
+      vocative: "banerze",
+    },
+    plural: {
+      nominative: "banery",
+      genitive: "banerów",
+      dative: "banerom",
+      accusative: "banery",
+      instrumental: "banerami",
+      locative: "banerach",
+      vocative: "banery",
+    },
+  },
+  [Resource.CalendarEvents]: {
+    gender: GrammaticalGender.Neuter,
+    singular: {
+      nominative: "wydarzenie kalendarzowe",
+      genitive: "wydarzenia kalendarzowego",
+      dative: "wydarzeniu kalendarzowemu",
+      accusative: "wydarzenie kalendarzowe",
+      instrumental: "wydarzeniem kalendarzowym",
+      locative: "wydarzeniu kalendarzowemu",
+      vocative: "wydarzenie kalendarzowe",
+    },
+    plural: {
+      nominative: "wydarzenia kalendarzowe",
+      genitive: "wydarzeń kalendarzowych",
+      dative: "wydarzeniom kalendarzowym",
+      accusative: "wydarzenia kalendarzowe",
+      instrumental: "wydarzeniami kalendarzowymi",
+      locative: "wydarzeniach kalendarzowych",
+      vocative: "wydarzenia kalendarzowe",
+    },
+  },
   [Resource.Departments]: {
     gender: GrammaticalGender.Masculine,
     singular: {
@@ -133,48 +175,6 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       instrumental: "tagami",
       locative: "tagach",
       vocative: "tagi",
-    },
-  },
-  [Resource.CalendarEvents]: {
-    gender: GrammaticalGender.Neuter,
-    singular: {
-      nominative: "wydarzenie kalendarzowe",
-      genitive: "wydarzenia kalendarzowego",
-      dative: "wydarzeniu kalendarzowemu",
-      accusative: "wydarzenie kalendarzowe",
-      instrumental: "wydarzeniem kalendarzowym",
-      locative: "wydarzeniu kalendarzowemu",
-      vocative: "wydarzenie kalendarzowe",
-    },
-    plural: {
-      nominative: "wydarzenia kalendarzowe",
-      genitive: "wydarzeń kalendarzowych",
-      dative: "wydarzeniom kalendarzowym",
-      accusative: "wydarzenia kalendarzowe",
-      instrumental: "wydarzeniami kalendarzowymi",
-      locative: "wydarzeniach kalendarzowych",
-      vocative: "wydarzenia kalendarzowe",
-    },
-  },
-  [Resource.Banners]: {
-    gender: GrammaticalGender.Masculine,
-    singular: {
-      nominative: "baner",
-      genitive: "baneru",
-      dative: "banerowi",
-      accusative: "baner",
-      instrumental: "banerem",
-      locative: "banerze",
-      vocative: "banerze",
-    },
-    plural: {
-      nominative: "banery",
-      genitive: "banerów",
-      dative: "banerom",
-      accusative: "banery",
-      instrumental: "banerami",
-      locative: "banerach",
-      vocative: "banery",
     },
   },
   image: {

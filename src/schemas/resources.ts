@@ -17,6 +17,28 @@ import {
 } from "@/lib/helpers";
 import type { AppZodObject } from "@/types/app";
 
+const BannerSchema = z.object({
+  title: requiredString(),
+  description: requiredString(),
+  url: z.string().url().nullish(),
+  draft: z.boolean().default(true),
+  textColor: colorField().nullish(),
+  backgroundColor: colorField().nullish(),
+  titleColor: colorField().nullish(),
+  visibleFrom: isoTimestamp().nullish(),
+  visibleUntil: isoTimestamp().nullish(),
+  shouldRender: z.boolean().default(false),
+});
+
+const CalendarEventSchema = z.object({
+  name: requiredString(),
+  startTime: isoTimestamp(),
+  endTime: isoTimestamp(),
+  description: z.string().nullish(),
+  location: z.string().nullish(),
+  googleCalId: z.string().nullish(),
+});
+
 const DepartmentSchema = z.object({
   name: requiredString(),
   addressLine1: requiredString(),
@@ -72,35 +94,13 @@ const GuideAuthorSchema = z.object({
   name: requiredString(),
 });
 
-const EventCalendarSchema = z.object({
-  name: requiredString(),
-  startTime: isoTimestamp(),
-  endTime: isoTimestamp(),
-  description: z.string().nullish(),
-  location: z.string().nullish(),
-  googleCalId: z.string().nullish(),
-});
-
-const BannerSchema = z.object({
-  title: requiredString(),
-  description: requiredString(),
-  url: z.string().url().nullish(),
-  draft: z.boolean().default(true),
-  textColor: colorField().nullish(),
-  backgroundColor: colorField().nullish(),
-  titleColor: colorField().nullish(),
-  visibleFrom: isoTimestamp().nullish(),
-  visibleUntil: isoTimestamp().nullish(),
-  shouldRender: z.boolean().default(false),
-});
-
 export const RESOURCE_SCHEMAS = {
+  [Resource.Banners]: BannerSchema,
+  [Resource.CalendarEvents]: CalendarEventSchema,
   [Resource.Departments]: DepartmentSchema,
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.GuideAuthors]: GuideAuthorSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
   [Resource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
   [Resource.StudentOrganizationTags]: StudentOrganizationTagSchema,
-  [Resource.CalendarEvents]: EventCalendarSchema,
-  [Resource.Banners]: BannerSchema,
 } satisfies Record<Resource, AppZodObject>;
