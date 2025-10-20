@@ -8,7 +8,6 @@ import { useState } from "react";
 import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
-import type { z } from "zod";
 
 import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";
@@ -40,12 +39,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase, RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { useArfContext } from "@/hooks/use-abstract-resource-form";
+import type { RelationContext } from "@/hooks/use-abstract-resource-form";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { renderAbstractResourceForm } from "@/lib/actions";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId, toTitleCase } from "@/lib/helpers";
 import {
   getResourceMetadata,
+  getResourcePk,
+  getResourceQueryName,
   getResourceRelationDefinitions,
 } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
@@ -61,6 +64,7 @@ import type {
   ResourceFormSheetDataContent,
   ResourceFormValues,
   ResourceRelation,
+  XToManyResource,
 } from "@/types/app";
 
 import type {
@@ -70,22 +74,17 @@ import type {
 } from ".";
 import { AbstractResourceFormSheet } from "./sheet";
 
-type WithOptionalId<T> = T & { id?: number };
-type SchemaWithOptionalId<T extends z.ZodType> = WithOptionalId<z.infer<T>>;
+const isExistingResourceItem = <T extends Resource>(
+  resource: T,
+  item: ResourceDefaultValues<T>,
+): item is ResourceDataType<T> & QueriedRelations<T> =>
+  get(item, getResourcePk(resource)) != null;
 
-const isExistingResourceItem = <T extends z.ZodType>(
-  defaultValues?: SchemaWithOptionalId<T>,
-): defaultValues is Omit<z.infer<T>, "id"> & { id: number } =>
-  defaultValues != null &&
-  "id" in defaultValues &&
-  defaultValues.id !== undefined &&
-  ["number", "string"].includes(typeof defaultValues.id);
-
-const getMutationConfig = <T extends z.ZodType>(
-  resource: Resource,
-  defaultValues?: SchemaWithOptionalId<T>,
+const getMutationConfig = <T extends Resource>(
+  resource: T,
+  defaultValues: ResourceDefaultValues<T>,
 ) =>
-  isExistingResourceItem(defaultValues)
+  isExistingResourceItem(resource, defaultValues)
     ? ({
         mutationKey: `update__${resource}__${String(defaultValues.id)}`,
         endpoint: sanitizeId(String(defaultValues.id)),
@@ -100,6 +99,30 @@ const getMutationConfig = <T extends z.ZodType>(
         submitLabel: "Utwórz",
         SubmitIconComponent: FilePlus2,
       } as const);
+
+const getDefaultValues = <T extends Resource>(
+  defaultValues: ResourceDefaultValues<T>,
+  relationContext: RelationContext<T> | null,
+) => {
+  if (relationContext == null) {
+    return defaultValues;
+  }
+  const {
+    parentResource,
+    childResource,
+    parentResourceId: parentResourcePkValue,
+  } = relationContext;
+  const relationDefinitions = getResourceRelationDefinitions(parentResource);
+  const relationDefinition = relationDefinitions[childResource];
+  if (relationDefinition.type !== RelationType.OneToMany) {
+    return defaultValues;
+  }
+  const foreignKey = relationDefinition.foreignKey;
+  return {
+    ...defaultValues,
+    [foreignKey]: parentResourcePkValue,
+  };
+};
 
 export function AbstractResourceFormInternal<T extends Resource>({
   resource,
@@ -118,11 +141,15 @@ export function AbstractResourceFormInternal<T extends Resource>({
   const [sheet, setSheet] = useState<ResourceFormSheetData<T>>({
     visible: false,
   });
+  const { relationContext } = useArfContext();
   const form = useForm<ResourceFormValues<T>>({
     // Maybe try extracting the id from the defaultValues and passing it as an editedResourceId prop?
     // @ts-expect-error TODO: the schema is compatible but for some reason the types don't match
     resolver: zodResolver(schema) as Resolver<ResourceFormValues<T>>,
-    defaultValues: defaultValues as DefaultValues<ResourceFormValues<T>>,
+    defaultValues: getDefaultValues(
+      defaultValues,
+      relationContext,
+    ) as DefaultValues<ResourceFormValues<T>>,
   });
 
   const { mutationKey, endpoint, method, submitLabel, SubmitIconComponent } =
@@ -132,11 +159,21 @@ export function AbstractResourceFormInternal<T extends Resource>({
     ModifyResourceResponse<T>,
     ResourceFormValues<T>
   >(mutationKey, async (body) => {
-    const response = await fetchMutation<ModifyResourceResponse<T>>(endpoint, {
-      body,
-      method,
-      resource,
-    });
+    const shouldFetchOnChildResource =
+      relationContext == null ||
+      getResourceRelationDefinitions(relationContext.parentResource)[
+        relationContext.childResource
+      ].type !== RelationType.OneToMany;
+    const response = await (shouldFetchOnChildResource
+      ? fetchMutation<ModifyResourceResponse<T>>(endpoint, {
+          body,
+          method,
+          resource,
+        })
+      : fetchMutation<ModifyResourceResponse<T>>(
+          `${sanitizeId(relationContext.parentResourceId)}/${getResourceQueryName(relationContext.childResource as XToManyResource)}`,
+          { body, method, resource: relationContext.parentResource },
+        ));
     router.refresh();
     form.reset(response.data);
     return response;
@@ -459,29 +496,42 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           plural: declineNoun(relation, { plural: true }),
                         };
                         const primaryKeyField = config.pk ?? "id";
-                        const selectedValues =
-                          isExistingResourceItem(defaultValues) &&
-                          config.queryName != null
-                            ? (
-                                defaultValues as unknown as ResourceDataType<T> &
-                                  QueriedRelations<T>
-                              )[
-                                config.queryName as keyof QueriedRelations<T>
-                              ].map((item) =>
-                                String(
-                                  get(
-                                    item,
-                                    primaryKeyField,
-                                    "unknown-select-item",
+                        const [selectedValues, relationDataOptions] =
+                          relationDefinition.type === RelationType.ManyToOne ||
+                          !isExistingResourceItem(resource, defaultValues)
+                            ? [[], []]
+                            : [
+                                defaultValues[
+                                  getResourceQueryName(
+                                    relation as XToManyResource,
+                                  )
+                                ].map((item) =>
+                                  String(
+                                    get(
+                                      item,
+                                      primaryKeyField,
+                                      "unknown-select-item",
+                                    ),
                                   ),
                                 ),
-                              )
-                            : [];
+                                relationDefinition.type ===
+                                RelationType.OneToMany
+                                  ? (defaultValues[
+                                      getResourceQueryName(
+                                        relation as XToManyResource,
+                                      )
+                                    ] as ResourceDataType<typeof relation>[])
+                                  : relationData,
+                              ];
                         const formProps: AbstractResourceFormProps<Resource> = {
                           resource: relation,
                           isEmbedded: true,
                           className: "w-full px-4",
                         };
+                        const isEditingParentResource = isExistingResourceItem(
+                          resource,
+                          defaultValues,
+                        );
                         return (
                           <Label
                             asChild
@@ -491,33 +541,49 @@ export function AbstractResourceFormInternal<T extends Resource>({
                               {toTitleCase(
                                 relationDeclined[
                                   relationDefinition.type ===
-                                  RelationType.ManyToMany
-                                    ? "plural"
-                                    : "singular"
+                                  RelationType.ManyToOne
+                                    ? "singular"
+                                    : "plural"
                                 ].nominative,
                               )}
                               <MultiSelect
                                 deduplicateOptions
                                 hideSelectAll
+                                isReadOnly={
+                                  relationDefinition.type ===
+                                  RelationType.OneToMany
+                                }
                                 placeholder={`Wybierz ${relationDeclined.singular.accusative}`}
                                 className="bg-background border-input"
-                                options={relationData.map((option, index) => {
-                                  const label =
-                                    config.itemMapper(option).name ??
-                                    JSON.stringify(option);
-                                  const value = String(
-                                    get(
-                                      option,
-                                      primaryKeyField,
-                                      `item-${String(index)}`,
-                                    ),
-                                  );
-                                  return { label, value };
-                                })}
+                                options={relationDataOptions.map(
+                                  (option, index) => {
+                                    const label =
+                                      config.itemMapper(
+                                        option as ResourceDataType<
+                                          typeof resourceRelation
+                                        >,
+                                      ).name ?? JSON.stringify(option);
+                                    const value = String(
+                                      get(
+                                        option,
+                                        primaryKeyField,
+                                        `item-${String(index)}`,
+                                      ),
+                                    );
+                                    return { label, value };
+                                  },
+                                )}
                                 onOptionToggled={async (value, removed) => {
-                                  if (!isExistingResourceItem(defaultValues)) {
+                                  if (
+                                    relationDefinition.type ===
+                                    RelationType.OneToMany
+                                  ) {
+                                    // disallow  options in one-to-many relations
+                                    return false;
+                                  }
+                                  if (!isEditingParentResource) {
                                     toast.error(
-                                      `Najpierw utwórz ${declensions.accusative}, a następnie dopiero będziesz mógł dodać powiązane pola.`,
+                                      `Najpierw utwórz ${declensions.accusative}, a następnie dopiero będziesz mógł wybrać powiązane pola.`,
                                     );
                                     return false;
                                   }
@@ -544,49 +610,61 @@ export function AbstractResourceFormInternal<T extends Resource>({
                                   );
                                   return false;
                                 }}
-                                onCreateItem={() => {
-                                  showSheet(
-                                    {
-                                      item: null,
-                                      resource: resourceRelation,
-                                    },
-                                    formProps,
-                                  );
-                                }}
-                                onEditItem={(value) => {
-                                  const relationDefaultValues =
-                                    relationData.find(
-                                      (option) =>
-                                        value ===
-                                        String(get(option, primaryKeyField)),
-                                    );
-                                  const label =
-                                    relationDefaultValues == null
-                                      ? undefined
-                                      : config.itemMapper(relationDefaultValues)
-                                          .name;
-                                  showSheet(
-                                    {
-                                      item: {
-                                        name: label,
-                                        id: value,
-                                      },
-                                      resource: resourceRelation,
-                                    },
-                                    {
-                                      ...formProps,
-                                      defaultValues: {
-                                        ...(relationDefaultValues as ResourceDataType<
-                                          typeof relation
-                                        >),
-                                        // ! for now I am overriding the id to always use the PK field
-                                        // ! this may break something down the line but it should work for now,
-                                        // ! assuming the backend doesn't do some crazy stuff with IDs and PKs
-                                        id: value,
-                                      } as ResourceDefaultValues<Resource>,
-                                    },
-                                  );
-                                }}
+                                onCreateItem={
+                                  isEditingParentResource
+                                    ? () => {
+                                        showSheet(
+                                          {
+                                            item: null,
+                                            childResource: resourceRelation,
+                                            parentResourceData: defaultValues,
+                                          },
+                                          formProps,
+                                        );
+                                      }
+                                    : undefined
+                                }
+                                onEditItem={
+                                  isEditingParentResource
+                                    ? (value) => {
+                                        const relationDefaultValues =
+                                          relationDataOptions.find(
+                                            (option) =>
+                                              value ===
+                                              String(
+                                                get(option, primaryKeyField),
+                                              ),
+                                          ) as
+                                            | ResourceDataType<
+                                                typeof resourceRelation
+                                              >
+                                            | undefined;
+                                        const label =
+                                          relationDefaultValues == null
+                                            ? undefined
+                                            : config.itemMapper(
+                                                relationDefaultValues,
+                                              ).name;
+                                        showSheet(
+                                          {
+                                            item: {
+                                              name: label,
+                                              id: value,
+                                            },
+                                            childResource: resourceRelation,
+                                            parentResourceData: defaultValues,
+                                          },
+                                          {
+                                            ...formProps,
+                                            defaultValues: {
+                                              ...relationDefaultValues,
+                                              [getResourcePk(relation)]: value,
+                                            } as ResourceDefaultValues<Resource>,
+                                          },
+                                        );
+                                      }
+                                    : undefined
+                                }
                                 defaultValue={selectedValues}
                               />
                             </div>

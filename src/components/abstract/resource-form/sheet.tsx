@@ -2,6 +2,7 @@
 
 import { Suspense } from "react";
 import type { Dispatch, SetStateAction } from "react";
+import { get } from "react-hook-form";
 
 import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,9 @@ import {
 } from "@/components/ui/sheet";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { ArfContext } from "@/hooks/use-abstract-resource-form";
+import type { RelationContext } from "@/hooks/use-abstract-resource-form";
+import { getResourcePk } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 import type {
   ResourceFormSheetData,
@@ -33,7 +37,7 @@ function AbstractResourceFormSheetContent<T extends Resource>({
   content: ResourceFormSheetDataContent<T>;
   closeSheet: () => void;
 }) {
-  const relatedResource = content.resource as Resource;
+  const relatedResource = content.childResource as Resource;
   const relationDeclensions = declineNoun(relatedResource);
 
   const [sheetTitle, sheetDescription] =
@@ -53,15 +57,38 @@ function AbstractResourceFormSheetContent<T extends Resource>({
           })} ${declineNoun(resource, { case: DeclensionCase.Dative })}.`,
         ];
 
+  const parentResourceId = get(
+    content.parentResourceData,
+    getResourcePk(resource),
+  ) as string | number | null;
+  if (
+    parentResourceId == null ||
+    !["string", "number"].includes(typeof parentResourceId)
+  ) {
+    throw new Error("Parent resource ID is missing or invalid.");
+  }
+
+  const relationContext: RelationContext<T> = {
+    parentResource: resource,
+    parentResourceId,
+    childResource: content.childResource,
+  };
+
   return (
     <SheetContent className="lg:min-w-1/3">
       <SheetHeader>
         <SheetTitle>{sheetTitle}</SheetTitle>
         <SheetDescription>{sheetDescription}</SheetDescription>
       </SheetHeader>
-      <Suspense fallback={<AbstractResourceFormSkeleton />}>
-        {content.form}
-      </Suspense>
+      <ArfContext.Provider
+        value={{
+          relationContext,
+        }}
+      >
+        <Suspense fallback={<AbstractResourceFormSkeleton />}>
+          {content.form}
+        </Suspense>
+      </ArfContext.Provider>
       <SheetFooter className="pt-0">
         {content.item == null ? null : (
           <DeleteButtonWithDialog
@@ -70,6 +97,7 @@ function AbstractResourceFormSheetContent<T extends Resource>({
             variant="destructive"
             size="lg"
             onDeleteSuccess={closeSheet}
+            itemName={content.item.name}
             {...content.item}
           />
         )}

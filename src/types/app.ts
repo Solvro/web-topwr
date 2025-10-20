@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import type { DefaultValues } from "react-hook-form";
 import type { z } from "zod";
 
 import type { ERROR_CODES } from "@/config/constants";
@@ -38,8 +37,6 @@ export type ResourceDataType<T extends Resource> = PossiblyOrderable<
   T,
   DatedResource & ResourceFormValues<T> & { id: Id }
 >;
-export type ResourceDefaultValues<R extends Resource> = ResourceFormValues<R> &
-  DefaultValues<ResourceFormValues<R> | ResourceDataType<R>>;
 
 // Relations
 /** For a given resource `T`, this type returns the union of all resources to which it is related. */
@@ -50,29 +47,41 @@ export type ResourceRelation<T extends Resource> = {
     ? L
     : never;
 }[T];
-export type RelationDefinition<T extends Resource> =
+/** Relation definitions between T and L, where T is the main resource and L is the related resource. */
+export type RelationDefinition<T extends Resource, L extends Resource> =
   | {
       type: RelationType.ManyToMany;
       foreignKey?: never;
     }
   | {
+      type: RelationType.OneToMany;
+      foreignKey: ResourceSchemaKey<L, z.ZodString | z.ZodNumber>;
+    }
+  | {
       type: RelationType.ManyToOne;
       foreignKey: ResourceSchemaKey<T, z.ZodString | z.ZodNumber>;
     };
+export type RelationDefinitions<T extends Resource> = {
+  [L in Resource]?: RelationDefinition<T, L>;
+};
 
-export type ManyToManyResource = {
+/** Represents Resources which are part of a one-to-many or many-to-many relation. */
+export type XToManyResource = {
   [R in Resource]: (typeof RESOURCE_METADATA)[R] extends { queryName: string }
     ? R
     : never;
 }[Resource];
 
-export type RelationQueryName<T extends ManyToManyResource> =
+export type RelationQueryName<T extends XToManyResource> =
   (typeof RESOURCE_METADATA)[T]["queryName"];
 export type QueriedRelations<T extends Resource> = {
-  [L in ManyToManyResource as RelationQueryName<L>]: L extends ResourceRelation<T>
+  [L in XToManyResource as RelationQueryName<L>]: L extends ResourceRelation<T>
     ? ResourceDataType<L>[]
     : never;
 };
+export type ResourceDefaultValues<R extends Resource> =
+  | ResourceFormValues<R>
+  | (ResourceDataType<R> & QueriedRelations<R>);
 
 // Resource metadata
 export type ResourceMetadata<R extends Resource> = Readonly<{
@@ -88,7 +97,7 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
     /** The inputs to be used in the form for the resource. */
     inputs: AbstractResourceFormInputs<R>;
     /** The default values to be used in the form for the resource. */
-    defaultValues: ResourceDefaultValues<R>;
+    defaultValues: ResourceFormValues<R>;
   };
 }>;
 
@@ -135,7 +144,8 @@ export type LayoutProps = Readonly<{
 }>;
 
 export interface ResourceFormSheetDataContent<T extends Resource> {
-  resource: ResourceRelation<T>;
+  childResource: ResourceRelation<T>;
+  parentResourceData: ResourceDataType<T>;
   form: ReactNode;
   item: {
     id: Id;

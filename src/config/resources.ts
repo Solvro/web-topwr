@@ -183,7 +183,8 @@ export const RESOURCE_METADATA = {
             foreignKey: "departmentId",
           },
           [Resource.StudentOrganizationLinks]: {
-            type: RelationType.ManyToMany,
+            type: RelationType.OneToMany,
+            foreignKey: "studentOrganizationId",
           },
           [Resource.StudentOrganizationTags]: { type: RelationType.ManyToMany },
         },
@@ -228,6 +229,7 @@ export const RESOURCE_METADATA = {
       defaultValues: {
         link: "",
         linkType: LinkType.Default,
+        studentOrganizationId: -1,
       },
     },
   },

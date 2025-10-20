@@ -163,6 +163,9 @@ interface MultiSelectProps
    */
   onEditItem?: (itemValue: string) => void;
 
+  /** Whether to render the checkbox and remove icons for each option. Defaults to `false`. */
+  isReadOnly?: boolean;
+
   /** The default selected values when the component mounts. */
   defaultValue?: string[];
 
@@ -348,7 +351,8 @@ function MultiSelectOptionItem({
   selectedValues,
   onEditItem,
   toggleOption,
-}: Pick<MultiSelectProps, "onEditItem"> & {
+  isReadOnly = false,
+}: Pick<MultiSelectProps, "onEditItem" | "isReadOnly"> & {
   option: MultiSelectOption;
   selectedValues: string[];
   toggleOption: (optionValue: string) => void;
@@ -370,15 +374,17 @@ function MultiSelectOptionItem({
         )}
         disabled={option.disabled}
       >
-        <div
-          className={cn(
-            "border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
-            isSelected ? "bg-primary" : "opacity-50 [&_svg]:invisible",
-          )}
-          aria-hidden="true"
-        >
-          <CheckIcon className="text-primary-foreground h-4 w-4" />
-        </div>
+        {isReadOnly ? null : (
+          <div
+            className={cn(
+              "border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
+              isSelected ? "bg-primary" : "opacity-50 [&_svg]:invisible",
+            )}
+            aria-hidden="true"
+          >
+            <CheckIcon className="text-primary-foreground h-4 w-4" />
+          </div>
+        )}
         {option.icon && (
           <option.icon
             className="text-muted-foreground mr-2 h-4 w-4"
@@ -408,6 +414,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       onOptionToggled,
       onCreateItem,
       onEditItem,
+      isReadOnly,
       variant,
       defaultValue = [],
       placeholder = "Select options",
@@ -1011,34 +1018,36 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                             >
                               {option.label}
                             </span>
-                            <div
-                              role="button"
-                              tabIndex={0}
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                toggleOption(value);
-                              }}
-                              onKeyDown={(event) => {
-                                if (
-                                  event.key === "Enter" ||
-                                  event.key === " "
-                                ) {
-                                  event.preventDefault();
+                            {isReadOnly ? null : (
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={(event) => {
                                   event.stopPropagation();
                                   toggleOption(value);
-                                }
-                              }}
-                              aria-label={`Remove ${option.label} from selection`}
-                              className="-m-0.5 ml-2 h-4 w-4 cursor-pointer rounded-sm p-0.5 hover:bg-white/20 focus:ring-1 focus:ring-white/50 focus:outline-none"
-                            >
-                              <XCircle
-                                className={cn(
-                                  "h-3 w-3",
-                                  responsiveSettings.compactMode &&
-                                    "h-2.5 w-2.5",
-                                )}
-                              />
-                            </div>
+                                }}
+                                onKeyDown={(event) => {
+                                  if (
+                                    event.key === "Enter" ||
+                                    event.key === " "
+                                  ) {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    toggleOption(value);
+                                  }
+                                }}
+                                aria-label={`Remove ${option.label} from selection`}
+                                className="-m-0.5 ml-2 h-4 w-4 cursor-pointer rounded-sm p-0.5 hover:bg-white/20 focus:ring-1 focus:ring-white/50 focus:outline-none"
+                              >
+                                <XCircle
+                                  className={cn(
+                                    "h-3 w-3",
+                                    responsiveSettings.compactMode &&
+                                      "h-2.5 w-2.5",
+                                  )}
+                                />
+                              </div>
+                            )}
                           </Badge>
                         );
                       })
@@ -1216,6 +1225,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                         <MultiSelectOptionItem
                           key={option.value}
                           option={option}
+                          isReadOnly={isReadOnly}
                           selectedValues={selectedValues}
                           toggleOption={toggleOption}
                           onEditItem={onEditItem}
@@ -1229,6 +1239,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                       <MultiSelectOptionItem
                         key={option.value}
                         option={option}
+                        isReadOnly={isReadOnly}
                         selectedValues={selectedValues}
                         toggleOption={toggleOption}
                         onEditItem={onEditItem}

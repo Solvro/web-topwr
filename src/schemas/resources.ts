@@ -33,7 +33,7 @@ const DepartmentSchema = z.object({
 const StudentOrganizationLinkSchema = z.object({
   linkType: z.nativeEnum(LinkType),
   link: requiredString().url(),
-  // studentOrganizationId: numericId(),
+  studentOrganizationId: numericId(),
 });
 
 const StudentOrganizationTagSchema = z.object({

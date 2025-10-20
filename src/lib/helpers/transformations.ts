@@ -30,7 +30,8 @@ export const encodeQueryParameters = (
 // TODO: narrow this down to just resource IDs (e.g. using a regex)
 // keep in mind this cannot be just integers because resources like
 // student_organization_tags use the tag (alphanumeric string) as the primary key
-export const sanitizeId = (id: Id): string => String(id).trim();
+export const sanitizeId = (id: Id): string =>
+  encodeURIComponent(String(id).trim());
 
 export const toTitleCase = (text: string): string =>
   text === "" ? "" : text[0].toUpperCase() + text.slice(1).toLowerCase();

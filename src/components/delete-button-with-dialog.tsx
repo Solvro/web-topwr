@@ -91,7 +91,7 @@ export function DeleteButtonWithDialog({
       </DialogTrigger>
       <DialogContent className="border-none">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-balance">
             Czy na pewno chcesz usunąć{" "}
             {
               itemName == null

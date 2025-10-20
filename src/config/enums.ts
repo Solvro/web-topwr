@@ -73,6 +73,14 @@ export enum DeclensionCase {
 // #endregion
 
 export enum RelationType {
+  /** e.g. Each student organization has many links, and the foreign key is stored on the related resource (links) */
+  OneToMany = "one_to_many",
+
+  /**
+   * e.g. Each student organization has one department, but many organizations can share the same department;
+   * the foreign key is stored on the main resource (student organizations)
+   */
   ManyToOne = "many_to_one",
+  /** e.g. Student organization tags: many-to-many relation without foreign keys in either resource (pivot table used) */
   ManyToMany = "many_to_many",
 }
