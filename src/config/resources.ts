@@ -382,8 +382,8 @@ export const RESOURCE_METADATA = {
     form: {
       inputs: {
         textInputs: { name: { label: "Nazwa wersji" } },
-        textareaInputs: { name: { label: "Opis wersji" } },
-        dateInputs: { name: { label: "Data" } },
+        textareaInputs: { description: { label: "Opis wersji" } },
+        dateInputs: { releaseDate: { label: "Data" } },
         relationInputs: {
           [Resource.Changes]: {
             type: RelationType.OneToMany,
