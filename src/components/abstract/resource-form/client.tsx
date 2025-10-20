@@ -9,6 +9,7 @@ import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 
+import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";
 import { DateTimePicker } from "@/components/inputs/date-time-picker";
@@ -369,13 +370,22 @@ export function AbstractResourceFormInternal<T extends Resource>({
                 })}
               </Link>
             </Button>
-            <Button
-              type="submit"
-              loading={isPending}
-              disabled={!form.formState.isDirty}
-            >
-              Zapisz
-            </Button>
+            <div className="flex gap-4">
+              {typeof (defaultValues as { id?: number }).id === "number" && (
+                <DeleteButtonWithDialog
+                  resource={resource}
+                  id={(defaultValues as { id: number }).id}
+                />
+              )}
+
+              <Button
+                type="submit"
+                loading={isPending}
+                disabled={!form.formState.isDirty}
+              >
+                Zapisz
+              </Button>
+            </div>
           </div>
         </form>
       </Form>
