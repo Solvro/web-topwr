@@ -361,7 +361,7 @@ function MultiSelectOptionItem({
   return (
     <div className="flex">
       <CommandItem
-        onSelect={() => toggleOption(option.value)}
+        onSelect={isReadOnly ? undefined : () => toggleOption(option.value)}
         role="option"
         aria-selected={isSelected}
         aria-disabled={option.disabled}
@@ -369,7 +369,8 @@ function MultiSelectOptionItem({
           isSelected ? ", selected" : ", not selected"
         }${option.disabled ? ", disabled" : ""}`}
         className={cn(
-          "w-full cursor-pointer",
+          "w-full",
+          isReadOnly ? "bg-transparent!" : "cursor-pointer",
           option.disabled && "cursor-not-allowed opacity-50",
         )}
         disabled={option.disabled}

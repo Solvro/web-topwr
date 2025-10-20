@@ -496,9 +496,13 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           plural: declineNoun(relation, { plural: true }),
                         };
                         const primaryKeyField = config.pk ?? "id";
+                        const isEditingParentResource = isExistingResourceItem(
+                          resource,
+                          defaultValues,
+                        );
                         const [selectedValues, relationDataOptions] =
                           relationDefinition.type === RelationType.ManyToOne ||
-                          !isExistingResourceItem(resource, defaultValues)
+                          !isEditingParentResource
                             ? [[], []]
                             : [
                                 defaultValues[
@@ -528,10 +532,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           isEmbedded: true,
                           className: "w-full px-4",
                         };
-                        const isEditingParentResource = isExistingResourceItem(
-                          resource,
-                          defaultValues,
-                        );
                         return (
                           <Label
                             asChild
@@ -574,13 +574,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                                   },
                                 )}
                                 onOptionToggled={async (value, removed) => {
-                                  if (
-                                    relationDefinition.type ===
-                                    RelationType.OneToMany
-                                  ) {
-                                    // disallow  options in one-to-many relations
-                                    return false;
-                                  }
                                   if (!isEditingParentResource) {
                                     toast.error(
                                       `Najpierw utwórz ${declensions.accusative}, a następnie dopiero będziesz mógł wybrać powiązane pola.`,

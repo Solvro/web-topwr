@@ -3,6 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { VariantProps } from "class-variance-authority";
 import { Shredder, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -42,6 +43,7 @@ export function DeleteButtonWithDialog({
   onDeleteSuccess?: () => void | Promise<void>;
 } & VariantProps<typeof buttonVariants>) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const router = useRouter();
 
   const queryClient = useQueryClient();
   const { mutateAsync, isPending, isSuccess } = useMutationWrapper<
@@ -59,6 +61,7 @@ export function DeleteButtonWithDialog({
         queryKey: [TANSTACK_KEYS.query.resourceList(resource)],
         exact: false,
       });
+      router.refresh();
       await onDeleteSuccess?.();
       return response;
     },
