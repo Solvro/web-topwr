@@ -2,21 +2,20 @@ import type { ComponentType, Ref } from "react";
 
 import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { Badge } from "@/components/ui/badge";
-import type { Resource } from "@/config/enums";
 import { getResourceMetadata } from "@/lib/helpers/app";
-import type { ListItem, ResourceDataType } from "@/types/app";
+import type { ListItem, ResourceDataType, RoutableResource } from "@/types/app";
 
 import { EditButton } from "../edit-button";
 import { DragHandle } from "./drag-handle";
 
-interface ItemProps<T extends Resource> {
+interface ItemProps<T extends RoutableResource> {
   ref?: Ref<HTMLLIElement>;
   item: ResourceDataType<T>;
   resource: T;
   orderable?: boolean;
 }
 
-export function AbstractResourceListItem<T extends Resource>({
+export function AbstractResourceListItem<T extends RoutableResource>({
   ref,
   item,
   resource,
@@ -55,7 +54,7 @@ export function AbstractResourceListItem<T extends Resource>({
   );
 }
 
-export function AbstractResourceListItems<T extends Resource>({
+export function AbstractResourceListItems<T extends RoutableResource>({
   items,
   resource,
   orderable = false,

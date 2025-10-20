@@ -5,17 +5,20 @@ import { useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { Button } from "@/components/ui/button";
-import type { Resource } from "@/config/enums";
-import { fetchResources, isOrderableResource } from "@/lib/helpers";
-import { TANSTACK_KEYS } from "@/lib/helpers/app";
+import { fetchResources } from "@/lib/helpers";
+import { getKey, isOrderableResource } from "@/lib/helpers/app";
 import type { GetResourcesResponse } from "@/types/api";
-import type { OrderableResource, ResourceDataType } from "@/types/app";
+import type {
+  OrderableResource,
+  ResourceDataType,
+  RoutableResource,
+} from "@/types/app";
 import type { ListSearchParameters } from "@/types/components";
 
 import { AbstractResourceListItems } from "./item";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
 
-export function InfiniteScroller<T extends Resource>({
+export function InfiniteScroller<T extends RoutableResource>({
   resource,
   initialData,
   searchParameters = {},
@@ -28,7 +31,7 @@ export function InfiniteScroller<T extends Resource>({
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: [TANSTACK_KEYS.query.resourceList(resource), searchParameters],
+      queryKey: [getKey.query.resourceList(resource), searchParameters],
       queryFn: async ({ pageParam }) =>
         fetchResources(resource, pageParam, searchParameters),
       initialPageParam: 1,

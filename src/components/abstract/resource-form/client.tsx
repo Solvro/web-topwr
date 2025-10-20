@@ -57,18 +57,16 @@ import type {
   ResourceDefaultValues,
   ResourceFormValues,
   ResourceRelation,
+  RoutableResource,
   XToManyResource,
 } from "@/types/app";
 import type {
+  ResourceFormProps,
   ResourceFormSheetData,
   ResourceFormSheetDataContent,
 } from "@/types/components";
 
-import type {
-  AbstractResourceFormProps,
-  ExistingImages,
-  ResourceRelations,
-} from ".";
+import type { ExistingImages, ResourceRelations } from ".";
 import { AbstractResourceFormSheet } from "./sheet";
 
 const isExistingResourceItem = <T extends Resource>(
@@ -128,7 +126,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
   relatedResources,
   isEmbedded = false,
   className,
-}: AbstractResourceFormProps<T> & {
+}: ResourceFormProps<T> & {
   defaultValues: ResourceDefaultValues<T>;
   existingImages: ExistingImages<T>;
   relatedResources: ResourceRelations<T>;
@@ -539,7 +537,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                                 )
                               ] as ResourceDataType<typeof relation>[])
                             : relationData;
-                        const formProps: AbstractResourceFormProps<Resource> = {
+                        const formProps: ResourceFormProps<Resource> = {
                           resource: relation,
                           isEmbedded: true,
                           className: "w-full px-4",
@@ -662,7 +660,10 @@ export function AbstractResourceFormInternal<T extends Resource>({
                 className="text-primary hover:text-primary w-min"
                 asChild
               >
-                <Link href={`/${resource}`} className="">
+                {/* It would be too complex to relate `isEmbedded` to `resource` being a `RoutableResource`, */}
+                {/* so I'm going to assume the codebase won't use `AbstractResourceForm` anywhere except for */}
+                {/* routable resources with `isEmbedded` set to `false` and otherwise with it set to `true`. */}
+                <Link href={`/${resource as RoutableResource}`} className="">
                   <ChevronLeft />
                   Wróć do{" "}
                   {declineNoun(resource, {

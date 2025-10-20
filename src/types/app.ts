@@ -1,10 +1,8 @@
+import type { Route } from "next";
 import type { z } from "zod";
 
 import type { RelationType, Resource } from "@/config/enums";
-import type {
-  ORDERABLE_RESOURCES,
-  RESOURCE_METADATA,
-} from "@/config/resources";
+import type { RESOURCE_METADATA } from "@/config/resources";
 import type { RESOURCE_SCHEMAS } from "@/schemas";
 
 import type { DatedResource } from "./api";
@@ -20,16 +18,25 @@ export interface ListItem {
 export type AppZodObject = z.ZodObject<z.ZodRawShape>;
 
 // Resource helpers
-export type OrderableResource = (typeof ORDERABLE_RESOURCES)[number];
+export type OrderableResource = {
+  [R in Resource]: (typeof RESOURCE_METADATA)[R] extends { orderable: true }
+    ? R
+    : never;
+}[Resource];
 export type ResourceSchema<T extends Resource> = (typeof RESOURCE_SCHEMAS)[T];
 export type ResourceFormValues<T extends Resource> = z.infer<ResourceSchema<T>>;
 type PossiblyOrderable<T extends Resource, U> = T extends OrderableResource
   ? U & { order: number }
   : U;
+type UnorderableResourceDataType<T extends Resource> = DatedResource &
+  ResourceFormValues<T> & { id: Id };
 export type ResourceDataType<T extends Resource> = PossiblyOrderable<
   T,
-  DatedResource & ResourceFormValues<T> & { id: Id }
+  UnorderableResourceDataType<T>
 >;
+export type RoutableResource = {
+  [R in Resource]: `/${R}` extends Route ? R : never;
+}[Resource];
 
 // Relations
 /** For a given resource `T`, this type returns the union of all resources to which it is related. */
@@ -84,8 +91,10 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
   pk?: ResourceSchemaKey<R, z.ZodString | z.ZodNumber>;
   /** A mapping of the client-side resources to their paths in the backend API. */
   apiPath: string;
+  /** Whether the resource is orderable within the Abstract Resource List. */
+  orderable?: boolean;
   /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */
-  itemMapper: (item: ResourceDataType<R>) => Omit<ListItem, "id">;
+  itemMapper: (item: UnorderableResourceDataType<R>) => Omit<ListItem, "id">; // use the UnorderableResourceDataType here to avoid circular type reference
   form: {
     /** The inputs to be used in the form for the resource. */
     inputs: AbstractResourceFormInputs<R>;

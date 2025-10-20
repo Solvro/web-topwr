@@ -51,13 +51,74 @@ const SELECT_OPTION_LABELS = {
   },
 };
 
-/** A list of all resources which define an `order` field in the database. */
-export const ORDERABLE_RESOURCES = [
-  Resource.GuideArticles,
-] satisfies Resource[];
-
 /** Required metadata for each resource. */
 export const RESOURCE_METADATA = {
+  [Resource.Banners]: {
+    apiPath: "banners",
+    itemMapper: (item) => ({
+      id: item.id,
+      name: item.title,
+      shortDescription: item.description,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          title: { label: "Tytuł" },
+          url: { label: "URL" },
+        },
+        textareaInputs: { description: { label: "Opis" } },
+        dateTimeInputs: {
+          visibleFrom: { label: "Data rozpoczęcia" },
+          visibleUntil: { label: "Data zakończenia" },
+        },
+        colorInputs: {
+          titleColor: { label: "Kolor tytułu" },
+          textColor: { label: "Kolor tekstu" },
+          backgroundColor: { label: "Kolor tła" },
+        },
+        checkboxInputs: { draft: { label: "Wersja robocza" } },
+      },
+      defaultValues: {
+        title: "",
+        description: "",
+        url: "",
+        visibleFrom: null,
+        visibleUntil: null,
+        titleColor: null,
+        textColor: null,
+        backgroundColor: null,
+        draft: true,
+        shouldRender: false,
+      },
+    },
+  },
+  [Resource.CalendarEvents]: {
+    apiPath: "event_calendar",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.location ?? "Brak lokalizacji",
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa wydarzenia" },
+          location: { label: "Lokalizacja" },
+          description: { label: "Opis wydarzenia" },
+        },
+        dateTimeInputs: {
+          startTime: { label: "Czas rozpoczęcia" },
+          endTime: { label: "Czas zakończenia" },
+        },
+      },
+      defaultValues: {
+        name: "",
+        location: "",
+        description: "",
+        startTime: getFutureDate(1),
+        endTime: getFutureDate(2),
+      },
+    },
+  },
   [Resource.Departments]: {
     apiPath: "departments",
     itemMapper: (item) => ({
@@ -100,6 +161,7 @@ export const RESOURCE_METADATA = {
   },
   [Resource.GuideArticles]: {
     apiPath: "guide_articles",
+    orderable: true,
     itemMapper: (item) => ({
       name: item.title,
       shortDescription: item.shortDesc,
@@ -244,72 +306,6 @@ export const RESOURCE_METADATA = {
       },
       defaultValues: {
         tag: "",
-      },
-    },
-  },
-  [Resource.Banners]: {
-    apiPath: "banners",
-    itemMapper: (item) => ({
-      id: item.id,
-      name: item.title,
-      shortDescription: item.description,
-    }),
-    form: {
-      inputs: {
-        textInputs: {
-          title: { label: "Tytuł" },
-          url: { label: "URL" },
-        },
-        textareaInputs: { description: { label: "Opis" } },
-        dateTimeInputs: {
-          visibleFrom: { label: "Data rozpoczęcia" },
-          visibleUntil: { label: "Data zakończenia" },
-        },
-        colorInputs: {
-          titleColor: { label: "Kolor tytułu" },
-          textColor: { label: "Kolor tekstu" },
-          backgroundColor: { label: "Kolor tła" },
-        },
-        checkboxInputs: { draft: { label: "Wersja robocza" } },
-      },
-      defaultValues: {
-        title: "",
-        description: "",
-        url: "",
-        visibleFrom: null,
-        visibleUntil: null,
-        titleColor: null,
-        textColor: null,
-        backgroundColor: null,
-        draft: true,
-        shouldRender: false,
-      },
-    },
-  },
-  [Resource.CalendarEvents]: {
-    apiPath: "event_calendar",
-    itemMapper: (item) => ({
-      name: item.name,
-      shortDescription: item.location ?? "Brak lokalizacji",
-    }),
-    form: {
-      inputs: {
-        textInputs: {
-          name: { label: "Nazwa wydarzenia" },
-          location: { label: "Lokalizacja" },
-          description: { label: "Opis wydarzenia" },
-        },
-        dateTimeInputs: {
-          startTime: { label: "Czas rozpoczęcia" },
-          endTime: { label: "Czas zakończenia" },
-        },
-      },
-      defaultValues: {
-        name: "",
-        location: "",
-        description: "",
-        startTime: getFutureDate(1),
-        endTime: getFutureDate(2),
       },
     },
   },
