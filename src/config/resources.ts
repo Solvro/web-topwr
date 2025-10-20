@@ -8,6 +8,7 @@ import {
   OrganizationType,
   RelationType,
   Resource,
+  StudiesType,
   UniversityBranch,
 } from "./enums";
 
@@ -48,6 +49,13 @@ const SELECT_OPTION_LABELS = {
       [LinkType.X]: "X (dawniej Twitter)",
       [LinkType.Twitch]: "Twitch",
     } satisfies Record<LinkType, string>,
+  },
+  MAJORS: {
+    STUDIES_TYPE: {
+      [StudiesType.FirstDegree]: "Studia I stopnia",
+      [StudiesType.SecondDegree]: "Studia II stopnia",
+      [StudiesType.LongCycle]: "Studia jednolite magisterskie",
+    } satisfies Record<StudiesType, string>,
   },
 };
 
@@ -123,7 +131,7 @@ export const RESOURCE_METADATA = {
     apiPath: "departments",
     itemMapper: (item) => ({
       name: item.name,
-      shortDescription: item.description,
+      shortDescription: `${item.code} (${item.betterCode})`,
     }),
     form: {
       inputs: {
@@ -131,8 +139,6 @@ export const RESOURCE_METADATA = {
           name: { label: "Nazwa" },
           code: { label: "Kod wydziału (z numerem)" },
           betterCode: { label: "Kod wydziału (ze skrótem)" },
-        },
-        textareaInputs: {
           addressLine1: { label: "Adres - linia 1" },
           addressLine2: { label: "Adres - linia 2" },
         },
@@ -143,6 +149,12 @@ export const RESOURCE_METADATA = {
         colorInputs: {
           gradientStart: { label: "Kolor początkowy gradientu" },
           gradientEnd: { label: "Kolor końcowy gradientu" },
+        },
+        relationInputs: {
+          [Resource.Majors]: {
+            type: RelationType.OneToMany,
+            foreignKey: "departmentId",
+          },
         },
       },
       defaultValues: {
@@ -306,6 +318,41 @@ export const RESOURCE_METADATA = {
       },
       defaultValues: {
         tag: "",
+      },
+    },
+  },
+  [Resource.Majors]: {
+    apiPath: "fields_of_study",
+    queryName: "fieldsOfStudy",
+    itemMapper: (item) => ({
+      name: `${item.name} (${SELECT_OPTION_LABELS.MAJORS.STUDIES_TYPE[item.studiesType]})`,
+      shortDescription: item.url,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa kierunku" },
+          url: { label: "URL kierunku" },
+        },
+        selectInputs: {
+          studiesType: {
+            label: "Typ studiów",
+            optionEnum: StudiesType,
+            optionLabels: SELECT_OPTION_LABELS.MAJORS.STUDIES_TYPE,
+          },
+        },
+        checkboxInputs: {
+          isEnglish: { label: "Zajęcia w j. angielskim" },
+          hasWeekendOption: { label: "Możliwość studiów weekendowych" },
+        },
+      },
+      defaultValues: {
+        name: "",
+        url: "",
+        isEnglish: false,
+        studiesType: StudiesType.FirstDegree,
+        hasWeekendOption: false,
+        departmentId: -1,
       },
     },
   },

@@ -2,12 +2,12 @@ import { AbstractResourceList } from "@/components/abstract/resource-list";
 import { Resource } from "@/config/enums";
 import type { ResourcePageProps } from "@/types/components";
 
-export default function BannersPage(props: ResourcePageProps) {
+export default function DepartmentsPage(props: ResourcePageProps) {
   return (
     <AbstractResourceList
-      resource={Resource.Banners}
-      sortableFields={["title", "description"]}
-      searchableFields={["title", "description"]}
+      resource={Resource.Departments}
+      sortableFields={["name", "description", "code", "betterCode"]}
+      searchableFields={["name", "description", "code", "betterCode"]}
       {...props}
     />
   );

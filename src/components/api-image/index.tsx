@@ -18,7 +18,7 @@ export function ApiImageInternal({
     <Image
       src={fileEntry.url}
       alt={alt}
-      className="h-full max-w-full object-cover"
+      className="bg-primary h-full max-w-full object-cover"
       width={256}
       height={256}
     />

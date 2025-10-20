@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import {
   IMPLICIT_SORT_BY_ATTRIBUTES,
   SORT_DIRECTIONS,
@@ -159,7 +160,8 @@ export function SortFilters({
             )}
           />
         </FieldGroup>
-        <FieldGroup className="md:ml-8">
+        <Separator orientation="vertical" />
+        <FieldGroup>
           <FormField
             control={form.control}
             name="searchField"

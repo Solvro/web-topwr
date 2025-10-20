@@ -7,6 +7,7 @@ import {
   OrganizationStatus,
   OrganizationType,
   Resource,
+  StudiesType,
   UniversityBranch,
 } from "@/config/enums";
 import {
@@ -52,6 +53,17 @@ const DepartmentSchema = z.object({
   branch: z.nativeEnum(UniversityBranch),
 });
 
+const GuideArticleSchema = z.object({
+  title: requiredString(),
+  imageKey: requiredString(),
+  shortDesc: requiredString(),
+  description: requiredString(),
+});
+
+const GuideAuthorSchema = z.object({
+  name: requiredString(),
+});
+
 const StudentOrganizationLinkSchema = z.object({
   linkType: z.nativeEnum(LinkType),
   link: requiredString().url(),
@@ -79,19 +91,17 @@ const StudentOrganizationSchema = z.object({
   organizationStatus: z.nativeEnum(OrganizationStatus, {
     required_error: FORM_ERROR_MESSAGES.REQUIRED,
   }),
-  isStrategic: z.boolean({ required_error: FORM_ERROR_MESSAGES.REQUIRED }),
+  isStrategic: z.boolean(),
   branch: z.nativeEnum(UniversityBranch),
 });
 
-const GuideArticleSchema = z.object({
-  title: requiredString(),
-  imageKey: requiredString(),
-  shortDesc: requiredString(),
-  description: requiredString(),
-});
-
-const GuideAuthorSchema = z.object({
+const MajorSchema = z.object({
   name: requiredString(),
+  url: z.string().url().nullish(),
+  isEnglish: z.boolean().default(false),
+  studiesType: z.nativeEnum(StudiesType),
+  hasWeekendOption: z.boolean().default(false),
+  departmentId: numericId(),
 });
 
 export const RESOURCE_SCHEMAS = {
@@ -103,4 +113,5 @@ export const RESOURCE_SCHEMAS = {
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
   [Resource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
   [Resource.StudentOrganizationTags]: StudentOrganizationTagSchema,
+  [Resource.Majors]: MajorSchema,
 } satisfies Record<Resource, AppZodObject>;
