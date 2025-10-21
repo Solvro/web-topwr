@@ -7,6 +7,7 @@ import {
   Calendar,
   FolderClock,
   Megaphone,
+  Milestone,
   RefreshCcw,
   University,
 } from "lucide-react";
@@ -30,10 +31,10 @@ export default function Home() {
 
   return (
     <div className="container mx-auto flex h-full flex-col items-center space-y-8 p-4 sm:p-8 2xl:max-w-[1280px]">
-      <span className="mt-4 w-full text-2xl md:mt-16">
+      <span className="mt-4 w-full text-2xl">
         Cześć, {getUserDisplayName(auth.user)}!
       </span>
-      <div className="mt-4 grid w-full grid-cols-1 gap-4 md:mt-8 md:grid-cols-2">
+      <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
         <DashboardButton
           href="/"
           icon={RefreshCcw}
@@ -48,13 +49,10 @@ export default function Home() {
         />
         <DashboardButton resource={Resource.GuideArticles} icon={BookOpen} />
         <DashboardButton resource={Resource.Banners} icon={Megaphone} />
-        <DashboardButton
-          resource={Resource.CalendarEvents}
-          icon={Calendar}
-          variant="outline"
-        />
+        <DashboardButton resource={Resource.CalendarEvents} icon={Calendar} />
         <DashboardButton resource={Resource.Departments} icon={University} />
         <DashboardButton resource={Resource.Versions} icon={FolderClock} />
+        <DashboardButton resource={Resource.Milestones} icon={Milestone} />
       </div>
     </div>
   );
