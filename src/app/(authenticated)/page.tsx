@@ -34,25 +34,27 @@ export default function Home() {
       <span className="mt-4 w-full text-2xl">
         Cześć, {getUserDisplayName(auth.user)}!
       </span>
-      <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-        <DashboardButton
-          href="/"
-          icon={RefreshCcw}
-          label="Review zmian"
-          variant="outline"
-        />
-      </div>
-      <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-        <DashboardButton
-          resource={Resource.StudentOrganizations}
-          icon={Building}
-        />
-        <DashboardButton resource={Resource.GuideArticles} icon={BookOpen} />
-        <DashboardButton resource={Resource.Banners} icon={Megaphone} />
-        <DashboardButton resource={Resource.CalendarEvents} icon={Calendar} />
-        <DashboardButton resource={Resource.Departments} icon={University} />
-        <DashboardButton resource={Resource.Versions} icon={FolderClock} />
-        <DashboardButton resource={Resource.Milestones} icon={Milestone} />
+      <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
+        <div className="col-span-full grid grid-cols-subgrid gap-4">
+          <DashboardButton
+            href="/"
+            icon={RefreshCcw}
+            label="Review zmian"
+            variant="outline"
+          />
+        </div>
+        <div className="col-span-full grid grid-cols-subgrid gap-4">
+          <DashboardButton
+            resource={Resource.StudentOrganizations}
+            icon={Building}
+          />
+          <DashboardButton resource={Resource.GuideArticles} icon={BookOpen} />
+          <DashboardButton resource={Resource.Banners} icon={Megaphone} />
+          <DashboardButton resource={Resource.CalendarEvents} icon={Calendar} />
+          <DashboardButton resource={Resource.Departments} icon={University} />
+          <DashboardButton resource={Resource.Versions} icon={FolderClock} />
+          <DashboardButton resource={Resource.Milestones} icon={Milestone} />
+        </div>
       </div>
     </div>
   );

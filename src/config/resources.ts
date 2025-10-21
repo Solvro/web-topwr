@@ -135,6 +135,33 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.Changes]: {
+    queryName: "changes",
+    apiPath: "changes",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.description,
+    }),
+    form: {
+      inputs: {
+        textInputs: { name: { label: "Nazwa" } },
+        textareaInputs: { description: { label: "Opis" } },
+        selectInputs: {
+          type: {
+            label: "Typ",
+            optionEnum: ChangeType,
+            optionLabels: SELECT_OPTION_LABELS.CHANGES.TYPE,
+          },
+        },
+      },
+      defaultValues: {
+        name: "",
+        description: "",
+        versionId: -1,
+        type: ChangeType.Feature,
+      },
+    },
+  },
   [Resource.Departments]: {
     apiPath: "departments",
     itemMapper: (item) => ({
@@ -373,6 +400,22 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.Milestones]: {
+    queryName: "milestones",
+    apiPath: "milestones",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: "",
+    }),
+    form: {
+      inputs: {
+        textInputs: { name: { label: "Nazwa" } },
+      },
+      defaultValues: {
+        name: "",
+      },
+    },
+  },
   [Resource.Versions]: {
     apiPath: "versions",
     itemMapper: (item) => ({
@@ -381,9 +424,9 @@ export const RESOURCE_METADATA = {
     }),
     form: {
       inputs: {
-        textInputs: { name: { label: "Nazwa wersji" } },
-        textareaInputs: { description: { label: "Opis wersji" } },
-        dateInputs: { releaseDate: { label: "Data" } },
+        textInputs: { name: { label: "Nazwa" } },
+        textareaInputs: { description: { label: "Opis" } },
+        dateInputs: { releaseDate: { label: "Data publikacji" } },
         relationInputs: {
           [Resource.Changes]: {
             type: RelationType.OneToMany,
@@ -398,51 +441,8 @@ export const RESOURCE_METADATA = {
       defaultValues: {
         name: "",
         description: null,
-        releaseDate: new Date().toISOString(),
+        releaseDate: getFutureDate(0),
         milestoneId: -1,
-      },
-    },
-  },
-  [Resource.Changes]: {
-    queryName: "changes",
-    apiPath: "changes",
-    itemMapper: (item) => ({
-      name: item.name,
-      shortDescription: item.description,
-    }),
-    form: {
-      inputs: {
-        textInputs: { name: { label: "Nazwa zmiany" } },
-        textareaInputs: { description: { label: "Opis zmiany" } },
-        selectInputs: {
-          type: {
-            label: "Typ",
-            optionEnum: ChangeType,
-            optionLabels: SELECT_OPTION_LABELS.CHANGES.TYPE,
-          },
-        },
-      },
-      defaultValues: {
-        name: "",
-        description: "",
-        versionId: -1,
-        type: ChangeType.Feature,
-      },
-    },
-  },
-  [Resource.Milestones]: {
-    queryName: "milestones",
-    apiPath: "milestones",
-    itemMapper: (item) => ({
-      name: item.name,
-      shortDescription: "",
-    }),
-    form: {
-      inputs: {
-        textInputs: { name: { label: "Nazwa" } },
-      },
-      defaultValues: {
-        name: "",
       },
     },
   },

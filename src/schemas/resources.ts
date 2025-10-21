@@ -41,6 +41,15 @@ const CalendarEventSchema = z.object({
   googleCalId: z.string().nullish(),
 });
 
+const ChangesSchema = z.object({
+  name: requiredString(),
+  description: requiredString(),
+  versionId: numericId(),
+  type: z.nativeEnum(ChangeType, {
+    required_error: FORM_ERROR_MESSAGES.REQUIRED,
+  }),
+});
+
 const DepartmentSchema = z.object({
   name: requiredString(),
   addressLine1: requiredString(),
@@ -109,6 +118,10 @@ const MajorSchema = z.object({
   departmentId: numericId(),
 });
 
+const MilestonesSchema = z.object({
+  name: requiredString(),
+});
+
 const VersionsSchema = z.object({
   name: requiredString(),
   description: z.string().nullish(),
@@ -116,22 +129,10 @@ const VersionsSchema = z.object({
   milestoneId: numericId(),
 });
 
-const ChangesSchema = z.object({
-  name: requiredString(),
-  description: requiredString(),
-  versionId: numericId(),
-  type: z.nativeEnum(ChangeType, {
-    required_error: FORM_ERROR_MESSAGES.REQUIRED,
-  }),
-});
-
-const MilestonesSchema = z.object({
-  name: requiredString(),
-});
-
 export const RESOURCE_SCHEMAS = {
   [Resource.Banners]: BannerSchema,
   [Resource.CalendarEvents]: CalendarEventSchema,
+  [Resource.Changes]: ChangesSchema,
   [Resource.Departments]: DepartmentSchema,
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.GuideAuthors]: GuideAuthorSchema,
@@ -139,7 +140,6 @@ export const RESOURCE_SCHEMAS = {
   [Resource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
   [Resource.StudentOrganizationTags]: StudentOrganizationTagSchema,
   [Resource.Majors]: MajorSchema,
-  [Resource.Versions]: VersionsSchema,
-  [Resource.Changes]: ChangesSchema,
   [Resource.Milestones]: MilestonesSchema,
+  [Resource.Versions]: VersionsSchema,
 } satisfies Record<Resource, AppZodObject>;
