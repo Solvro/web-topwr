@@ -5,6 +5,7 @@ import { mockDatedResource } from "@/tests/helpers/mocks";
 import type { User } from "@/types/api";
 
 import {
+  camelToSnakeCase,
   encodeQueryParameters,
   getUserDisplayName,
   removeTrailingSlash,
@@ -73,5 +74,18 @@ describe("toTitleCase function", () => {
     expect(toTitleCase("hello world")).toBe("Hello world");
     expect(toTitleCase("JAVA SCRIPT")).toBe("Java script");
     expect(toTitleCase("tYpEsCrIpT")).toBe("Typescript");
+  });
+});
+
+describe("camelToSnakeCase function", () => {
+  it("should convert camelCase to snake_case", () => {
+    expect(camelToSnakeCase("camelCaseString")).toBe("camel_case_string");
+    expect(camelToSnakeCase("anotherExampleHere")).toBe("another_example_here");
+    expect(camelToSnakeCase("simpleTest")).toBe("simple_test");
+  });
+
+  it("should return the same string if there are no uppercase letters", () => {
+    expect(camelToSnakeCase("nouppercase")).toBe("nouppercase");
+    expect(camelToSnakeCase("already_snake_case")).toBe("already_snake_case");
   });
 });

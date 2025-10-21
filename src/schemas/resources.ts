@@ -7,6 +7,7 @@ import {
   OrganizationStatus,
   OrganizationType,
   Resource,
+  StudiesType,
   UniversityBranch,
 } from "@/config/enums";
 import {
@@ -43,13 +44,28 @@ const DepartmentSchema = z.object({
   name: requiredString(),
   addressLine1: requiredString(),
   addressLine2: requiredString(),
-  code: requiredString().regex(/W[0-9]{1,2}[A-Z]?/),
-  betterCode: requiredString().regex(/W[A-Z]+/),
+  code: requiredString().regex(/W[0-9]{1,2}[A-Z]?/, {
+    message: FORM_ERROR_MESSAGES.INVALID_DEPARTMENT_CODE,
+  }),
+  betterCode: requiredString().regex(/W[A-Z]+/, {
+    message: FORM_ERROR_MESSAGES.INVALID_DEPARTMENT_BETTER_CODE,
+  }),
   logoKey: requiredString(),
   description: z.string().nullish(),
-  gradientStart: colorField(),
-  gradientEnd: colorField(),
+  gradientStart: colorField().nullish(),
+  gradientStop: colorField().nullish(),
   branch: z.nativeEnum(UniversityBranch),
+});
+
+const GuideArticleSchema = z.object({
+  title: requiredString(),
+  imageKey: requiredString(),
+  shortDesc: requiredString(),
+  description: requiredString(),
+});
+
+const GuideAuthorSchema = z.object({
+  name: requiredString(),
 });
 
 const StudentOrganizationLinkSchema = z.object({
@@ -79,19 +95,17 @@ const StudentOrganizationSchema = z.object({
   organizationStatus: z.nativeEnum(OrganizationStatus, {
     required_error: FORM_ERROR_MESSAGES.REQUIRED,
   }),
-  isStrategic: z.boolean({ required_error: FORM_ERROR_MESSAGES.REQUIRED }),
+  isStrategic: z.boolean(),
   branch: z.nativeEnum(UniversityBranch),
 });
 
-const GuideArticleSchema = z.object({
-  title: requiredString(),
-  imageKey: requiredString(),
-  shortDesc: requiredString(),
-  description: requiredString(),
-});
-
-const GuideAuthorSchema = z.object({
+const MajorSchema = z.object({
   name: requiredString(),
+  url: z.string().url().nullish(),
+  isEnglish: z.boolean().default(false),
+  studiesType: z.nativeEnum(StudiesType),
+  hasWeekendOption: z.boolean().default(false),
+  departmentId: numericId(),
 });
 
 export const RESOURCE_SCHEMAS = {
@@ -103,4 +117,5 @@ export const RESOURCE_SCHEMAS = {
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
   [Resource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
   [Resource.StudentOrganizationTags]: StudentOrganizationTagSchema,
+  [Resource.Majors]: MajorSchema,
 } satisfies Record<Resource, AppZodObject>;

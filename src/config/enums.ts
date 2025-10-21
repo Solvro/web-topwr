@@ -7,6 +7,7 @@ export enum Resource {
   StudentOrganizations = "student_organizations",
   StudentOrganizationLinks = "student_organization_links",
   StudentOrganizationTags = "student_organization_tags",
+  Majors = "majors",
 }
 
 export enum OrganizationType {
@@ -50,6 +51,19 @@ export enum LinkType {
   YouTube = "youtu",
   TikTok = "tiktok",
   Twitch = "twitch",
+}
+
+// from https://github.com/Solvro/backend-topwr/blob/main/app/enums/studies_type.ts
+export enum StudiesType {
+  FirstDegree = "1DEGREE",
+  SecondDegree = "2DEGREE",
+  LongCycle = "LONG_CYCLE",
+}
+
+// from https://github.com/Solvro/backend-topwr/blob/main/app/enums/guide_author_role.ts
+export enum GuideAuthorRole {
+  Author = "AUTHOR",
+  Redactor = "REDACTOR",
 }
 
 // #region Polish language enums

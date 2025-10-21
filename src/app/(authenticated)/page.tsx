@@ -7,6 +7,7 @@ import {
   Calendar,
   Megaphone,
   RefreshCcw,
+  University,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Route } from "next";
@@ -37,6 +38,7 @@ export default function Home() {
           icon={Building}
         />
         <DashboardButton resource={Resource.GuideArticles} icon={BookOpen} />
+        <DashboardButton resource={Resource.Departments} icon={University} />
         <DashboardButton
           href="/"
           icon={RefreshCcw}
@@ -48,7 +50,11 @@ export default function Home() {
           icon={Megaphone}
           variant="outline"
         />
-        <DashboardButton resource={Resource.CalendarEvents} icon={Calendar} />
+        <DashboardButton
+          resource={Resource.CalendarEvents}
+          icon={Calendar}
+          variant="outline"
+        />
       </div>
     </div>
   );

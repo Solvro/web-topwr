@@ -59,8 +59,8 @@ export function DeleteButtonWithDialog({
       queryKey: [getKey.query.resourceList(resource)],
       exact: false,
     });
-    router.refresh();
     await onDeleteSuccess?.();
+    router.refresh();
     return response;
   });
 
