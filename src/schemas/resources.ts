@@ -50,6 +50,17 @@ const ChangesSchema = z.object({
   }),
 });
 
+const ContributorSchema = z.object({
+  name: requiredString(),
+  photoKey: z.string().nullish(),
+});
+
+const ContributorSocialLinkSchema = z.object({
+  contributorId: numericId(),
+  linkType: z.nativeEnum(LinkType),
+  link: requiredString().url(),
+});
+
 const DepartmentSchema = z.object({
   name: requiredString(),
   addressLine1: requiredString(),
@@ -82,6 +93,10 @@ const GuideArticleSchema = z.object({
 });
 
 const GuideAuthorSchema = z.object({
+  name: requiredString(),
+});
+
+const RoleSchema = z.object({
   name: requiredString(),
 });
 
@@ -140,10 +155,13 @@ export const RESOURCE_SCHEMAS = {
   [Resource.Banners]: BannerSchema,
   [Resource.CalendarEvents]: CalendarEventSchema,
   [Resource.Changes]: ChangesSchema,
+  [Resource.Contributors]: ContributorSchema,
+  [Resource.ContributorSocialLinks]: ContributorSocialLinkSchema,
   [Resource.Departments]: DepartmentSchema,
   [Resource.DepartmentLinks]: DepartmentLinkSchema,
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.GuideAuthors]: GuideAuthorSchema,
+  [Resource.Roles]: RoleSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
   [Resource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
   [Resource.StudentOrganizationTags]: StudentOrganizationTagSchema,

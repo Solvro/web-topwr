@@ -14,6 +14,7 @@ import type {
 import type { ResourceSchemaKey } from "@/types/forms";
 
 import { sanitizeId } from "./transformations";
+import { typedKeys } from "./typescript";
 
 /** Generates the key for Tanstack query or mutation operations. */
 export const getKey = {
@@ -65,3 +66,25 @@ export const isOrderableResource = (
   resource: Resource,
 ): resource is OrderableResource =>
   getResourceMetadata(resource).orderable === true;
+
+const serializeRelation = (relation: string[]) => relation.join(".");
+
+/***
+ * Recursively gets an array of all recursive relations possible, delimited by periods.
+ * For use with fetching relations via query parameters.
+ */
+export const getRecursiveRelations = (
+  resource: Resource,
+  prefix: string[] = [],
+): string[] =>
+  typedKeys(getResourceRelationDefinitions(resource)).flatMap((relation) => {
+    const relationQueryName = getResourceMetadata(relation).queryName;
+    if (relationQueryName == null) {
+      return [];
+    }
+    const newPrefix = [...prefix, relationQueryName];
+    return [
+      serializeRelation(newPrefix),
+      ...getRecursiveRelations(relation, newPrefix),
+    ];
+  });

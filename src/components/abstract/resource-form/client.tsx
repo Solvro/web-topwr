@@ -579,38 +579,31 @@ export function AbstractResourceFormInternal<T extends Resource>({
                             ? "Dodaj"
                             : "Wybierz";
                         const inputPlaceholder = `${action} ${relationDeclined.singular.accusative}`;
-                        const selectedValues = defaultValues[
+                        const unsafeRelationValues = defaultValues[
                           getResourceQueryName(relation as XToManyResource)
-                        ].map((item) =>
+                        ] as ResourceDataType<typeof relation>[] | undefined;
+                        if (unsafeRelationValues == null) {
+                          // TODO: ensure this never happens
+                          console.warn(
+                            "Expected relation values to be present in defaultValues but they are missing.",
+                            "This is a bug - please report to Konrad Guzek.",
+                            {
+                              resource,
+                              relation,
+                              defaultValues,
+                            },
+                          );
+                        }
+                        const relationValues = unsafeRelationValues ?? [];
+                        const selectedValues = relationValues.map((item) =>
                           String(
                             get(item, primaryKeyField, "unknown-select-item"),
                           ),
                         );
                         const relationDataOptions =
                           relationDefinition.type === RelationType.OneToMany
-                            ? (defaultValues[
-                                getResourceQueryName(
-                                  relation as XToManyResource,
-                                )
-                              ] as ResourceDataType<typeof relation>[])
-                            : // : relationDefinition.pivotData == null
-                              //   ? relationData
-                              //   : relationData.filter((option) => {
-                              //       const pivotData = option as ResourceDataType<
-                              //         typeof resourceRelation
-                              //       > & { meta: Record<string, unknown> };
-                              //       for (const [key, value] of Object.entries(
-                              //         relationDefinition.pivotData ?? {},
-                              //       )) {
-                              //         if (
-                              //           pivotData.meta[`pivot_${key}`] !== value
-                              //         ) {
-                              //           return false;
-                              //         }
-                              //       }
-                              //       return true;
-                              //     });
-                              relationData;
+                            ? relationValues
+                            : relationData;
                         const formProps: ResourceFormProps<Resource> = {
                           resource: relation,
                           isEmbedded: true,

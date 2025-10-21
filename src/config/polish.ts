@@ -96,6 +96,28 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "zmiany",
     },
   },
+  [Resource.Contributors]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "kontrybutor",
+      genitive: "kontrybutora",
+      dative: "kontrybutorowi",
+      accusative: "kontrybutora",
+      instrumental: "kontrybutorem",
+      locative: "kontrybutorze",
+      vocative: "kontrybutorze",
+    },
+    plural: {
+      nominative: "kontrybutorzy",
+      genitive: "kontrybutorów",
+      dative: "kontrybutorom",
+      accusative: "kontrybutorów",
+      instrumental: "kontrybutorami",
+      locative: "kontrybutorach",
+      vocative: "kontrybutorzy",
+    },
+  },
+  [Resource.ContributorSocialLinks]: REUSABLE_DECLENSIONS.link,
   [Resource.Departments]: {
     gender: GrammaticalGender.Masculine,
     singular: {
@@ -158,6 +180,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       instrumental: "autorami",
       locative: "autorach",
       vocative: "autorzy",
+    },
+  },
+  [Resource.Roles]: {
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "rola",
+      genitive: "roli",
+      dative: "roli",
+      accusative: "rolę",
+      instrumental: "rolą",
+      locative: "roli",
+      vocative: "rolo",
+    },
+    plural: {
+      nominative: "role",
+      genitive: "ról",
+      dative: "rolom",
+      accusative: "role",
+      instrumental: "rolami",
+      locative: "rolach",
+      vocative: "role",
     },
   },
   [Resource.StudentOrganizations]: {
