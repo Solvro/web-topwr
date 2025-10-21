@@ -190,6 +190,10 @@ export const RESOURCE_METADATA = {
             type: RelationType.OneToMany,
             foreignKey: "departmentId",
           },
+          [Resource.DepartmentLinks]: {
+            type: RelationType.OneToMany,
+            foreignKey: "departmentId",
+          },
         },
       },
       defaultValues: {
@@ -203,6 +207,35 @@ export const RESOURCE_METADATA = {
         gradientStart: null,
         gradientStop: null,
         branch: UniversityBranch.MainCampus,
+      },
+    },
+  },
+  [Resource.DepartmentLinks]: {
+    queryName: "departmentLinks",
+    apiPath: "department_links",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.link,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa" },
+          link: { label: "Link" },
+        },
+        selectInputs: {
+          linkType: {
+            label: "Rodzaj linku",
+            optionEnum: LinkType,
+            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATION_LINKS.TYPE,
+          },
+        },
+      },
+      defaultValues: {
+        link: "",
+        name: "",
+        linkType: LinkType.Default,
+        departmentId: -1,
       },
     },
   },

@@ -67,6 +67,13 @@ const DepartmentSchema = z.object({
   branch: z.nativeEnum(UniversityBranch),
 });
 
+const DepartmentLinkSchema = z.object({
+  departmentId: numericId(),
+  linkType: z.nativeEnum(LinkType),
+  link: requiredString().url(),
+  name: requiredString(),
+});
+
 const GuideArticleSchema = z.object({
   title: requiredString(),
   imageKey: requiredString(),
@@ -134,6 +141,7 @@ export const RESOURCE_SCHEMAS = {
   [Resource.CalendarEvents]: CalendarEventSchema,
   [Resource.Changes]: ChangesSchema,
   [Resource.Departments]: DepartmentSchema,
+  [Resource.DepartmentLinks]: DepartmentLinkSchema,
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.GuideAuthors]: GuideAuthorSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,

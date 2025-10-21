@@ -7,6 +7,30 @@ import type {
 
 import { GrammaticalGender, Resource } from "./enums";
 
+const REUSABLE_DECLENSIONS = {
+  link: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "link",
+      genitive: "linku",
+      dative: "linkowi",
+      accusative: "link",
+      instrumental: "linkiem",
+      locative: "linku",
+      vocative: "linku",
+    },
+    plural: {
+      nominative: "linki",
+      genitive: "linków",
+      dative: "linkom",
+      accusative: "linki",
+      instrumental: "linkami",
+      locative: "linkach",
+      vocative: "linki",
+    },
+  },
+} satisfies Record<string, Pluralized<Declensions> & DeclensionData>;
+
 /** A dictionary of Polish language declensions of all resource names & other nouns, as well as their genders for use with determiners. */
 export const SIMPLE_NOUN_DECLENSIONS = {
   [Resource.Banners]: {
@@ -93,6 +117,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "wydziały",
     },
   },
+  [Resource.DepartmentLinks]: REUSABLE_DECLENSIONS.link,
   [Resource.GuideArticles]: {
     gender: GrammaticalGender.Masculine,
     singular: {
@@ -156,27 +181,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "organizacje studenckie",
     },
   },
-  [Resource.StudentOrganizationLinks]: {
-    gender: GrammaticalGender.Masculine,
-    singular: {
-      nominative: "link",
-      genitive: "linku",
-      dative: "linkowi",
-      accusative: "link",
-      instrumental: "linkiem",
-      locative: "linku",
-      vocative: "linku",
-    },
-    plural: {
-      nominative: "linki",
-      genitive: "linków",
-      dative: "linkom",
-      accusative: "linki",
-      instrumental: "linkami",
-      locative: "linkach",
-      vocative: "linki",
-    },
-  },
+  [Resource.StudentOrganizationLinks]: REUSABLE_DECLENSIONS.link,
   [Resource.StudentOrganizationTags]: {
     gender: GrammaticalGender.Masculine,
     singular: {

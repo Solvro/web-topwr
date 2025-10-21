@@ -3,6 +3,7 @@ export enum Resource {
   CalendarEvents = "calendar_events",
   Changes = "changes",
   Departments = "departments",
+  DepartmentLinks = "department_links",
   GuideArticles = "guide_articles",
   GuideAuthors = "guide_authors",
   StudentOrganizations = "student_organizations",

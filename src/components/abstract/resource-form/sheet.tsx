@@ -55,7 +55,7 @@ function AbstractResourceFormSheetContent<T extends Resource>({
           `Zmień dane ${declineNoun(relatedResource, {
             prependDeterminer: "existing",
             case: DeclensionCase.Genitive,
-          })} ${resourceDeclensions.dative}.`,
+          })} ${resourceDeclensions.genitive}.`,
         ];
 
   const parentResourceId = get(

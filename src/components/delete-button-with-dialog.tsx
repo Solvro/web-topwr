@@ -106,6 +106,11 @@ export function DeleteButtonWithDialog({
           <DialogDescription>Ta operacja jest nieodwracalna.</DialogDescription>
         </DialogHeader>
         <div className="mt-4 flex w-full gap-2 p-4">
+          <DialogTrigger asChild>
+            <Button variant="secondary" className="h-12 w-1/2">
+              Anuluj
+            </Button>
+          </DialogTrigger>
           <Button
             variant="destructive"
             className="h-12 w-1/2"
@@ -116,11 +121,6 @@ export function DeleteButtonWithDialog({
             <Shredder />
             Usuń
           </Button>
-          <DialogTrigger asChild>
-            <Button variant="secondary" className="h-12 w-1/2">
-              Anuluj
-            </Button>
-          </DialogTrigger>
         </div>
       </DialogContent>
     </Dialog>
