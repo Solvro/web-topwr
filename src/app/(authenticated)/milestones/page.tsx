@@ -1,17 +1,14 @@
 import { AbstractResourceList } from "@/components/abstract/resource-list";
 import { Resource } from "@/config/enums";
+import type { ResourcePageProps } from "@/types/components";
 
-export default function MilestonesPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
+export default function MilestonesPage(props: ResourcePageProps) {
   return (
     <AbstractResourceList
       resource={Resource.Milestones}
-      searchParams={searchParams}
       sortableFields={["name"]}
       searchableFields={["name"]}
+      {...props}
     />
   );
 }
