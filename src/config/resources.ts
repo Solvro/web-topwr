@@ -399,7 +399,7 @@ export const RESOURCE_METADATA = {
         name: "",
         description: null,
         releaseDate: new Date().toISOString(),
-        milestoneId: Number.NaN,
+        milestoneId: -1,
       },
     },
   },

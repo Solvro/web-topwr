@@ -113,7 +113,7 @@ const VersionsSchema = z.object({
   name: requiredString(),
   description: z.string().nullish(),
   releaseDate: requiredString().datetime(),
-  milestoneId: z.number(),
+  milestoneId: numericId(),
 });
 
 const ChangesSchema = z.object({

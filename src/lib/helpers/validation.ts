@@ -8,7 +8,8 @@ export const requiredString = () =>
     .trim()
     .min(1, { message: FORM_ERROR_MESSAGES.NONEMPTY });
 
-const positiveInteger = () => z.number().int().positive();
+const positiveInteger = () =>
+  z.number().int().positive({ message: FORM_ERROR_MESSAGES.REQUIRED });
 export const timestampNumber = () => positiveInteger();
 export const numericId = () => positiveInteger();
 
