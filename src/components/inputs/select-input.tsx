@@ -39,7 +39,11 @@ export function SelectInput<T extends Resource>({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <Select
-            value={String(field.value ?? "")}
+            value={
+              field.value == null || Number(field.value) < 0
+                ? ""
+                : String(field.value)
+            }
             onValueChange={(value) => {
               field.onChange(tryParseNumber(value));
             }}

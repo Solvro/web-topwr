@@ -2,6 +2,7 @@ import { getFutureDate } from "@/lib/helpers/calendar";
 import type { ResourceMetadata } from "@/types/app";
 
 import {
+  ChangeType,
   GuideAuthorRole,
   LinkType,
   OrganizationSource,
@@ -50,6 +51,12 @@ const SELECT_OPTION_LABELS = {
       [LinkType.X]: "X (dawniej Twitter)",
       [LinkType.Twitch]: "Twitch",
     } satisfies Record<LinkType, string>,
+  },
+  CHANGES: {
+    TYPE: {
+      [ChangeType.Feature]: "Funkcjonalność",
+      [ChangeType.Fix]: "Fix",
+    },
   },
   MAJORS: {
     STUDIES_TYPE: {
@@ -125,6 +132,33 @@ export const RESOURCE_METADATA = {
         description: "",
         startTime: getFutureDate(1),
         endTime: getFutureDate(2),
+      },
+    },
+  },
+  [Resource.Changes]: {
+    queryName: "changes",
+    apiPath: "changes",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.description,
+    }),
+    form: {
+      inputs: {
+        textInputs: { name: { label: "Nazwa" } },
+        textareaInputs: { description: { label: "Opis" } },
+        selectInputs: {
+          type: {
+            label: "Typ",
+            optionEnum: ChangeType,
+            optionLabels: SELECT_OPTION_LABELS.CHANGES.TYPE,
+          },
+        },
+      },
+      defaultValues: {
+        name: "",
+        description: "",
+        versionId: -1,
+        type: ChangeType.Feature,
       },
     },
   },
@@ -363,6 +397,52 @@ export const RESOURCE_METADATA = {
         studiesType: StudiesType.FirstDegree,
         hasWeekendOption: false,
         departmentId: -1,
+      },
+    },
+  },
+  [Resource.Milestones]: {
+    queryName: "milestones",
+    apiPath: "milestones",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: "",
+    }),
+    form: {
+      inputs: {
+        textInputs: { name: { label: "Nazwa" } },
+      },
+      defaultValues: {
+        name: "",
+      },
+    },
+  },
+  [Resource.Versions]: {
+    apiPath: "versions",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.description,
+    }),
+    form: {
+      inputs: {
+        textInputs: { name: { label: "Nazwa" } },
+        textareaInputs: { description: { label: "Opis" } },
+        dateInputs: { releaseDate: { label: "Data publikacji" } },
+        relationInputs: {
+          [Resource.Changes]: {
+            type: RelationType.OneToMany,
+            foreignKey: "versionId",
+          },
+          [Resource.Milestones]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "milestoneId",
+          },
+        },
+      },
+      defaultValues: {
+        name: "",
+        description: null,
+        releaseDate: getFutureDate(0),
+        milestoneId: -1,
       },
     },
   },

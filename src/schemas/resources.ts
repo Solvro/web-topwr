@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { FORM_ERROR_MESSAGES } from "@/config/constants";
 import {
+  ChangeType,
   LinkType,
   OrganizationSource,
   OrganizationStatus,
@@ -38,6 +39,15 @@ const CalendarEventSchema = z.object({
   description: z.string().nullish(),
   location: z.string().nullish(),
   googleCalId: z.string().nullish(),
+});
+
+const ChangesSchema = z.object({
+  name: requiredString(),
+  description: requiredString(),
+  versionId: numericId(),
+  type: z.nativeEnum(ChangeType, {
+    required_error: FORM_ERROR_MESSAGES.REQUIRED,
+  }),
 });
 
 const DepartmentSchema = z.object({
@@ -108,9 +118,21 @@ const MajorSchema = z.object({
   departmentId: numericId(),
 });
 
+const MilestonesSchema = z.object({
+  name: requiredString(),
+});
+
+const VersionsSchema = z.object({
+  name: requiredString(),
+  description: z.string().nullish(),
+  releaseDate: requiredString().datetime(),
+  milestoneId: numericId(),
+});
+
 export const RESOURCE_SCHEMAS = {
   [Resource.Banners]: BannerSchema,
   [Resource.CalendarEvents]: CalendarEventSchema,
+  [Resource.Changes]: ChangesSchema,
   [Resource.Departments]: DepartmentSchema,
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.GuideAuthors]: GuideAuthorSchema,
@@ -118,4 +140,6 @@ export const RESOURCE_SCHEMAS = {
   [Resource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
   [Resource.StudentOrganizationTags]: StudentOrganizationTagSchema,
   [Resource.Majors]: MajorSchema,
+  [Resource.Milestones]: MilestonesSchema,
+  [Resource.Versions]: VersionsSchema,
 } satisfies Record<Resource, AppZodObject>;

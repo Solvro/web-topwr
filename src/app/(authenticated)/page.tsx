@@ -5,7 +5,9 @@ import {
   BookOpen,
   Building,
   Calendar,
+  FolderClock,
   Megaphone,
+  Milestone,
   RefreshCcw,
   University,
 } from "lucide-react";
@@ -28,33 +30,31 @@ export default function Home() {
   }
 
   return (
-    <div className="container mx-auto flex h-full flex-col items-center space-y-14 p-4 sm:p-8 md:space-y-20 2xl:max-w-[1280px]">
-      <span className="mt-4 w-full text-2xl md:mt-16">
+    <div className="container mx-auto flex h-full flex-col items-center space-y-8 p-4 sm:p-8 2xl:max-w-[1280px]">
+      <span className="mt-4 w-full text-2xl">
         Cześć, {getUserDisplayName(auth.user)}!
       </span>
-      <div className="w-full columns-1 space-y-4 md:columns-2">
-        <DashboardButton
-          resource={Resource.StudentOrganizations}
-          icon={Building}
-        />
-        <DashboardButton resource={Resource.GuideArticles} icon={BookOpen} />
-        <DashboardButton resource={Resource.Departments} icon={University} />
-        <DashboardButton
-          href="/"
-          icon={RefreshCcw}
-          label="Review zmian"
-          variant="outline"
-        />
-        <DashboardButton
-          resource={Resource.Banners}
-          icon={Megaphone}
-          variant="outline"
-        />
-        <DashboardButton
-          resource={Resource.CalendarEvents}
-          icon={Calendar}
-          variant="outline"
-        />
+      <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
+        <div className="col-span-full grid grid-cols-subgrid gap-4">
+          <DashboardButton
+            href="/"
+            icon={RefreshCcw}
+            label="Review zmian"
+            variant="outline"
+          />
+        </div>
+        <div className="col-span-full grid grid-cols-subgrid gap-4">
+          <DashboardButton
+            resource={Resource.StudentOrganizations}
+            icon={Building}
+          />
+          <DashboardButton resource={Resource.GuideArticles} icon={BookOpen} />
+          <DashboardButton resource={Resource.Banners} icon={Megaphone} />
+          <DashboardButton resource={Resource.CalendarEvents} icon={Calendar} />
+          <DashboardButton resource={Resource.Departments} icon={University} />
+          <DashboardButton resource={Resource.Versions} icon={FolderClock} />
+          <DashboardButton resource={Resource.Milestones} icon={Milestone} />
+        </div>
       </div>
     </div>
   );

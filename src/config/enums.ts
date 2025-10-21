@@ -1,6 +1,7 @@
 export enum Resource {
   Banners = "banners",
   CalendarEvents = "calendar_events",
+  Changes = "changes",
   Departments = "departments",
   GuideArticles = "guide_articles",
   GuideAuthors = "guide_authors",
@@ -8,6 +9,8 @@ export enum Resource {
   StudentOrganizationLinks = "student_organization_links",
   StudentOrganizationTags = "student_organization_tags",
   Majors = "majors",
+  Milestones = "milestones",
+  Versions = "versions",
 }
 
 export enum OrganizationType {
@@ -29,6 +32,11 @@ export enum OrganizationStatus {
   Inactive = "inactive",
   Dissolved = "dissolved",
   Unknown = "unknown",
+}
+
+export enum ChangeType {
+  Feature = "FEATURE",
+  Fix = "FIX",
 }
 
 /** Filia/oddział Politechniki */
