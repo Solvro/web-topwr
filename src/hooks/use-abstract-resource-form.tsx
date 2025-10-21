@@ -9,6 +9,7 @@ export interface RelationContext<T extends Resource> {
   parentResource: T;
   parentResourceId: Id;
   childResource: ResourceRelation<T>;
+  closeSheet: () => void;
 }
 
 type NullableRelationContext = null | RelationContext<Resource>;

@@ -100,12 +100,12 @@ function getRelationQueryParameters(
   if (!("relationInputs" in RESOURCE_METADATA[resource].form.inputs)) {
     return "";
   }
-  const relationSearchParameters = typedEntries(
-    getResourceRelationDefinitions(resource),
-  ).map(([relation]) => [
-    getResourceMetadata(relation).queryName ?? relation,
-    "true",
-  ]);
+  const relationSearchParameters = Object.fromEntries(
+    typedEntries(getResourceRelationDefinitions(resource)).map(
+      ([relation]) =>
+        [getResourceMetadata(relation).queryName ?? relation, "true"] as const,
+    ),
+  );
   return `?${new URLSearchParams(relationSearchParameters).toString()}`;
 }
 

@@ -39,7 +39,7 @@ import type { RelationContext } from "@/hooks/use-abstract-resource-form";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { renderAbstractResourceForm } from "@/lib/actions";
 import { fetchMutation } from "@/lib/fetch-utils";
-import { sanitizeId, toTitleCase } from "@/lib/helpers";
+import { camelToSnakeCase, sanitizeId, toTitleCase } from "@/lib/helpers";
 import {
   getResourceMetadata,
   getResourcePk,
@@ -72,28 +72,76 @@ import { AbstractResourceFormSheet } from "./sheet";
 const isExistingResourceItem = <T extends Resource>(
   resource: T,
   item: ResourceDefaultValues<T>,
-): item is ResourceDataType<T> & QueriedRelations<T> =>
-  get(item, getResourcePk(resource)) != null;
+): item is ResourceDataType<T> & QueriedRelations<T> => {
+  const value = get(item, getResourcePk(resource)) as unknown;
+  return value != null && value !== "";
+};
+
+const getEditConfig = <T extends Resource>(
+  resource: T,
+  defaultValues: ResourceDataType<T>,
+) => {
+  const unsanitizedPkValue = (get(defaultValues, getResourcePk(resource)) ??
+    defaultValues.id) as string | undefined;
+  if (unsanitizedPkValue == null || unsanitizedPkValue === "") {
+    throw new Error(
+      `Cannot obtain primary key value while editing resource: ${JSON.stringify(defaultValues)}`,
+    );
+  }
+  const pkValue = sanitizeId(unsanitizedPkValue);
+  return {
+    mutationKey: `update__${resource}__${pkValue}`,
+    endpoint: pkValue,
+    method: "PATCH",
+    submitLabel: "Zapisz",
+    SubmitIconComponent: Save,
+  } as const;
+};
+
+const getCreateConfig = <T extends Resource>(resource: T) =>
+  ({
+    mutationKey: `create__${resource}`,
+    endpoint: "/",
+    method: "POST",
+    submitLabel: "Utwórz",
+    SubmitIconComponent: FilePlus2,
+  }) as const;
 
 const getMutationConfig = <T extends Resource>(
   resource: T,
   defaultValues: ResourceDefaultValues<T>,
-) =>
-  isExistingResourceItem(resource, defaultValues)
-    ? ({
-        mutationKey: `update__${resource}__${String(defaultValues.id)}`,
-        endpoint: sanitizeId(String(defaultValues.id)),
-        method: "PATCH",
-        submitLabel: "Zapisz",
-        SubmitIconComponent: Save,
-      } as const)
-    : ({
-        mutationKey: `create__${resource}`,
-        endpoint: "/",
-        method: "POST",
-        submitLabel: "Utwórz",
-        SubmitIconComponent: FilePlus2,
-      } as const);
+  relationContext: RelationContext<T> | null,
+) => {
+  const isEditing = isExistingResourceItem(resource, defaultValues);
+  const parentConfig = isEditing
+    ? getEditConfig(resource, defaultValues)
+    : getCreateConfig(resource);
+  if (relationContext == null || isEditing) {
+    // always fetch the resource directly if editing a related resource
+    // e.g. PATCH /api/v1/student_organization_links
+    return parentConfig;
+  }
+  const relationDefinition = getResourceRelationDefinitions(
+    relationContext.parentResource,
+  )[relationContext.childResource];
+  if (relationDefinition.type !== RelationType.OneToMany) {
+    // only 1:n relations need special handling when creating a related resource
+    return parentConfig;
+  }
+  // fetch the parent resource when creating a related resource
+  // e.g. POST /api/v1/student_organizations/{parentId}/tags
+  const queryName = getResourceQueryName(
+    relationContext.childResource as XToManyResource,
+  );
+  // of course the backend uses camelCase for query params but snake_case for path segments...
+  const pathSegment = camelToSnakeCase(queryName);
+  const config = {
+    ...parentConfig,
+    endpoint: `${sanitizeId(relationContext.parentResourceId)}/${pathSegment}`,
+    resource: relationContext.parentResource,
+  } as const;
+  return config;
+};
 
 const getDefaultValues = <T extends Resource>(
   defaultValues: ResourceDefaultValues<T>,
@@ -147,34 +195,38 @@ export function AbstractResourceFormInternal<T extends Resource>({
     ) as DefaultValues<ResourceFormValues<T>>,
   });
 
-  const { mutationKey, endpoint, method, submitLabel, SubmitIconComponent } =
-    getMutationConfig(resource, defaultValues);
+  const {
+    mutationKey,
+    endpoint,
+    submitLabel,
+    SubmitIconComponent,
+    ...mutationOptions
+  } = getMutationConfig(resource, defaultValues, relationContext);
 
   const { mutateAsync, isPending } = useMutationWrapper<
     ModifyResourceResponse<T>,
     ResourceFormValues<T>
   >(mutationKey, async (body) => {
-    const shouldFetchOnParentResource =
-      relationContext == null ||
-      getResourceRelationDefinitions(relationContext.parentResource)[
-        relationContext.childResource
-      ].type !== RelationType.OneToMany;
-    const response = await (shouldFetchOnParentResource
-      ? fetchMutation<ModifyResourceResponse<T>>(endpoint, {
-          body,
-          method,
-          resource,
-        })
-      : fetchMutation<ModifyResourceResponse<T>>(
-          `${sanitizeId(relationContext.parentResourceId)}/${getResourceQueryName(relationContext.childResource as XToManyResource)}`,
-          { body, method, resource: relationContext.parentResource },
-        ));
-    if (relationContext == null && method === "POST") {
-      form.reset();
+    const response = await fetchMutation<ModifyResourceResponse<T>>(endpoint, {
+      body,
+      resource,
+      ...mutationOptions,
+    });
+    const wasCreated = mutationOptions.method === "POST";
+    // initially disables the save button after successful edit
+    form.reset(wasCreated ? undefined : response.data);
+    if (relationContext == null && wasCreated) {
       router.push(`/${resource}/edit/${sanitizeId(String(response.data.id))}`);
     } else {
-      form.reset(response.data);
-      router.refresh();
+      if (wasCreated && relationContext != null) {
+        relationContext.closeSheet();
+        setTimeout(() => {
+          // allow time for the sheet to close before refreshing
+          router.refresh();
+        }, 300);
+      } else {
+        router.refresh();
+      }
     }
     return response;
   });
@@ -190,20 +242,25 @@ export function AbstractResourceFormInternal<T extends Resource>({
       resourceRelation: ResourceRelation<T>;
     }
   >(
-    `update__${resource}__relation`,
+    `update__${resource}__relation__${relationContext?.childResource ?? "unknown"}`,
     async ({ deleted, id, resourceRelation }) => {
       const relationInputs = getResourceRelationDefinitions(resource);
       const relationDefinition = relationInputs[resourceRelation];
       if (relationDefinition.type !== RelationType.ManyToMany) {
-        throw new Error("Only many-to-one relations are supported here.");
+        throw new Error(
+          "Only many-to-many relations are allowed to have non-readonly multiselects.",
+        );
       }
-      const relationMetadata = getResourceMetadata(resourceRelation);
-      const queryName = relationMetadata.queryName ?? relationMetadata.apiPath;
+      const queryName = getResourceQueryName(
+        resourceRelation as XToManyResource,
+      );
+      const pathSegment = camelToSnakeCase(queryName);
       const response = await fetchMutation<ModifyResourceResponse<T>>(
-        `${endpoint}/${queryName}/${sanitizeId(String(id))}`,
+        `${endpoint}/${pathSegment}/${sanitizeId(String(id))}`,
         {
           method: deleted ? "DELETE" : "POST",
           resource,
+          body: relationDefinition.pivotData,
         },
       );
       return response;
@@ -536,7 +593,24 @@ export function AbstractResourceFormInternal<T extends Resource>({
                                   relation as XToManyResource,
                                 )
                               ] as ResourceDataType<typeof relation>[])
-                            : relationData;
+                            : // : relationDefinition.pivotData == null
+                              //   ? relationData
+                              //   : relationData.filter((option) => {
+                              //       const pivotData = option as ResourceDataType<
+                              //         typeof resourceRelation
+                              //       > & { meta: Record<string, unknown> };
+                              //       for (const [key, value] of Object.entries(
+                              //         relationDefinition.pivotData ?? {},
+                              //       )) {
+                              //         if (
+                              //           pivotData.meta[`pivot_${key}`] !== value
+                              //         ) {
+                              //           return false;
+                              //         }
+                              //       }
+                              //       return true;
+                              //     });
+                              relationData;
                         const formProps: ResourceFormProps<Resource> = {
                           resource: relation,
                           isEmbedded: true,

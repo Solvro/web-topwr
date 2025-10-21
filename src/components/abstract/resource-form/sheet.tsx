@@ -73,6 +73,7 @@ function AbstractResourceFormSheetContent<T extends Resource>({
     parentResource: resource,
     parentResourceId,
     childResource: content.childResource,
+    closeSheet,
   };
 
   return (
@@ -97,7 +98,11 @@ function AbstractResourceFormSheetContent<T extends Resource>({
             showLabel
             variant="destructive"
             size="lg"
-            onDeleteSuccess={closeSheet}
+            onDeleteSuccess={async () => {
+              closeSheet();
+              // Give time for the sheet to close before resolving the deletion (triggers refresh)
+              await new Promise((resolve) => setTimeout(resolve, 300));
+            }}
             itemName={content.item.name}
             {...content.item}
           />
@@ -126,7 +131,7 @@ export function AbstractResourceFormSheet<T extends Resource>({
     <Sheet
       open={sheet.visible}
       onOpenChange={(open) => {
-        if (!open) {
+        if (!open && sheet.visible) {
           closeSheet();
         }
       }}

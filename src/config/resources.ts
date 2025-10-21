@@ -2,6 +2,7 @@ import { getFutureDate } from "@/lib/helpers/calendar";
 import type { ResourceMetadata } from "@/types/app";
 
 import {
+  GuideAuthorRole,
   LinkType,
   OrganizationSource,
   OrganizationStatus,
@@ -148,7 +149,7 @@ export const RESOURCE_METADATA = {
         richTextInputs: { description: { label: "Opis" } },
         colorInputs: {
           gradientStart: { label: "Kolor początkowy gradientu" },
-          gradientEnd: { label: "Kolor końcowy gradientu" },
+          gradientStop: { label: "Kolor końcowy gradientu" },
         },
         relationInputs: {
           [Resource.Majors]: {
@@ -165,8 +166,8 @@ export const RESOURCE_METADATA = {
         code: "",
         betterCode: "",
         logoKey: "",
-        gradientStart: "",
-        gradientEnd: "",
+        gradientStart: null,
+        gradientStop: null,
         branch: UniversityBranch.MainCampus,
       },
     },
@@ -189,7 +190,12 @@ export const RESOURCE_METADATA = {
         },
         richTextInputs: { description: { label: "Opis" } },
         relationInputs: {
-          [Resource.GuideAuthors]: { type: RelationType.ManyToMany },
+          [Resource.GuideAuthors]: {
+            type: RelationType.ManyToMany,
+            pivotData: {
+              role: GuideAuthorRole.Author,
+            },
+          },
         },
       },
       defaultValues: {
@@ -207,7 +213,11 @@ export const RESOURCE_METADATA = {
       name: item.name,
     }),
     form: {
-      inputs: {},
+      inputs: {
+        textInputs: {
+          name: { label: "Imię i nazwisko" },
+        },
+      },
       defaultValues: {
         name: "",
       },
@@ -348,7 +358,7 @@ export const RESOURCE_METADATA = {
       },
       defaultValues: {
         name: "",
-        url: "",
+        url: null,
         isEnglish: false,
         studiesType: StudiesType.FirstDegree,
         hasWeekendOption: false,

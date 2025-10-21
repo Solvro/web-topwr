@@ -37,4 +37,8 @@ export const toTitleCase = (text: string): string =>
   text === "" ? "" : text[0].toUpperCase() + text.slice(1).toLowerCase();
 
 export const tryParseNumber = (value: string): number | string =>
-  Number.isNaN(Number.parseInt(value)) ? value : Number.parseInt(value);
+  Number.isNaN(Number(value)) ? value : Number(value);
+
+/** Converts text from camelCase to snake_case. */
+export const camelToSnakeCase = (camelCase: string): string =>
+  camelCase.replaceAll(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);

@@ -44,12 +44,16 @@ const DepartmentSchema = z.object({
   name: requiredString(),
   addressLine1: requiredString(),
   addressLine2: requiredString(),
-  code: requiredString().regex(/W[0-9]{1,2}[A-Z]?/),
-  betterCode: requiredString().regex(/W[A-Z]+/),
+  code: requiredString().regex(/W[0-9]{1,2}[A-Z]?/, {
+    message: FORM_ERROR_MESSAGES.INVALID_DEPARTMENT_CODE,
+  }),
+  betterCode: requiredString().regex(/W[A-Z]+/, {
+    message: FORM_ERROR_MESSAGES.INVALID_DEPARTMENT_BETTER_CODE,
+  }),
   logoKey: requiredString(),
   description: z.string().nullish(),
-  gradientStart: colorField(),
-  gradientEnd: colorField(),
+  gradientStart: colorField().nullish(),
+  gradientStop: colorField().nullish(),
   branch: z.nativeEnum(UniversityBranch),
 });
 

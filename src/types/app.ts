@@ -7,6 +7,7 @@ import type { RESOURCE_SCHEMAS } from "@/schemas";
 
 import type { DatedResource } from "./api";
 import type { AbstractResourceFormInputs, ResourceSchemaKey } from "./forms";
+import type { DeclinableNoun } from "./polish";
 
 // Data types
 export type Id = string | number;
@@ -52,6 +53,8 @@ export type RelationDefinition<T extends Resource, L extends Resource> =
   | {
       type: RelationType.ManyToMany;
       foreignKey?: never;
+      label?: DeclinableNoun;
+      pivotData?: Record<string, string | number | boolean>;
     }
   | {
       type: RelationType.OneToMany;
@@ -85,7 +88,7 @@ export type ResourceDefaultValues<R extends Resource> =
 
 // Resource metadata
 export type ResourceMetadata<R extends Resource> = Readonly<{
-  /** The name of the query param used to fetch the related resource from the API, if this is the related resource in a m:n relation. */
+  /** The name of the query param used to fetch this resource from the API, if this is the related resource in a 1-m:n relation. */
   queryName?: string;
   /** The primary key field in the resource schema, if not `"id"`. */
   pk?: ResourceSchemaKey<R, z.ZodString | z.ZodNumber>;
