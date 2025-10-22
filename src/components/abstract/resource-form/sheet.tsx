@@ -19,6 +19,7 @@ import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { ArfContext } from "@/hooks/use-abstract-resource-form";
 import type { RelationContext } from "@/hooks/use-abstract-resource-form";
+import { tryParseNumber } from "@/lib/helpers";
 import { getResourcePk } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 import type {
@@ -61,7 +62,7 @@ function AbstractResourceFormSheetContent<T extends Resource>({
   const parentResourceId = get(
     content.parentResourceData,
     getResourcePk(resource),
-  ) as string | number | null;
+  ) as string | null;
   if (
     parentResourceId == null ||
     !["string", "number"].includes(typeof parentResourceId)
@@ -71,7 +72,7 @@ function AbstractResourceFormSheetContent<T extends Resource>({
 
   const relationContext: RelationContext<T> = {
     parentResource: resource,
-    parentResourceId,
+    parentResourceId: tryParseNumber(parentResourceId),
     childResource: content.childResource,
     closeSheet,
   };

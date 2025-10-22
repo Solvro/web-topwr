@@ -314,6 +314,7 @@ export const RESOURCE_METADATA = {
         relationInputs: {
           [Resource.GuideAuthors]: {
             type: RelationType.ManyToMany,
+            // TODO: support other roles
             pivotData: {
               role: GuideAuthorRole.Author,
             },
@@ -518,8 +519,9 @@ export const RESOURCE_METADATA = {
         relationInputs: {
           [Resource.Contributors]: {
             type: RelationType.ManyToMany,
+            // TODO: support other roles
             pivotData: {
-              role: 1,
+              role_id: 1,
             },
           },
         },

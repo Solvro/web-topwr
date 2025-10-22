@@ -161,10 +161,11 @@ const getDefaultValues = <T extends Resource>(
     return defaultValues;
   }
   const foreignKey = relationDefinition.foreignKey;
-  return {
+  const combinedDefaultValues = {
     ...defaultValues,
     [foreignKey]: parentResourcePkValue,
   };
+  return combinedDefaultValues;
 };
 
 export function AbstractResourceFormInternal<T extends Resource>({
@@ -300,7 +301,12 @@ export function AbstractResourceFormInternal<T extends Resource>({
           )}
         >
           <div className="grow basis-0 overflow-y-auto">
-            <div className="bg-background-secondary flex min-h-full flex-col gap-4 rounded-xl p-4 md:flex-row">
+            <div
+              className={cn(
+                "bg-background-secondary flex min-h-full flex-col gap-4 rounded-xl p-4",
+                { "md:flex-row": !isEmbedded },
+              )}
+            >
               <Inputs
                 container
                 className="flex-col"
@@ -493,7 +499,11 @@ export function AbstractResourceFormInternal<T extends Resource>({
                   )}
                 />
                 {selectInputs == null && relationInputs == null ? null : (
-                  <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
+                  <div
+                    className={cn("grid grid-cols-1 items-start gap-4", {
+                      "lg:grid-cols-2": !isEmbedded,
+                    })}
+                  >
                     <Inputs
                       inputs={selectInputs}
                       mapper={([name, input]) => (

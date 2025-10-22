@@ -44,7 +44,8 @@ async function fetchRelatedResources<T extends Resource>(
               [
                 relation,
                 await fetchQuery<{ data: ResourceDataType<typeof relation>[] }>(
-                  getResourceMetadata(relation).apiPath,
+                  "",
+                  { resource: relation as Resource, includeRelations: true },
                 ).then(({ data }) => data),
               ] as LabelledRelationData<ResourceRelation<T>>,
             ],

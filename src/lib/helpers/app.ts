@@ -69,7 +69,7 @@ export const isOrderableResource = (
 
 const serializeRelation = (relation: string[]) => relation.join(".");
 
-/***
+/**
  * Recursively gets an array of all recursive relations possible, delimited by periods.
  * For use with fetching relations via query parameters.
  */
