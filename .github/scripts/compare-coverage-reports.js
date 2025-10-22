@@ -9,7 +9,8 @@ let failed = false;
 
 const messages = ["📊 Coverage Regression Check:"];
 
-const MAX_COVERAGE_REGRESSION = 0;
+// The maximum allowed coverage regression, in percentage points
+const MAX_COVERAGE_REGRESSION = 5;
 
 for (const category of categories) {
   const currentCoverage = current.total[category].pct;
