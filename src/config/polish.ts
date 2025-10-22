@@ -1,4 +1,4 @@
-import { quoteText } from "@/lib/helpers";
+import { quoteText } from "@/lib/helpers/transformations";
 import type { Pluralized, RecordIntersection } from "@/types/helpers";
 import type {
   DeclensionData,

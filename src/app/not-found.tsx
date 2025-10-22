@@ -1,5 +1,5 @@
 import { ErrorMessage } from "@/components/error-message";
 
 export default function NotFound() {
-  return <ErrorMessage code={404} />;
+  return <ErrorMessage type={404} />;
 }

@@ -110,3 +110,10 @@ export enum RelationType {
   /** e.g. Student organization tags: many-to-many relation without foreign keys in either resource (pivot table used) */
   ManyToMany = "many_to_many",
 }
+
+export enum ApplicationError {
+  Unauthorized = 401,
+  Forbidden = 403,
+  NotFound = 404,
+  ServerError = 500,
+}
