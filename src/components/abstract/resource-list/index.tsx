@@ -1,7 +1,12 @@
-import { ChevronsLeft } from "lucide-react";
+import { ChevronsLeft, Filter } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { fetchResources } from "@/lib/helpers";
 import type { RoutableResource } from "@/types/app";
 import type { ListSearchParameters } from "@/types/components";
@@ -32,10 +37,19 @@ export async function AbstractResourceList<T extends RoutableResource>({
 
   return (
     <div className="flex h-full flex-col space-y-4">
-      <SortFilters
-        sortableFields={sortableFields}
-        searchableFields={searchableFields}
-      />
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="ghost" className="self-start">
+            Pokaż filtry <Filter />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="mx-4 w-[calc(100vw-2rem)] sm:w-fit">
+          <SortFilters
+            sortableFields={sortableFields}
+            searchableFields={searchableFields}
+          />
+        </PopoverContent>
+      </Popover>
       <div className="w-full grow basis-0 overflow-y-auto pr-2">
         <InfiniteScroller
           resource={resource}
