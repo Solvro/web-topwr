@@ -10,6 +10,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 
+import { InputSlot } from "../ui/input";
 import { DatePicker } from "./date-picker";
 import { InputRow } from "./input-row";
 
@@ -66,17 +67,19 @@ export function DateTimePicker({
   return (
     <InputRow>
       <DatePicker value={value} onChange={handleDateChange} />
-      <InputGroup className="w-fit min-w-34">
-        <InputGroupAddon>
-          <Clock className="text-muted-foreground" />
-        </InputGroupAddon>
-        <InputGroupInput
-          type="time"
-          step="1"
-          value={date === undefined ? "00:00:00" : format(date, "HH:mm:ss")}
-          onChange={handleTimeChange}
-        />
-      </InputGroup>
+      <InputSlot asChild>
+        <InputGroup className="w-fit min-w-34">
+          <InputGroupAddon>
+            <Clock className="text-muted-foreground" />
+          </InputGroupAddon>
+          <InputGroupInput
+            type="time"
+            step="1"
+            value={date === undefined ? "00:00:00" : format(date, "HH:mm:ss")}
+            onChange={handleTimeChange}
+          />
+        </InputGroup>
+      </InputSlot>
     </InputRow>
   );
 }

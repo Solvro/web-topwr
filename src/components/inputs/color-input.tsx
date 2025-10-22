@@ -72,7 +72,7 @@ export function ColorInput({
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
           <ColorPicker
-            className="bg-background h-full w-full max-w-sm rounded-md border p-4 shadow-sm"
+            className="bg-background h-full w-full max-w-sm rounded-md p-4 shadow-sm"
             onChange={(newColor) => {
               setLightness(newColor.lightness());
               onChange(newColor.hex().toLowerCase());

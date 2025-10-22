@@ -50,11 +50,7 @@ export function SelectInput<T extends Resource>({
           >
             <FormControl>
               <SelectTrigger className="bg-background w-full">
-                <SelectValue
-                  placeholder={
-                    <span className="font-medium">{placeholder}</span>
-                  }
-                />
+                <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>
             <SelectContent className="border-input">{options}</SelectContent>
