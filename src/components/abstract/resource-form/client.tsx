@@ -25,7 +25,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Input, InputSlot } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MinimalTiptapEditor } from "@/components/ui/minimal-tiptap";
 import { MultiSelect } from "@/components/ui/multi-select";
@@ -343,7 +343,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           <FormControl>
                             <Input
                               placeholder="Wpisz tekst..."
-                              className="bg-background"
                               {...field}
                               value={(field.value ?? "") as string}
                             />
@@ -367,7 +366,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           <FormControl>
                             <Textarea
                               placeholder="Wpisz tekst..."
-                              className="bg-background"
                               {...field}
                               value={(field.value ?? "") as string}
                             />
@@ -432,17 +430,19 @@ export function AbstractResourceFormInternal<T extends Resource>({
                         <FormItem>
                           <FormLabel>{input.label}</FormLabel>
                           <FormControl>
-                            <MinimalTiptapEditor
-                              // @ts-expect-error types not matching
-                              value={field.value ?? ""}
-                              onChange={field.onChange}
-                              className="w-full"
-                              editorContentClassName="p-5"
-                              output="html"
-                              placeholder="Wpisz opis..."
-                              editable
-                              editorClassName="focus:outline-hidden"
-                            />
+                            <InputSlot asChild>
+                              <MinimalTiptapEditor
+                                // @ts-expect-error types not matching
+                                value={field.value ?? ""}
+                                onChange={field.onChange}
+                                className="w-full"
+                                editorContentClassName="p-5"
+                                output="html"
+                                placeholder="Wpisz opis..."
+                                editable
+                                editorClassName="focus:outline-hidden"
+                              />
+                            </InputSlot>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -486,7 +486,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           <FormControl>
                             <Checkbox
                               checked={(field.value ?? false) as boolean}
-                              className="bg-background"
                               onCheckedChange={(checked) => {
                                 field.onChange(Boolean(checked));
                               }}
@@ -636,7 +635,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                                 badgeAnimation: "none",
                               }}
                               placeholder={inputPlaceholder}
-                              className="bg-background border-input"
                               emptyIndicator={`Brak ${relationDeclined.plural.genitive} spełniających wyszukanie.`}
                               options={relationDataOptions.map(
                                 (option, index) => {

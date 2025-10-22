@@ -7,7 +7,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { FormControl } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Input, InputSlot } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -34,18 +34,20 @@ export function DatePicker({
       </FormControl>
       <Popover>
         <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            data-empty={date == null}
-            className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
-          >
-            <CalendarIcon />
-            {date == null ? (
-              <span>Wybierz datę</span>
-            ) : (
-              format(date, "PPP", { locale: pl })
-            )}
-          </Button>
+          <InputSlot asChild>
+            <Button
+              variant="outline"
+              data-empty={date == null}
+              className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
+            >
+              <CalendarIcon />
+              {date == null ? (
+                <span>Wybierz datę</span>
+              ) : (
+                format(date, "PPP", { locale: pl })
+              )}
+            </Button>
+          </InputSlot>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
           <Calendar

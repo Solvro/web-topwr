@@ -9,7 +9,7 @@ import type { z } from "zod";
 import { ApiImage } from "@/components/api-image/client";
 import { Spinner } from "@/components/spinner";
 import { FormControl, FormLabel } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Input, InputSlot } from "@/components/ui/input";
 import { TOAST_MESSAGES } from "@/config/constants";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { uploadFile } from "@/lib/helpers";
@@ -42,22 +42,24 @@ export function ImageUpload<T extends z.infer<AppZodObject>>({
     <>
       <FormLabel className="flex flex-col items-start space-y-1.5">
         {label}
-        <div className="bg-background border-input flex aspect-video w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border md:h-48 md:w-48">
-          {isPending ? (
-            <Spinner />
-          ) : isSuccess ? (
-            <ApiImage imageKey={data.key} alt={label} />
-          ) : (
-            (existingImage ?? (
-              <>
-                <Camera className="text-image-input-icon h-12 w-12" />
-                <span className="text-muted-foreground text-xs">
-                  Kliknij, aby dodać {declensions.nominative}
-                </span>
-              </>
-            ))
-          )}
-        </div>
+        <InputSlot asChild>
+          <div className="flex aspect-video w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border md:h-48 md:w-48">
+            {isPending ? (
+              <Spinner />
+            ) : isSuccess ? (
+              <ApiImage imageKey={data.key} alt={label} />
+            ) : (
+              (existingImage ?? (
+                <>
+                  <Camera className="text-image-input-icon h-12 w-12" />
+                  <span className="text-muted-foreground text-xs">
+                    Kliknij, aby dodać {declensions.nominative}
+                  </span>
+                </>
+              ))
+            )}
+          </div>
+        </InputSlot>
       </FormLabel>
       <FormControl>
         <Input
