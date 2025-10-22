@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ClassValue } from "clsx";
-import { Check } from "lucide-react";
+import { BrushCleaning, Check } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
@@ -25,7 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import {
   IMPLICIT_SORT_BY_ATTRIBUTES,
   SORT_DIRECTIONS,
@@ -97,7 +96,7 @@ export function SortFilters({
   return (
     <Form {...form}>
       <form
-        className="flex flex-wrap items-start gap-2"
+        className="flex flex-col gap-2"
         onSubmit={form.handleSubmit(handleSubmit)}
       >
         <FieldGroup>
@@ -160,7 +159,6 @@ export function SortFilters({
             )}
           />
         </FieldGroup>
-        <Separator orientation="vertical" />
         <FieldGroup>
           <FormField
             control={form.control}
@@ -212,7 +210,7 @@ export function SortFilters({
             )}
           />
         </FieldGroup>
-        <FieldGroup className="ml-auto">
+        <FieldGroup className="self-center">
           <Button
             type="reset"
             variant="ghost"
@@ -221,7 +219,7 @@ export function SortFilters({
               handleSubmit(defaultValues);
             }}
           >
-            Wyczyść filtry
+            Wyczyść filtry <BrushCleaning />
           </Button>
           <Button
             type="submit"
@@ -230,8 +228,7 @@ export function SortFilters({
                 !form.formState.isDirty,
             })}
           >
-            Zatwierdź
-            <Check />
+            Zatwierdź <Check />
           </Button>
         </FieldGroup>
       </form>
