@@ -42,3 +42,9 @@ export const tryParseNumber = (value: string): number | string =>
 /** Converts text from camelCase to snake_case. */
 export const camelToSnakeCase = (camelCase: string): string =>
   camelCase.replaceAll(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+
+/**
+ * Quotes text using Polish quote marks.
+ * @example quoteText("Hello") === „Hello”
+ */
+export const quoteText = (text: string): string => `„${text}”`;

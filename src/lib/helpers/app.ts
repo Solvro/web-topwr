@@ -1,5 +1,6 @@
 import type { z } from "zod";
 
+import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resources";
 import type {
@@ -13,6 +14,7 @@ import type {
 } from "@/types/app";
 import type { ResourceSchemaKey } from "@/types/forms";
 
+import { declineNoun } from "../polish";
 import { sanitizeId } from "./transformations";
 import { typedKeys } from "./typescript";
 
@@ -88,3 +90,18 @@ export const getRecursiveRelations = (
       ...getRecursiveRelations(relation, newPrefix),
     ];
   });
+
+/**
+ * Declines the resource name correctly and uses its first word only.
+ * Used to ensure the label isn't too long.
+ *
+ * @example getManagingResourceLabel(Resource.StudentOrganizations) === 'Zarządzanie organizacjami'
+ */
+export function getManagingResourceLabel(resource: Resource) {
+  const declined = declineNoun(resource, {
+    case: DeclensionCase.Instrumental,
+    plural: true,
+  });
+  const firstWord = declined.split(" ")[0];
+  return `Zarządzanie ${firstWord}`;
+}

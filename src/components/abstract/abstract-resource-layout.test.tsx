@@ -19,9 +19,7 @@ describe("Abstract Resource Layout", () => {
 
   it("renders the correct title based on pathname", () => {
     renderLayout("/student_organizations");
-    expect(
-      screen.getByText("Zarządzanie organizacjami studenckimi"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Zarządzanie organizacjami")).toBeInTheDocument();
   });
 
   it("shows empty title when no match is found", () => {

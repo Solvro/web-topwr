@@ -5,11 +5,12 @@ import {
   BookOpen,
   Building,
   Calendar,
-  FolderClock,
   Megaphone,
-  Milestone,
+  Notebook,
   RefreshCcw,
+  ScrollText,
   University,
+  UsersRound,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Route } from "next";
@@ -18,7 +19,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DeclensionCase, Resource } from "@/config/enums";
 import { useAuth } from "@/hooks/use-auth";
-import { getUserDisplayName } from "@/lib/helpers";
+import { getUserDisplayName, toTitleCase } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { RoutableResource } from "@/types/app";
 
@@ -52,27 +53,13 @@ export default function Home() {
           <DashboardButton resource={Resource.Banners} icon={Megaphone} />
           <DashboardButton resource={Resource.CalendarEvents} icon={Calendar} />
           <DashboardButton resource={Resource.Departments} icon={University} />
-          <DashboardButton resource={Resource.Versions} icon={FolderClock} />
-          <DashboardButton resource={Resource.Milestones} icon={Milestone} />
+          <DashboardButton resource={Resource.Contributors} icon={UsersRound} />
+          <DashboardButton resource={Resource.Versions} icon={Notebook} />
+          <DashboardButton resource={Resource.Milestones} icon={ScrollText} />
         </div>
       </div>
     </div>
   );
-}
-
-/**
- * Declines the resource name correctly and uses its first word only.
- * Used to ensure the label isn't too long for the dashboard buttons.
- *
- * @example getLabelFromResource(Resource.StudentOrganizations) === 'Zarządzanie organizacjami'
- */
-function getLabelFromResource(resource: Resource) {
-  const declined = declineNoun(resource, {
-    case: DeclensionCase.Instrumental,
-    plural: true,
-  });
-  const firstWord = declined.split(" ")[0];
-  return `Zarządzanie ${firstWord}`;
 }
 
 function DashboardButton({
@@ -92,7 +79,13 @@ function DashboardButton({
   const [href, label] =
     resource == null
       ? [hrefOverride, labelOverride]
-      : ([`/${resource}`, getLabelFromResource(resource)] as const);
+      : ([
+          `/${resource}`,
+          declineNoun(resource, {
+            case: DeclensionCase.Nominative,
+            plural: true,
+          }),
+        ] as const);
   return (
     <Button
       className={`h-20 w-full justify-start space-x-2 rounded-xl ${className}`}
@@ -101,7 +94,7 @@ function DashboardButton({
     >
       <Link href={href}>
         <Icon style={{ width: 20, height: 20 }} className="ml-2" />
-        <span className="text-lg md:text-xl">{label}</span>
+        <span className="text-lg md:text-xl">{toTitleCase(label)}</span>
       </Link>
     </Button>
   );
