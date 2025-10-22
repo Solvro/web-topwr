@@ -1,5 +1,6 @@
 import type { z } from "zod";
 
+import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resources";
 import type {
@@ -13,7 +14,9 @@ import type {
 } from "@/types/app";
 import type { ResourceSchemaKey } from "@/types/forms";
 
+import { declineNoun } from "../polish";
 import { sanitizeId } from "./transformations";
+import { typedKeys } from "./typescript";
 
 /** Generates the key for Tanstack query or mutation operations. */
 export const getKey = {
@@ -65,3 +68,40 @@ export const isOrderableResource = (
   resource: Resource,
 ): resource is OrderableResource =>
   getResourceMetadata(resource).orderable === true;
+
+const serializeRelation = (relation: string[]) => relation.join(".");
+
+/**
+ * Recursively gets an array of all recursive relations possible, delimited by periods.
+ * For use with fetching relations via query parameters.
+ */
+export const getRecursiveRelations = (
+  resource: Resource,
+  prefix: string[] = [],
+): string[] =>
+  typedKeys(getResourceRelationDefinitions(resource)).flatMap((relation) => {
+    const relationQueryName = getResourceMetadata(relation).queryName;
+    if (relationQueryName == null) {
+      return [];
+    }
+    const newPrefix = [...prefix, relationQueryName];
+    return [
+      serializeRelation(newPrefix),
+      ...getRecursiveRelations(relation, newPrefix),
+    ];
+  });
+
+/**
+ * Declines the resource name correctly and uses its first word only.
+ * Used to ensure the label isn't too long.
+ *
+ * @example getManagingResourceLabel(Resource.StudentOrganizations) === 'Zarządzanie organizacjami'
+ */
+export function getManagingResourceLabel(resource: Resource) {
+  const declined = declineNoun(resource, {
+    case: DeclensionCase.Instrumental,
+    plural: true,
+  });
+  const firstWord = declined.split(" ")[0];
+  return `Zarządzanie ${firstWord}`;
+}

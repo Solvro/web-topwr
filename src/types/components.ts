@@ -1,12 +1,10 @@
 import type { ReactNode } from "react";
 
-import type { ERROR_CODES } from "@/config/constants";
 import type { Resource } from "@/config/enums";
 
 import type { Id, ResourceDataType, ResourceRelation } from "./app";
 import type { DeclinableNoun } from "./polish";
 
-export type ErrorCode = keyof typeof ERROR_CODES;
 export type SortDirection = "asc" | "desc";
 
 export interface SortFiltersOptions {

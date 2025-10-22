@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 
-import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { getManagingResourceLabel } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 
 function getTitle(resource: Resource, pathname: string): string {
@@ -16,7 +16,7 @@ function getTitle(resource: Resource, pathname: string): string {
   const firstSegment = pathSegments[1];
   const declensions = declineNoun(resource);
   const titleMap: Record<string, string> = {
-    "": `Zarządzanie ${declineNoun(resource, { case: DeclensionCase.Instrumental, plural: true })}`,
+    "": getManagingResourceLabel(resource),
     create: `Dodawanie ${declensions.genitive}`,
     edit: `Edycja ${declensions.genitive}`,
   };

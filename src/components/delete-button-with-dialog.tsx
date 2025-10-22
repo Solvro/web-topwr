@@ -22,7 +22,7 @@ import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
-import { sanitizeId } from "@/lib/helpers";
+import { quoteText, sanitizeId } from "@/lib/helpers";
 import { getKey } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 import type { MessageResponse } from "@/types/api";
@@ -99,7 +99,7 @@ export function DeleteButtonWithDialog({
                     case: DeclensionCase.Accusative,
                     prependDeterminer: "this",
                   }) // e.g. tę organizację studencką
-                : `${declensions.accusative} „${itemName}”` // e.g. organizację studencką „KN Solvro”
+                : `${declensions.accusative} ${quoteText(itemName)}` // e.g. organizację studencką „KN Solvro”
             }
             ?
           </DialogTitle>

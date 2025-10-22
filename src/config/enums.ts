@@ -2,10 +2,13 @@ export enum Resource {
   Banners = "banners",
   CalendarEvents = "calendar_events",
   Changes = "changes",
+  Contributors = "contributors",
+  ContributorSocialLinks = "contributor_social_links",
   Departments = "departments",
   DepartmentLinks = "department_links",
   GuideArticles = "guide_articles",
   GuideAuthors = "guide_authors",
+  Roles = "roles",
   StudentOrganizations = "student_organizations",
   StudentOrganizationLinks = "student_organization_links",
   StudentOrganizationTags = "student_organization_tags",
@@ -106,4 +109,11 @@ export enum RelationType {
   ManyToOne = "many_to_one",
   /** e.g. Student organization tags: many-to-many relation without foreign keys in either resource (pivot table used) */
   ManyToMany = "many_to_many",
+}
+
+export enum ApplicationError {
+  Unauthorized = 401,
+  Forbidden = 403,
+  NotFound = 404,
+  ServerError = 500,
 }

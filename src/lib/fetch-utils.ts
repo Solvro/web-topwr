@@ -1,14 +1,10 @@
 import { API_URL } from "@/config/constants";
 import type { Resource } from "@/config/enums";
-import { RESOURCE_METADATA } from "@/config/resources";
 import { getAuthState } from "@/stores/auth";
 import type { ErrorResponse, SuccessResponse } from "@/types/api";
 
-import { removeLeadingSlash, typedEntries } from "./helpers";
-import {
-  getResourceMetadata,
-  getResourceRelationDefinitions,
-} from "./helpers/app";
+import { removeLeadingSlash } from "./helpers";
+import { getRecursiveRelations, getResourceMetadata } from "./helpers/app";
 
 interface BaseRequestOptions<T extends Resource>
   extends Omit<RequestInit, "headers" | "method" | "body"> {
@@ -97,14 +93,8 @@ function getRelationQueryParameters(
   if (resource == null || !includeRelations) {
     return "";
   }
-  if (!("relationInputs" in RESOURCE_METADATA[resource].form.inputs)) {
-    return "";
-  }
   const relationSearchParameters = Object.fromEntries(
-    typedEntries(getResourceRelationDefinitions(resource)).map(
-      ([relation]) =>
-        [getResourceMetadata(relation).queryName ?? relation, "true"] as const,
-    ),
+    getRecursiveRelations(resource).map((relation) => [relation, "true"]),
   );
   return `?${new URLSearchParams(relationSearchParameters).toString()}`;
 }

@@ -1,3 +1,4 @@
+import { quoteText } from "@/lib/helpers/transformations";
 import type { Pluralized, RecordIntersection } from "@/types/helpers";
 import type {
   DeclensionData,
@@ -6,6 +7,8 @@ import type {
 } from "@/types/polish";
 
 import { GrammaticalGender, Resource } from "./enums";
+
+const QUOTED_ABOUT_US = quoteText("o nas");
 
 const REUSABLE_DECLENSIONS = {
   link: {
@@ -27,6 +30,27 @@ const REUSABLE_DECLENSIONS = {
       instrumental: "linkami",
       locative: "linkach",
       vocative: "linki",
+    },
+  },
+  version: {
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "wersja",
+      genitive: "wersji",
+      dative: "wersji",
+      accusative: "wersję",
+      instrumental: "wersją",
+      locative: "wersji",
+      vocative: "wersjo",
+    },
+    plural: {
+      nominative: "wersje",
+      genitive: "wersji",
+      dative: "wersjom",
+      accusative: "wersje",
+      instrumental: "wersjami",
+      locative: "wersjach",
+      vocative: "wersje",
     },
   },
 } satisfies Record<string, Pluralized<Declensions> & DeclensionData>;
@@ -96,6 +120,28 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "zmiany",
     },
   },
+  [Resource.Contributors]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "kontrybutor",
+      genitive: "kontrybutora",
+      dative: "kontrybutorowi",
+      accusative: "kontrybutora",
+      instrumental: "kontrybutorem",
+      locative: "kontrybutorze",
+      vocative: "kontrybutorze",
+    },
+    plural: {
+      nominative: "kontrybutorzy",
+      genitive: "kontrybutorów",
+      dative: "kontrybutorom",
+      accusative: "kontrybutorów",
+      instrumental: "kontrybutorami",
+      locative: "kontrybutorach",
+      vocative: "kontrybutorzy",
+    },
+  },
+  [Resource.ContributorSocialLinks]: REUSABLE_DECLENSIONS.link,
   [Resource.Departments]: {
     gender: GrammaticalGender.Masculine,
     singular: {
@@ -158,6 +204,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       instrumental: "autorami",
       locative: "autorach",
       vocative: "autorzy",
+    },
+  },
+  [Resource.Roles]: {
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "rola",
+      genitive: "roli",
+      dative: "roli",
+      accusative: "rolę",
+      instrumental: "rolą",
+      locative: "roli",
+      vocative: "rolo",
+    },
+    plural: {
+      nominative: "role",
+      genitive: "ról",
+      dative: "rolom",
+      accusative: "role",
+      instrumental: "rolami",
+      locative: "rolach",
+      vocative: "role",
     },
   },
   [Resource.StudentOrganizations]: {
@@ -225,45 +292,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
     },
   },
   [Resource.Milestones]: {
-    gender: GrammaticalGender.Masculine,
-    singular: {
-      nominative: "milestone",
-      genitive: "milestone'u",
-      dative: "milestone'owi",
-      accusative: "milestone",
-      instrumental: "milestone'em",
-      locative: "milestone'ie",
-      vocative: "milestone'ie",
-    },
+    ...REUSABLE_DECLENSIONS.version,
     plural: {
-      nominative: "milestone'y",
-      genitive: "milestone'ów",
-      dative: "milestone'om",
-      accusative: "milestone'y",
-      instrumental: "milestone'ami",
-      locative: "milestone'ach",
-      vocative: "milestone'y",
+      nominative: `wersje w ${QUOTED_ABOUT_US}`,
+      genitive: `wersji w ${QUOTED_ABOUT_US}`,
+      dative: `wersjom w ${QUOTED_ABOUT_US}`,
+      accusative: `wersje w ${QUOTED_ABOUT_US}`,
+      instrumental: `wersjami w ${QUOTED_ABOUT_US}`,
+      locative: `wersjach w ${QUOTED_ABOUT_US}`,
+      vocative: `wersje w ${QUOTED_ABOUT_US}`,
     },
   },
   [Resource.Versions]: {
-    gender: GrammaticalGender.Feminine,
-    singular: {
-      nominative: "wersja",
-      genitive: "wersji",
-      dative: "wersji",
-      accusative: "wersję",
-      instrumental: "wersją",
-      locative: "wersji",
-      vocative: "wersjo",
-    },
+    ...REUSABLE_DECLENSIONS.version,
     plural: {
-      nominative: "wersje",
-      genitive: "wersji",
-      dative: "wersjom",
-      accusative: "wersje",
-      instrumental: "wersjami",
-      locative: "wersjach",
-      vocative: "wersje",
+      nominative: "wersje w dzienniku zmian",
+      genitive: "wersji w dzienniku zmian",
+      dative: "wersjom w dzienniku zmian",
+      accusative: "wersje w dzienniku zmian",
+      instrumental: "wersjami w dzienniku zmian",
+      locative: "wersjach w dzienniku zmian",
+      vocative: "wersje w dzienniku zmian",
     },
   },
   image: {

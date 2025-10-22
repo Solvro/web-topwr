@@ -19,11 +19,15 @@ export interface ListItem {
 export type AppZodObject = z.ZodObject<z.ZodRawShape>;
 
 // Resource helpers
+export type RoutableResource = {
+  [R in Resource]: `/${R}` extends Route ? R : never;
+}[Resource];
 export type OrderableResource = {
   [R in Resource]: (typeof RESOURCE_METADATA)[R] extends { orderable: true }
     ? R
     : never;
-}[Resource];
+}[Resource] &
+  RoutableResource;
 export type ResourceSchema<T extends Resource> = (typeof RESOURCE_SCHEMAS)[T];
 export type ResourceFormValues<T extends Resource> = z.infer<ResourceSchema<T>>;
 type PossiblyOrderable<T extends Resource, U> = T extends OrderableResource
@@ -35,9 +39,6 @@ export type ResourceDataType<T extends Resource> = PossiblyOrderable<
   T,
   UnorderableResourceDataType<T>
 >;
-export type RoutableResource = {
-  [R in Resource]: `/${R}` extends Route ? R : never;
-}[Resource];
 
 // Relations
 /** For a given resource `T`, this type returns the union of all resources to which it is related. */

@@ -162,6 +162,61 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.Contributors]: {
+    queryName: "contributors",
+    apiPath: "contributors",
+    orderable: true,
+    itemMapper: (item) => ({
+      name: item.name,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Imię i nazwisko" },
+        },
+        imageInputs: {
+          photoKey: { label: "Zdjęcie" },
+        },
+        relationInputs: {
+          [Resource.ContributorSocialLinks]: {
+            type: RelationType.OneToMany,
+            foreignKey: "contributorId",
+          },
+        },
+      },
+      defaultValues: {
+        name: "",
+        photoKey: null,
+      },
+    },
+  },
+  [Resource.ContributorSocialLinks]: {
+    queryName: "socialLinks",
+    apiPath: "contributor_social_links",
+    itemMapper: (item) => ({
+      name: item.link,
+      shortDescription: item.linkType,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          link: { label: "Link" },
+        },
+        selectInputs: {
+          linkType: {
+            label: "Rodzaj linku",
+            optionEnum: LinkType,
+            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATION_LINKS.TYPE,
+          },
+        },
+      },
+      defaultValues: {
+        link: "",
+        linkType: LinkType.Default,
+        contributorId: -1,
+      },
+    },
+  },
   [Resource.Departments]: {
     apiPath: "departments",
     itemMapper: (item) => ({
@@ -259,6 +314,7 @@ export const RESOURCE_METADATA = {
         relationInputs: {
           [Resource.GuideAuthors]: {
             type: RelationType.ManyToMany,
+            // TODO: support other roles
             pivotData: {
               role: GuideAuthorRole.Author,
             },
@@ -283,6 +339,23 @@ export const RESOURCE_METADATA = {
       inputs: {
         textInputs: {
           name: { label: "Imię i nazwisko" },
+        },
+      },
+      defaultValues: {
+        name: "",
+      },
+    },
+  },
+  [Resource.Roles]: {
+    queryName: "roles",
+    apiPath: "roles",
+    itemMapper: (item) => ({
+      name: item.name,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa roli" },
         },
       },
       defaultValues: {
@@ -443,6 +516,15 @@ export const RESOURCE_METADATA = {
     form: {
       inputs: {
         textInputs: { name: { label: "Nazwa" } },
+        relationInputs: {
+          [Resource.Contributors]: {
+            type: RelationType.ManyToMany,
+            // TODO: support other roles
+            pivotData: {
+              role_id: 1,
+            },
+          },
+        },
       },
       defaultValues: {
         name: "",

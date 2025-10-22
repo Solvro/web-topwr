@@ -2,18 +2,25 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { AUTH_STATE_COOKIE_NAME } from "@/config/constants";
-import { Resource } from "@/config/enums";
+import { ApplicationError, Resource } from "@/config/enums";
 import { getCookieOptions, parseAuthCookie } from "@/lib/cookies";
 import type { User } from "@/types/api";
 
 import { getCurrentUser } from "./lib/helpers";
+import type { RoutableResource } from "./types/app";
+import type { RecordIntersection } from "./types/helpers";
 
-const REQUIRED_ROUTE_PERMISSIONS: Record<string, string[] | undefined> = {
+const REQUIRED_ROUTE_PERMISSIONS: RecordIntersection<
+  string,
+  `/${RoutableResource}`,
+  string[] | undefined
+> = {
   "/login": [],
   "/": ["user", "admin"],
   [`/${Resource.Banners}`]: ["user", "admin"],
   [`/${Resource.CalendarEvents}`]: ["user", "admin"],
   [`/${Resource.Changes}`]: ["user", "admin"],
+  [`/${Resource.Contributors}`]: ["user", "admin"],
   [`/${Resource.Departments}`]: ["user", "admin"],
   [`/${Resource.GuideArticles}`]: ["user", "admin"],
   [`/${Resource.StudentOrganizations}`]: ["user", "admin"],
@@ -93,7 +100,10 @@ export async function middleware(request: NextRequest) {
     );
 
     if (!hasPermission) {
-      return redirect("/error/403", "rewrite");
+      return redirect(
+        `/error/${String(ApplicationError.Forbidden)}`,
+        "rewrite",
+      );
     }
   }
 

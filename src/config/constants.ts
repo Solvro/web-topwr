@@ -4,7 +4,7 @@ import type { AuthState } from "@/types/api";
 import type { SortDirection, SortFiltersOptions } from "@/types/components";
 import type { Declensions, DeclinableNoun } from "@/types/polish";
 
-import { DeclensionCase } from "./enums";
+import { ApplicationError, DeclensionCase } from "./enums";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
@@ -24,11 +24,11 @@ export const LIST_RESULTS_PER_PAGE = 10;
 
 export const AUTH_STATE_COOKIE_NAME = "topwr_auth";
 
-export const ERROR_CODES = {
-  401: "Ta strona wymaga zalogowania",
-  403: "Nie masz uprawnień do przeglądania tej strony",
-  404: "Nie znaleziono podanej strony",
-  500: "Wystąpił błąd serwera",
+export const APPLICATION_ERROR_MESSAGES: Record<ApplicationError, string> = {
+  [ApplicationError.Unauthorized]: "Ta strona wymaga zalogowania",
+  [ApplicationError.Forbidden]: "Nie masz uprawnień do przeglądania tej strony",
+  [ApplicationError.NotFound]: "Nie znaleziono podanej strony",
+  [ApplicationError.ServerError]: "Wystąpił nieoczekiwany błąd serwera",
 };
 
 /** A map of API error codes to user-friendly messages */
