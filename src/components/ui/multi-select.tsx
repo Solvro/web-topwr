@@ -982,14 +982,17 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                             key={value}
                             className={cn(
                               getBadgeAnimationClass(),
-                              multiSelectVariants({ variant }),
+                              multiSelectVariants({
+                                variant,
+                                badgeAnimation: animationConfig?.badgeAnimation,
+                              }),
                               customStyle?.gradient &&
                                 "border-transparent text-white",
                               responsiveSettings.compactMode &&
                                 "px-1.5 py-0.5 text-xs",
                               screenSize === "mobile" &&
                                 "max-w-[120px] truncate",
-                              singleLine && "flex-shrink-0 whitespace-nowrap",
+                              singleLine && "shrink-0 whitespace-nowrap",
                               "[&>svg]:pointer-events-auto",
                             )}
                             style={{
@@ -1039,7 +1042,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                                   }
                                 }}
                                 aria-label={`Remove ${option.label} from selection`}
-                                className="-m-0.5 ml-2 h-4 w-4 cursor-pointer rounded-sm p-0.5 hover:bg-white/20 focus:ring-1 focus:ring-white/50 focus:outline-none"
+                                className="-m-0.5 ml-2 size-4 cursor-pointer rounded-sm hover:bg-white/20 focus:ring-1 focus:ring-white/50 focus:outline-none"
                               >
                                 <XCircle
                                   className={cn(
@@ -1062,7 +1065,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                           multiSelectVariants({ variant }),
                           responsiveSettings.compactMode &&
                             "px-1.5 py-0.5 text-xs",
-                          singleLine && "flex-shrink-0 whitespace-nowrap",
+                          singleLine && "shrink-0 whitespace-nowrap",
                           "[&>svg]:pointer-events-auto",
                         )}
                         style={{
