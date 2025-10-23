@@ -882,6 +882,11 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       }
     }, [selectedValues, isPopoverOpen, searchValue, announce, getAllOptions]);
 
+    const variants = multiSelectVariants({
+      variant,
+      badgeAnimation: animationConfig?.badgeAnimation,
+    });
+
     return (
       <>
         <div className="sr-only">
@@ -982,10 +987,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                             key={value}
                             className={cn(
                               getBadgeAnimationClass(),
-                              multiSelectVariants({
-                                variant,
-                                badgeAnimation: animationConfig?.badgeAnimation,
-                              }),
+                              variants,
                               customStyle?.gradient &&
                                 "border-transparent text-white",
                               responsiveSettings.compactMode &&
@@ -1062,7 +1064,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                         className={cn(
                           "text-foreground border-foreground/1 bg-transparent hover:bg-transparent",
                           getBadgeAnimationClass(),
-                          multiSelectVariants({ variant }),
+                          variants,
                           responsiveSettings.compactMode &&
                             "px-1.5 py-0.5 text-xs",
                           singleLine && "shrink-0 whitespace-nowrap",
@@ -1077,17 +1079,19 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                       >
                         {`+ ${
                           selectedValues.length - responsiveSettings.maxCount
-                        } more`}
-                        <XCircle
-                          className={cn(
-                            "ml-2 h-4 w-4 cursor-pointer",
-                            responsiveSettings.compactMode && "ml-1 h-3 w-3",
-                          )}
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            clearExtraOptions();
-                          }}
-                        />
+                        } więcej`}
+                        {isReadOnly ? null : (
+                          <XCircle
+                            className={cn(
+                              "ml-2 h-4 w-4 cursor-pointer",
+                              responsiveSettings.compactMode && "ml-1 h-3 w-3",
+                            )}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              clearExtraOptions();
+                            }}
+                          />
+                        )}
                       </Badge>
                     )}
                   </div>
