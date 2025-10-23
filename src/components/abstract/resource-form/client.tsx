@@ -632,6 +632,9 @@ export function AbstractResourceFormInternal<T extends Resource>({
                                 relationDefinition.type ===
                                 RelationType.OneToMany
                               }
+                              animationConfig={{
+                                badgeAnimation: "none",
+                              }}
                               placeholder={inputPlaceholder}
                               className="bg-background border-input"
                               emptyIndicator={`Brak ${relationDeclined.plural.genitive} spełniających wyszukanie.`}
