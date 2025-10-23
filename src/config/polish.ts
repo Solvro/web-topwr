@@ -206,6 +206,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "autorzy",
     },
   },
+  [Resource.GuideQuestions]: {
+    gender: GrammaticalGender.Neuter,
+    singular: {
+      nominative: "pytanie",
+      genitive: "pytania",
+      dative: "pytaniu",
+      accusative: "pytanie",
+      instrumental: "pytaniem",
+      locative: "pytaniu",
+      vocative: "pytanie",
+    },
+    plural: {
+      nominative: "pytania",
+      genitive: "pytań",
+      dative: "pytaniom",
+      accusative: "pytania",
+      instrumental: "pytaniami",
+      locative: "pytaniach",
+      vocative: "pytania",
+    },
+  },
   [Resource.Roles]: {
     gender: GrammaticalGender.Feminine,
     singular: {

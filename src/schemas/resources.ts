@@ -96,6 +96,12 @@ const GuideAuthorSchema = z.object({
   name: requiredString(),
 });
 
+const GuideQuestionSchema = z.object({
+  title: requiredString(),
+  answer: requiredString(),
+  articleId: numericId(),
+});
+
 const RoleSchema = z.object({
   name: requiredString(),
 });
@@ -161,6 +167,7 @@ export const RESOURCE_SCHEMAS = {
   [Resource.DepartmentLinks]: DepartmentLinkSchema,
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.GuideAuthors]: GuideAuthorSchema,
+  [Resource.GuideQuestions]: GuideQuestionSchema,
   [Resource.Roles]: RoleSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
   [Resource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,

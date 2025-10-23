@@ -16,6 +16,7 @@ describe("getRecursiveRelations function", () => {
       "tags",
     ]);
     expect(getRecursiveRelations(Resource.GuideArticles)).toEqual([
+      "guideQuestions",
       "guideAuthors",
     ]);
   });

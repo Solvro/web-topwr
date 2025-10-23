@@ -8,6 +8,7 @@ export enum Resource {
   DepartmentLinks = "department_links",
   GuideArticles = "guide_articles",
   GuideAuthors = "guide_authors",
+  GuideQuestions = "guide_questions",
   Roles = "roles",
   StudentOrganizations = "student_organizations",
   StudentOrganizationLinks = "student_organization_links",
