@@ -312,6 +312,10 @@ export const RESOURCE_METADATA = {
         },
         richTextInputs: { description: { label: "Opis" } },
         relationInputs: {
+          [Resource.GuideQuestions]: {
+            type: RelationType.OneToMany,
+            foreignKey: "articleId",
+          },
           [Resource.GuideAuthors]: {
             type: RelationType.ManyToMany,
             // TODO: support other roles
@@ -343,6 +347,29 @@ export const RESOURCE_METADATA = {
       },
       defaultValues: {
         name: "",
+      },
+    },
+  },
+  [Resource.GuideQuestions]: {
+    queryName: "guideQuestions",
+    apiPath: "guide_questions",
+    itemMapper: (item) => ({
+      name: item.title,
+      shortDescription: item.answer,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          title: { label: "Pytanie" },
+        },
+        richTextInputs: {
+          answer: { label: "Odpowiedź" },
+        },
+      },
+      defaultValues: {
+        title: "",
+        answer: "",
+        articleId: -1,
       },
     },
   },
