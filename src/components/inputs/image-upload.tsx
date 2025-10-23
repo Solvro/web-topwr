@@ -7,9 +7,10 @@ import { toast } from "sonner";
 import type { z } from "zod";
 
 import { ApiImage } from "@/components/api-image/client";
+import { InputSlot } from "@/components/inputs/input-slot";
 import { Spinner } from "@/components/spinner";
 import { FormControl, FormLabel } from "@/components/ui/form";
-import { Input, InputSlot } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { TOAST_MESSAGES } from "@/config/constants";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { uploadFile } from "@/lib/helpers";

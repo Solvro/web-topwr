@@ -14,6 +14,7 @@ import { DatePicker } from "@/components/inputs/date-picker";
 import { DateTimePicker } from "@/components/inputs/date-time-picker";
 import { ImageUpload } from "@/components/inputs/image-upload";
 import { Inputs } from "@/components/inputs/input-row";
+import { InputSlot } from "@/components/inputs/input-slot";
 import { SelectInput } from "@/components/inputs/select-input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -25,7 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input, InputSlot } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MinimalTiptapEditor } from "@/components/ui/minimal-tiptap";
 import { MultiSelect } from "@/components/ui/multi-select";

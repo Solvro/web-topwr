@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { FormControl } from "@/components/ui/form";
-import { Input, InputSlot } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/shadcn-io/color-picker";
 import { DEFAULT_COLOR } from "@/config/constants";
 import { cn } from "@/lib/utils";
+
+import { InputSlot } from "./input-slot";
 
 export function ColorInput({
   value,

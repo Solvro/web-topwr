@@ -4,10 +4,11 @@ import { format } from "date-fns";
 import { pl } from "date-fns/locale/pl";
 import { Calendar as CalendarIcon } from "lucide-react";
 
+import { InputSlot } from "@/components/inputs/input-slot";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { FormControl } from "@/components/ui/form";
-import { Input, InputSlot } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,

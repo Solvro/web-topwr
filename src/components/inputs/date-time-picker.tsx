@@ -4,13 +4,13 @@ import { format } from "date-fns";
 import { Clock } from "lucide-react";
 import type { ChangeEvent } from "react";
 
+import { InputSlot } from "@/components/inputs/input-slot";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
 
-import { InputSlot } from "../ui/input";
 import { DatePicker } from "./date-picker";
 import { InputRow } from "./input-row";
 

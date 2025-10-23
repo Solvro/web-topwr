@@ -1,8 +1,7 @@
 import * as React from "react";
 
+import { InputSlot } from "@/components/inputs/input-slot";
 import { cn } from "@/lib/utils";
-
-import { InputSlot } from "./input";
 
 function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (
