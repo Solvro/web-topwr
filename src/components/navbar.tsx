@@ -4,7 +4,7 @@ import { UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import LogoToPWR from "@/../public/logo-topwr-color.png";
+import LogoToPWR from "@/assets/logo-topwr-color.png";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

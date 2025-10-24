@@ -2,7 +2,8 @@ import { userEvent } from "@testing-library/user-event";
 import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
-import { API_ERROR_MESSAGES, API_URL } from "@/config/constants";
+import { API_ERROR_MESSAGES } from "@/config/constants";
+import { env } from "@/config/env";
 import { getErrorMessage } from "@/lib/error-handling";
 import { getToaster, renderWithProviders } from "@/tests/helpers/react";
 import { MOCK_PASSWORD, MOCK_USER } from "@/tests/mocks/constants";
@@ -82,7 +83,7 @@ describe("Login page", () => {
 
   it("should fall back to email if user has no full name", async () => {
     server.use(
-      http.get(`${API_URL}/auth/me`, () =>
+      http.get(`${env.NEXT_PUBLIC_API_URL}/auth/me`, () =>
         HttpResponse.json<GetUserResponse>({
           ...MOCK_USER.valid,
           fullName: null,

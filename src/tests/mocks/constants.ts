@@ -3,16 +3,12 @@ import { HttpResponse } from "msw";
 
 import type { AuthState, FileEntry, User } from "@/types/api";
 
-import "../helpers/dotenv";
 import { generateFileEntry, mockDatedResource } from "../helpers/mocks";
 
 interface Mocked<T> {
   valid: T;
   invalid?: T;
 }
-
-export const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL;
-export const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD;
 
 export const MOCK_PASSWORD = {
   valid: "validPassword123",

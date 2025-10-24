@@ -1,6 +1,6 @@
 import { http, passthrough } from "msw";
 
-import { API_URL } from "@/config/constants";
+import { env } from "@/config/env";
 import { fetchMutation } from "@/lib/fetch-utils";
 import type {
   LogInResponse,
@@ -9,22 +9,25 @@ import type {
 } from "@/types/api";
 import type { LoginFormValues } from "@/types/forms";
 
-import { TEST_USER_EMAIL, TEST_USER_PASSWORD } from "../mocks/constants";
 import { server } from "../mocks/server";
 
 function bypassMockServer(endpoint: string) {
-  server.use(http.post(`${API_URL}/${endpoint}`, () => passthrough()));
+  server.use(
+    http.post(`${env.NEXT_PUBLIC_API_FILES_URL}/${endpoint}`, () =>
+      passthrough(),
+    ),
+  );
 }
 
 export async function generateAccessToken(): Promise<LogInResponse> {
-  if (TEST_USER_EMAIL == null || TEST_USER_PASSWORD == null) {
+  if (env.TEST_USER_EMAIL == null || env.TEST_USER_PASSWORD == null) {
     throw new Error(
       "TEST_USER_EMAIL and TEST_USER_PASSWORD must be set in the environment variables to run these tests.",
     );
   }
   const body: LoginFormValues = {
-    email: TEST_USER_EMAIL,
-    password: TEST_USER_PASSWORD,
+    email: env.TEST_USER_EMAIL,
+    password: env.TEST_USER_PASSWORD,
     rememberMe: false,
   };
 

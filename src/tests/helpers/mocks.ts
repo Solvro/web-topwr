@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import { API_FILES_URL } from "@/config/constants";
+import { env } from "@/config/env";
 import type { DatedResource, FileEntry } from "@/types/api";
 
 export const mockDatedResource = (): DatedResource => ({
@@ -15,6 +15,6 @@ export function generateFileEntry(): FileEntry {
     ...mockDatedResource(),
     id,
     fileExtension,
-    url: `${API_FILES_URL}/${id}.${fileExtension}`,
+    url: `${env.NEXT_PUBLIC_API_FILES_URL}/${id}.${fileExtension}`,
   };
 }

@@ -4,13 +4,14 @@ import {
   FORM_ERROR_MESSAGES,
   SORT_FILTER_DEFAULT_VALUES,
 } from "@/config/constants";
-import { requiredString } from "@/lib/helpers";
+
+import { RequiredStringSchema } from "./helpers";
 
 export const LoginSchema = z.object({
   email: z.string({ required_error: FORM_ERROR_MESSAGES.REQUIRED }).email({
     message: FORM_ERROR_MESSAGES.INVALID_EMAIL,
   }),
-  password: requiredString(),
+  password: RequiredStringSchema,
   rememberMe: z.boolean(),
 });
 

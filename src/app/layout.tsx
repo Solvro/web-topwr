@@ -4,6 +4,7 @@ import NextTopLoader from "nextjs-toploader";
 
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
+import { env } from "@/config/env";
 import { cn } from "@/lib/utils";
 import type { LayoutProps } from "@/types/components";
 
@@ -14,15 +15,29 @@ const space_grotesk = Space_Grotesk({
   subsets: ["latin"],
 });
 
+const OG_IMAGE_METADATA = {
+  // TODO: new OG image
+  url: "/og-image.png",
+  width: 1920,
+  height: 960,
+};
+
 export const metadata: Metadata = {
-  title: "Admin Panel | ToPWR by Solvro",
+  title: "Panel Administratora | ToPWR by Solvro",
   description:
-    "The ToPWR Admin Panel by KN Solvro is a powerful CMS for managing the ToPWR mobile app. Control content, users, and app settings with ease in one intuitive dashboard.",
+    "Panel Administracyjny ToPWR autorstwa KN Solvro to zaawansowany system CMS do zarządzania aplikacją mobilną ToPWR. Zarządzaj organizacjami studenckimi, artykułami i wiele więcej w jednym intuicyjnym panelu.",
+  metadataBase: new URL(env.NEXT_PUBLIC_WEBSITE_URL),
+  openGraph: {
+    images: OG_IMAGE_METADATA,
+  },
+  twitter: {
+    images: OG_IMAGE_METADATA,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps) {
   return (
-    <html lang="en" className="overflow-hidden">
+    <html lang="pl" className="overflow-hidden">
       <Providers>
         <body
           className={cn(

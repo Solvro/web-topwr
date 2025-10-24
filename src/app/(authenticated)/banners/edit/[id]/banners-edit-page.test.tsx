@@ -3,8 +3,8 @@ import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
 import { AbstractResourceForm } from "@/components/abstract/resource-form";
-import { API_URL } from "@/config/constants";
 import { Resource } from "@/config/enums";
+import { env } from "@/config/env";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import { mockDatedResource } from "@/tests/helpers/mocks";
@@ -41,8 +41,9 @@ async function renderEditPage(bannerId: number) {
 describe("edit page for existing banner", () => {
   it("reads banner data and populates form", async () => {
     server.use(
-      http.get(`${API_URL}/banners/${String(MOCK_BANNER.id)}`, () =>
-        HttpResponse.json({ data: MOCK_BANNER }),
+      http.get(
+        `${env.NEXT_PUBLIC_API_URL}/banners/${String(MOCK_BANNER.id)}`,
+        () => HttpResponse.json({ data: MOCK_BANNER }),
       ),
     );
 

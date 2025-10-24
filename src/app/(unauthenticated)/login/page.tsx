@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import SolvroLogo from "@/../public/logo-solvro.png";
-import LogoToPWR from "@/../public/logo-topwr-white.png";
+import SolvroLogo from "@/assets/logo-solvro.png";
+import LogoToPWR from "@/assets/logo-topwr-white.png";
 import { SOLVRO_WEBPAGE_URL } from "@/config/constants";
 
 import { LoginForm } from "./form";

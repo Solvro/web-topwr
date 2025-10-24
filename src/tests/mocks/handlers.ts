@@ -1,7 +1,7 @@
 import type { RequestHandler } from "msw";
 import { HttpResponse, http } from "msw";
 
-import { API_URL } from "@/config/constants";
+import { env } from "@/config/env";
 import type {
   ApiCalendarEvent,
   ErrorResponse,
@@ -16,6 +16,8 @@ import {
   MOCK_RESPONSE,
   MOCK_USER,
 } from "./constants";
+
+const API_URL = env.NEXT_PUBLIC_API_URL;
 
 export const handlers = [
   http.get(`${API_URL}/auth/me`, () =>
