@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 export function BackToHomeButton() {
   return (
     <Button variant="link" asChild className="w-fit">
-      <Link href="/" className="">
+      <Link href="/">
         <ChevronsLeft />
         Wróć na stronę główną
       </Link>
