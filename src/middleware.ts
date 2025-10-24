@@ -88,9 +88,8 @@ export async function middleware(request: NextRequest) {
     return redirect("/login");
   }
 
-  const requiredPermissions = REQUIRED_ROUTE_PERMISSIONS[
-    `/${firstSegment}`
-  ] ?? ["admin"];
+  const requiredPermissions =
+    REQUIRED_ROUTE_PERMISSIONS[`/${firstSegment}`] ?? [];
 
   if (requiredPermissions.length > 0) {
     const userPermissions = getUserPermissions(user);

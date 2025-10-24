@@ -736,14 +736,14 @@ export function AbstractResourceFormInternal<T extends Resource>({
           <div className="flex w-full justify-between">
             {isEmbedded ? null : (
               <Button
-                variant="ghost"
+                variant="link"
                 className="text-primary hover:text-primary w-min"
                 asChild
               >
                 {/* It would be too complex to relate `isEmbedded` to `resource` being a `RoutableResource`, */}
                 {/* so I'm going to assume the codebase won't use `AbstractResourceForm` anywhere except for */}
                 {/* routable resources with `isEmbedded` set to `false` and otherwise with it set to `true`. */}
-                <Link href={`/${resource as RoutableResource}`} className="">
+                <Link href={`/${resource as RoutableResource}`}>
                   <ChevronLeft />
                   Wróć do{" "}
                   {declineNoun(resource, {

@@ -7,6 +7,7 @@ import { ApplicationError } from "@/config/enums";
 import type { LayoutProps } from "@/types/components";
 
 import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
 import { UserInfo } from "./user-info";
 
 function ErrorContextInfo({ children }: LayoutProps) {
@@ -37,18 +38,15 @@ export function ErrorMessage({ type }: { type: ApplicationError }) {
         {contextInfo == null ? null : (
           <ErrorContextInfo>{contextInfo}</ErrorContextInfo>
         )}
-        <Link
-          href="/"
-          className="group mt-8 flex items-center justify-center gap-2 text-sm"
-        >
-          <ArrowLeft
-            size={16}
-            className="transition-transform duration-300 group-hover:-translate-x-1 group-hover:scale-120"
-          />
-          <span className="border-b border-transparent transition-colors duration-300 group-hover:border-current">
+        <Button variant="link" asChild>
+          <Link href="/" className="group text-foreground mt-2 text-sm">
+            <ArrowLeft
+              size={16}
+              className="transition-transform duration-300 group-hover:-translate-x-1 group-hover:scale-120"
+            />
             Powrót do strony głównej
-          </span>
-        </Link>
+          </Link>
+        </Button>
       </div>
     </div>
   );
