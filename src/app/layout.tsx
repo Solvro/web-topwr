@@ -18,6 +18,10 @@ export const metadata: Metadata = {
   title: "Admin Panel | ToPWR by Solvro",
   description:
     "The ToPWR Admin Panel by KN Solvro is a powerful CMS for managing the ToPWR mobile app. Control content, users, and app settings with ease in one intuitive dashboard.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps) {
