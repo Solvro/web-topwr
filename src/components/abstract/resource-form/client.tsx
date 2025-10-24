@@ -736,7 +736,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
           <div className="flex w-full justify-between">
             {isEmbedded ? null : (
               <Button
-                variant="ghost"
+                variant="link"
                 className="text-primary hover:text-primary w-min"
                 asChild
               >
