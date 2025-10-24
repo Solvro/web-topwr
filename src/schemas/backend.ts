@@ -1,14 +1,18 @@
 import { z } from "zod";
 
-import { isoTimestamp, numericId, timestampNumber } from "@/lib/helpers";
+import {
+  IsoTimestampSchema,
+  NumericIdSchema,
+  UnixTimestampSchema,
+} from "./helpers";
 
 export const UserSchema = z
   .object({
-    id: numericId(),
+    id: NumericIdSchema,
     fullName: z.string().nullable(),
     email: z.string().email(),
-    createdAt: isoTimestamp(),
-    updatedAt: isoTimestamp(),
+    createdAt: IsoTimestampSchema,
+    updatedAt: IsoTimestampSchema,
   })
   .strict();
 
@@ -16,8 +20,8 @@ export const AuthStateSchema = z
   .object({
     accessToken: z.string().jwt(),
     refreshToken: z.string().jwt(),
-    accessTokenExpiresAt: timestampNumber(),
-    refreshTokenExpiresAt: timestampNumber(),
+    accessTokenExpiresAt: UnixTimestampSchema,
+    refreshTokenExpiresAt: UnixTimestampSchema,
     user: UserSchema,
   })
   .strict();

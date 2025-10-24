@@ -1,5 +1,5 @@
-import { API_URL } from "@/config/constants";
 import type { Resource } from "@/config/enums";
+import { env } from "@/config/env";
 import { getAuthState } from "@/stores/auth";
 import type { ErrorResponse, SuccessResponse } from "@/types/api";
 
@@ -120,9 +120,14 @@ function createRequest<T extends Resource>(
     };
   }
 
+  const endpointPrefix = getResourceEndpointPrefix(resource);
+  const queryParameters = getRelationQueryParameters(
+    resource,
+    includeRelations,
+  );
   const url = isAbsolutePath(endpoint)
     ? endpoint
-    : `${API_URL}/${getResourceEndpointPrefix(resource)}${removeLeadingSlash(endpoint)}${getRelationQueryParameters(resource, includeRelations)}`;
+    : `${env.NEXT_PUBLIC_API_URL}/${endpointPrefix}${removeLeadingSlash(endpoint)}${queryParameters}`;
 
   const token = accessTokenOverride ?? getAccessToken();
   const isMultipart = body instanceof FormData;

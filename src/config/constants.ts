@@ -1,5 +1,4 @@
 import { getErrorMessage } from "@/lib/error-handling";
-import { removeTrailingSlash } from "@/lib/helpers/transformations";
 import type { AuthState } from "@/types/api";
 import type { SortDirection, SortFiltersOptions } from "@/types/components";
 import type { Declensions, DeclinableNoun } from "@/types/polish";
@@ -7,18 +6,6 @@ import type { Declensions, DeclinableNoun } from "@/types/polish";
 import { ApplicationError, DeclensionCase } from "./enums";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
-
-const TEST_API_BASE = "https://test.api.topwr.solvro.pl";
-
-/** The URL to the base path of the external API, including the version, *without* a trailing slash. */
-export const API_URL = removeTrailingSlash(
-  process.env.NEXT_PUBLIC_API_URL ?? `${TEST_API_BASE}/api/v1`,
-);
-
-/** The URL to the base path of the external API file uploads directory, *without* a trailing slash. */
-export const API_FILES_URL = removeTrailingSlash(
-  process.env.NEXT_PUBLIC_API_FILES_URL ?? `${TEST_API_BASE}/uploads`,
-);
 
 export const LIST_RESULTS_PER_PAGE = 10;
 

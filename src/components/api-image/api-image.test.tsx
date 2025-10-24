@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import { waitFor } from "@testing-library/dom";
 import { describe, expect, it } from "vitest";
 
-import { API_FILES_URL } from "@/config/constants";
+import { env } from "@/config/env";
 import {
   getLoadingIndicator,
   renderWithProviders,
@@ -31,7 +31,7 @@ describe("API Image component", () => {
         expect(imageElement).toBeInTheDocument();
         expect(imageElement).toHaveAttribute(
           "src",
-          `${API_FILES_URL}/${image.id}.${image.fileExtension}`,
+          `${env.NEXT_PUBLIC_API_FILES_URL}/${image.id}.${image.fileExtension}`,
         );
       }
     });

@@ -11,114 +11,115 @@ import {
   StudiesType,
   UniversityBranch,
 } from "@/config/enums";
-import {
-  colorField,
-  isoTimestamp,
-  numericId,
-  requiredString,
-} from "@/lib/helpers";
 import type { AppZodObject } from "@/types/app";
 
+import {
+  ColorValueSchema,
+  IsoTimestampSchema,
+  NumericIdSchema,
+  RequiredStringSchema,
+} from "./helpers";
+
 const BannerSchema = z.object({
-  title: requiredString(),
-  description: requiredString(),
+  title: RequiredStringSchema,
+  description: RequiredStringSchema,
   url: z.string().url().nullish(),
   draft: z.boolean().default(true),
-  textColor: colorField().nullish(),
-  backgroundColor: colorField().nullish(),
-  titleColor: colorField().nullish(),
-  visibleFrom: isoTimestamp().nullish(),
-  visibleUntil: isoTimestamp().nullish(),
+  textColor: ColorValueSchema.nullish(),
+  backgroundColor: ColorValueSchema.nullish(),
+  titleColor: ColorValueSchema.nullish(),
+  visibleFrom: IsoTimestampSchema.nullish(),
+  visibleUntil: IsoTimestampSchema.nullish(),
   shouldRender: z.boolean().default(false),
 });
 
 const CalendarEventSchema = z.object({
-  name: requiredString(),
-  startTime: isoTimestamp(),
-  endTime: isoTimestamp(),
+  name: RequiredStringSchema,
+  startTime: IsoTimestampSchema,
+  endTime: IsoTimestampSchema,
   description: z.string().nullish(),
   location: z.string().nullish(),
   googleCalId: z.string().nullish(),
 });
 
 const ChangesSchema = z.object({
-  name: requiredString(),
-  description: requiredString(),
-  versionId: numericId(),
+  name: RequiredStringSchema,
+  description: RequiredStringSchema,
+  versionId: NumericIdSchema,
   type: z.nativeEnum(ChangeType, {
     required_error: FORM_ERROR_MESSAGES.REQUIRED,
   }),
 });
 
 const ContributorSchema = z.object({
-  name: requiredString(),
+  name: RequiredStringSchema,
   photoKey: z.string().nullish(),
 });
 
 const ContributorSocialLinkSchema = z.object({
-  contributorId: numericId(),
+  contributorId: NumericIdSchema,
   linkType: z.nativeEnum(LinkType),
-  link: requiredString().url(),
+  link: RequiredStringSchema.url(),
 });
 
 const DepartmentSchema = z.object({
-  name: requiredString(),
-  addressLine1: requiredString(),
-  addressLine2: requiredString(),
-  code: requiredString().regex(/W[0-9]{1,2}[A-Z]?/, {
+  name: RequiredStringSchema,
+  addressLine1: RequiredStringSchema,
+  addressLine2: RequiredStringSchema,
+  code: RequiredStringSchema.regex(/W[0-9]{1,2}[A-Z]?/, {
     message: FORM_ERROR_MESSAGES.INVALID_DEPARTMENT_CODE,
   }),
-  betterCode: requiredString().regex(/W[A-Z]+/, {
+  betterCode: RequiredStringSchema.regex(/W[A-Z]+/, {
     message: FORM_ERROR_MESSAGES.INVALID_DEPARTMENT_BETTER_CODE,
   }),
-  logoKey: requiredString(),
+  logoKey: RequiredStringSchema,
   description: z.string().nullish(),
-  gradientStart: colorField().nullish(),
-  gradientStop: colorField().nullish(),
+  gradientStart: ColorValueSchema.nullish(),
+  gradientStop: ColorValueSchema.nullish(),
   branch: z.nativeEnum(UniversityBranch),
 });
 
 const DepartmentLinkSchema = z.object({
-  departmentId: numericId(),
+  departmentId: NumericIdSchema,
   linkType: z.nativeEnum(LinkType),
-  link: requiredString().url(),
-  name: requiredString(),
+  link: RequiredStringSchema.url(),
+  name: RequiredStringSchema,
 });
 
 const GuideArticleSchema = z.object({
-  title: requiredString(),
-  imageKey: requiredString(),
-  shortDesc: requiredString(),
-  description: requiredString(),
+  title: RequiredStringSchema,
+  imageKey: RequiredStringSchema,
+  shortDesc: RequiredStringSchema,
+  description: RequiredStringSchema,
 });
 
 const GuideAuthorSchema = z.object({
-  name: requiredString(),
+  name: RequiredStringSchema,
 });
 
 const GuideQuestionSchema = z.object({
-  title: requiredString(),
-  answer: requiredString(),
-  articleId: numericId(),
+  title: RequiredStringSchema,
+  answer: RequiredStringSchema,
+  articleId: NumericIdSchema,
 });
 
 const RoleSchema = z.object({
-  name: requiredString(),
+  name: RequiredStringSchema,
 });
 
 const StudentOrganizationLinkSchema = z.object({
   linkType: z.nativeEnum(LinkType),
-  link: requiredString().url(),
-  studentOrganizationId: numericId(),
+  link: RequiredStringSchema.url(),
+  studentOrganizationId: NumericIdSchema,
 });
 
 const StudentOrganizationTagSchema = z.object({
-  tag: requiredString(),
+  tag: RequiredStringSchema,
 });
 
 const StudentOrganizationSchema = z.object({
-  name: requiredString(),
-  departmentId: numericId().nullish(),
+  name: RequiredStringSchema,
+  departmentId: NumericIdSchema.nullish(),
   logoKey: z.string().nullish(),
   coverKey: z.string().nullish(),
   description: z.string().nullish(),
@@ -138,23 +139,23 @@ const StudentOrganizationSchema = z.object({
 });
 
 const MajorSchema = z.object({
-  name: requiredString(),
+  name: RequiredStringSchema,
   url: z.string().url().nullish(),
   isEnglish: z.boolean().default(false),
   studiesType: z.nativeEnum(StudiesType),
   hasWeekendOption: z.boolean().default(false),
-  departmentId: numericId(),
+  departmentId: NumericIdSchema,
 });
 
 const MilestonesSchema = z.object({
-  name: requiredString(),
+  name: RequiredStringSchema,
 });
 
 const VersionsSchema = z.object({
-  name: requiredString(),
+  name: RequiredStringSchema,
   description: z.string().nullish(),
-  releaseDate: requiredString().datetime(),
-  milestoneId: numericId(),
+  releaseDate: RequiredStringSchema.datetime(),
+  milestoneId: NumericIdSchema,
 });
 
 export const RESOURCE_SCHEMAS = {
