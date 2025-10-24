@@ -1,5 +1,4 @@
-import { ChevronsLeft, Filter } from "lucide-react";
-import Link from "next/link";
+import { Filter } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +11,7 @@ import type { RoutableResource } from "@/types/app";
 import type { ListSearchParameters } from "@/types/components";
 import type { ResourceDeclinableField } from "@/types/polish";
 
+import { BackToHomeButton } from "../back-to-home-button";
 import { CreateButton } from "../create-button";
 import { InfiniteScroller } from "./infinite-scroller";
 import { SortFilters } from "./sort-filters";
@@ -59,16 +59,7 @@ export async function AbstractResourceList<T extends RoutableResource>({
       </div>
       <div className="flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
         <CreateButton resource={resource} />
-        <Button
-          variant="ghost"
-          className="text-primary hover:text-primary w-min"
-          asChild
-        >
-          <Link href="/" className="">
-            <ChevronsLeft />
-            Wróć na stronę główną
-          </Link>
-        </Button>
+        <BackToHomeButton />
       </div>
     </div>
   );

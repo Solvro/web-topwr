@@ -1,6 +1,7 @@
 "use client";
 
 import { useAtom } from "jotai";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -118,7 +119,7 @@ export function Calendar({
           className="h-8 w-8 p-0"
           aria-label="Previous month"
         >
-          ←
+          <ArrowLeft />
         </Button>
         <span className="min-w-[200px]">
           {currentDisplayedMonth.name} {displayedYear}
@@ -130,11 +131,10 @@ export function Calendar({
           className="h-8 w-8 p-0"
           aria-label="Next month"
         >
-          →
+          <ArrowRight />
         </Button>
       </div>
-
-      <div className="col-span-7 grid grid-cols-7 gap-1 sm:gap-2">
+      <div className="col-span-7 mt-4 grid grid-cols-7 gap-1 sm:gap-2">
         {WEEKDAYS.map((day) => (
           <div
             key={day}
