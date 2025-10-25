@@ -1,6 +1,6 @@
 "use client";
 
-import { format } from "date-fns";
+import { format, isValid, parse } from "date-fns";
 import { Clock } from "lucide-react";
 import type { ChangeEvent } from "react";
 
@@ -45,23 +45,11 @@ export function DateTimePicker({
 
   const handleTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
     const timeValue = event.target.value;
-    const [hours, minutes, seconds = "00"] = timeValue.split(":");
-
-    let baseDate: Date;
-    if (date === undefined) {
-      baseDate = new Date();
-      baseDate.setHours(0, 0, 0, 0);
-    } else {
-      baseDate = new Date(date);
+    const baseDate = date ?? new Date();
+    const parsedTime = parse(timeValue, "HH:mm:ss", baseDate);
+    if (isValid(parsedTime)) {
+      onChange(parsedTime.toISOString());
     }
-
-    baseDate.setHours(
-      Number.parseInt(hours, 10),
-      Number.parseInt(minutes, 10),
-      Number.parseInt(seconds, 10),
-      0,
-    );
-    onChange(baseDate.toISOString());
   };
 
   return (

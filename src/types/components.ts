@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import type { Resource } from "@/config/enums";
 
 import type { Id, ResourceDataType, ResourceRelation } from "./app";
+import type { ResourceSchemaKey } from "./forms";
 import type { DeclinableNoun } from "./polish";
 
 export type SortDirection = "asc" | "desc";
@@ -29,12 +30,16 @@ export interface ResourceFormProps<T extends Resource> {
   className?: string;
 }
 
+export type ResourcePageProps = Readonly<{
+  searchParams: Promise<{ page?: string }>;
+}>;
+
 export type ResourceEditPageProps = Readonly<{
   params: Promise<{ id: string }>;
 }>;
 
-export type ResourcePageProps = Readonly<{
-  searchParams: Promise<{ page?: string }>;
+export type ResourceCreatePageProps = Readonly<{
+  searchParams?: Promise<Record<string, string | undefined>>;
 }>;
 
 export type LayoutProps = Readonly<{
@@ -60,3 +65,10 @@ export type ResourceFormSheetData<T extends Resource> =
       visible: false;
       content?: ResourceFormSheetDataContent<T>;
     };
+
+export type ExistingImages<T extends Resource> = Partial<
+  Record<ResourceSchemaKey<T>, ReactNode>
+>;
+export type ResourceRelations<T extends Resource> = {
+  [L in ResourceRelation<T>]: ResourceDataType<L>[];
+};

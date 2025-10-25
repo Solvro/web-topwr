@@ -1,4 +1,4 @@
-import { getFutureDate } from "@/lib/helpers/calendar";
+import { getRoundedDate } from "@/lib/helpers/calendar";
 import type { ResourceMetadata } from "@/types/app";
 
 import {
@@ -130,8 +130,8 @@ export const RESOURCE_METADATA = {
         name: "",
         location: "",
         description: "",
-        startTime: getFutureDate(1),
-        endTime: getFutureDate(2),
+        startTime: getRoundedDate(0),
+        endTime: getRoundedDate(24),
       },
     },
   },
@@ -583,7 +583,7 @@ export const RESOURCE_METADATA = {
       defaultValues: {
         name: "",
         description: null,
-        releaseDate: getFutureDate(0),
+        releaseDate: getRoundedDate(0),
         milestoneId: -1,
       },
     },

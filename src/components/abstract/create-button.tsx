@@ -4,15 +4,26 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DeclensionCase } from "@/config/enums";
 import { declineNoun } from "@/lib/polish";
-import type { RoutableResource } from "@/types/app";
+import type { ResourceFormValues, RoutableResource } from "@/types/app";
 
-export function CreateButton({ resource }: { resource: RoutableResource }) {
+export function CreateButton<T extends RoutableResource>({
+  className,
+  resource,
+  prefillAttributes = {},
+}: {
+  className?: string;
+  resource: T;
+  prefillAttributes?: Partial<Record<keyof ResourceFormValues<T>, string>>;
+}) {
   const resourceAccusative = declineNoun(resource, {
     case: DeclensionCase.Accusative,
   });
+  const searchParameters = new URLSearchParams(
+    prefillAttributes as Record<string, string>,
+  ).toString();
   return (
-    <Button asChild>
-      <Link href={`/${resource}/create`}>
+    <Button asChild className={className}>
+      <Link href={`/${resource}/create?${searchParameters}`}>
         Dodaj {resourceAccusative}
         <Plus />
       </Link>
