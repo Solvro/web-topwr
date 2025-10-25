@@ -9,6 +9,7 @@ import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 
+import { CheckboxInput } from "@/components/inputs/checkbox-input";
 import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";
 import { DateTimePicker } from "@/components/inputs/date-time-picker";
@@ -16,7 +17,6 @@ import { ImageUpload } from "@/components/inputs/image-upload";
 import { Inputs } from "@/components/inputs/input-row";
 import { SelectInput } from "@/components/inputs/select-input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -473,6 +473,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                   )}
                 />
                 <Inputs
+                  container
                   inputs={checkboxInputs}
                   mapper={([name, input]) => (
                     <FormField
@@ -480,18 +481,11 @@ export function AbstractResourceFormInternal<T extends Resource>({
                       control={form.control}
                       name={name}
                       render={({ field }) => (
-                        <FormItem className="flex flex-row space-x-2">
-                          <FormLabel>{input.label}</FormLabel>
-                          <FormControl>
-                            <Checkbox
-                              checked={(field.value ?? false) as boolean}
-                              onCheckedChange={(checked) => {
-                                field.onChange(Boolean(checked));
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
+                        <CheckboxInput
+                          value={(field.value ?? false) as boolean}
+                          label={input.label}
+                          onChange={field.onChange}
+                        />
                       )}
                     />
                   )}

@@ -45,7 +45,7 @@ export default function RootLayout({ children }: LayoutProps) {
             space_grotesk.variable,
           )}
         >
-          <NextTopLoader color="var(--color-primary)" />
+          <NextTopLoader color="var(--color-primary)" showSpinner={false} />
           <Toaster position="top-right" />
           {children}
         </body>
