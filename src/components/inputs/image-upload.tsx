@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import type { z } from "zod";
 
 import { ApiImage } from "@/components/api-image/client";
+import { InputSlot } from "@/components/inputs/input-slot";
 import { Spinner } from "@/components/spinner";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -42,7 +43,10 @@ export function ImageUpload<T extends z.infer<AppZodObject>>({
     <>
       <FormLabel className="flex flex-col items-start space-y-1.5">
         {label}
-        <div className="bg-background border-input flex aspect-video w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border md:h-48 md:w-48">
+        <InputSlot
+          as="div"
+          className="flex aspect-video w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border hover:bg-inherit md:h-48 md:w-48"
+        >
           {isPending ? (
             <Spinner />
           ) : isSuccess ? (
@@ -57,7 +61,7 @@ export function ImageUpload<T extends z.infer<AppZodObject>>({
               </>
             ))
           )}
-        </div>
+        </InputSlot>
       </FormLabel>
       <FormControl>
         <Input

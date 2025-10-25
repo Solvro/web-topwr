@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { pl } from "date-fns/locale/pl";
 import { Calendar as CalendarIcon } from "lucide-react";
 
+import { InputSlot } from "@/components/inputs/input-slot";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { FormControl } from "@/components/ui/form";
@@ -34,7 +35,8 @@ export function DatePicker({
       </FormControl>
       <Popover>
         <PopoverTrigger asChild>
-          <Button
+          <InputSlot
+            as={Button}
             variant="outline"
             data-empty={date == null}
             className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
@@ -45,7 +47,7 @@ export function DatePicker({
             ) : (
               format(date, "PPP", { locale: pl })
             )}
-          </Button>
+          </InputSlot>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
           <Calendar

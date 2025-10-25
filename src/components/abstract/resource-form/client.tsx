@@ -343,7 +343,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           <FormControl>
                             <Input
                               placeholder="Wpisz tekst..."
-                              className="bg-background"
                               {...field}
                               value={(field.value ?? "") as string}
                             />
@@ -367,7 +366,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           <FormControl>
                             <Textarea
                               placeholder="Wpisz tekst..."
-                              className="bg-background"
                               {...field}
                               value={(field.value ?? "") as string}
                             />
@@ -486,7 +484,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           <FormControl>
                             <Checkbox
                               checked={(field.value ?? false) as boolean}
-                              className="bg-background"
                               onCheckedChange={(checked) => {
                                 field.onChange(Boolean(checked));
                               }}
@@ -636,7 +633,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                                 badgeAnimation: "none",
                               }}
                               placeholder={inputPlaceholder}
-                              className="bg-background border-input"
                               emptyIndicator={`Brak ${relationDeclined.plural.genitive} spełniających wyszukanie.`}
                               options={relationDataOptions.map(
                                 (option, index) => {

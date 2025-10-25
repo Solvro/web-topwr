@@ -2,6 +2,7 @@
 import type { Content, Editor } from "@tiptap/react";
 import { EditorContent } from "@tiptap/react";
 
+import { InputSlot } from "@/components/inputs/input-slot";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
@@ -87,7 +88,8 @@ export function MinimalTiptapEditor({
   }
 
   return (
-    <MeasuredContainer
+    <InputSlot
+      as={MeasuredContainer}
       as="div"
       name="editor"
       className={cn(
@@ -102,7 +104,7 @@ export function MinimalTiptapEditor({
         className={cn("minimal-tiptap-editor", editorContentClassName)}
       />
       <LinkBubbleMenu editor={editor} />
-    </MeasuredContainer>
+    </InputSlot>
   );
 }
 

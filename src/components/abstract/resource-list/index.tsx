@@ -36,10 +36,10 @@ export async function AbstractResourceList<T extends RoutableResource>({
   );
 
   return (
-    <div className="flex h-full flex-col space-y-4">
+    <div className="flex h-full flex-col">
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="ghost" className="self-start">
+          <Button variant="ghost" className="mb-2 self-start">
             Pokaż filtry <Filter />
           </Button>
         </PopoverTrigger>
@@ -57,7 +57,7 @@ export async function AbstractResourceList<T extends RoutableResource>({
           searchParameters={await searchParams}
         />
       </div>
-      <div className="flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
+      <div className="mt-4 flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
         <CreateButton resource={resource} />
         <BackToHomeButton />
       </div>

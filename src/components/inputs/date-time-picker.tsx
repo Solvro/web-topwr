@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Clock } from "lucide-react";
 import type { ChangeEvent } from "react";
 
+import { InputSlot } from "@/components/inputs/input-slot";
 import {
   InputGroup,
   InputGroupAddon,
@@ -66,7 +67,7 @@ export function DateTimePicker({
   return (
     <InputRow>
       <DatePicker value={value} onChange={handleDateChange} />
-      <InputGroup className="w-fit min-w-34">
+      <InputSlot as={InputGroup} className="w-fit min-w-34 overflow-hidden">
         <InputGroupAddon>
           <Clock className="text-muted-foreground" />
         </InputGroupAddon>
@@ -76,7 +77,7 @@ export function DateTimePicker({
           value={date === undefined ? "00:00:00" : format(date, "HH:mm:ss")}
           onChange={handleTimeChange}
         />
-      </InputGroup>
+      </InputSlot>
     </InputRow>
   );
 }

@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import * as React from "react";
 
+import { InputSlot } from "@/components/inputs/input-slot";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -919,7 +920,8 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
           </div>
 
           <PopoverTrigger asChild>
-            <Button
+            <InputSlot
+              as={Button}
               ref={buttonRef}
               {...props}
               onClick={handleTogglePopover}
@@ -1133,7 +1135,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                   <ChevronDown className="text-muted-foreground mx-2 h-4 cursor-pointer" />
                 </div>
               )}
-            </Button>
+            </InputSlot>
           </PopoverTrigger>
           <PopoverContent
             id={listboxId}

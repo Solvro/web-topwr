@@ -23,6 +23,8 @@ import {
 import { DEFAULT_COLOR } from "@/config/constants";
 import { cn } from "@/lib/utils";
 
+import { InputSlot } from "./input-slot";
+
 export function ColorInput({
   value,
   onChange,
@@ -46,7 +48,8 @@ export function ColorInput({
       </FormControl>
       <Popover>
         <PopoverTrigger asChild>
-          <Button
+          <InputSlot
+            as={Button}
             variant="outline"
             data-empty={value == null}
             className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
@@ -66,11 +69,11 @@ export function ColorInput({
                 {value}
               </div>
             )}
-          </Button>
+          </InputSlot>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
           <ColorPicker
-            className="bg-background h-full w-full max-w-sm rounded-md border p-4 shadow-sm"
+            className="bg-background h-full w-full max-w-sm rounded-md p-4 shadow-sm"
             onChange={(newColor) => {
               setLightness(newColor.lightness());
               onChange(newColor.hex().toLowerCase());
