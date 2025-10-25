@@ -89,7 +89,7 @@ export function MinimalTiptapEditor({
 
   return (
     <InputSlot
-      Comp={MeasuredContainer}
+      as={MeasuredContainer}
       as="div"
       name="editor"
       className={cn(

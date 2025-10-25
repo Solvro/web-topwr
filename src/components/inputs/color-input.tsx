@@ -3,6 +3,7 @@
 import { Circle, PaintBucketIcon } from "lucide-react";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,7 +23,6 @@ import {
 import { DEFAULT_COLOR } from "@/config/constants";
 import { cn } from "@/lib/utils";
 
-import { Button } from "../ui/button";
 import { InputSlot } from "./input-slot";
 
 export function ColorInput({
@@ -49,7 +49,7 @@ export function ColorInput({
       <Popover>
         <PopoverTrigger asChild>
           <InputSlot
-            Comp={Button}
+            as={Button}
             variant="outline"
             data-empty={value == null}
             className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"

@@ -35,7 +35,7 @@ function SelectTrigger({
 }) {
   return (
     <InputSlot
-      Comp={SelectPrimitive.Trigger}
+      as={SelectPrimitive.Trigger}
       data-slot="select-trigger"
       data-size={size}
       className={cn(
