@@ -35,19 +35,18 @@ export function DatePicker({
       </FormControl>
       <Popover>
         <PopoverTrigger asChild>
-          <InputSlot asChild>
-            <Button
-              variant="outline"
-              data-empty={date == null}
-              className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
-            >
-              <CalendarIcon />
-              {date == null ? (
-                <span>Wybierz datę</span>
-              ) : (
-                format(date, "PPP", { locale: pl })
-              )}
-            </Button>
+          <InputSlot
+            Comp={Button}
+            variant="outline"
+            data-empty={date == null}
+            className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
+          >
+            <CalendarIcon />
+            {date == null ? (
+              <span>Wybierz datę</span>
+            ) : (
+              format(date, "PPP", { locale: pl })
+            )}
           </InputSlot>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">

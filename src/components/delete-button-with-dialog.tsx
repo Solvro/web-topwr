@@ -89,7 +89,7 @@ export function DeleteButtonWithDialog({
           <Trash2 />
         </Button>
       </DialogTrigger>
-      <DialogContent className="border-none">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-balance">
             Czy na pewno chcesz usunąć{" "}

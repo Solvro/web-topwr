@@ -12,7 +12,7 @@ export function DragHandle({ item }: { item: ListItem }) {
   });
   return (
     <GripHorizontal
-      className={cn("h-full outline-none", {
+      className={cn("h-full", {
         "cursor-grab": !isDragging,
       })}
       {...attributes}

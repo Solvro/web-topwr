@@ -3,7 +3,6 @@
 import { Circle, PaintBucketIcon } from "lucide-react";
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import { FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -23,6 +22,7 @@ import {
 import { DEFAULT_COLOR } from "@/config/constants";
 import { cn } from "@/lib/utils";
 
+import { Button } from "../ui/button";
 import { InputSlot } from "./input-slot";
 
 export function ColorInput({
@@ -48,28 +48,27 @@ export function ColorInput({
       </FormControl>
       <Popover>
         <PopoverTrigger asChild>
-          <InputSlot asChild>
-            <Button
-              variant="outline"
-              data-empty={value == null}
-              className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
-            >
-              <PaintBucketIcon />
-              {value == null ? (
-                <span>Wybierz kolor</span>
-              ) : (
-                <div className="flex items-center gap-2 uppercase">
-                  <Circle
-                    style={{ color: showCircleBorder ? undefined : value }}
-                    className={cn({
-                      "text-muted-foreground": showCircleBorder,
-                    })}
-                    fill={value}
-                  />{" "}
-                  {value}
-                </div>
-              )}
-            </Button>
+          <InputSlot
+            Comp={Button}
+            variant="outline"
+            data-empty={value == null}
+            className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
+          >
+            <PaintBucketIcon />
+            {value == null ? (
+              <span>Wybierz kolor</span>
+            ) : (
+              <div className="flex items-center gap-2 uppercase">
+                <Circle
+                  style={{ color: showCircleBorder ? undefined : value }}
+                  className={cn({
+                    "text-muted-foreground": showCircleBorder,
+                  })}
+                  fill={value}
+                />{" "}
+                {value}
+              </div>
+            )}
           </InputSlot>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">

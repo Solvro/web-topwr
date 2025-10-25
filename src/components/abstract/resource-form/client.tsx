@@ -14,7 +14,6 @@ import { DatePicker } from "@/components/inputs/date-picker";
 import { DateTimePicker } from "@/components/inputs/date-time-picker";
 import { ImageUpload } from "@/components/inputs/image-upload";
 import { Inputs } from "@/components/inputs/input-row";
-import { InputSlot } from "@/components/inputs/input-slot";
 import { SelectInput } from "@/components/inputs/select-input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -431,19 +430,17 @@ export function AbstractResourceFormInternal<T extends Resource>({
                         <FormItem>
                           <FormLabel>{input.label}</FormLabel>
                           <FormControl>
-                            <InputSlot asChild>
-                              <MinimalTiptapEditor
-                                // @ts-expect-error types not matching
-                                value={field.value ?? ""}
-                                onChange={field.onChange}
-                                className="w-full"
-                                editorContentClassName="p-5"
-                                output="html"
-                                placeholder="Wpisz opis..."
-                                editable
-                                editorClassName="focus:outline-hidden"
-                              />
-                            </InputSlot>
+                            <MinimalTiptapEditor
+                              // @ts-expect-error types not matching
+                              value={field.value ?? ""}
+                              onChange={field.onChange}
+                              className="w-full"
+                              editorContentClassName="p-5"
+                              output="html"
+                              placeholder="Wpisz opis..."
+                              editable
+                              editorClassName="focus:outline-hidden"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

@@ -67,18 +67,16 @@ export function DateTimePicker({
   return (
     <InputRow>
       <DatePicker value={value} onChange={handleDateChange} />
-      <InputSlot asChild>
-        <InputGroup className="w-fit min-w-34">
-          <InputGroupAddon>
-            <Clock className="text-muted-foreground" />
-          </InputGroupAddon>
-          <InputGroupInput
-            type="time"
-            step="1"
-            value={date === undefined ? "00:00:00" : format(date, "HH:mm:ss")}
-            onChange={handleTimeChange}
-          />
-        </InputGroup>
+      <InputSlot Comp={InputGroup} className="w-fit min-w-34 overflow-hidden">
+        <InputGroupAddon>
+          <Clock className="text-muted-foreground" />
+        </InputGroupAddon>
+        <InputGroupInput
+          type="time"
+          step="1"
+          value={date === undefined ? "00:00:00" : format(date, "HH:mm:ss")}
+          onChange={handleTimeChange}
+        />
       </InputSlot>
     </InputRow>
   );
