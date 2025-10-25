@@ -89,14 +89,14 @@ export function LoginForm() {
           control={form.control}
           name="rememberMe"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center space-x-2">
+            <FormItem className="flex flex-row items-center gap-2">
               <FormControl>
                 <Checkbox
                   checked={field.value}
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
                   }}
-                  className="my-auto"
+                  className="mb-0"
                 />
               </FormControl>
               <FormLabel>Zapamiętaj mnie</FormLabel>

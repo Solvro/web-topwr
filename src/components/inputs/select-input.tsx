@@ -53,7 +53,7 @@ export function SelectInput<T extends Resource>({
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>
-            <SelectContent className="border-input">{options}</SelectContent>
+            <SelectContent>{options}</SelectContent>
           </Select>
           <FormMessage />
         </FormItem>
