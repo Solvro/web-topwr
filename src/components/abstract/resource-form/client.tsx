@@ -61,12 +61,13 @@ import type {
   XToManyResource,
 } from "@/types/app";
 import type {
+  ExistingImages,
   ResourceFormProps,
   ResourceFormSheetData,
   ResourceFormSheetDataContent,
+  ResourceRelations,
 } from "@/types/components";
 
-import type { ExistingImages, ResourceRelations } from ".";
 import { AbstractResourceFormSheet } from "./sheet";
 
 const isExistingResourceItem = <T extends Resource>(
@@ -611,11 +612,11 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           relationDefinition.type === RelationType.OneToMany
                             ? relationValues
                             : relationData;
-                        const formProps: ResourceFormProps<Resource> = {
+                        const formProps = {
                           resource: relation,
                           isEmbedded: true,
                           className: "w-full px-4",
-                        };
+                        } satisfies ResourceFormProps<Resource>;
                         return (
                           <Label
                             key={elementKey}
