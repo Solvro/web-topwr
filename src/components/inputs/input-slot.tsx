@@ -4,11 +4,11 @@ import { cn } from "@/lib/utils";
 
 /** Wrapper for any component that applies consistent "input-like" styling. */
 export function InputSlot<T extends ElementType>({
-  as: Comp,
+  renderAs: Comp,
   className,
   ...props
 }: {
-  as: T;
+  renderAs: T;
   className?: string;
 } & ComponentProps<T>) {
   return (

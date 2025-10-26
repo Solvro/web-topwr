@@ -7,7 +7,7 @@ import { InputSlot } from "../inputs/input-slot";
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
     <InputSlot
-      as="input"
+      renderAs="input"
       type={type}
       data-slot="input"
       className={cn(
