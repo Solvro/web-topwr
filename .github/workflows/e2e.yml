@@ -14,8 +14,8 @@ jobs:
     env:
       TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
       TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-      API_URL: https://test.api.topwr.solvro.pl/api/v1
-      API_FILES_URL: https://test.api.topwr.solvro.pl/uploads
+      NEXT_PUBLIC_API_URL: https://test.api.topwr.solvro.pl/api/v1
+      NEXT_PUBLIC_API_FILES_URL: https://test.api.topwr.solvro.pl/uploads
 
     steps:
       - name: Checkout
@@ -28,7 +28,7 @@ jobs:
 
       - name: Get installed Playwright version
         id: playwright-version
-        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages[''].devDependencies['@playwright/test'].version)")" >> $GITHUB_ENV
       - name: Cache playwright binaries
         uses: actions/cache@v3
         id: playwright-cache
