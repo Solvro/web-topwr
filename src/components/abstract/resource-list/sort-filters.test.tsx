@@ -1,7 +1,7 @@
 import { render, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ReadonlyURLSearchParams } from "next/navigation";
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import { describe, expect, it, vi } from "vitest";
 
 import {

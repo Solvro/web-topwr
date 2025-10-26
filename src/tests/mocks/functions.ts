@@ -1,6 +1,9 @@
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { vi } from "vitest";
 
+import type { Resource } from "@/config/enums";
+import type { ResourceDataType, ResourceFormValues } from "@/types/app";
+
 export const MOCK_USE_ROUTER: AppRouterInstance = {
   back: vi.fn(),
   forward: vi.fn(),
@@ -29,3 +32,13 @@ MOCK_INTERSECTION_OBSERVER.mockReturnValue({
   unobserve: () => null,
   disconnect: () => null,
 });
+
+export const MOCK_API_RESOURCE_OPERATION = vi.fn(
+  <T extends Resource>(
+    details: { resource: T } & (
+      | { operation: "read" | "delete"; body?: never }
+      | { operation: "create"; body: ResourceFormValues<T> }
+      | { operation: "update"; body: ResourceDataType<T> }
+    ),
+  ) => details,
+);

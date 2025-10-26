@@ -1,7 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { HttpResponse } from "msw";
 
+import type { Resource } from "@/config/enums";
 import type { AuthState, FileEntry, User } from "@/types/api";
+import type { ResourceFormValues } from "@/types/app";
 
 import { generateFileEntry, mockDatedResource } from "../helpers/mocks";
 
@@ -60,3 +62,12 @@ export const MOCK_FILES = Array.from({ length: MOCK_FILE_COUNT }, () =>
 export const MOCK_IMAGE_FILE = new File(["test"], "test.png", {
   type: "image/png",
 });
+
+export const MOCK_IMAGE_KEY = faker.string.uuid();
+
+export const MOCK_GUIDE_ARTICLE = {
+  title: faker.lorem.sentence(5),
+  shortDesc: faker.lorem.sentence(10),
+  description: faker.lorem.paragraph(3),
+  imageKey: MOCK_IMAGE_KEY,
+} satisfies ResourceFormValues<Resource.GuideArticles>;

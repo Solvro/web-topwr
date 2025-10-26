@@ -7,7 +7,7 @@ const UrlBaseSchema = z
   .refine((value) => !value.endsWith("/"));
 
 if (process.env.NODE_ENV === "test") {
-  const nextEnv = await import("@next/env");
+  const { default: nextEnv } = await import("@next/env");
   nextEnv.loadEnvConfig(process.cwd());
 }
 

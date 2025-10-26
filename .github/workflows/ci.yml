@@ -1,9 +1,15 @@
 name: CI
+permissions:
+  contents: read
 
 on:
   push:
     branches: ["main"]
   pull_request:
+
+env:
+  NEXT_PUBLIC_API_URL: https://test.api.topwr.solvro.pl/api/v1
+  NEXT_PUBLIC_API_FILES_URL: https://test.api.topwr.solvro.pl/uploads
 
 jobs:
   lint-and-vitest:
@@ -15,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install
+      - name: Install dependencies
         uses: ./.github/composite-actions/install
 
       - name: Check commit name
@@ -26,10 +32,76 @@ jobs:
         run: npm run format:check
         if: always()
 
-      - name: Build
-        run: npm run build
+      - name: Run unit tests
+        run: npm run test:unit
         if: always()
 
-      - name: Run unit tests
-        run: npm run test:once
-        if: always()
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        uses: ./.github/composite-actions/install
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build
+          include-hidden-files: true
+          path: .next
+
+  playwright-tests:
+    needs: build
+    runs-on: ubuntu-latest
+
+    env:
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        uses: ./.github/composite-actions/install
+
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['node_modules/@playwright/test'].version)")" >> $GITHUB_ENV
+      - name: Cache playwright binaries
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+
+      - name: Install Playwright Browsers & Dependencies
+        run: npm run test:e2e:prepare -- --with-deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-build
+          path: .next
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
