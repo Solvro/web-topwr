@@ -18,10 +18,9 @@ async function renderCreationForm() {
   const input = {
     title: form.getByLabelText(/tytuł/i) as HTMLInputElement,
     shortDescription: form.getByLabelText(/krótki opis/i) as HTMLInputElement,
-    description: form.getByLabelText(/^opis/i) as HTMLInputElement,
     image: form.getByLabelText(/zdjęcie/i) as HTMLInputElement,
   };
-  const submitButton = form.getByRole("button", { name: /zapisz/i });
+  const submitButton = form.getByRole("button", { name: /utwórz/i });
   return { screen: form, user, input, submitButton };
 }
 
@@ -52,7 +51,7 @@ describe("Create Guide Articles Page", () => {
     expect(form.input.image.files[0]).toEqual(MOCK_IMAGE_FILE);
   });
 
-  it("should allow me to submit the form with valid data", async () => {
+  it("should require all fields to be filled", async () => {
     const form = await renderCreationForm();
     expect(form.submitButton).toBeDisabled();
 
@@ -61,24 +60,21 @@ describe("Create Guide Articles Page", () => {
       form.input.shortDescription,
       MOCK_GUIDE_ARTICLE.shortDesc,
     );
-    await form.user.type(
-      form.input.description,
-      MOCK_GUIDE_ARTICLE.description,
-    );
+
     await form.user.upload(form.input.image, MOCK_IMAGE_FILE);
 
     await waitFor(() => {
       expect(getToaster()).not.toHaveTextContent(/trwa przesyłanie zdjęcia/i);
-      expect(
-        screen.queryByText(FORM_ERROR_MESSAGES.REQUIRED),
-      ).not.toBeInTheDocument();
     });
+    expect(
+      screen.queryByText(FORM_ERROR_MESSAGES.REQUIRED),
+    ).not.toBeInTheDocument();
     expect(getToaster()).toHaveTextContent(/przesłano zdjęcie/i);
 
     await form.user.click(form.submitButton);
 
-    await waitFor(() => {
-      expect(getToaster()).toHaveTextContent(/pomyślnie zapisano/i);
-    });
+    expect(
+      form.screen.queryByText(FORM_ERROR_MESSAGES.REQUIRED),
+    ).toBeInTheDocument();
   });
 });

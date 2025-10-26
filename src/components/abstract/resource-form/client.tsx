@@ -435,12 +435,11 @@ export function AbstractResourceFormInternal<T extends Resource>({
                               // @ts-expect-error types not matching
                               value={field.value ?? ""}
                               onChange={field.onChange}
-                              className="w-full"
-                              editorContentClassName="p-5"
-                              output="html"
+                              editorContentClassName="p-4"
                               placeholder="Wpisz opis..."
+                              aria-label={input.label}
                               editable
-                              editorClassName="focus:outline-hidden"
+                              output="html"
                             />
                           </FormControl>
                           <FormMessage />

@@ -231,6 +231,9 @@ export const useMinimalTiptapEditor = ({
         autocorrect: "off",
         autocapitalize: "off",
         class: cn("focus:outline-hidden", editorClassName),
+        id: props.id,
+        "aria-label": props["aria-label"],
+        role: "textbox",
       },
     },
     onUpdate: ({ editor }) => {
