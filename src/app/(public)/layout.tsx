@@ -4,7 +4,7 @@ import { ContentWrapper } from "@/components/content-wrapper";
 import { getUser } from "@/lib/data-access";
 import type { LayoutProps } from "@/types/components";
 
-export default async function UnauthenticatedLayout({ children }: LayoutProps) {
+export default async function PublicLayout({ children }: LayoutProps) {
   const user = await getUser();
 
   if (user != null) {

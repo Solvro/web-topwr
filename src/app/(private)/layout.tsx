@@ -5,7 +5,7 @@ import { ApplicationError } from "@/config/enums";
 import { permit } from "@/lib/data-access";
 import type { LayoutProps } from "@/types/components";
 
-export default async function AuthenticatedLayout({ children }: LayoutProps) {
+export default async function PrivateLayout({ children }: LayoutProps) {
   const hasPermission = await permit("/");
 
   return (
