@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+import { AUTH_STORAGE_STATE_PATH } from "@/tests/e2e/constants";
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -26,14 +28,25 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    /* Global authentication state setup. https://playwright.dev/docs/auth */
+    { name: "setup", testMatch: /.*\.setup\.ts/ },
+
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: AUTH_STORAGE_STATE_PATH,
+      },
+      dependencies: ["setup"],
     },
 
     {
       name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      use: {
+        ...devices["Desktop Firefox"],
+        storageState: AUTH_STORAGE_STATE_PATH,
+      },
+      dependencies: ["setup"],
     },
 
     // {

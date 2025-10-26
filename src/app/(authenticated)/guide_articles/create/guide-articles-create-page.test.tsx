@@ -1,7 +1,7 @@
 import { waitFor } from "@testing-library/dom";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import { describe, expect, it } from "vitest";
 
 import { AbstractResourceForm } from "@/components/abstract/resource-form";

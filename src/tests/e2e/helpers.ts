@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import type { Page } from "@playwright/test";
+import assert from "node:assert/strict";
 
 import type { IMPLICIT_SORT_BY_ATTRIBUTES } from "@/config/constants";
 import {
@@ -9,15 +10,32 @@ import {
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
+import { encodeQueryParameters } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
+import { SortFiltersSchema } from "@/schemas";
 import type { SortFiltersFormValues } from "@/types/forms";
 
-export async function login(page: Page) {
+interface Credentials {
+  email: string;
+  password: string;
+}
+
+export function getTestUserCredentials(): Credentials {
+  const email = env.TEST_USER_EMAIL;
+  const password = env.TEST_USER_PASSWORD;
+  assert.ok(email != null, "TEST_USER_EMAIL must be set in env variables");
+  assert.ok(
+    password != null,
+    "TEST_USER_PASSWORD must be set in env variables",
+  );
+  return { email, password };
+}
+
+export async function login(page: Page, { email, password }: Credentials) {
   await page.goto("/login");
-  expect(env.TEST_USER_EMAIL).toBeDefined();
-  expect(env.TEST_USER_PASSWORD).toBeDefined();
-  await page.getByLabel(/email/i).fill(env.TEST_USER_EMAIL ?? "");
-  await page.getByLabel(/hasło/i).fill(env.TEST_USER_PASSWORD ?? "");
+
+  await page.getByLabel(/email/i).fill(email);
+  await page.getByLabel(/hasło/i).fill(password);
   await page.getByRole("button", { name: /zaloguj się/i }).click();
   await expect(page).not.toHaveURL("/login");
 }
@@ -52,6 +70,8 @@ type Filter = Pick<SortFiltersFormValues, FilterKeys> & {
 };
 type SortOrFilter = Sort | Filter | (Sort & Filter);
 
+const defaultSortFilters = SortFiltersSchema.parse({});
+
 export async function setAbstractResourceListFilters(
   page: Page,
   options: SortOrFilter,
@@ -60,7 +80,7 @@ export async function setAbstractResourceListFilters(
   page: Page,
   {
     sortBy,
-    sortDirection,
+    sortDirection = defaultSortFilters.sortDirection,
     searchField,
     searchTerm,
     searchFieldLabel,
@@ -68,7 +88,7 @@ export async function setAbstractResourceListFilters(
 ) {
   const showFiltersButton = page.getByRole("button", { name: /pokaż filtry/i });
   await showFiltersButton.click();
-  if (sortBy != null && sortDirection != null) {
+  if (sortBy != null) {
     await selectOptionByLabel(
       page,
       /sortuj według/i,
@@ -88,6 +108,9 @@ export async function setAbstractResourceListFilters(
     await page.getByLabel(/wyrażenia/i).fill(searchTerm);
   }
   await page.getByRole("button", { name: /zatwierdź/i }).click();
+  await page.waitForURL(
+    `/*?${encodeQueryParameters({ sortBy, sortDirection, searchField, searchTerm })}`,
+  );
   await showFiltersButton.click();
 }
 

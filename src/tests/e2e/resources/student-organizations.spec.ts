@@ -18,8 +18,6 @@ import type { Id, ResourceDataType, ResourceFormValues } from "@/types/app";
 
 import {
   expectAbstractResourceFormSuccess,
-  login,
-  logout,
   returnFromAbstractResourceForm,
   selectOptionByLabel,
   setAbstractResourceListFilters,
@@ -131,11 +129,7 @@ test.describe("Student Organizations CRUD", () => {
   });
 
   test.beforeEach(async ({ page }) => {
-    await login(page);
-  });
-
-  test.afterEach(async ({ page }) => {
-    await logout(page);
+    await page.goto("/");
   });
 
   test.afterAll(async () => {
