@@ -1,4 +1,6 @@
 name: E2E
+permissions:
+  contents: read
 
 on:
   push:
@@ -35,18 +37,15 @@ jobs:
             ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
 
-      - name: Install Playwright Browsers + Dependencies
-        run: npx playwright install --with-deps
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-      - name: Install Playwright Dependencies
-        run: npx playwright install-deps
+      - name: Install Playwright Browsers & Dependencies
+        run: npm run test:e2e:prepare -- --with-deps
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
       - name: Build
         run: npm run build
 
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npm run test:e2e
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

@@ -31,5 +31,5 @@ jobs:
         if: always()
 
       - name: Run unit tests
-        run: npm run test:once
+        run: npm run test:unit
         if: always()

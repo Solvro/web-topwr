@@ -9,9 +9,7 @@ import {
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
-import { encodeQueryParameters } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import { SortFiltersSchema } from "@/schemas";
 import type { SortFiltersFormValues } from "@/types/forms";
 
 export async function login(page: Page) {
@@ -54,45 +52,43 @@ type Filter = Pick<SortFiltersFormValues, FilterKeys> & {
 };
 type SortOrFilter = Sort | Filter | (Sort & Filter);
 
-const defaultSortOptions = SortFiltersSchema.parse({});
-
 export async function setAbstractResourceListFilters(
   page: Page,
-  resource: Resource,
   options: SortOrFilter,
 ): Promise<void>;
 export async function setAbstractResourceListFilters(
   page: Page,
-  resource: Resource,
   {
-    sortBy = defaultSortOptions.sortBy as ImplicitSortByAttribute,
-    sortDirection = defaultSortOptions.sortDirection,
+    sortBy,
+    sortDirection,
     searchField,
     searchTerm,
     searchFieldLabel,
   }: Partial<Sort & Filter>,
 ) {
-  await selectOptionByLabel(
-    page,
-    /sortuj według/i,
-    declineNoun(sortBy, {
-      case: SORT_FILTER_LABEL_DECLENSION_CASES.sortBy,
-    }),
-  );
-  await selectOptionByLabel(
-    page,
-    /w kolejności/i,
-    SORT_DIRECTIONS[sortDirection],
-  );
+  const showFiltersButton = page.getByRole("button", { name: /pokaż filtry/i });
+  await showFiltersButton.click();
+  if (sortBy != null && sortDirection != null) {
+    await selectOptionByLabel(
+      page,
+      /sortuj według/i,
+      declineNoun(sortBy, {
+        case: SORT_FILTER_LABEL_DECLENSION_CASES.sortBy,
+      }),
+    );
+    await selectOptionByLabel(
+      page,
+      /w kolejności/i,
+      SORT_DIRECTIONS[sortDirection],
+    );
+  }
 
   if (searchField != null && searchTerm != null && searchFieldLabel != null) {
     await selectOptionByLabel(page, /szukaj w/i, searchFieldLabel);
     await page.getByLabel(/wyrażenia/i).fill(searchTerm);
   }
   await page.getByRole("button", { name: /zatwierdź/i }).click();
-  await page.waitForURL(
-    `/${resource}?${encodeQueryParameters({ sortBy, sortDirection, searchField, searchTerm })}`,
-  );
+  await showFiltersButton.click();
 }
 
 export async function expectAbstractResourceFormSuccess(page: Page, count = 1) {
