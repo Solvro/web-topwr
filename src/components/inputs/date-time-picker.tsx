@@ -55,7 +55,10 @@ export function DateTimePicker({
   return (
     <InputRow>
       <DatePicker value={value} onChange={handleDateChange} />
-      <InputSlot as={InputGroup} className="w-fit min-w-34 overflow-hidden">
+      <InputSlot
+        renderAs={InputGroup}
+        className="w-fit min-w-34 overflow-hidden"
+      >
         <InputGroupAddon>
           <Clock className="text-muted-foreground" />
         </InputGroupAddon>
