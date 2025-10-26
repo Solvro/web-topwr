@@ -6,7 +6,7 @@ import "server-only";
 
 import { AUTH_STATE_COOKIE_NAME } from "@/config/constants";
 import { Resource } from "@/config/enums";
-import type { User } from "@/types/api";
+import type { AuthState, User } from "@/types/api";
 import type { RoutableResource } from "@/types/app";
 import type { RecordIntersection } from "@/types/helpers";
 
@@ -34,7 +34,7 @@ type RoutePermission = keyof typeof REQUIRED_ROUTE_PERMISSIONS;
 
 async function verifyUserCookie(
   cookie: RequestCookie | undefined,
-): Promise<User | null> {
+): Promise<AuthState | null> {
   if (cookie == null) {
     return null;
   }
@@ -49,14 +49,19 @@ async function verifyUserCookie(
     console.warn("Invalid token in cookie:", error);
     return null;
   }
-  return user;
+  return { ...authState, user };
 }
 
-export const getUser = cache(async () => {
+/**
+ * Obtains the auth state directly from the request cookies. Only works in React server components.
+ * @see {@link @/hooks/use-auth.ts#useAuth} for the React client hook version.
+ * @see {@link @/stores/auth.ts#getAuthState} for the non-component version.
+ */
+export const getAuthState = cache(async () => {
   const allCookies = await cookies();
   const cookie = allCookies.get(AUTH_STATE_COOKIE_NAME);
-  const user = await verifyUserCookie(cookie);
-  return user;
+  const authState = await verifyUserCookie(cookie);
+  return authState;
 });
 
 function getUserPermissions(user: User | null): string[] {
@@ -78,12 +83,12 @@ export const permit = cache(async (route: RoutePermission) => {
     return false;
   }
 
-  const user = await getUser();
-  if (user == null) {
+  const authState = await getAuthState();
+  if (authState == null) {
     redirect("/login");
   }
 
-  const userPermissions = getUserPermissions(user);
+  const userPermissions = getUserPermissions(authState.user);
   const hasPermission = requiredPermissions.some((perm) =>
     userPermissions.includes(perm),
   );
