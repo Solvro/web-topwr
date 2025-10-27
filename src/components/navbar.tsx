@@ -1,5 +1,6 @@
 "use client";
 
+import { useHydrateAtoms } from "jotai/utils";
 import { UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,12 +16,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/use-auth";
+import { authStateAtom } from "@/stores/auth";
+import type { AuthState } from "@/types/api";
 
 import { LogoutButton } from "./logout-button";
 
-export function Navbar() {
-  // TODO: hydrate the auth state from the server to avoid flicker
-  // https://jotai.org/docs/utilities/ssr
+export function Navbar({ authState }: { authState: AuthState | null }) {
+  useHydrateAtoms([[authStateAtom, authState]]);
   const auth = useAuth();
 
   if (!auth.isAuthenticated) {

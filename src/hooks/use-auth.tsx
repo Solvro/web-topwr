@@ -75,6 +75,7 @@ export function useAuth(): AuthContext {
         `Cannot log in: already authenticated as ${getUserDisplayName(authState.user)}`,
       );
     }
+    const now = Date.now();
     const { accessToken, refreshToken, accessExpiresInMs, refreshExpiresInMs } =
       await fetchMutation<LogInResponse>("auth/login", {
         body: data,
@@ -83,8 +84,8 @@ export function useAuth(): AuthContext {
     const newState = AuthStateSchema.parse({
       accessToken,
       refreshToken,
-      accessTokenExpiresAt: Date.now() + accessExpiresInMs,
-      refreshTokenExpiresAt: Date.now() + refreshExpiresInMs,
+      accessTokenExpiresAt: now + accessExpiresInMs,
+      refreshTokenExpiresAt: now + refreshExpiresInMs,
       user,
     });
     Cookies.set(AUTH_STATE_COOKIE_NAME, ...getCookieOptions(newState));

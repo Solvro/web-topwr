@@ -8,7 +8,7 @@ import {
 import { RequiredStringSchema } from "./helpers";
 
 export const LoginSchema = z.object({
-  email: z.string({ required_error: FORM_ERROR_MESSAGES.REQUIRED }).email({
+  email: RequiredStringSchema.email({
     message: FORM_ERROR_MESSAGES.INVALID_EMAIL,
   }),
   password: RequiredStringSchema,

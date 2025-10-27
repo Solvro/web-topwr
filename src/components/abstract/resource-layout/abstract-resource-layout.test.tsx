@@ -5,15 +5,15 @@ import { describe, expect, it } from "vitest";
 import { Resource } from "@/config/enums";
 import { MOCK_USE_PATHNAME } from "@/tests/mocks/functions";
 
-import { AbstractResourceLayout } from "./abstract-resource-layout";
+import { AbstractResourceLayoutInternal } from "./internal";
 
 describe("Abstract Resource Layout", () => {
   function renderLayout(pathname: string) {
     MOCK_USE_PATHNAME.mockReturnValueOnce(pathname);
     render(
-      <AbstractResourceLayout resource={Resource.StudentOrganizations}>
+      <AbstractResourceLayoutInternal resource={Resource.StudentOrganizations}>
         <div>Test Content</div>
-      </AbstractResourceLayout>,
+      </AbstractResourceLayoutInternal>,
     );
   }
 

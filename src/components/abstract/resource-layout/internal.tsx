@@ -1,13 +1,13 @@
-import type { Resource } from "@/config/enums";
+import type { RoutableResource } from "@/types/app";
 import type { LayoutProps } from "@/types/components";
 
-import { AbstractResourceLayoutTitle } from "./abstract-resource-layout-title";
+import { AbstractResourceLayoutTitle } from "./title";
 
-export function AbstractResourceLayout({
+export function AbstractResourceLayoutInternal({
   resource,
   children,
 }: LayoutProps & {
-  resource: Resource;
+  resource: RoutableResource;
 }) {
   return (
     <div className="flex h-full flex-col space-y-4 pt-2 pb-4">
