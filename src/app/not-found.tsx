@@ -7,9 +7,11 @@ import { getAuthState } from "@/lib/data-access";
 export default async function NotFound() {
   const authState = await getAuthState();
   return (
-    <ContentWrapper>
+    <>
       {authState == null ? null : <Navbar authState={authState} />}
-      <ErrorMessage type={ApplicationError.NotFound} />
-    </ContentWrapper>
+      <ContentWrapper>
+        <ErrorMessage type={ApplicationError.NotFound} />
+      </ContentWrapper>
+    </>
   );
 }
