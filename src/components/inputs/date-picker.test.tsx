@@ -26,6 +26,7 @@ function renderDatePicker(initialValue?: Date) {
 }
 
 const now = new Date();
+now.setDate(15); // use the middle of the month as the edge days are repeated in previous/next month views
 now.setHours(0, 0, 0, 0);
 const today = now.getDate().toString();
 
