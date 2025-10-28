@@ -1,6 +1,6 @@
 import type { ComponentType, Ref } from "react";
 
-import { ToggleOrganizationStatusButton } from "@/app/(private)/student_organizations/edit/[id]/archive";
+import { ToggleOrganizationStatusButton } from "@/components/archive";
 import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Resource } from "@/config/enums";
@@ -17,12 +17,16 @@ interface ItemProps<T extends RoutableResource> {
   orderable?: boolean;
 }
 
-export function AbstractResourceListItem<T extends RoutableResource>({
-  ref,
-  item,
-  resource,
-  orderable = false,
-}: ItemProps<T>) {
+const isStudentOrganizationProps = (
+  props: ItemProps<RoutableResource>,
+): props is ItemProps<Resource.StudentOrganizations> =>
+  props.resource === Resource.StudentOrganizations;
+
+export function AbstractResourceListItem<T extends RoutableResource>(
+  props: ItemProps<T>,
+) {
+  const { ref, item, resource, orderable = false } = props;
+
   const metadata = getResourceMetadata(resource);
   const listItem: ListItem = {
     id: item.id,
@@ -52,14 +56,14 @@ export function AbstractResourceListItem<T extends RoutableResource>({
       <div className="space-x-0.5 sm:space-x-2">
         <EditButton resource={resource} id={listItem.id} />
 
-        {resource === Resource.StudentOrganizations ? (
+        {isStudentOrganizationProps(props) ? (
           <ToggleOrganizationStatusButton
             id={Number(listItem.id)}
             resource={resource}
-            organizationStatus={
-              (item as { organizationStatus: "active" | "inactive" })
-                .organizationStatus
-            }
+            organizationStatus={props.item.organizationStatus}
+            onStatusChange={(newStatus) => {
+              props.item.organizationStatus = newStatus;
+            }}
           />
         ) : (
           <DeleteButtonWithDialog resource={resource} id={listItem.id} />
