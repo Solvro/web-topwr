@@ -19,6 +19,10 @@ describe("getRecursiveRelations function", () => {
       "guideQuestions",
       "guideAuthors",
     ]);
+    expect(getRecursiveRelations(Resource.AcademicSemesters)).toEqual([
+      "daySwaps",
+      "holidays",
+    ]);
   });
 
   it("should work for recursive relations", () => {

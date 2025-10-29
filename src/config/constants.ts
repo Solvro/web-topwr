@@ -90,7 +90,7 @@ export const TOAST_MESSAGES = {
   }),
 };
 
-export const WEEKDAYS = ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"];
+export const WEEKDAYS = ["PN", "WT", "ŚR", "CZ", "PT", "SO", "ND"];
 
 /** Used as the initially-selected color in the color picker input. */
 export const DEFAULT_COLOR = "#ffffff";

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { FORM_ERROR_MESSAGES } from "@/config/constants";
 import {
   ChangeType,
+  FullWeekdays,
   LinkType,
   OrganizationSource,
   OrganizationStatus,
@@ -19,6 +20,14 @@ import {
   NumericIdSchema,
   RequiredStringSchema,
 } from "./helpers";
+
+const AcademicSemesterSchema = z.object({
+  name: RequiredStringSchema,
+  semesterStartDate: IsoTimestampSchema,
+  examSessionStartDate: IsoTimestampSchema,
+  examSessionLastDate: IsoTimestampSchema,
+  isFirstWeekEven: z.boolean(),
+});
 
 const BannerSchema = z.object({
   title: RequiredStringSchema,
@@ -62,6 +71,13 @@ const ContributorSocialLinkSchema = z.object({
   link: RequiredStringSchema.url(),
 });
 
+const DaySwapSchema = z.object({
+  academicCalendarId: NumericIdSchema,
+  date: IsoTimestampSchema,
+  changedWeekday: z.nativeEnum(FullWeekdays),
+  changedDayIsEven: z.boolean(),
+});
+
 const DepartmentSchema = z.object({
   name: RequiredStringSchema,
   addressLine1: RequiredStringSchema,
@@ -101,6 +117,13 @@ const GuideQuestionSchema = z.object({
   title: RequiredStringSchema,
   answer: RequiredStringSchema,
   articleId: NumericIdSchema,
+});
+
+const HolidaySchema = z.object({
+  academicCalendarId: NumericIdSchema,
+  startDate: IsoTimestampSchema,
+  lastDate: IsoTimestampSchema,
+  description: RequiredStringSchema,
 });
 
 const RoleSchema = z.object({
@@ -159,11 +182,13 @@ const VersionsSchema = z.object({
 });
 
 export const RESOURCE_SCHEMAS = {
+  [Resource.AcademicSemesters]: AcademicSemesterSchema,
   [Resource.Banners]: BannerSchema,
   [Resource.CalendarEvents]: CalendarEventSchema,
   [Resource.Changes]: ChangesSchema,
   [Resource.Contributors]: ContributorSchema,
   [Resource.ContributorSocialLinks]: ContributorSocialLinkSchema,
+  [Resource.DaySwaps]: DaySwapSchema,
   [Resource.Departments]: DepartmentSchema,
   [Resource.DepartmentLinks]: DepartmentLinkSchema,
   [Resource.GuideArticles]: GuideArticleSchema,
@@ -176,4 +201,5 @@ export const RESOURCE_SCHEMAS = {
   [Resource.Majors]: MajorSchema,
   [Resource.Milestones]: MilestonesSchema,
   [Resource.Versions]: VersionsSchema,
+  [Resource.Holidays]: HolidaySchema,
 } satisfies Record<Resource, AppZodObject>;

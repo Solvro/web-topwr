@@ -5,6 +5,7 @@ import {
   BookOpen,
   Building,
   Calendar,
+  CalendarCog,
   Megaphone,
   Notebook,
   RefreshCcw,
@@ -56,6 +57,10 @@ export default function Home() {
           <DashboardButton resource={Resource.Contributors} icon={UsersRound} />
           <DashboardButton resource={Resource.Versions} icon={Notebook} />
           <DashboardButton resource={Resource.Milestones} icon={ScrollText} />
+          <DashboardButton
+            resource={Resource.AcademicSemesters}
+            icon={CalendarCog}
+          />
         </div>
       </div>
     </div>

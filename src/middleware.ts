@@ -17,6 +17,7 @@ const REQUIRED_ROUTE_PERMISSIONS: RecordIntersection<
 > = {
   "/login": [],
   "/": ["user", "admin"],
+  [`/${Resource.AcademicSemesters}`]: ["user", "admin"],
   [`/${Resource.Banners}`]: ["user", "admin"],
   [`/${Resource.CalendarEvents}`]: ["user", "admin"],
   [`/${Resource.Changes}`]: ["user", "admin"],

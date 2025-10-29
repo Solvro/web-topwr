@@ -1,14 +1,17 @@
 export enum Resource {
+  AcademicSemesters = "academic_semesters",
   Banners = "banners",
   CalendarEvents = "calendar_events",
   Changes = "changes",
   Contributors = "contributors",
   ContributorSocialLinks = "contributor_social_links",
+  DaySwaps = "day_swaps",
   Departments = "departments",
   DepartmentLinks = "department_links",
   GuideArticles = "guide_articles",
   GuideAuthors = "guide_authors",
   GuideQuestions = "guide_questions",
+  Holidays = "holidays",
   Roles = "roles",
   StudentOrganizations = "student_organizations",
   StudentOrganizationLinks = "student_organization_links",
@@ -117,4 +120,15 @@ export enum ApplicationError {
   Forbidden = 403,
   NotFound = 404,
   ServerError = 500,
+}
+
+export enum FullWeekdays {
+  Monday = "Monday",
+  Tuesday = "Tuesday",
+  Wednesday = "Wednesday",
+  Thursday = "Thursday",
+  Friday = "Friday",
+  Saturday = "Saturday",
+  Sunday = "Sunday",
+  Default = "Default",
 }
