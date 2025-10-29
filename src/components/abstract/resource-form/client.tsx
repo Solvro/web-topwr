@@ -198,6 +198,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
     ) as DefaultValues<ResourceFormValues<T>>,
   });
 
+  const isEditing = isExistingResourceItem(resource, defaultValues);
   const {
     mutationKey,
     endpoint,
@@ -525,10 +526,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           singular: declineNoun(relation, { plural: false }),
                           plural: declineNoun(relation, { plural: true }),
                         };
-                        const isEditingParentResource = isExistingResourceItem(
-                          resource,
-                          defaultValues,
-                        );
                         if (
                           relationDefinition.type === RelationType.ManyToOne
                         ) {
@@ -558,7 +555,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           relationDeclined.plural.nominative,
                         );
                         const elementKey = `${resource}-multiselect-${relation}`;
-                        if (!isEditingParentResource) {
+                        if (!isEditing) {
                           return (
                             <Label key={elementKey} asChild>
                               <div className="flex-col items-stretch">
@@ -745,12 +742,12 @@ export function AbstractResourceFormInternal<T extends Resource>({
               </Button>
             )}
             <div className="flex gap-4">
-              {typeof (defaultValues as { id?: number }).id === "number" && (
+              {isEditing ? (
                 <DeleteButtonWithDialog
                   resource={resource}
-                  id={(defaultValues as { id: number }).id}
+                  id={get(defaultValues, getResourcePk(resource)) as Id}
                 />
-              )}
+              ) : null}
               <Button
                 type="submit"
                 loading={isPending}

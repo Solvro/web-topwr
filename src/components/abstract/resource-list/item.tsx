@@ -61,9 +61,6 @@ export function AbstractResourceListItem<T extends RoutableResource>(
             id={Number(listItem.id)}
             resource={resource}
             organizationStatus={props.item.organizationStatus}
-            onStatusChange={(newStatus) => {
-              props.item.organizationStatus = newStatus;
-            }}
           />
         ) : (
           <DeleteButtonWithDialog resource={resource} id={listItem.id} />
