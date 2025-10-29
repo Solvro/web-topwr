@@ -175,7 +175,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
   defaultValues,
   existingImages,
   relatedResources,
-  isEmbedded = false,
   className,
 }: ResourceFormProps<T> & {
   defaultValues: ResourceDefaultValues<T>;
@@ -199,6 +198,8 @@ export function AbstractResourceFormInternal<T extends Resource>({
   });
 
   const isEditing = isExistingResourceItem(resource, defaultValues);
+  const isEmbedded = relationContext != null;
+
   const {
     mutationKey,
     endpoint,
@@ -605,7 +606,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                             : relationData;
                         const formProps = {
                           resource: relation,
-                          isEmbedded: true,
                           className: "w-full px-4",
                         } satisfies ResourceFormProps<Resource>;
                         return (
@@ -741,11 +741,30 @@ export function AbstractResourceFormInternal<T extends Resource>({
                 </Link>
               </Button>
             )}
-            <div className="flex gap-4">
+            <div
+              className={cn("flex gap-4", {
+                "w-full flex-col": isEmbedded,
+              })}
+            >
               {isEditing ? (
                 <DeleteButtonWithDialog
                   resource={resource}
                   id={get(defaultValues, getResourcePk(resource)) as Id}
+                  showLabel
+                  {...(isEmbedded
+                    ? {
+                        variant: "destructive",
+                        size: "lg",
+                        onDeleteSuccess: async () => {
+                          relationContext.closeSheet();
+                          // Give time for the sheet to close before resolving the deletion (triggers refresh)
+                          await new Promise((resolve) =>
+                            setTimeout(resolve, 300),
+                          );
+                        },
+                        itemName: metadata.itemMapper(defaultValues).name,
+                      }
+                    : {})}
                 />
               ) : null}
               <Button

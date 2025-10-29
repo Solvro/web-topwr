@@ -11,8 +11,10 @@ import { Button } from "@/components/ui/button";
 import type { buttonVariants } from "@/components/ui/button/variants";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -80,25 +82,31 @@ export function DeleteButtonWithDialog({
 
   const label = `Usuń ${declensions.accusative}`;
 
+  const button = (
+    <DialogTrigger asChild>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="text-destructive hover:text-destructive/90"
+        aria-label={label}
+        {...props}
+      >
+        {showLabel ? label : null}
+        <Trash2 />
+      </Button>
+    </DialogTrigger>
+  );
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <DialogTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-destructive hover:text-destructive/90"
-              aria-label={label}
-              {...props}
-            >
-              {showLabel ? label : null}
-              <Trash2 />
-            </Button>
-          </DialogTrigger>
-        </TooltipTrigger>
-        <TooltipContent>{label}</TooltipContent>
-      </Tooltip>
+      {showLabel ? (
+        button
+      ) : (
+        <Tooltip>
+          <TooltipTrigger asChild></TooltipTrigger>
+          <TooltipContent>{label}</TooltipContent>
+        </Tooltip>
+      )}
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-balance">
@@ -115,12 +123,12 @@ export function DeleteButtonWithDialog({
           </DialogTitle>
           <DialogDescription>Ta operacja jest nieodwracalna.</DialogDescription>
         </DialogHeader>
-        <div className="mt-4 flex w-full gap-2 p-4">
-          <DialogTrigger asChild>
+        <DialogFooter>
+          <DialogClose asChild>
             <Button variant="secondary" className="h-12 w-1/2">
               Anuluj
             </Button>
-          </DialogTrigger>
+          </DialogClose>
           <Button
             variant="destructive"
             className="h-12 w-1/2"
@@ -131,7 +139,7 @@ export function DeleteButtonWithDialog({
             <Shredder />
             Usuń
           </Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

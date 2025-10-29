@@ -4,7 +4,6 @@ import { Suspense } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { get } from "react-hook-form";
 
-import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -93,21 +92,6 @@ function AbstractResourceFormSheetContent<T extends Resource>({
         </Suspense>
       </ArfContext.Provider>
       <SheetFooter className="pt-0">
-        {content.item == null ? null : (
-          <DeleteButtonWithDialog
-            resource={relatedResource}
-            showLabel
-            variant="destructive"
-            size="lg"
-            onDeleteSuccess={async () => {
-              closeSheet();
-              // Give time for the sheet to close before resolving the deletion (triggers refresh)
-              await new Promise((resolve) => setTimeout(resolve, 300));
-            }}
-            itemName={content.item.name}
-            {...content.item}
-          />
-        )}
         <SheetClose asChild>
           <Button variant="outline">Zamknij</Button>
         </SheetClose>

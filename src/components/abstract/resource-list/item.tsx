@@ -49,9 +49,11 @@ export function AbstractResourceListItem<T extends RoutableResource>(
       </div>
       <span className="hidden truncate md:block">
         {listItem.shortDescription == null ||
-        listItem.shortDescription.trim() === ""
-          ? "Brak opisu"
-          : listItem.shortDescription}
+        listItem.shortDescription.trim() === "" ? (
+          <p className="text-muted-foreground">Brak opisu</p>
+        ) : (
+          listItem.shortDescription
+        )}
       </span>
       <div className="space-x-0.5 sm:space-x-2">
         <EditButton resource={resource} id={listItem.id} />
