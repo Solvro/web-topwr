@@ -97,6 +97,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
     },
   },
   [Resource.AboutUsLinks]: REUSABLE_DECLENSIONS.link,
+  [Resource.AcademicSemesters]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "semestr akademicki",
+      genitive: "semestru akademickiego",
+      dative: "semestrowi akademickiemu",
+      accusative: "semestr akademicki",
+      instrumental: "semestrem akademickim",
+      locative: "semestrze akademickim",
+      vocative: "semestrze akademicki",
+    },
+    plural: {
+      nominative: "semestry akademickie",
+      genitive: "semestrów akademickich",
+      dative: "semestrom akademickim",
+      accusative: "semestry akademickie",
+      instrumental: "semestrami akademickimi",
+      locative: "semestrach akademickich",
+      vocative: "semestry akademickie",
+    },
+  },
   [Resource.Banners]: {
     gender: GrammaticalGender.Masculine,
     singular: {
@@ -182,6 +203,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
     },
   },
   [Resource.ContributorSocialLinks]: REUSABLE_DECLENSIONS.link,
+  [Resource.DaySwaps]: {
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "zamiana dnia",
+      genitive: "zamiany dnia",
+      dative: "zamianie dnia",
+      accusative: "zamianę dnia",
+      instrumental: "zamianą dnia",
+      locative: "zamianie dnia",
+      vocative: "zamiano dnia",
+    },
+    plural: {
+      nominative: "zamiany dni",
+      genitive: "zamian dni",
+      dative: "zamianom dni",
+      accusative: "zamiany dni",
+      instrumental: "zamianami dni",
+      locative: "zamianach dni",
+      vocative: "zamiany dni",
+    },
+  },
   [Resource.Departments]: {
     gender: GrammaticalGender.Masculine,
     singular: {
@@ -265,6 +307,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       instrumental: "pytaniami",
       locative: "pytaniach",
       vocative: "pytania",
+    },
+  },
+  [Resource.Holidays]: {
+    gender: GrammaticalGender.Neuter,
+    singular: {
+      nominative: "święto",
+      genitive: "święta",
+      dative: "świętu",
+      accusative: "święto",
+      instrumental: "świętem",
+      locative: "święcie",
+      vocative: "święto",
+    },
+    plural: {
+      nominative: "święta",
+      genitive: "świąt",
+      dative: "świętom",
+      accusative: "święta",
+      instrumental: "świętami",
+      locative: "świętach",
+      vocative: "święta",
     },
   },
   [Resource.Roles]: {

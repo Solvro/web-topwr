@@ -3,6 +3,7 @@ import type { ResourceMetadata } from "@/types/app";
 
 import {
   ChangeType,
+  FullWeekdays,
   GuideAuthorRole,
   LinkType,
   OrganizationSource,
@@ -63,6 +64,17 @@ const SELECT_OPTION_LABELS = {
       [StudiesType.LongCycle]: "Studia jednolite magisterskie",
     } satisfies Record<StudiesType, string>,
   },
+  DAY_SWAPS: {
+    WEEKDAYS: {
+      [FullWeekdays.Monday]: "Poniedziałek",
+      [FullWeekdays.Tuesday]: "Wtorek",
+      [FullWeekdays.Wednesday]: "Środa",
+      [FullWeekdays.Thursday]: "Czwartek",
+      [FullWeekdays.Friday]: "Piątek",
+      [FullWeekdays.Saturday]: "Sobota",
+      [FullWeekdays.Sunday]: "Niedziela",
+    },
+  },
 };
 
 /** Required metadata for each resource. */
@@ -107,6 +119,49 @@ export const RESOURCE_METADATA = {
       defaultValues: {
         link: "",
         linkType: LinkType.Default,
+      },
+    },
+  },
+  [Resource.AcademicSemesters]: {
+    queryName: "academicCalendar",
+    apiPath: "academic_calendars",
+    itemMapper: (item) => ({
+      name: item.name,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa semestru" },
+        },
+        dateInputs: {
+          semesterStartDate: { label: "Data rozpoczęcia semestru" },
+          examSessionStartDate: {
+            label: "Data rozpoczęcia sesji egzaminacyjnej",
+          },
+          examSessionLastDate: {
+            label: "Data zakończenia sesji egzaminacyjnej",
+          },
+        },
+        checkboxInputs: {
+          isFirstWeekEven: { label: "Czy pierwszy tydzień jest parzysty?" },
+        },
+        relationInputs: {
+          [Resource.DaySwaps]: {
+            type: RelationType.OneToMany,
+            foreignKey: "academicCalendarId",
+          },
+          [Resource.Holidays]: {
+            type: RelationType.OneToMany,
+            foreignKey: "academicCalendarId",
+          },
+        },
+      },
+      defaultValues: {
+        name: "",
+        semesterStartDate: "",
+        examSessionStartDate: "",
+        examSessionLastDate: "",
+        isFirstWeekEven: false,
       },
     },
   },
@@ -255,6 +310,36 @@ export const RESOURCE_METADATA = {
         link: "",
         linkType: LinkType.Default,
         contributorId: -1,
+      },
+    },
+  },
+  [Resource.DaySwaps]: {
+    queryName: "daySwaps",
+    apiPath: "day_swap",
+    itemMapper: (item) => ({
+      name: item.date,
+    }),
+    form: {
+      inputs: {
+        dateInputs: {
+          date: { label: "Data" },
+        },
+        selectInputs: {
+          changedWeekday: {
+            label: "Zmieniony dzień tygodnia",
+            optionEnum: FullWeekdays,
+            optionLabels: SELECT_OPTION_LABELS.DAY_SWAPS.WEEKDAYS,
+          },
+        },
+        checkboxInputs: {
+          changedDayIsEven: { label: "Czy zmieniony dzień jest parzysty?" },
+        },
+      },
+      defaultValues: {
+        date: "",
+        changedWeekday: FullWeekdays.Default,
+        changedDayIsEven: false,
+        academicCalendarId: -1,
       },
     },
   },
@@ -411,6 +496,31 @@ export const RESOURCE_METADATA = {
         title: "",
         answer: "",
         articleId: -1,
+      },
+    },
+  },
+  [Resource.Holidays]: {
+    queryName: "holidays",
+    apiPath: "holidays",
+    itemMapper: (item) => ({
+      name: item.description,
+      shortDescription: `${item.startDate} - ${item.lastDate}`,
+    }),
+    form: {
+      inputs: {
+        dateInputs: {
+          startDate: { label: "Data rozpoczęcia" },
+          lastDate: { label: "Data zakończenia" },
+        },
+        textInputs: {
+          description: { label: "Opis" },
+        },
+      },
+      defaultValues: {
+        startDate: "",
+        lastDate: "",
+        description: "",
+        academicCalendarId: -1,
       },
     },
   },

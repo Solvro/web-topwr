@@ -10,10 +10,14 @@ export function CreateButton<T extends CreatableResource>({
   className,
   resource,
   prefillAttributes = {},
+  asSheet = false,
+  onClick,
 }: {
   className?: string;
   resource: T;
   prefillAttributes?: Partial<Record<keyof ResourceFormValues<T>, string>>;
+  asSheet?: boolean;
+  onClick?: () => void;
 }) {
   const resourceAccusative = declineNoun(resource, {
     case: DeclensionCase.Accusative,
@@ -21,7 +25,12 @@ export function CreateButton<T extends CreatableResource>({
   const searchParameters = new URLSearchParams(
     prefillAttributes as Record<string, string>,
   ).toString();
-  return (
+  return asSheet ? (
+    <Button variant="default" className={className} onClick={onClick}>
+      Dodaj {resourceAccusative}
+      <Plus />
+    </Button>
+  ) : (
     <Button asChild className={className}>
       <Link href={`/${resource}/create?${searchParameters}`}>
         Dodaj {resourceAccusative}

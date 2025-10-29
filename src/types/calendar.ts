@@ -1,3 +1,5 @@
+export interface AcademicCalendar {}
+
 export interface DateObject {
   year: number;
   month: {

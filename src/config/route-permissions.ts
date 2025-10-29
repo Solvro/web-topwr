@@ -10,6 +10,7 @@ export const ROUTE_PERMISSIONS = {
   "/review": ["user", "admin"],
   [`/${Resource.AboutUs}`]: ["user", "admin"],
   [`/${Resource.AboutUsLinks}`]: ["user", "admin"],
+  [`/${Resource.AcademicSemesters}`]: ["user", "admin"],
   [`/${Resource.Banners}`]: ["user", "admin"],
   [`/${Resource.CalendarEvents}`]: ["user", "admin"],
   [`/${Resource.Contributors}`]: ["user", "admin"],

@@ -3,13 +3,15 @@ import type { KeyboardEvent, MouseEvent } from "react";
 
 import { Button } from "@/components/ui/button";
 import { CALENDAR_MAX_EVENTS_PER_DAY } from "@/config/constants";
-import type { Resource } from "@/config/enums";
+import { Resource } from "@/config/enums";
 import { cn } from "@/lib/utils";
-import type { CalendarEvent, DateObject } from "@/types/calendar";
+import type { GetResourceWithRelationsResponse } from "@/types/api";
+import type { CreatableResource } from "@/types/app";
+import type { DateObject } from "@/types/calendar";
 
 import { AllEventsModal } from "./all-events-modal";
 
-export function DayBlock({
+export function DayButton<T extends CreatableResource>({
   day,
   today,
   clickable,
@@ -20,9 +22,9 @@ export function DayBlock({
   day: number;
   today: DateObject;
   clickable: boolean;
-  resource: Resource;
+  resource: T;
   currentDate: Date;
-  events?: CalendarEvent[];
+  events?: GetResourceWithRelationsResponse<T>["data"][];
   onDayClick?: () => void;
 }) {
   const [isAllEventsModalOpen, setIsAllEventsModalOpen] = useState(false);
@@ -49,20 +51,48 @@ export function DayBlock({
       <Button
         variant="ghost"
         className={cn(
-          "relative flex h-16 flex-col rounded-none border p-1 sm:h-24 md:h-28 lg:h-32",
+          "bg-accent relative flex h-16 flex-col p-1 md:h-20 lg:h-24",
           { "bg-blue-500 text-white": isCurrentDay },
         )}
         onClick={handleDayClick}
         onKeyDown={handleDayKeyDown}
       >
-        <div className="absolute top-1 left-1 text-xs font-semibold sm:text-sm">
+        <div className="text-s absolute top-1.5 left-2 font-bold sm:text-lg">
           {day}
         </div>
 
-        <div className="mt-4 flex min-h-0 w-full flex-1 flex-col-reverse gap-0.5 overflow-hidden sm:mt-6 md:mt-13">
-          {events.slice(0, CALENDAR_MAX_EVENTS_PER_DAY).map((event) => (
-            <div key={event.id} className="bg-primary h-2 rounded-md" />
-          ))}
+        <div className="mt-4 flex min-h-0 w-full flex-1 flex-col-reverse gap-0.5 overflow-hidden sm:mt-6 md:mt-2">
+          {resource === Resource.AcademicSemesters ? (
+            <>
+              {events.map((event) => {
+                const daySwaps = event.daySwaps;
+                const holidays = event.holidays;
+
+                return (
+                  <>
+                    {daySwaps.length > 0 && (
+                      <div
+                        key={daySwaps[0].id}
+                        className="bg-secondary h-2 rounded-md"
+                      />
+                    )}
+                    {holidays.length > 0 && (
+                      <div
+                        key={daySwaps[0].id}
+                        className="bg-accent h-2 rounded-md"
+                      />
+                    )}
+                  </>
+                );
+              })}
+            </>
+          ) : (
+            <>
+              {events.slice(0, CALENDAR_MAX_EVENTS_PER_DAY).map((event) => (
+                <div key={event.id} className="bg-primary h-2 rounded-md" />
+              ))}
+            </>
+          )}
         </div>
       </Button>
 
