@@ -48,6 +48,14 @@ const getDeleteButton = (page: Page | Locator) =>
 const getEditButton = (page: Page | Locator) =>
   page.getByRole("link", { name: /edytuj organizację studencką/i });
 
+/** Gets the 'archive organization' link on the current page or within the given locator. */
+const getArchiveButton = (page: Page | Locator) =>
+  page.getByRole("button", { name: /archiwizuj organizację studencką/i });
+
+/** Gets the 'restore organization' link on the current page or within the given locator. */
+const getRestoreButton = (page: Page | Locator) =>
+  page.getByRole("button", { name: /przywróć organizację studencką/i });
+
 const generateTestOrganization = (
   propertyOverrides: NonNullablePartialStudentOrganization = {},
 ) =>
@@ -202,10 +210,9 @@ test.describe("Student Organizations CRUD", () => {
     const testOrganization = await createTestOrganization();
     try {
       await navigateToOrganizations(page);
-      await expect(getDeleteButton(page)).toHaveCount(LIST_RESULTS_PER_PAGE); // assuming the database isn't empty (change this if using mocks)
+      await expect(getEditButton(page)).toHaveCount(LIST_RESULTS_PER_PAGE); // assuming the database isn't empty (change this if using mocks)
       await filterSpecificOrganization(page, testOrganization);
 
-      await expect(getDeleteButton(page)).toHaveCount(1);
       await expect(getEditButton(page)).toHaveCount(1);
 
       await expect(page.getByText(testOrganization.name)).toBeVisible();
@@ -260,17 +267,49 @@ test.describe("Student Organizations CRUD", () => {
     }
   });
 
+  test("should archive and restore an active organization", async ({
+    page,
+  }) => {
+    const testOrganization = await createTestOrganization();
+    try {
+      await navigateToOrganizations(page);
+      await filterSpecificOrganization(page, testOrganization);
+      await getArchiveButton(page).click();
+
+      await expect(
+        page.getByText(/Organizacja studencka została zarchiwizowana/i),
+      ).toBeVisible();
+      await expect(getArchiveButton(page)).toBeHidden();
+      await expect(getRestoreButton(page)).toBeVisible();
+
+      await getRestoreButton(page).click();
+      await expect(
+        page.getByText(/Organizacja studencka została przywrócona/i),
+      ).toBeVisible();
+      await expect(getRestoreButton(page)).toBeHidden();
+      await expect(getArchiveButton(page)).toBeVisible();
+    } finally {
+      await deleteTestOrganization(testOrganization.id);
+    }
+  });
+
   test("should delete an existing organization", async ({ page }) => {
     const testOrganization = await createTestOrganization();
     try {
       await navigateToOrganizations(page);
       await filterSpecificOrganization(page, testOrganization);
-      await getDeleteButton(page).click();
+      await getEditButton(page).click();
+
+      const deleteButton = getDeleteButton(page);
+      await expect(deleteButton).toBeVisible();
+      await deleteButton.click();
       await page.getByRole("button", { name: /^usuń$/i }).click();
 
       await expect(
         page.getByText(/pomyślnie usunięto organizację/i),
       ).toBeVisible();
+
+      await filterSpecificOrganization(page, testOrganization);
       await expect(getEditButton(page)).toBeHidden();
       await expect(getDeleteButton(page)).toBeHidden();
     } finally {
