@@ -1,7 +1,7 @@
 import type { ComponentType, Ref } from "react";
 
-import { ToggleOrganizationStatusButton } from "@/components/archive";
-import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
+import { DeleteButtonWithDialog } from "@/components/abstract/delete-button-with-dialog";
+import { ToggleOrganizationStatusButton } from "@/components/abstract/toggle-status-button";
 import { Badge } from "@/components/ui/badge";
 import { Resource } from "@/config/enums";
 import { getResourceMetadata } from "@/lib/helpers/app";

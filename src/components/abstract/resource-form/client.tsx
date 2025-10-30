@@ -9,7 +9,7 @@ import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 
-import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
+import { DeleteButtonWithDialog } from "@/components/abstract/delete-button-with-dialog";
 import { CheckboxInput } from "@/components/inputs/checkbox-input";
 import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";

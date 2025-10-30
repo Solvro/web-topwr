@@ -13,8 +13,8 @@ import { getRoundedDate } from "@/lib/helpers/calendar";
 import type { CalendarEvent } from "@/types/calendar";
 
 import { CreateButton } from "../abstract/create-button";
+import { DeleteButtonWithDialog } from "../abstract/delete-button-with-dialog";
 import { EditButton } from "../abstract/edit-button";
-import { DeleteButtonWithDialog } from "../delete-button-with-dialog";
 
 const formatTime = (event: CalendarEvent, timeType: "startTime" | "endTime") =>
   formatDate(

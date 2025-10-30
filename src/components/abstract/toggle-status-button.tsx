@@ -13,6 +13,7 @@ import { getKey } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 import type { ModifyResourceResponse } from "@/types/api";
 
+// TODO: make this more generic to support other resources with property toggles
 export function ToggleOrganizationStatusButton({
   id,
   resource,
@@ -49,11 +50,14 @@ export function ToggleOrganizationStatusButton({
   });
 
   const declensions = declineNoun(resource);
+  const shortLabel = isActive ? "Archiwizuj" : "Przywróć";
+  const label = `${shortLabel} ${declensions.accusative}`;
 
   return (
     <Button
       variant={isActive ? "destructive" : "default"}
       loading={isPending}
+      aria-label={label}
       onClick={() => {
         toast.promise(
           mutateAsync({
@@ -65,7 +69,7 @@ export function ToggleOrganizationStatusButton({
         );
       }}
     >
-      {isActive ? "Archiwizuj" : "Przywróć"}
+      {shortLabel}
     </Button>
   );
 }
