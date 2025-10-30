@@ -3,7 +3,9 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { APPLICATION_ERROR_MESSAGES } from "@/config/constants";
-import { ApplicationError } from "@/config/enums";
+import { ApplicationError, DeclensionCase } from "@/config/enums";
+import { declineNoun } from "@/lib/polish";
+import type { RoutableResource } from "@/types/app";
 import type { LayoutProps } from "@/types/components";
 
 import { Badge } from "./ui/badge";
@@ -25,26 +27,48 @@ const ERROR_CONTEXT_INFOS: Partial<Record<ApplicationError, ReactNode>> = {
   ),
 };
 
-export function ErrorMessage({ type }: { type: ApplicationError }) {
-  const message = APPLICATION_ERROR_MESSAGES[type];
-
+export function ErrorMessage({
+  type,
+  message,
+  returnToResource,
+}: {
+  type: ApplicationError;
+  message?: ReactNode;
+  returnToResource?: RoutableResource;
+}) {
   const contextInfo = ERROR_CONTEXT_INFOS[type];
+
+  const [returnHref, returnTarget] =
+    returnToResource == null
+      ? (["/", "strony głównej"] as const)
+      : ([
+          `/${returnToResource}`,
+          declineNoun(returnToResource, {
+            case: DeclensionCase.Genitive,
+            plural: true,
+          }),
+        ] as const);
 
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex flex-col justify-center">
         <h2 className="-mt-18 text-center text-5xl font-semibold">{type}</h2>
-        <p className="mt-2 text-center">{message}</p>
+        <p className="mt-2 text-center">
+          {message ?? APPLICATION_ERROR_MESSAGES[type]}
+        </p>
         {contextInfo == null ? null : (
           <ErrorContextInfo>{contextInfo}</ErrorContextInfo>
         )}
         <Button variant="link" asChild>
-          <Link href="/" className="group text-foreground mt-2 text-sm">
+          <Link
+            href={returnHref}
+            className="group text-foreground mt-2 text-sm"
+          >
             <ArrowLeft
               size={16}
               className="transition-transform duration-300 group-hover:-translate-x-1 group-hover:scale-120"
             />
-            Powrót do strony głównej
+            Powrót do {returnTarget}
           </Link>
         </Button>
       </div>

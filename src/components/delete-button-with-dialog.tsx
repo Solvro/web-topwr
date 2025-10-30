@@ -3,7 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { VariantProps } from "class-variance-authority";
 import { Shredder, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -34,6 +34,7 @@ import { getKey } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 import type { MessageResponse } from "@/types/api";
 import type { Id } from "@/types/app";
+import type { OptionalPromise } from "@/types/helpers";
 
 export function DeleteButtonWithDialog({
   resource,
@@ -47,7 +48,7 @@ export function DeleteButtonWithDialog({
   id: Id;
   itemName?: string;
   showLabel?: boolean;
-  onDeleteSuccess?: () => void | Promise<void>;
+  onDeleteSuccess?: () => OptionalPromise<boolean>;
 } & VariantProps<typeof buttonVariants>) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
@@ -66,8 +67,9 @@ export function DeleteButtonWithDialog({
       queryKey: [getKey.query.resourceList(resource)],
       exact: false,
     });
-    await onDeleteSuccess?.();
-    router.refresh();
+    if ((await onDeleteSuccess?.()) !== false) {
+      router.refresh();
+    }
     return response;
   });
 

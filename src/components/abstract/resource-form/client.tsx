@@ -761,10 +761,16 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           await new Promise((resolve) =>
                             setTimeout(resolve, 300),
                           );
+                          return true;
                         },
                         itemName: metadata.itemMapper(defaultValues).name,
                       }
-                    : {})}
+                    : {
+                        onDeleteSuccess: () => {
+                          router.push(`/${resource}`);
+                          return false;
+                        },
+                      })}
                 />
               ) : null}
               <Button
