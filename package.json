@@ -127,6 +127,7 @@
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
   },
+  "packageManager": "npm@11.6.2",
   "engines": {
     "node": ">=22"
   }
