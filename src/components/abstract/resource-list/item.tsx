@@ -1,7 +1,9 @@
 import type { ComponentType, Ref } from "react";
 
-import { DeleteButtonWithDialog } from "@/components/delete-button-with-dialog";
+import { DeleteButtonWithDialog } from "@/components/abstract/delete-button-with-dialog";
+import { ToggleOrganizationStatusButton } from "@/components/abstract/toggle-status-button";
 import { Badge } from "@/components/ui/badge";
+import { Resource } from "@/config/enums";
 import { getResourceMetadata } from "@/lib/helpers/app";
 import type { ListItem, ResourceDataType, RoutableResource } from "@/types/app";
 
@@ -15,17 +17,22 @@ interface ItemProps<T extends RoutableResource> {
   orderable?: boolean;
 }
 
-export function AbstractResourceListItem<T extends RoutableResource>({
-  ref,
-  item,
-  resource,
-  orderable = false,
-}: ItemProps<T>) {
+const isStudentOrganizationProps = (
+  props: ItemProps<RoutableResource>,
+): props is ItemProps<Resource.StudentOrganizations> =>
+  props.resource === Resource.StudentOrganizations;
+
+export function AbstractResourceListItem<T extends RoutableResource>(
+  props: ItemProps<T>,
+) {
+  const { ref, item, resource, orderable = false } = props;
+
   const metadata = getResourceMetadata(resource);
   const listItem: ListItem = {
     id: item.id,
     ...metadata.itemMapper(item),
   };
+
   return (
     <li
       ref={ref}
@@ -42,13 +49,24 @@ export function AbstractResourceListItem<T extends RoutableResource>({
       </div>
       <span className="hidden truncate md:block">
         {listItem.shortDescription == null ||
-        listItem.shortDescription.trim() === ""
-          ? "Brak opisu"
-          : listItem.shortDescription}
+        listItem.shortDescription.trim() === "" ? (
+          <p className="text-muted-foreground">Brak opisu</p>
+        ) : (
+          listItem.shortDescription
+        )}
       </span>
       <div className="space-x-0.5 sm:space-x-2">
         <EditButton resource={resource} id={listItem.id} />
-        <DeleteButtonWithDialog resource={resource} id={listItem.id} />
+
+        {isStudentOrganizationProps(props) ? (
+          <ToggleOrganizationStatusButton
+            id={Number(listItem.id)}
+            resource={resource}
+            organizationStatus={props.item.organizationStatus}
+          />
+        ) : (
+          <DeleteButtonWithDialog resource={resource} id={listItem.id} />
+        )}
       </div>
     </li>
   );

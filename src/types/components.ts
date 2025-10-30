@@ -26,7 +26,6 @@ export interface ListSearchParameters {
 
 export interface ResourceFormProps<T extends Resource> {
   resource: T;
-  isEmbedded?: boolean;
   className?: string;
 }
 

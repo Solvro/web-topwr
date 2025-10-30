@@ -9,6 +9,7 @@ import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 
+import { DeleteButtonWithDialog } from "@/components/abstract/delete-button-with-dialog";
 import { CheckboxInput } from "@/components/inputs/checkbox-input";
 import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";
@@ -174,7 +175,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
   defaultValues,
   existingImages,
   relatedResources,
-  isEmbedded = false,
   className,
 }: ResourceFormProps<T> & {
   defaultValues: ResourceDefaultValues<T>;
@@ -196,6 +196,9 @@ export function AbstractResourceFormInternal<T extends Resource>({
       relationContext,
     ) as DefaultValues<ResourceFormValues<T>>,
   });
+
+  const isEditing = isExistingResourceItem(resource, defaultValues);
+  const isEmbedded = relationContext != null;
 
   const {
     mutationKey,
@@ -524,10 +527,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           singular: declineNoun(relation, { plural: false }),
                           plural: declineNoun(relation, { plural: true }),
                         };
-                        const isEditingParentResource = isExistingResourceItem(
-                          resource,
-                          defaultValues,
-                        );
                         if (
                           relationDefinition.type === RelationType.ManyToOne
                         ) {
@@ -557,7 +556,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           relationDeclined.plural.nominative,
                         );
                         const elementKey = `${resource}-multiselect-${relation}`;
-                        if (!isEditingParentResource) {
+                        if (!isEditing) {
                           return (
                             <Label key={elementKey} asChild>
                               <div className="flex-col items-stretch">
@@ -607,7 +606,6 @@ export function AbstractResourceFormInternal<T extends Resource>({
                             : relationData;
                         const formProps = {
                           resource: relation,
-                          isEmbedded: true,
                           className: "w-full px-4",
                         } satisfies ResourceFormProps<Resource>;
                         return (
@@ -743,14 +741,47 @@ export function AbstractResourceFormInternal<T extends Resource>({
                 </Link>
               </Button>
             )}
-            <Button
-              type="submit"
-              loading={isPending}
-              disabled={!form.formState.isDirty}
-              className={cn({ "w-full": isEmbedded })}
+            <div
+              className={cn("flex gap-4", {
+                "w-full flex-col": isEmbedded,
+              })}
             >
-              {submitLabel} {declensions.accusative} <SubmitIconComponent />
-            </Button>
+              {isEditing ? (
+                <DeleteButtonWithDialog
+                  resource={resource}
+                  id={get(defaultValues, getResourcePk(resource)) as Id}
+                  showLabel
+                  {...(isEmbedded
+                    ? {
+                        variant: "destructive",
+                        size: "lg",
+                        onDeleteSuccess: async () => {
+                          relationContext.closeSheet();
+                          // Give time for the sheet to close before resolving the deletion (triggers refresh)
+                          await new Promise((resolve) =>
+                            setTimeout(resolve, 300),
+                          );
+                          return true;
+                        },
+                        itemName: metadata.itemMapper(defaultValues).name,
+                      }
+                    : {
+                        onDeleteSuccess: () => {
+                          router.push(`/${resource}`);
+                          return false;
+                        },
+                      })}
+                />
+              ) : null}
+              <Button
+                type="submit"
+                loading={isPending}
+                disabled={!form.formState.isDirty}
+                className={cn({ "w-full": isEmbedded })}
+              >
+                {submitLabel} {declensions.accusative} <SubmitIconComponent />
+              </Button>
+            </div>
           </div>
         </form>
       </Form>

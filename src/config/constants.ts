@@ -1,4 +1,5 @@
 import { getErrorMessage } from "@/lib/error-handling";
+import { toTitleCase } from "@/lib/helpers";
 import type { AuthState } from "@/types/api";
 import type { SortDirection, SortFiltersOptions } from "@/types/components";
 import type { Declensions, DeclinableNoun } from "@/types/polish";
@@ -88,6 +89,11 @@ export const TOAST_MESSAGES = {
       success: `Pomyślnie przesłano ${declensions.accusative}!`,
       error: `Wystąpił błąd podczas przesyłania ${declensions.genitive}`,
     },
+    toggleArchived: (isArchived: boolean) => ({
+      loading: `Trwa ${isArchived ? "archiwizowanie" : "przywracanie"} ${declensions.genitive}...`,
+      success: `${toTitleCase(declensions.nominative)} została ${isArchived ? "zarchiwizowana" : "przywrócona"}.`,
+      error: `Nie udało się ${isArchived ? "zarchiwizować" : "przywrócić"} ${declensions.genitive}`,
+    }),
   }),
 };
 
