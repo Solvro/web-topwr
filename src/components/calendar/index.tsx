@@ -10,55 +10,36 @@ import { Resource } from "@/config/enums";
 import { useQueryWrapper } from "@/hooks/use-query-wrapper";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { getMonthByNumberAndYear } from "@/lib/helpers";
+import { getKey } from "@/lib/helpers/app";
+import {
+  checkAcademicSemesterEvents,
+  extractStartDate,
+} from "@/lib/helpers/calendar";
 import { calendarStateAtom } from "@/stores/calendar";
 import type { GetResourceWithRelationsResponse } from "@/types/api";
-import type { RoutableResource } from "@/types/app";
+import type { CreatableResource } from "@/types/app";
 
 import { AcademicSemesterListButton } from "./academic-semester-list-button";
 import { DayButton } from "./day-button";
-
-function extractStartDate(
-  event: GetResourceWithRelationsResponse<RoutableResource>["data"],
-): Date {
-  const startFields = [
-    "startTime",
-    "semesterStartDate",
-    "visibleFrom",
-    "start",
-    "date",
-    "beginDate",
-  ] as const;
-
-  for (const field of startFields) {
-    const value =
-      event[
-        field as keyof GetResourceWithRelationsResponse<RoutableResource>["data"]
-      ];
-
-    try {
-      return new Date(value as unknown as string | number | Date);
-    } catch {
-      continue;
-    }
-  }
-  return new Date();
-}
 
 export function Calendar({
   clickable = false,
   resource,
 }: {
   clickable?: boolean;
-  resource: RoutableResource;
+  resource: CreatableResource;
 }) {
   const currentDate = new Date();
-  const { data } = useQueryWrapper(`calendarEvents-${resource}`, async () =>
-    fetchQuery<GetResourceWithRelationsResponse<RoutableResource>>("", {
-      resource,
-    }),
+  const { data } = useQueryWrapper(
+    getKey.query.resourceList(resource),
+    async () =>
+      fetchQuery<GetResourceWithRelationsResponse<typeof resource>>("", {
+        resource,
+        includeRelations: true,
+      }),
   );
   const [events, setEvents] = useState<
-    GetResourceWithRelationsResponse<RoutableResource>["data"][]
+    GetResourceWithRelationsResponse<typeof resource>["data"][]
   >([]);
 
   useEffect(() => {
@@ -67,7 +48,6 @@ export function Calendar({
       return;
     }
     setEvents(Array.isArray(data.data) ? data.data : [data.data]);
-    console.warn(data);
   }, [data]);
 
   const [calendarState, setCalendarState] = useAtom(calendarStateAtom);
@@ -77,7 +57,8 @@ export function Calendar({
     displayedMonth,
     displayedYear,
   );
-  const goToPreviousMonth = () => {
+
+  function goToPreviousMonth() {
     if (displayedMonth === 1) {
       setCalendarState({
         displayedMonth: 12,
@@ -89,9 +70,9 @@ export function Calendar({
         displayedYear,
       });
     }
-  };
+  }
 
-  const goToNextMonth = () => {
+  function goToNextMonth() {
     if (displayedMonth === 12) {
       setCalendarState({
         displayedMonth: 1,
@@ -103,7 +84,7 @@ export function Calendar({
         displayedYear,
       });
     }
-  };
+  }
 
   const firstDayOfMonth = new Date(displayedYear, displayedMonth - 1, 1);
   const startDayOfWeek = (firstDayOfMonth.getDay() + 6) % 7;
@@ -122,16 +103,29 @@ export function Calendar({
         },
   );
 
-  const getEventsForDay = (day: number) => {
+  function getEventsForDay(day: number) {
     return events.filter((event) => {
       const eventDate = extractStartDate(event);
-      return (
+      if (eventDate === null) {
+        return false;
+      }
+      const dayMatches =
         eventDate.getDate() === day &&
         eventDate.getMonth() + 1 === displayedMonth &&
-        eventDate.getFullYear() === displayedYear
-      );
+        eventDate.getFullYear() === displayedYear;
+
+      if (resource === Resource.AcademicSemesters) {
+        const dayDate = new Date(displayedYear, displayedMonth - 1, day);
+        const { hasDaySwap, hasHoliday } = checkAcademicSemesterEvents(
+          event,
+          dayDate,
+        );
+        return dayMatches || hasDaySwap || hasHoliday;
+      }
+
+      return dayMatches;
     });
-  };
+  }
 
   return (
     <>
@@ -188,6 +182,7 @@ export function Calendar({
                 today={displayedDateObject}
                 clickable={clickable}
                 events={dayEvents}
+                allEvents={events}
                 resource={resource}
                 currentDate={currentDate}
               />
@@ -200,7 +195,11 @@ export function Calendar({
         {resource === Resource.AcademicSemesters && (
           <AcademicSemesterListButton
             resource={resource}
-            events={events}
+            events={
+              events as GetResourceWithRelationsResponse<
+                typeof resource
+              >["data"][]
+            }
             clickable={clickable}
           />
         )}
