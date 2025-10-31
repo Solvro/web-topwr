@@ -274,7 +274,7 @@ export const RESOURCE_METADATA = {
   },
   [Resource.DaySwaps]: {
     queryName: "daySwaps",
-    apiPath: "day_swap",
+    apiPath: "day_swaps",
     itemMapper: (item) => ({
       name: item.date,
     }),

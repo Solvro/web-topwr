@@ -1,6 +1,9 @@
+import { Wrench } from "lucide-react";
 import type { KeyboardEvent, MouseEvent } from "react";
 import { useState } from "react";
 
+import { DeclensionCase } from "@/config/enums";
+import { declineNoun } from "@/lib/polish";
 import type { GetResourceWithRelationsResponse } from "@/types/api";
 import type { RoutableResource } from "@/types/app";
 
@@ -37,7 +40,12 @@ export function AcademicSemesterListButton({
         onClick={handleDayClick}
         onKeyDown={handleDayKeyDown}
       >
-        Konfiguruj
+        Konfiguruj{" "}
+        {declineNoun(resource, {
+          case: DeclensionCase.Nominative,
+          plural: true,
+        })}{" "}
+        <Wrench />
       </Button>
       <AllEventsModal
         resource={resource}
