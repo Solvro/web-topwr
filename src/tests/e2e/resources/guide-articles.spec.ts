@@ -4,9 +4,9 @@ import type { Locator, Page, Response } from "@playwright/test";
 
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import { Resource } from "@/config/enums";
-import { RESOURCE_METADATA } from "@/config/resources";
 import { FetchError, fetchMutation } from "@/lib/fetch-utils";
 import { sanitizeId, uploadFile } from "@/lib/helpers";
+import { getResourceMetadata } from "@/lib/helpers/app";
 import { deleteAccessToken, generateAccessToken } from "@/tests/helpers/auth";
 import { MOCK_IMAGE_FILE, MOCK_IMAGE_KEY } from "@/tests/mocks/constants";
 import type { MessageResponse, ModifyResourceResponse } from "@/types/api";
@@ -179,7 +179,10 @@ test.describe("Guide Articles CRUD", () => {
     const articlePromise = page.waitForResponse(
       (response: Response) =>
         response.request().method() === "POST" &&
-        response.url().split("/").includes(RESOURCE_METADATA[resource].apiPath),
+        response
+          .url()
+          .split("/")
+          .includes(getResourceMetadata(resource).apiPath),
     );
     try {
       await test.step("Submit create article form", async () => {

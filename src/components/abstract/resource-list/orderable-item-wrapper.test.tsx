@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { Resource } from "@/config/enums";
-import { RESOURCE_METADATA } from "@/config/resources";
+import { RESOURCE_METADATA } from "@/config/resource-metadata";
 import { mockDatedResource } from "@/tests/helpers/mocks";
 import { renderWithProviders } from "@/tests/helpers/react";
 import type { ResourceDataType } from "@/types/app";

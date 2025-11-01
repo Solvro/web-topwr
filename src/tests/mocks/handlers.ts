@@ -3,7 +3,7 @@ import { HttpResponse, http } from "msw";
 
 import { Resource } from "@/config/enums";
 import { env } from "@/config/env";
-import { RESOURCE_METADATA } from "@/config/resources";
+import { getResourceMetadata } from "@/lib/helpers/app";
 import type {
   ApiCalendarEvent,
   ErrorResponse,
@@ -23,7 +23,7 @@ import {
 } from "./constants";
 
 const API_URL = env.NEXT_PUBLIC_API_URL;
-const EVENT_CALENDAR_URL = `${API_URL}/${RESOURCE_METADATA[Resource.CalendarEvents].apiPath}`;
+const EVENT_CALENDAR_URL = `${API_URL}/${getResourceMetadata(Resource.CalendarEvents).apiPath}`;
 
 export const handlers = [
   http.get(`${API_URL}/auth/me`, () =>
@@ -204,7 +204,7 @@ export const handlers = [
     );
   }),
   http.post<PathParams, ResourceFormValues<Resource.GuideArticles>>(
-    `${API_URL}/${RESOURCE_METADATA[Resource.GuideArticles].apiPath}`,
+    `${API_URL}/${getResourceMetadata(Resource.GuideArticles).apiPath}`,
     async ({ request }) => mockResourceResponse(request),
   ),
   http.post(`${API_URL}/files`, () => {
