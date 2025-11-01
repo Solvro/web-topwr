@@ -23,6 +23,7 @@ export function EditButton({
       className="h-10 w-10"
       asChild
       aria-label={`Edytuj ${resourceAccusative}`}
+      tooltip="Edytuj"
     >
       <Link href={`/${resource}/edit/${sanitizeId(id)}`}>
         <SquarePen />

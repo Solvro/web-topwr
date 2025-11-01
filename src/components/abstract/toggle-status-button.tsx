@@ -57,7 +57,7 @@ export function ToggleOrganizationStatusButton({
     <Button
       variant={isActive ? "destructive" : "ghost"}
       loading={isPending}
-      hideChildrenOnLoading={true}
+      spinnerHidesContent
       tooltip={tooltip}
       aria-label={label}
       onClick={() => {
