@@ -121,7 +121,7 @@ async function filterSpecificOrganization(
   page: Page,
   organization: MockStudentOrganization,
 ) {
-  await setAbstractResourceListFilters(page, {
+  await setAbstractResourceListFilters(page, resource, {
     searchField: "description",
     searchFieldLabel: "opisie",
     // Hopefully fakerjs's lorem descriptions are random enough to guarantee uniqueness

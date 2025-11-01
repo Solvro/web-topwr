@@ -56,16 +56,22 @@ const generateTestArticle = (
     ...propertyOverrides,
   }) satisfies ResourceFormValues<ResourceType>;
 
-async function createTestArticle(
-  propertyOverrides: PartialNonNullableFormValues = {},
-) {
+async function uploadTestImage() {
   const createdImage = await uploadFile({
     file: MOCK_IMAGE_FILE,
     extension: "svg",
     accessTokenOverride,
   });
+  return createdImage;
+}
+
+async function createTestArticle(
+  propertyOverrides: PartialNonNullableFormValues = {},
+) {
+  const testImage = await uploadTestImage();
+
   const body = generateTestArticle({
-    imageKey: createdImage.uuid,
+    imageKey: testImage.uuid,
     ...propertyOverrides,
   });
   const response = await fetchMutation<ModifyResourceResponse<ResourceType>>(
@@ -93,15 +99,11 @@ async function deleteTestArticle(
       method: "DELETE",
       accessTokenOverride,
     });
-    if (article.imageKey !== MOCK_IMAGE_KEY) {
-      await fetchMutation<MessageResponse>(
-        `files/${sanitizeId(article.imageKey)}`,
-        {
-          method: "DELETE",
-          accessTokenOverride,
-        },
-      );
-    }
+    // TODO: add this when the backend supports deleting files
+    // await fetchMutation<MessageResponse>(`files/${article.imageKey}`, {
+    //   method: "DELETE",
+    //   accessTokenOverride,
+    // });
   } catch (error) {
     if (!(error instanceof FetchError)) {
       throw error;
@@ -124,9 +126,9 @@ async function navigateToArticles(page: Page) {
 
 /** Sets the abstract resource list filters such that the only displayed article is the provided one. */
 async function filterSpecificArticle(page: Page, article: MockGuideArticle) {
-  await setAbstractResourceListFilters(page, {
+  await setAbstractResourceListFilters(page, resource, {
     searchField: "shortDesc",
-    searchFieldLabel: "opisie",
+    searchFieldLabel: "krótkim opisie",
     searchTerm: article.shortDesc,
   });
 }
@@ -150,6 +152,12 @@ test.describe("Guide Articles CRUD", () => {
   test("should create an article", async ({ page }) => {
     const testArticle = generateTestArticle();
 
+    const createImageResponsePromise = page.waitForResponse(
+      (response: Response) =>
+        response.request().method() === "POST" &&
+        response.url().split("/").includes("files"),
+    );
+
     await test.step("Fill create article form", async () => {
       await navigateToArticles(page);
 
@@ -164,7 +172,11 @@ test.describe("Guide Articles CRUD", () => {
       await page.getByLabel("Zdjęcie").setInputFiles(MOCK_IMAGE_PATH);
     });
 
-    const responsePromise = page.waitForResponse(
+    const imageResponse = await createImageResponsePromise;
+    const imageData = (await imageResponse.json()) as { key: string };
+    const imageKey = imageData.key.split(".")[0];
+
+    const articlePromise = page.waitForResponse(
       (response: Response) =>
         response.request().method() === "POST" &&
         response.url().split("/").includes(RESOURCE_METADATA[resource].apiPath),
@@ -184,9 +196,10 @@ test.describe("Guide Articles CRUD", () => {
         await expect(page.getByText(testArticle.shortDesc)).toBeVisible();
       });
     } finally {
-      const response = await responsePromise;
-      const json = (await response.json()) as CreateArticleResponse;
-      await deleteTestArticle(json.data, true);
+      const articleResponse = await articlePromise;
+      const articleData =
+        (await articleResponse.json()) as CreateArticleResponse;
+      await deleteTestArticle({ ...articleData.data, imageKey }, true);
     }
   });
 
@@ -259,9 +272,7 @@ test.describe("Guide Articles CRUD", () => {
       await deleteButton.click();
       await page.getByRole("button", { name: /^usuń$/i }).click();
 
-      await expect(
-        page.getByText(/pomyślnie usunięto organizację/i),
-      ).toBeVisible();
+      await expect(page.getByText(/pomyślnie usunięto artykuł/i)).toBeVisible();
 
       await filterSpecificArticle(page, testArticle);
       await expect(getEditButton(page)).toBeHidden();
