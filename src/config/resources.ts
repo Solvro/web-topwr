@@ -402,9 +402,18 @@ export const RESOURCE_METADATA = {
           logoKey: { label: "Logo" },
           coverKey: { label: "Baner" },
         },
-        textInputs: { name: { label: "Nazwa" } },
-        textareaInputs: { shortDescription: { label: "Krótki opis" } },
-        richTextInputs: { description: { label: "Opis" } },
+        textInputs: {
+          name: { label: "Nazwa" },
+          enName: { label: "Nazwa (ang.)" },
+        },
+        textareaInputs: {
+          shortDescription: { label: "Krótki opis" },
+          enShortDescription: { label: "Krótki opis (ang.)" },
+        },
+        richTextInputs: {
+          description: { label: "Opis" },
+          enDescription: { label: "Opis (ang.)" },
+        },
         selectInputs: {
           source: {
             label: "Źródło",
@@ -444,6 +453,9 @@ export const RESOURCE_METADATA = {
         coverKey: null,
         description: null,
         shortDescription: null,
+        enName: null,
+        enDescription: null,
+        enShortDescription: null,
         coverPreview: false, // czy używać covera jako zdjęcie podglądowe zamiast logo
         source: OrganizationSource.Manual,
         organizationType: OrganizationType.ScientificClub,

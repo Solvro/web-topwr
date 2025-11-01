@@ -155,9 +155,11 @@ test.describe("Student Organizations CRUD", () => {
       await page.getByRole("link", { name: /dodaj organizację/i }).click();
       await page.waitForURL(`/${resource}/create`);
 
-      await page.getByLabel("Nazwa").fill(testOrganization.name);
       await page
-        .getByLabel("Krótki opis")
+        .getByLabel("Nazwa", { exact: true })
+        .fill(testOrganization.name);
+      await page
+        .getByLabel("Krótki opis", { exact: true })
         .fill(testOrganization.shortDescription);
       await page
         .getByRole("textbox", { name: "Opis", exact: true })
@@ -238,7 +240,7 @@ test.describe("Student Organizations CRUD", () => {
         // TODO: for some reason the button is sometimes iniitally enabled
         // when the rich text editor is rendered
         // await expect(submitButton).toBeDisabled();
-        const nameInput = page.getByLabel("Nazwa");
+        const nameInput = page.getByLabel("Nazwa", { exact: true });
         await expect(nameInput).toHaveValue(testOrganization.name);
         await nameInput.clear();
         await nameInput.fill(newName);
