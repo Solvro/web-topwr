@@ -7,7 +7,6 @@ export default function DepartmentsPage(props: ResourcePageProps) {
     <AbstractResourceList
       resource={Resource.Departments}
       sortableFields={["name", "description", "code", "betterCode"]}
-      searchableFields={["name", "description", "code", "betterCode"]}
       {...props}
     />
   );

@@ -1,9 +1,7 @@
 import { z } from "zod";
 
-import {
-  FORM_ERROR_MESSAGES,
-  SORT_FILTER_DEFAULT_VALUES,
-} from "@/config/constants";
+import { FORM_ERROR_MESSAGES } from "@/config/constants";
+import { SortDirection } from "@/config/enums";
 
 import { RequiredStringSchema } from "./helpers";
 
@@ -15,23 +13,13 @@ export const LoginSchema = z.object({
   rememberMe: z.boolean(),
 });
 
-export const SortFiltersSchema = z
-  .object({
-    sortBy: z.string().default(SORT_FILTER_DEFAULT_VALUES.sortBy),
-    sortDirection: z
-      .enum(["asc", "desc"])
-      .default(SORT_FILTER_DEFAULT_VALUES.sortDirection),
-    searchField: z.string().default(SORT_FILTER_DEFAULT_VALUES.searchField),
-    searchTerm: z.string().default(SORT_FILTER_DEFAULT_VALUES.searchTerm),
-  })
-  .superRefine((data, context) => {
-    const searchTermIsEmpty = data.searchTerm.trim() === "";
-    const searchFieldIsEmpty = data.searchField.trim() === "";
-    if (searchTermIsEmpty !== searchFieldIsEmpty) {
-      context.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: [searchTermIsEmpty ? "searchTerm" : "searchField"],
-        message: FORM_ERROR_MESSAGES.CONDITIONALLY_REQUIRED,
-      });
-    }
-  });
+export const FilteredFieldSchema = z.object({
+  field: z.string(),
+  value: z.string(),
+});
+
+export const SortFiltersSchema = z.object({
+  sortBy: z.string().nullish(),
+  sortDirection: z.nativeEnum(SortDirection),
+  filters: z.array(FilteredFieldSchema),
+});

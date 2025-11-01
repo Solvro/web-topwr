@@ -1,10 +1,14 @@
 import { getErrorMessage } from "@/lib/error-handling";
 import { toTitleCase } from "@/lib/helpers";
 import type { AuthState } from "@/types/api";
-import type { SortDirection, SortFiltersOptions } from "@/types/components";
+import type {
+  AbstractResourceFormInputs,
+  SortFiltersFormValues,
+} from "@/types/forms";
 import type { Declensions, DeclinableNoun } from "@/types/polish";
 
-import { ApplicationError, DeclensionCase } from "./enums";
+import { ApplicationError, DeclensionCase, SortDirection } from "./enums";
+import type { Resource } from "./enums";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
@@ -38,7 +42,9 @@ export const FORM_ERROR_MESSAGES = {
     "Niepoprawny kod wydziału. Musi zawierać tylko duże litery i zaczynać się od 'W'.",
 };
 
-export const SORT_DIRECTIONS = {
+// #region Sort filter constants
+
+export const SORT_DIRECTION_NAMES = {
   asc: "rosnącej",
   desc: "malejącej",
 } satisfies Record<SortDirection, string>;
@@ -50,17 +56,21 @@ export const IMPLICIT_SORT_BY_ATTRIBUTES = [
 
 export const SORT_FILTER_LABEL_DECLENSION_CASES = {
   sortBy: DeclensionCase.Genitive,
-  searchField: DeclensionCase.Locative,
 };
 
 export const SORT_FILTER_DEFAULT_VALUES = {
-  sortBy: "",
-  sortDirection: "asc",
-  searchField: "",
-  searchTerm: "",
-} satisfies SortFiltersOptions;
+  sortBy: null,
+  sortDirection: SortDirection.Ascending,
+  filters: [],
+} satisfies SortFiltersFormValues;
 
-export const SORT_FILTER_PLACEHOLDER = "wybierz pole";
+export const UNFILTERABLE_INPUT_TYPES = new Set<
+  keyof AbstractResourceFormInputs<Resource>
+>(["imageInputs"]);
+
+export const SORT_FILTER_PLACEHOLDER = "Wybierz pole";
+
+// #endregion
 
 export const TOAST_MESSAGES = {
   login: {

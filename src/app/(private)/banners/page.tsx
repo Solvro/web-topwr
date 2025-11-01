@@ -7,7 +7,6 @@ export default function BannersPage(props: ResourcePageProps) {
     <AbstractResourceList
       resource={Resource.Banners}
       sortableFields={["title", "description"]}
-      searchableFields={["title", "description"]}
       {...props}
     />
   );

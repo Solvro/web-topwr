@@ -7,7 +7,6 @@ export default function ContributorsPage(props: ResourcePageProps) {
     <AbstractResourceList
       resource={Resource.Contributors}
       sortableFields={["name"]}
-      searchableFields={["name"]}
       {...props}
     />
   );

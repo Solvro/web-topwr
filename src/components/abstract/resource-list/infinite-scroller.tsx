@@ -13,7 +13,6 @@ import type {
   ResourceDataType,
   RoutableResource,
 } from "@/types/app";
-import type { ListSearchParameters } from "@/types/components";
 
 import { AbstractResourceListItems } from "./item";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
@@ -25,7 +24,7 @@ export function InfiniteScroller<T extends RoutableResource>({
 }: {
   resource: T;
   initialData: GetResourcesResponse<T>;
-  searchParameters?: ListSearchParameters;
+  searchParameters?: Record<string, string | undefined>;
 }) {
   const { ref, inView } = useInView();
 

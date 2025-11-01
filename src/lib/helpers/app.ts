@@ -1,6 +1,6 @@
 import type { z } from "zod";
 
-import { DeclensionCase } from "@/config/enums";
+import { DeclensionCase, SortDirection } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resource-metadata";
 import type {
@@ -12,11 +12,16 @@ import type {
   ResourceRelation,
   XToManyResource,
 } from "@/types/app";
-import type { ResourceSchemaKey } from "@/types/forms";
+import type { FilterOptions } from "@/types/components";
+import type {
+  FilteredField,
+  ResourceSchemaKey,
+  SortFiltersFormValues,
+} from "@/types/forms";
 
 import { declineNoun } from "../polish";
-import { sanitizeId } from "./transformations";
-import { typedKeys } from "./typescript";
+import { isEmptyValue, sanitizeId } from "./transformations";
+import { typedEntries, typedKeys } from "./typescript";
 
 /** Generates the key for Tanstack query or mutation operations. */
 export const getKey = {
@@ -105,3 +110,43 @@ export function getManagingResourceLabel(resource: Resource) {
   const firstWord = declined.split(" ")[0];
   return `Zarządzanie ${firstWord}`;
 }
+
+export const isUnsetEnumField = (value: unknown): boolean =>
+  value == null || Number(value) < 0;
+
+/** Parses the filters from client-side search parameters. */
+export const parseFilterSearchParameters = (
+  searchParameters: Record<string, string | undefined>,
+  filterOptions: FilterOptions,
+): FilteredField[] =>
+  typedEntries(searchParameters).reduce<FilteredField[]>(
+    (filters, [key, value]) => {
+      if (key in filterOptions && !isEmptyValue(value)) {
+        filters.push({
+          field: key,
+          value,
+        });
+      }
+      return filters;
+    },
+    [],
+  );
+
+/** Converts the sort filter values into search parameters. */
+export const getSearchParametersFromSortFilters = (
+  values: SortFiltersFormValues,
+) => {
+  const searchParameters = new URLSearchParams();
+  if (values.sortBy != null) {
+    const sortDirection =
+      values.sortDirection === SortDirection.Ascending ? "+" : "-";
+    searchParameters.set("sort", `${sortDirection}${values.sortBy}`);
+  }
+  for (const filter of values.filters) {
+    if (isEmptyValue(filter.field)) {
+      continue;
+    }
+    searchParameters.set(filter.field, filter.value);
+  }
+  return searchParameters;
+};

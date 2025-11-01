@@ -1,9 +1,10 @@
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
+import { FilterType, SortDirection } from "@/config/enums";
 import type { Resource } from "@/config/enums";
-import { fetchQuery } from "@/lib/fetch-utils";
-import { encodeQueryComponent } from "@/lib/helpers";
+import { FetchError, fetchQuery } from "@/lib/fetch-utils";
+import { isEmptyValue, typedEntries } from "@/lib/helpers";
 import type { GetResourcesResponse } from "@/types/api";
-import type { ListSearchParameters } from "@/types/components";
+import type { FilterOptions } from "@/types/components";
 
 import { fetchMutation } from "../fetch-utils";
 
@@ -60,23 +61,66 @@ export async function uploadFile({
   return { response, uuid, fileExtension };
 }
 
+/** Parses a string like +field or -field into distinct, URI-encodable values. */
+export const parseSortParameter = (sortParameter: string | undefined) => {
+  if (isEmptyValue(sortParameter)) {
+    return null;
+  }
+  const sortBy = sortParameter.replace(/^[-+]/, "");
+  const sortDirection = sortParameter.startsWith("-")
+    ? SortDirection.Descending
+    : SortDirection.Ascending;
+  return { sortBy, sortDirection };
+};
+
+/** Converts the client-side search parameters to backend-compatible filters. */
+const sanitizeFilterParameters = (
+  filterOptions: FilterOptions,
+  searchParameters: Record<string, string | undefined>,
+) => {
+  const filters = new URLSearchParams();
+  for (const [key, value] of typedEntries(searchParameters)) {
+    if (isEmptyValue(value)) {
+      continue;
+    }
+    if (!(key in filterOptions)) {
+      console.warn("Ignoring unknown search parameter", { key, value });
+      continue;
+    }
+    const options = filterOptions[key];
+    const filterValue = options.type === FilterType.Text ? `%${value}%` : value;
+    filters.set(key, filterValue);
+  }
+  return filters;
+};
+
 export async function fetchResources<T extends Resource>(
   resource: T,
   page = 1,
-  searchParameters: ListSearchParameters = {},
+  allSearchParameters: Record<string, string | undefined> = {},
+  filterOptions: FilterOptions = {},
 ): Promise<GetResourcesResponse<T>> {
-  const sortBy = searchParameters.sortBy ?? "order";
-  const sortDirection = searchParameters.sortDirection === "desc" ? "-" : "+";
-  const searchField = searchParameters.searchField;
-  const searchTerm = searchParameters.searchTerm;
+  const { sort: sortParameter, ...searchParameters } = allSearchParameters;
+  const parsedSort = parseSortParameter(sortParameter);
+  const sort =
+    parsedSort == null
+      ? "+order"
+      : `${parsedSort.sortDirection === SortDirection.Ascending ? "+" : "-"}${parsedSort.sortBy}`;
 
-  const search =
-    searchField == null || searchTerm == null
-      ? ""
-      : `${encodeQueryComponent(searchField)}=${encodeQueryComponent(`%${searchTerm}%`)}&`;
-  const result = await fetchQuery<GetResourcesResponse<T>>(
-    `?${search}page=${String(page)}&limit=${String(LIST_RESULTS_PER_PAGE)}&sort=${sortDirection}${sortBy}`,
-    { resource },
-  );
-  return result;
+  const filters = sanitizeFilterParameters(filterOptions, searchParameters);
+
+  const filterString = filters.size === 0 ? "" : `${filters}&`;
+  const searchString = `?${filterString}page=${String(page)}&limit=${String(LIST_RESULTS_PER_PAGE)}&sort=${sort}`;
+
+  try {
+    const result = await fetchQuery<GetResourcesResponse<T>>(searchString, {
+      resource,
+    });
+    return result;
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error(error.errorReport);
+    }
+    throw error;
+  }
 }
