@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { Archive, ArchiveRestore } from "lucide-react";
 import { useRouter } from "nextjs-toploader/app";
 import { toast } from "sonner";
 
@@ -49,13 +50,15 @@ export function ToggleOrganizationStatusButton({
   });
 
   const declensions = declineNoun(resource);
-  const shortLabel = isActive ? "Archiwizuj" : "Przywróć";
-  const label = `${shortLabel} ${declensions.accusative}`;
+  const tooltip = isActive ? "Archiwizuj" : "Przywróć";
+  const label = `${tooltip} ${declensions.accusative}`;
 
   return (
     <Button
-      variant={isActive ? "destructive" : "default"}
+      variant={isActive ? "destructive" : "ghost"}
       loading={isPending}
+      hideChildrenOnLoading={true}
+      tooltip={tooltip}
       aria-label={label}
       onClick={() => {
         toast.promise(
@@ -67,8 +70,9 @@ export function ToggleOrganizationStatusButton({
           TOAST_MESSAGES.object(declensions).toggleArchived(isActive),
         );
       }}
+      className="size-10 border-none shadow-none"
     >
-      {shortLabel}
+      {isActive ? <Archive /> : <ArchiveRestore />}
     </Button>
   );
 }
