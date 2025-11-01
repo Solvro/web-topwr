@@ -20,3 +20,7 @@ export type RecordIntersection<
 > = Record<K, V> & Record<J, V>;
 
 export type OptionalPromise<T> = T | Promise<T>;
+
+export type NonNullableValues<T> = {
+  [K in keyof T]: NonNullable<T[K]>;
+};

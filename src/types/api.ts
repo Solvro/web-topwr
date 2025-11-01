@@ -106,9 +106,11 @@ export interface GetResourcesResponse<T extends Resource> {
   meta: PaginationMetadata;
 }
 
-export interface ModifyResourceResponse<T extends Resource>
+export interface ModifyResourceResponse<T extends Resource, Data = undefined>
   extends MessageResponse {
-  data: ResourceDataType<T>;
+  data: Data extends undefined
+    ? ResourceDataType<T>
+    : ResourceDataType<T> & Data;
 }
 
 export interface GetResourceWithRelationsResponse<T extends Resource> {
