@@ -50,9 +50,11 @@ function FieldGroup({
 export function SortFilters({
   sortableFields = [],
   searchableFields = [],
+  onChangeFilters,
 }: {
   sortableFields?: readonly DeclinableNoun[];
   searchableFields?: readonly DeclinableNoun[];
+  onChangeFilters?: () => void;
 }) {
   const router = useRouter();
   const searchParameters = useSearchParams();
@@ -89,6 +91,7 @@ export function SortFilters({
         newParameters.set(key, value);
       }
     }
+    onChangeFilters?.();
     router.push(`?${newParameters.toString()}`);
     form.reset(values);
   }
@@ -223,10 +226,8 @@ export function SortFilters({
           </Button>
           <Button
             type="submit"
-            className={cn({
-              "bg-muted! text-muted-foreground! cursor-not-allowed":
-                !form.formState.isDirty,
-            })}
+            variant="secondary"
+            disabled={!form.formState.isDirty}
           >
             Zatwierdź <Check />
           </Button>

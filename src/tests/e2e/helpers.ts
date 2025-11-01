@@ -86,8 +86,7 @@ export async function setAbstractResourceListFilters(
     searchFieldLabel,
   }: Partial<Sort & Filter>,
 ) {
-  const showFiltersButton = page.getByRole("button", { name: /pokaż filtry/i });
-  await showFiltersButton.click();
+  await page.getByRole("button", { name: /pokaż filtry/i }).click();
   if (sortBy != null) {
     await selectOptionByLabel(
       page,
@@ -111,7 +110,6 @@ export async function setAbstractResourceListFilters(
   await page.waitForURL(
     `/*?${encodeQueryParameters({ sortBy, sortDirection, searchField, searchTerm })}`,
   );
-  await showFiltersButton.click();
 }
 
 export async function expectAbstractResourceFormSuccess(page: Page, count = 1) {

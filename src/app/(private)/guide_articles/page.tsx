@@ -7,7 +7,7 @@ export default function GuideArticlesPage(props: ResourcePageProps) {
     <AbstractResourceList
       resource={Resource.GuideArticles}
       sortableFields={["title", "description"]}
-      searchableFields={["title", "description"]}
+      searchableFields={["title", "shortDesc", "description"]}
       {...props}
     />
   );
