@@ -2,7 +2,7 @@ import type { Route } from "next";
 import type { z } from "zod";
 
 import type { RelationType, Resource } from "@/config/enums";
-import type { RESOURCE_METADATA } from "@/config/resources";
+import type { RESOURCE_METADATA } from "@/config/resource-metadata";
 import type { RESOURCE_SCHEMAS } from "@/schemas";
 
 import type { DatedResource } from "./api";

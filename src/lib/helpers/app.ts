@@ -2,7 +2,7 @@ import type { z } from "zod";
 
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
-import { RESOURCE_METADATA } from "@/config/resources";
+import { RESOURCE_METADATA } from "@/config/resource-metadata";
 import type {
   Id,
   OrderableResource,

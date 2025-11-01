@@ -10,8 +10,8 @@ import {
   Resource,
   UniversityBranch,
 } from "@/config/enums";
-import { RESOURCE_METADATA } from "@/config/resources";
 import { FetchError, fetchMutation } from "@/lib/fetch-utils";
+import { getResourceMetadata } from "@/lib/helpers/app";
 import { deleteAccessToken, generateAccessToken } from "@/tests/helpers/auth";
 import type { MessageResponse, ModifyResourceResponse } from "@/types/api";
 import type { Id, ResourceDataType, ResourceFormValues } from "@/types/app";
@@ -183,7 +183,10 @@ test.describe("Student Organizations CRUD", () => {
     const responsePromise = page.waitForResponse(
       (response: Response) =>
         response.request().method() === "POST" &&
-        response.url().split("/").includes(RESOURCE_METADATA[resource].apiPath),
+        response
+          .url()
+          .split("/")
+          .includes(getResourceMetadata(resource).apiPath),
     );
     try {
       await test.step("Submit create organization form", async () => {

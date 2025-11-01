@@ -3,13 +3,14 @@ import { describe, expect, it } from "vitest";
 import { AbstractResourceForm } from "@/components/abstract/resource-form";
 import { DEFAULT_COLOR } from "@/config/constants";
 import { Resource } from "@/config/enums";
-import { RESOURCE_METADATA } from "@/config/resources";
+import { typedEntries } from "@/lib/helpers";
+import { getResourceMetadata } from "@/lib/helpers/app";
 import { expectInputValue, renderWithProviders } from "@/tests/helpers/react";
 import type { ResourceFormValues } from "@/types/app";
 import type { FormInputBase } from "@/types/forms";
 
 const DEFAULT_BANNER: ResourceFormValues<Resource.Banners> = {
-  ...RESOURCE_METADATA[Resource.Banners].form.defaultValues,
+  ...getResourceMetadata(Resource.Banners).form.defaultValues,
   textColor: DEFAULT_COLOR,
   titleColor: DEFAULT_COLOR,
   backgroundColor: DEFAULT_COLOR,
@@ -30,13 +31,10 @@ describe("new banner creation form", () => {
     );
     expect(screen.getByLabelText("URL")).toHaveValue(DEFAULT_BANNER.url);
     expect(screen.getByLabelText("Wersja robocza")).toBeChecked();
-    const inputSections = RESOURCE_METADATA[Resource.Banners].form.inputs;
+    const inputSections = getResourceMetadata(Resource.Banners).form.inputs;
     const allInputs = Object.values(inputSections).flatMap(
       (section) =>
-        Object.entries(section) as [
-          keyof typeof DEFAULT_BANNER,
-          FormInputBase,
-        ][],
+        typedEntries(section) as [keyof typeof DEFAULT_BANNER, FormInputBase][],
     );
     for (const [name, input] of allInputs) {
       const value = DEFAULT_BANNER[name];
