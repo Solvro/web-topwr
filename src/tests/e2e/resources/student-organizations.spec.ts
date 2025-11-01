@@ -122,11 +122,14 @@ async function filterSpecificOrganization(
   organization: MockStudentOrganization,
 ) {
   await setAbstractResourceListFilters(page, {
-    searchField: "description",
-    searchFieldLabel: "opisie",
-    // Hopefully fakerjs's lorem descriptions are random enough to guarantee uniqueness
-    // This might need to be adjusted if there are collisions
-    searchTerm: organization.description,
+    filters: [
+      {
+        field: "description",
+        // Hopefully fakerjs's lorem descriptions are random enough to guarantee uniqueness
+        // This might need to be adjusted if there are collisions
+        value: organization.description,
+      },
+    ],
   });
 }
 

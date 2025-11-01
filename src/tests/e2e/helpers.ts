@@ -4,15 +4,16 @@ import assert from "node:assert/strict";
 
 import type { IMPLICIT_SORT_BY_ATTRIBUTES } from "@/config/constants";
 import {
-  SORT_DIRECTIONS,
+  SORT_DIRECTION_NAMES,
+  SORT_FILTER_DEFAULT_VALUES,
   SORT_FILTER_LABEL_DECLENSION_CASES,
 } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
-import { encodeQueryParameters } from "@/lib/helpers";
+import { quoteText } from "@/lib/helpers";
+import { getSearchParametersFromSortFilters } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
-import { SortFiltersSchema } from "@/schemas";
 import type { SortFiltersFormValues } from "@/types/forms";
 
 interface Credentials {
@@ -54,16 +55,11 @@ export async function selectOptionByLabel(
 
 type ImplicitSortByAttribute = (typeof IMPLICIT_SORT_BY_ATTRIBUTES)[number];
 type SortKeys = "sortBy" | "sortDirection";
-type FilterKeys = "searchField" | "searchTerm";
 type Sort = Pick<SortFiltersFormValues, SortKeys> & {
   sortBy: ImplicitSortByAttribute;
 };
-type Filter = Pick<SortFiltersFormValues, FilterKeys> & {
-  searchFieldLabel: string;
-};
+type Filter = Pick<SortFiltersFormValues, "filters">;
 type SortOrFilter = Sort | Filter | (Sort & Filter);
-
-const defaultSortFilters = SortFiltersSchema.parse({});
 
 export async function setAbstractResourceListFilters(
   page: Page,
@@ -73,10 +69,8 @@ export async function setAbstractResourceListFilters(
   page: Page,
   {
     sortBy,
-    sortDirection = defaultSortFilters.sortDirection,
-    searchField,
-    searchTerm,
-    searchFieldLabel,
+    sortDirection = SORT_FILTER_DEFAULT_VALUES.sortDirection,
+    filters = [],
   }: Partial<Sort & Filter>,
 ) {
   await page.getByRole("button", { name: /pokaż filtry/i }).click();
@@ -91,17 +85,21 @@ export async function setAbstractResourceListFilters(
     await selectOptionByLabel(
       page,
       /w kolejności/i,
-      SORT_DIRECTIONS[sortDirection],
+      SORT_DIRECTION_NAMES[sortDirection],
     );
   }
 
-  if (searchField != null && searchTerm != null && searchFieldLabel != null) {
-    await selectOptionByLabel(page, /szukaj w/i, searchFieldLabel);
-    await page.getByLabel(/wyrażenia/i).fill(searchTerm);
+  for (const [index, filter] of Object.entries(filters)) {
+    const fieldNumber = String(Number(index) + 1);
+    await page.getByRole("button", { name: /dodaj filtr/i }).click();
+    await selectOptionByLabel(page, `Pole #${fieldNumber}`, filter.field);
+    await page
+      .getByLabel(`Zawartość pola ${quoteText(filter.field)}`)
+      .fill(filter.value);
   }
   await page.getByRole("button", { name: /zatwierdź/i }).click();
   await page.waitForURL(
-    `/*?${encodeQueryParameters({ sortBy, sortDirection, searchField, searchTerm })}`,
+    `/*?${getSearchParametersFromSortFilters({ sortBy, sortDirection, filters })}`,
   );
 }
 

@@ -7,7 +7,6 @@ export default function VersionsPage(props: ResourcePageProps) {
     <AbstractResourceList
       resource={Resource.Versions}
       sortableFields={["name", "description"]}
-      searchableFields={["name", "description"]}
       {...props}
     />
   );
