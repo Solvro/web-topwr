@@ -14,7 +14,7 @@ export function Button({
   size,
   asChild = false,
   loading = false,
-  hideChildrenOnLoading = false,
+  spinnerHidesContent = false,
   children,
   tooltip,
   ...props
@@ -22,7 +22,7 @@ export function Button({
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     loading?: boolean;
-    hideChildrenOnLoading?: boolean;
+    spinnerHidesContent?: boolean;
     tooltip?: string;
   }) {
   const Comp = asChild ? Slot : "button";
@@ -38,7 +38,7 @@ export function Button({
       {loading ? (
         <span className="inline-flex gap-1">
           <Spinner className="size-4" />
-          {!hideChildrenOnLoading && children}
+          {spinnerHidesContent ? null : children}
         </span>
       ) : (
         children
