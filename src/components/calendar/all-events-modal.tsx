@@ -1,6 +1,6 @@
 "use client";
 
-import { formatDate, isSameDay, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { pl } from "date-fns/locale";
 import { SquarePen } from "lucide-react";
 import { useState } from "react";
@@ -27,7 +27,7 @@ import {
   extractStartDate,
   formatDaySwapEventName,
   formatHolidayDateRange,
-  formatSingleDate,
+  formatTime,
   isDateInRange,
   isSameDate,
 } from "@/lib/helpers/calendar";
@@ -38,12 +38,14 @@ import { cn } from "@/lib/utils";
 import type { GetResourceWithRelationsResponse } from "@/types/api";
 import type {
   CreatableResource,
+  RelationDefinition,
   ResourceDataType,
   ResourceDefaultValues,
   ResourceFormValues,
   ResourceRelation,
   RoutableResource,
 } from "@/types/app";
+import type { AcademicCalendarEvent } from "@/types/calendar";
 import type {
   ExistingImages,
   ResourceFormSheetData,
@@ -57,33 +59,23 @@ import { EditButton } from "../abstract/edit-button";
 import { AbstractResourceFormInternal } from "../abstract/resource-form/client";
 import { AbstractResourceFormSheet } from "../abstract/resource-form/sheet";
 
-function formatTime(startDate: Date, endDate: Date, isStart: boolean) {
-  return formatDate(
-    isStart ? startDate : endDate,
-    isSameDay(startDate, endDate) ? "HH:mm" : "HH:mm (E)",
-    { locale: pl },
-  );
-}
-
-function isAcademicSemesterWithDaySwaps(
-  semester: unknown,
-): semester is { daySwaps: ResourceDataType<Resource.DaySwaps>[] } {
+function isAcademicSemesterWithDaySwaps<T extends Resource>(
+  semester: GetResourceWithRelationsResponse<T>["data"],
+): boolean {
   return (
     typeof semester === "object" &&
-    semester !== null &&
     "daySwaps" in semester &&
-    Array.isArray((semester as { daySwaps: unknown }).daySwaps)
+    Array.isArray(semester.daySwaps)
   );
 }
 
-function isAcademicSemesterWithHolidays(
-  semester: unknown,
-): semester is { holidays: ResourceDataType<Resource.Holidays>[] } {
+function isAcademicSemesterWithHolidays<T extends Resource>(
+  semester: GetResourceWithRelationsResponse<T>["data"],
+): boolean {
   return (
     typeof semester === "object" &&
-    semester !== null &&
     "holidays" in semester &&
-    Array.isArray((semester as { holidays: unknown }).holidays)
+    Array.isArray(semester.holidays)
   );
 }
 
@@ -92,34 +84,33 @@ function HolidayEventCard<T extends RoutableResource>({
   clickable,
   showSheet,
 }: {
-  holidayEvent: ResourceDataType<Resource.Holidays> & {
-    __type: "holiday";
-    __parentSemester: GetResourceWithRelationsResponse<T>["data"];
-  };
+  holidayEvent: AcademicCalendarEvent<T, "holiday">;
   clickable: boolean;
   showSheet: (
     options: Omit<ResourceFormSheetDataContent<T>, "form">,
     formProps: {
-      resource: Resource;
-      defaultValues: ResourceDefaultValues<Resource>;
+      resource: T;
+      defaultValues: ResourceDefaultValues<T>;
     },
   ) => void;
 }) {
-  const eventName = holidayEvent.description;
-  const eventDate = formatHolidayDateRange(
-    parseISO(holidayEvent.startDate),
-    parseISO(holidayEvent.lastDate),
-  );
+  const holidayName = extractEventName<T, "holiday">(holidayEvent);
+  const holidayStartDate = extractStartDate(holidayEvent);
+  const holidayEndDate = extractEndDate(holidayEvent);
+  const holidayDate =
+    holidayStartDate != null && holidayEndDate != null
+      ? formatHolidayDateRange(holidayStartDate, holidayEndDate)
+      : "Invalid date";
 
   return (
     <div
       key={holidayEvent.id}
       className="bg-accent flex h-max w-full justify-between rounded-md p-3 text-left text-sm"
-      title={eventName}
+      title={holidayName}
     >
       <div className="my-auto">
-        <div className="font-medium">{eventName}</div>
-        <div className="mt-1 text-xs">{eventDate}</div>
+        <div className="font-medium">{holidayName}</div>
+        <div className="mt-1 text-xs">{holidayDate}</div>
       </div>
       {clickable ? (
         <div className="flex items-center gap-2">
@@ -131,16 +122,15 @@ function HolidayEventCard<T extends RoutableResource>({
                 {
                   item: {
                     id: holidayEvent.id,
-                    name: holidayEvent.description,
+                    name: holidayName,
                   },
                   childResource: Resource.Holidays as ResourceRelation<T>,
                   parentResourceData:
                     holidayEvent.__parentSemester as ResourceDataType<T>,
                 },
                 {
-                  resource: Resource.Holidays as Resource,
-                  defaultValues:
-                    holidayEvent as ResourceDefaultValues<Resource>,
+                  resource: Resource.Holidays as T,
+                  defaultValues: holidayEvent,
                 },
               );
             }}
@@ -149,7 +139,7 @@ function HolidayEventCard<T extends RoutableResource>({
           </Button>
           <DeleteButtonWithDialog
             resource={Resource.Holidays}
-            itemName={eventName}
+            itemName={holidayName}
             id={holidayEvent.id}
           />
         </div>
@@ -178,7 +168,7 @@ function DaySwapEventCard<T extends RoutableResource>({
 }) {
   const eventDate = parseISO(daySwapEvent.date);
   const eventName = formatDaySwapEventName(eventDate);
-  const eventDateString = formatSingleDate(eventDate);
+  const eventDateString = format(eventDate, "d MMMM yyyy", { locale: pl });
 
   return (
     <div
@@ -200,11 +190,9 @@ function DaySwapEventCard<T extends RoutableResource>({
                 {
                   item: {
                     id: daySwapEvent.id,
-                    name: formatDate(
-                      parseISO(daySwapEvent.date),
-                      "d MMMM yyyy",
-                      { locale: pl },
-                    ),
+                    name: format(parseISO(daySwapEvent.date), "d MMMM yyyy", {
+                      locale: pl,
+                    }),
                   },
                   childResource: Resource.DaySwaps as ResourceRelation<T>,
                   parentResourceData:
@@ -374,6 +362,39 @@ export function AllEventsModal<T extends CreatableResource>({
     return null;
   }
 
+  function getDefaultValuesForResource(
+    parentResource: ResourceDataType<T>,
+    childResource: Resource,
+    relationDefinition: RelationDefinition<T, ResourceRelation<T>>,
+  ): ResourceFormValues<Resource> {
+    const resourceMetadata = getResourceMetadata(childResource);
+    const baseDefaults = {
+      ...resourceMetadata.form.defaultValues,
+    } as Record<string, unknown>;
+
+    const foreignKey = String(relationDefinition.foreignKey);
+    const parsedId = tryParseNumber(String(parentResource.id));
+    baseDefaults[foreignKey] = parsedId;
+
+    if (
+      resourceMetadata.form.inputs.dateInputs != null &&
+      month !== undefined &&
+      day !== undefined
+    ) {
+      const dateMonth = String(month.value).padStart(2, "0");
+      const dateDay = String(day).padStart(2, "0");
+      const dateString = `${String(year)}-${dateMonth}-${dateDay}`;
+
+      for (const dateField of Object.keys(
+        resourceMetadata.form.inputs.dateInputs,
+      )) {
+        baseDefaults[dateField] = new Date(dateString).toISOString();
+      }
+    }
+
+    return baseDefaults as ResourceFormValues<Resource>;
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="h-max max-h-[80vh] max-w-lg">
@@ -387,9 +408,7 @@ export function AllEventsModal<T extends CreatableResource>({
                 })}
               </>
             ) : (
-              <>
-                Wydarzenia {formatDate(baseDate, "d MMMM yyyy", { locale: pl })}
-              </>
+              <>Wydarzenia {format(baseDate, "d MMMM yyyy", { locale: pl })}</>
             )}
           </DialogTitle>
           <DialogDescription>
@@ -420,10 +439,7 @@ export function AllEventsModal<T extends CreatableResource>({
               switch (event.__type) {
                 case "holiday": {
                   const holidayEvent =
-                    event as ResourceDataType<Resource.Holidays> & {
-                      __type: "holiday";
-                      __parentSemester: GetResourceWithRelationsResponse<T>["data"];
-                    };
+                    event as unknown as AcademicCalendarEvent<T, "holiday">;
 
                   return (
                     <HolidayEventCard
@@ -511,7 +527,7 @@ export function AllEventsModal<T extends CreatableResource>({
                     ([childResource, relationDefinition], index) => (
                       <CreateButton
                         key={String(childResource)}
-                        className={`mt-4${index < resourceRelation.length - 1 ? "mr-2" : ""}`}
+                        className={`mt-4 ${index < resourceRelation.length - 1 ? "mr-2" : ""}`}
                         resource={childResource}
                         prefillAttributes={{}}
                         asSheet
@@ -521,9 +537,6 @@ export function AllEventsModal<T extends CreatableResource>({
                             month === undefined ||
                             year === undefined
                           ) {
-                            toast.error(
-                              "Nie można utworzyć wydarzenia - brak informacji o dacie.",
-                            );
                             return;
                           }
 
@@ -540,51 +553,6 @@ export function AllEventsModal<T extends CreatableResource>({
                             return;
                           }
 
-                          function getDefaultValuesForResource(): ResourceFormValues<Resource> {
-                            const resourceMetadata = getResourceMetadata(
-                              childResource as Resource,
-                            );
-                            const baseDefaults = {
-                              ...resourceMetadata.form.defaultValues,
-                            } as Record<string, unknown>;
-
-                            if (parentResource !== null) {
-                              const foreignKey = String(
-                                relationDefinition.foreignKey,
-                              );
-                              const parsedId = tryParseNumber(
-                                String(parentResource.id),
-                              );
-                              baseDefaults[foreignKey] =
-                                typeof parsedId === "number"
-                                  ? parsedId
-                                  : Number(parentResource.id);
-                            }
-
-                            if (
-                              resourceMetadata.form.inputs.dateInputs != null &&
-                              month !== undefined &&
-                              day !== undefined
-                            ) {
-                              const dateMonth = String(month.value).padStart(
-                                2,
-                                "0",
-                              );
-                              const dateDay = String(day).padStart(2, "0");
-                              const dateString = `${String(year)}-${dateMonth}-${dateDay}`;
-
-                              for (const dateField of Object.keys(
-                                resourceMetadata.form.inputs.dateInputs,
-                              )) {
-                                baseDefaults[dateField] = new Date(
-                                  dateString,
-                                ).toISOString();
-                              }
-                            }
-
-                            return baseDefaults as ResourceFormValues<Resource>;
-                          }
-
                           showSheet(
                             {
                               item: null,
@@ -594,7 +562,11 @@ export function AllEventsModal<T extends CreatableResource>({
                             },
                             {
                               resource: childResource as Resource,
-                              defaultValues: getDefaultValuesForResource(),
+                              defaultValues: getDefaultValuesForResource(
+                                parentResource,
+                                childResource as Resource,
+                                relationDefinition,
+                              ),
                             },
                           );
                         }}
