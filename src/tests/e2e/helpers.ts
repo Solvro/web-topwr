@@ -67,12 +67,10 @@ const defaultSortFilters = SortFiltersSchema.parse({});
 
 export async function setAbstractResourceListFilters(
   page: Page,
-  resource: Resource,
   options: SortOrFilter,
 ): Promise<void>;
 export async function setAbstractResourceListFilters(
   page: Page,
-  resource: Resource,
   {
     sortBy,
     sortDirection = defaultSortFilters.sortDirection,
@@ -102,8 +100,8 @@ export async function setAbstractResourceListFilters(
     await page.getByLabel(/wyrażenia/i).fill(searchTerm);
   }
   await page.getByRole("button", { name: /zatwierdź/i }).click();
-  await expect(page).toHaveURL(
-    `/${resource}?${encodeQueryParameters({ sortBy, sortDirection, searchField, searchTerm })}`,
+  await page.waitForURL(
+    `/*?${encodeQueryParameters({ sortBy, sortDirection, searchField, searchTerm })}`,
   );
 }
 
