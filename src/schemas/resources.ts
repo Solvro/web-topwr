@@ -124,6 +124,9 @@ const StudentOrganizationSchema = z.object({
   coverKey: z.string().nullish(),
   description: z.string().nullish(),
   shortDescription: z.string().nullish(),
+  enName: z.string().nullish(),
+  enDescription: z.string().nullish(),
+  enShortDescription: z.string().nullish(),
   coverPreview: z.boolean({ required_error: FORM_ERROR_MESSAGES.REQUIRED }),
   source: z.nativeEnum(OrganizationSource, {
     required_error: FORM_ERROR_MESSAGES.REQUIRED,
