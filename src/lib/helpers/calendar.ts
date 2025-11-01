@@ -1,10 +1,14 @@
-import { formatDate, parseISO } from "date-fns";
+import { format, isSameDay, parseISO } from "date-fns";
 import { pl } from "date-fns/locale";
 
 import type { Resource } from "@/config/enums";
 import type { GetResourceWithRelationsResponse } from "@/types/api";
 import type { ResourceDataType, RoutableResource } from "@/types/app";
-import type { DateObject } from "@/types/calendar";
+import type {
+  CalendarEventTypes,
+  DateObject,
+  UnspecifiedEventType,
+} from "@/types/calendar";
 
 export function createDateOnly(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -25,22 +29,26 @@ export function isDateInRange(
   return dateOnly >= startOnly && dateOnly <= endOnly;
 }
 
-export function formatSingleDate(date: Date): string {
-  return formatDate(date, "d MMMM yyyy", { locale: pl });
-}
-
 export function formatHolidayDateRange(startDate: Date, endDate: Date): string {
   if (isSameDate(startDate, endDate)) {
-    return formatSingleDate(startDate);
+    return format(startDate, "d MMMM yyyy", { locale: pl });
   }
 
-  const startString = formatDate(startDate, "d MMMM", { locale: pl });
-  const endString = formatSingleDate(endDate);
+  const startString = format(startDate, "d MMMM", { locale: pl });
+  const endString = format(endDate, "d MMMM yyyy", { locale: pl });
   return `${startString} - ${endString}`;
 }
 
 export function formatDaySwapEventName(date: Date): string {
-  return `Zamiana zajęć - ${formatDate(date, "d MMMM yyyy", { locale: pl })}`;
+  return `Zamiana zajęć - ${format(date, "d MMMM yyyy", { locale: pl })}`;
+}
+
+export function formatTime(startDate: Date, endDate: Date, isStart: boolean) {
+  return format(
+    isStart ? startDate : endDate,
+    isSameDay(startDate, endDate) ? "HH:mm" : "HH:mm (E)",
+    { locale: pl },
+  );
 }
 
 export function extractStartDate(
@@ -85,6 +93,7 @@ export function extractEndDate(
     "end",
     "endDate",
     "finishDate",
+    "lastDate",
   ];
 
   for (const field of endFields) {
@@ -104,13 +113,14 @@ export function extractEndDate(
   return null;
 }
 
-export function extractEventName(
-  event: ResourceDataType<RoutableResource>,
-): string {
-  const nameFields = ["name", "title", "summary", "eventName"];
+export function extractEventName<
+  T extends Resource,
+  L extends CalendarEventTypes,
+>(event: UnspecifiedEventType<T, L>): string {
+  const nameFields = ["name", "title", "summary", "eventName", "description"];
 
   for (const field of nameFields) {
-    const value = event[field as keyof ResourceDataType<RoutableResource>];
+    const value = event[field as keyof UnspecifiedEventType<T, L>];
     if (typeof value === "string") {
       return value.trim();
     }
@@ -119,13 +129,14 @@ export function extractEventName(
   return "";
 }
 
-export function extractEventDescription(
-  event: ResourceDataType<RoutableResource>,
-): string | undefined {
+export function extractEventDescription<
+  T extends Resource,
+  L extends CalendarEventTypes,
+>(event: UnspecifiedEventType<T, L>): string | undefined {
   const descFields = ["description", "details", "notes", "content", "summary"];
 
   for (const field of descFields) {
-    const value = event[field as keyof ResourceDataType<RoutableResource>];
+    const value = event[field as keyof UnspecifiedEventType<T, L>];
     if (typeof value === "string") {
       return value.trim();
     }
@@ -255,4 +266,25 @@ export function getRoundedDate(hoursAhead = 0, baseDate?: Date): string {
   const seconds = String(date.getSeconds()).padStart(2, "0");
 
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+}
+
+/**
+ * Normalizes a date string to noon (12:00:00) to avoid timezone mismatches.
+ * This is used for day swaps and holidays that should only represent dates, not times.
+ * @param dateString ISO date string (can be date-only or datetime)
+ * @return ISO datetime string with time set to 12:00:00
+ */
+export function normalizeDateToNoon(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) {
+      return dateString; // Return original if parsing fails
+    }
+
+    // Set time to noon to avoid timezone issues
+    date.setHours(12, 0, 0, 0);
+    return date.toISOString();
+  } catch {
+    return dateString; // Return original if any error occurs
+  }
 }
