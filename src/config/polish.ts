@@ -53,6 +53,27 @@ const REUSABLE_DECLENSIONS = {
       vocative: "wersje",
     },
   },
+  shortDescription: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "krótki opis",
+      genitive: "krótkiego opisu",
+      dative: "krótkiemu opisowi",
+      accusative: "krótki opis",
+      instrumental: "krótkim opisem",
+      locative: "krótkim opisie",
+      vocative: "krótkim opisie",
+    },
+    plural: {
+      nominative: "krótkie opisy",
+      genitive: "krótkich opisów",
+      dative: "krótkim opisom",
+      accusative: "krótkie opisy",
+      instrumental: "krótkimi opisami",
+      locative: "krótkich opisach",
+      vocative: "krótkie opisy",
+    },
+  },
 } satisfies Record<string, Pluralized<Declensions> & DeclensionData>;
 
 /** A dictionary of Polish language declensions of all resource names & other nouns, as well as their genders for use with determiners. */
@@ -420,27 +441,8 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "opisy",
     },
   },
-  shortDescription: {
-    gender: GrammaticalGender.Masculine,
-    singular: {
-      nominative: "krótki opis",
-      genitive: "krótkiego opisu",
-      dative: "krótkiemu opisowi",
-      accusative: "krótki opis",
-      instrumental: "krótkim opisem",
-      locative: "krótkim opisie",
-      vocative: "krótkim opisie",
-    },
-    plural: {
-      nominative: "krótkie opisy",
-      genitive: "krótkich opisów",
-      dative: "krótkim opisom",
-      accusative: "krótkie opisy",
-      instrumental: "krótkimi opisami",
-      locative: "krótkich opisach",
-      vocative: "krótkie opisy",
-    },
-  },
+  shortDescription: REUSABLE_DECLENSIONS.shortDescription,
+  shortDesc: REUSABLE_DECLENSIONS.shortDescription,
   id: {
     gender: GrammaticalGender.Masculine,
     singular: {

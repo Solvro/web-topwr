@@ -73,7 +73,7 @@ export async function fetchResources<T extends Resource>(
   const search =
     searchField == null || searchTerm == null
       ? ""
-      : `${encodeQueryComponent(searchField)}=%${encodeQueryComponent(searchTerm)}%&`;
+      : `${encodeQueryComponent(searchField)}=${encodeQueryComponent(`%${searchTerm}%`)}&`;
   const result = await fetchQuery<GetResourcesResponse<T>>(
     `?${search}page=${String(page)}&limit=${String(LIST_RESULTS_PER_PAGE)}&sort=${sortDirection}${sortBy}`,
     { resource },
