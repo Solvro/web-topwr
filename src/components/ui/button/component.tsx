@@ -36,10 +36,10 @@ export function Button({
       disabled={loading || props.disabled}
     >
       {loading ? (
-        <span className="inline-flex gap-1">
+        <>
           <Spinner className="size-4" />
           {spinnerHidesContent ? null : children}
-        </span>
+        </>
       ) : (
         children
       )}
