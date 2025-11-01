@@ -37,13 +37,6 @@ export async function login(page: Page, { email, password }: Credentials) {
   await page.getByLabel(/email/i).fill(email);
   await page.getByLabel(/hasło/i).fill(password);
   await page.getByRole("button", { name: /zaloguj się/i }).click();
-  await expect(page).not.toHaveURL("/login");
-}
-
-export async function logout(page: Page) {
-  await expect(page).not.toHaveURL("/login");
-  await page.getByRole("button", { name: /wyloguj się/i }).click();
-  await expect(page).toHaveURL("/login");
 }
 
 /** Since shadcn's <Select> element combined with react-hook-form creates a weird element structure,
@@ -107,7 +100,7 @@ export async function setAbstractResourceListFilters(
     await page.getByLabel(/wyrażenia/i).fill(searchTerm);
   }
   await page.getByRole("button", { name: /zatwierdź/i }).click();
-  await page.waitForURL(
+  await expect(page).toHaveURL(
     `/*?${encodeQueryParameters({ sortBy, sortDirection, searchField, searchTerm })}`,
   );
 }

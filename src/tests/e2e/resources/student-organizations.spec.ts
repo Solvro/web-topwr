@@ -13,8 +13,9 @@ import {
 import { RESOURCE_METADATA } from "@/config/resources";
 import { FetchError, fetchMutation } from "@/lib/fetch-utils";
 import { deleteAccessToken, generateAccessToken } from "@/tests/helpers/auth";
-import type { MessageResponse } from "@/types/api";
+import type { MessageResponse, ModifyResourceResponse } from "@/types/api";
 import type { Id, ResourceDataType, ResourceFormValues } from "@/types/app";
+import type { NonNullableValues } from "@/types/helpers";
 
 import {
   expectAbstractResourceFormSuccess,
@@ -26,19 +27,18 @@ import {
 const resource = Resource.StudentOrganizations;
 type ResourceType = typeof resource;
 
-type NonNullablePartialStudentOrganization = {
-  [K in keyof ResourceFormValues<ResourceType>]?: NonNullable<
-    ResourceFormValues<ResourceType>[K]
-  >;
-};
+type PartialNonNullableFormValues = Partial<
+  NonNullableValues<ResourceFormValues<ResourceType>>
+>;
 
 let accessTokenOverride: string;
 let refreshToken: string;
 type MockStudentOrganization = ReturnType<typeof generateTestOrganization>;
 
-interface CreateOrganizationResponse extends MessageResponse {
-  data: ResourceDataType<ResourceType> & MockStudentOrganization;
-}
+type CreateOrganizationResponse = ModifyResourceResponse<
+  ResourceType,
+  MockStudentOrganization
+>;
 
 /** Gets the 'delete organization' button on the current page or within the given locator. */
 const getDeleteButton = (page: Page | Locator) =>
@@ -57,7 +57,7 @@ const getRestoreButton = (page: Page | Locator) =>
   page.getByRole("button", { name: /przywróć organizację studencką/i });
 
 const generateTestOrganization = (
-  propertyOverrides: NonNullablePartialStudentOrganization = {},
+  propertyOverrides: PartialNonNullableFormValues = {},
 ) =>
   ({
     name: faker.company.name(),
@@ -74,7 +74,7 @@ const generateTestOrganization = (
   }) satisfies ResourceFormValues<ResourceType>;
 
 async function createTestOrganization(
-  propertyOverrides: NonNullablePartialStudentOrganization = {},
+  propertyOverrides: PartialNonNullableFormValues = {},
 ) {
   const body = generateTestOrganization(propertyOverrides);
   const response = await fetchMutation<CreateOrganizationResponse>("/", {
