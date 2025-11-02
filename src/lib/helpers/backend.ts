@@ -4,7 +4,7 @@ import {
 } from "@/config/constants";
 import { SortDirection } from "@/config/enums";
 import type { Resource } from "@/config/enums";
-import { FetchError, fetchMutation, fetchQuery } from "@/lib/fetch-utils";
+import { fetchMutation, fetchQuery } from "@/lib/fetch-utils";
 import type { GetResourcesResponse } from "@/types/api";
 import type { FilterDefinitions } from "@/types/components";
 import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
@@ -83,15 +83,8 @@ export async function fetchResources<T extends Resource>(
 
   const searchString = `?${search.toString()}`;
 
-  try {
-    const result = await fetchQuery<GetResourcesResponse<T>>(searchString, {
-      resource,
-    });
-    return result;
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error(error.errorReport);
-    }
-    throw error;
-  }
+  const result = await fetchQuery<GetResourcesResponse<T>>(searchString, {
+    resource,
+  });
+  return result;
 }
