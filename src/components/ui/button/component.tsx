@@ -14,7 +14,6 @@ export function Button({
   size,
   asChild = false,
   loading = false,
-  spinnerHidesContent = false,
   children,
   tooltip,
   ...props
@@ -22,7 +21,6 @@ export function Button({
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     loading?: boolean;
-    spinnerHidesContent?: boolean;
     tooltip?: string;
   }) {
   const Comp = asChild ? Slot : "button";
@@ -38,7 +36,7 @@ export function Button({
       {loading ? (
         <>
           <Spinner className="size-4" />
-          {spinnerHidesContent ? null : children}
+          {tooltip ? null : children}
         </>
       ) : (
         children
