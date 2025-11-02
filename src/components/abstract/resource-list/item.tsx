@@ -1,6 +1,5 @@
 import type { ComponentType, Ref } from "react";
 
-import { DeleteButtonWithDialog } from "@/components/abstract/delete-button-with-dialog";
 import { ToggleOrganizationStatusButton } from "@/components/abstract/toggle-status-button";
 import { Badge } from "@/components/ui/badge";
 import { Resource } from "@/config/enums";
@@ -64,9 +63,7 @@ export function AbstractResourceListItem<T extends RoutableResource>(
             resource={resource}
             organizationStatus={props.item.organizationStatus}
           />
-        ) : (
-          <DeleteButtonWithDialog resource={resource} id={listItem.id} />
-        )}
+        ) : null}
       </div>
     </li>
   );

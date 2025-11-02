@@ -712,11 +712,19 @@ export function AbstractResourceFormInternal<T extends Resource>({
               </div>
             </div>
           </div>
-          <div className="flex w-full justify-between">
+          <div
+            className={cn(
+              "flex w-full items-center gap-x-4 gap-y-2 max-sm:flex-col",
+              {
+                "w-full flex-col items-stretch gap-y-4": isEmbedded,
+              },
+            )}
+          >
             {isEmbedded ? null : (
               <Button
                 variant="link"
-                className="text-primary hover:text-primary w-min"
+                className="text-primary hover:text-primary mr-4 sm:mr-auto"
+                size="sm"
                 asChild
               >
                 {/* It would be too complex to relate `isEmbedded` to `resource` being a `RoutableResource`, */}
@@ -732,47 +740,40 @@ export function AbstractResourceFormInternal<T extends Resource>({
                 </Link>
               </Button>
             )}
-            <div
-              className={cn("flex gap-4", {
-                "w-full flex-col": isEmbedded,
-              })}
+            {isEditing ? (
+              <DeleteButtonWithDialog
+                resource={resource}
+                id={get(defaultValues, getResourcePk(resource)) as Id}
+                showLabel
+                size="default"
+                {...(isEmbedded
+                  ? {
+                      variant: "destructive",
+                      onDeleteSuccess: async () => {
+                        relationContext.closeSheet();
+                        // Give time for the sheet to close before resolving the deletion (triggers refresh)
+                        await new Promise((resolve) =>
+                          setTimeout(resolve, 300),
+                        );
+                        return true;
+                      },
+                      itemName: metadata.itemMapper(defaultValues).name,
+                    }
+                  : {
+                      onDeleteSuccess: () => {
+                        router.push(`/${resource}`);
+                        return false;
+                      },
+                    })}
+              />
+            ) : null}
+            <Button
+              type="submit"
+              loading={isPending}
+              disabled={!form.formState.isDirty}
             >
-              {isEditing ? (
-                <DeleteButtonWithDialog
-                  resource={resource}
-                  id={get(defaultValues, getResourcePk(resource)) as Id}
-                  showLabel
-                  {...(isEmbedded
-                    ? {
-                        variant: "destructive",
-                        size: "lg",
-                        onDeleteSuccess: async () => {
-                          relationContext.closeSheet();
-                          // Give time for the sheet to close before resolving the deletion (triggers refresh)
-                          await new Promise((resolve) =>
-                            setTimeout(resolve, 300),
-                          );
-                          return true;
-                        },
-                        itemName: metadata.itemMapper(defaultValues).name,
-                      }
-                    : {
-                        onDeleteSuccess: () => {
-                          router.push(`/${resource}`);
-                          return false;
-                        },
-                      })}
-                />
-              ) : null}
-              <Button
-                type="submit"
-                loading={isPending}
-                disabled={!form.formState.isDirty}
-                className={cn({ "w-full": isEmbedded })}
-              >
-                {submitLabel} {declensions.accusative} <SubmitIconComponent />
-              </Button>
-            </div>
+              {submitLabel} {declensions.accusative} <SubmitIconComponent />
+            </Button>
           </div>
         </form>
       </Form>
