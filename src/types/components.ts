@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { z } from "zod";
 
 import type { FilterType, Resource } from "@/config/enums";
+import type { ROUTE_PERMISSIONS } from "@/config/route-permissions";
 
 import type {
   Id,
@@ -88,3 +89,5 @@ export type ExistingImages<T extends Resource> = Partial<
 export type ResourceRelations<T extends Resource> = {
   [L in ResourceRelation<T>]: ResourceDataType<L>[];
 };
+
+export type RoutePermission = keyof typeof ROUTE_PERMISSIONS;

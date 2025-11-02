@@ -5,34 +5,12 @@ import { cache } from "react";
 import "server-only";
 
 import { AUTH_STATE_COOKIE_NAME } from "@/config/constants";
-import { Resource } from "@/config/enums";
+import { ROUTE_PERMISSIONS } from "@/config/route-permissions";
 import type { AuthState, User } from "@/types/api";
-import type { RoutableResource } from "@/types/app";
-import type { RecordIntersection } from "@/types/helpers";
+import type { RoutePermission } from "@/types/components";
 
 import { parseAuthCookie } from "./cookies";
 import { getCurrentUser } from "./helpers";
-
-const REQUIRED_ROUTE_PERMISSIONS = {
-  "/": ["user", "admin"],
-  [`/${Resource.AboutUs}`]: ["user", "admin"],
-  [`/${Resource.AboutUsLinks}`]: ["user", "admin"],
-  [`/${Resource.Banners}`]: ["user", "admin"],
-  [`/${Resource.CalendarEvents}`]: ["user", "admin"],
-  [`/${Resource.Changes}`]: ["user", "admin"],
-  [`/${Resource.Contributors}`]: ["user", "admin"],
-  [`/${Resource.Departments}`]: ["user", "admin"],
-  [`/${Resource.GuideArticles}`]: ["user", "admin"],
-  [`/${Resource.StudentOrganizations}`]: ["user", "admin"],
-  [`/${Resource.Milestones}`]: ["user", "admin"],
-  [`/${Resource.Versions}`]: ["user", "admin"],
-} satisfies RecordIntersection<
-  string,
-  `/${RoutableResource}`,
-  string[] | undefined
->;
-
-type RoutePermission = keyof typeof REQUIRED_ROUTE_PERMISSIONS;
 
 async function verifyUserCookie(
   cookie: RequestCookie | undefined,
@@ -80,8 +58,9 @@ function getUserPermissions(user: User | null): string[] {
 
 /* Determines whether or not the user is permitted to access the given route segment. */
 export const permit = cache(async (route: RoutePermission) => {
-  const requiredPermissions = REQUIRED_ROUTE_PERMISSIONS[route];
+  const requiredPermissions = ROUTE_PERMISSIONS[route];
   if (requiredPermissions.length === 0) {
+    // ensures that the route has defined permissions
     return false;
   }
 

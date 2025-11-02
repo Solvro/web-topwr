@@ -1,6 +1,11 @@
-import { WorkInProgress } from "@/components/work-in-progress";
-import { Resource } from "@/config/enums";
+import { ErrorMessage } from "@/components/error-message";
+import { ApplicationError, Resource } from "@/config/enums";
 
 export default function EditAboutUsPage() {
-  return <WorkInProgress resource={Resource.AboutUs} />;
+  return (
+    <ErrorMessage
+      type={ApplicationError.NotImplemented}
+      returnToResource={Resource.AboutUs}
+    />
+  );
 }

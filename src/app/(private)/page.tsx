@@ -31,7 +31,7 @@ export default function Home() {
       <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
         <div className="col-span-full grid grid-cols-subgrid gap-4">
           <DashboardButton
-            href="/"
+            href="/review"
             icon={RefreshCcw}
             label="Review zmian"
             variant="outline"

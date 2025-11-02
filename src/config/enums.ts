@@ -119,6 +119,7 @@ export enum ApplicationError {
   Forbidden = 403,
   NotFound = 404,
   ServerError = 500,
+  NotImplemented = 501,
 }
 
 export enum SortDirection {
