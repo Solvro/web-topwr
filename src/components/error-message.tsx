@@ -1,15 +1,13 @@
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { APPLICATION_ERROR_MESSAGES } from "@/config/constants";
-import { ApplicationError, DeclensionCase } from "@/config/enums";
-import { declineNoun } from "@/lib/polish";
+import { ApplicationError } from "@/config/enums";
 import type { RoutableResource } from "@/types/app";
 import type { LayoutProps } from "@/types/components";
 
+import { BackToHomeButton } from "./abstract/back-to-home-button";
+import { ReturnButton } from "./return-button";
 import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
 import { UserInfo } from "./user-info";
 
 function ErrorContextInfo({ children }: LayoutProps) {
@@ -38,17 +36,6 @@ export function ErrorMessage({
 }) {
   const contextInfo = ERROR_CONTEXT_INFOS[type];
 
-  const [returnHref, returnTarget] =
-    returnToResource == null
-      ? (["/", "strony głównej"] as const)
-      : ([
-          `/${returnToResource}`,
-          declineNoun(returnToResource, {
-            case: DeclensionCase.Genitive,
-            plural: true,
-          }),
-        ] as const);
-
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex flex-col justify-center">
@@ -59,18 +46,11 @@ export function ErrorMessage({
         {contextInfo == null ? null : (
           <ErrorContextInfo>{contextInfo}</ErrorContextInfo>
         )}
-        <Button variant="link" asChild>
-          <Link
-            href={returnHref}
-            className="group text-foreground mt-2 text-sm"
-          >
-            <ArrowLeft
-              size={16}
-              className="transition-transform duration-300 group-hover:-translate-x-1 group-hover:scale-120"
-            />
-            Powrót do {returnTarget}
-          </Link>
-        </Button>
+        {returnToResource == null ? (
+          <BackToHomeButton />
+        ) : (
+          <ReturnButton resource={returnToResource} />
+        )}
       </div>
     </div>
   );

@@ -15,6 +15,8 @@ import { getCurrentUser } from "./helpers";
 
 const REQUIRED_ROUTE_PERMISSIONS = {
   "/": ["user", "admin"],
+  [`/${Resource.AboutUs}`]: ["user", "admin"],
+  [`/${Resource.AboutUsLinks}`]: ["user", "admin"],
   [`/${Resource.Banners}`]: ["user", "admin"],
   [`/${Resource.CalendarEvents}`]: ["user", "admin"],
   [`/${Resource.Changes}`]: ["user", "admin"],

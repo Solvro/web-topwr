@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { fetchResources, getKey, isOrderableResource } from "@/lib/helpers";
 import type { GetResourcesResponse } from "@/types/api";
 import type {
+  EditableResource,
   OrderableResource,
   ResourceDataType,
-  RoutableResource,
 } from "@/types/app";
 import type { FilterDefinitions } from "@/types/components";
 import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
@@ -18,7 +18,7 @@ import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 import { AbstractResourceListItems } from "./item";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
 
-export function InfiniteScroller<T extends RoutableResource>({
+export function InfiniteScroller<T extends EditableResource>({
   resource,
   initialData,
   filterDefinitions = {},

@@ -8,7 +8,7 @@ import type {
   DeclensionData,
   Declensions,
   DeclinableNoun,
-  DeclinableSimpleNoun,
+  DeclinableNounPhrase,
   Determiner,
 } from "@/types/polish";
 
@@ -19,8 +19,9 @@ interface DeclensionOptions {
   plural?: boolean;
 }
 
-const isSimpleNoun = (noun: DeclinableNoun): noun is DeclinableSimpleNoun =>
-  noun in SIMPLE_NOUN_DECLENSIONS;
+const isDeclinableNounPhrase = (
+  noun: DeclinableNoun,
+): noun is DeclinableNounPhrase => noun in NOUN_PHRASE_TRANSFORMATIONS;
 
 export function declineNoun(
   noun: DeclinableNoun,
@@ -57,13 +58,13 @@ export function declineNoun(
   }: DeclensionOptions & { case?: DeclensionCase } = {},
 ): string | (Declensions & DeclensionData) {
   const plurality = plural ? "plural" : "singular";
-  const isSimple = isSimpleNoun(noun);
-  const base = isSimple ? noun : NOUN_PHRASE_TRANSFORMATIONS[noun].base;
+  const isNounPhrase = isDeclinableNounPhrase(noun);
+  const base = isNounPhrase ? NOUN_PHRASE_TRANSFORMATIONS[noun].base : noun;
   const {
     gender,
     [plurality]: { ...declensions },
   } = SIMPLE_NOUN_DECLENSIONS[base];
-  if (!isSimple) {
+  if (isNounPhrase) {
     const transform = NOUN_PHRASE_TRANSFORMATIONS[noun].transform;
     for (const [key, value] of typedEntries(declensions)) {
       declensions[key] = transform(value);

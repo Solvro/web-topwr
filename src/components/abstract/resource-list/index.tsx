@@ -1,10 +1,11 @@
+import { ReturnButton } from "@/components/return-button";
 import { getResourceFilterDefinitions } from "@/lib/filter-definitions";
 import {
   fetchResources,
   parseFilterSearchParameters,
   parseSortParameter,
 } from "@/lib/helpers";
-import type { RoutableResource } from "@/types/app";
+import type { CreatableResource, RoutableResource } from "@/types/app";
 import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 import type { ResourceDeclinableField } from "@/types/polish";
 
@@ -14,14 +15,16 @@ import { InfiniteScroller } from "./infinite-scroller";
 import { AppliedFiltersCount } from "./sort-filters/applied-filters-count";
 import { SortFiltersPopover } from "./sort-filters/sort-filters-popover";
 
-export async function AbstractResourceList<T extends RoutableResource>({
+export async function AbstractResourceList<T extends CreatableResource>({
   resource,
   searchParams,
   sortableFields = [],
+  parentResource,
 }: {
   resource: T;
   sortableFields?: ResourceDeclinableField<T>[];
   searchParams: Promise<Record<string, string | undefined>>;
+  parentResource?: RoutableResource;
 }) {
   const searchParameters = await searchParams;
 
@@ -61,7 +64,11 @@ export async function AbstractResourceList<T extends RoutableResource>({
       </div>
       <div className="mt-2 flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
         <CreateButton resource={resource} />
-        <BackToHomeButton />
+        {parentResource == null ? (
+          <BackToHomeButton chevronsIcon />
+        ) : (
+          <ReturnButton resource={parentResource} />
+        )}
       </div>
     </div>
   );

@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { DeclensionCase } from "@/config/enums";
 import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import type { Id, RoutableResource } from "@/types/app";
+import type { EditableResource, Id } from "@/types/app";
 
 export function EditButton({
   resource,
   id,
 }: {
-  resource: RoutableResource;
+  resource: EditableResource;
   id: Id;
 }) {
   const resourceAccusative = declineNoun(resource, {

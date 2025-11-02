@@ -3,7 +3,12 @@ import type { z } from "zod";
 
 import type { FilterType, Resource } from "@/config/enums";
 
-import type { Id, ResourceDataType, ResourceRelation } from "./app";
+import type {
+  Id,
+  ResourceDataType,
+  ResourceRelation,
+  RoutableResource,
+} from "./app";
 import type {
   FormInputBase,
   ResourceSchemaKey,
@@ -24,6 +29,10 @@ export type FilterDefinitions<T extends Resource = Resource> = Record<
     )
 >;
 
+export type LayoutProps = Readonly<{
+  children: ReactNode;
+}>;
+
 export interface ResourceFormProps<T extends Resource> {
   resource: T;
   className?: string;
@@ -33,16 +42,24 @@ export type ResourcePageProps = Readonly<{
   searchParams: Promise<{ page?: string }>;
 }>;
 
+export type ResourceLabelOptions = Readonly<{
+  firstWordOnly?: boolean;
+  plural?: boolean;
+}>;
+
+export type ResourceLayoutProps = Readonly<
+  LayoutProps & {
+    resource: RoutableResource;
+    labelOptions?: ResourceLabelOptions;
+  }
+>;
+
 export type ResourceEditPageProps = Readonly<{
   params: Promise<{ id: string }>;
 }>;
 
 export type ResourceCreatePageProps = Readonly<{
   searchParams?: Promise<Record<string, string | undefined>>;
-}>;
-
-export type LayoutProps = Readonly<{
-  children: ReactNode;
 }>;
 
 export interface ResourceFormSheetDataContent<T extends Resource> {

@@ -20,6 +20,16 @@ import {
   RequiredStringSchema,
 } from "./helpers";
 
+const AboutUsSchema = z.object({
+  description: RequiredStringSchema,
+  coverPhotoKey: RequiredStringSchema,
+});
+
+const AboutUsLinkSchema = z.object({
+  linkType: z.nativeEnum(LinkType),
+  link: RequiredStringSchema.url(),
+});
+
 const BannerSchema = z.object({
   title: RequiredStringSchema,
   description: RequiredStringSchema,
@@ -162,6 +172,8 @@ const VersionsSchema = z.object({
 });
 
 export const RESOURCE_SCHEMAS = {
+  [Resource.AboutUs]: AboutUsSchema,
+  [Resource.AboutUsLinks]: AboutUsLinkSchema,
   [Resource.Banners]: BannerSchema,
   [Resource.CalendarEvents]: CalendarEventSchema,
   [Resource.Changes]: ChangesSchema,

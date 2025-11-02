@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DeclensionCase } from "@/config/enums";
 import { declineNoun } from "@/lib/polish";
-import type { ResourceFormValues, RoutableResource } from "@/types/app";
+import type { CreatableResource, ResourceFormValues } from "@/types/app";
 
-export function CreateButton<T extends RoutableResource>({
+export function CreateButton<T extends CreatableResource>({
   className,
   resource,
   prefillAttributes = {},

@@ -35,23 +35,21 @@ const SELECT_OPTION_LABELS = {
       [OrganizationStatus.Unknown]: "Nieznany",
     } satisfies Record<OrganizationStatus, string>,
   },
-  STUDENT_ORGANIZATION_LINKS: {
-    TYPE: {
-      [LinkType.Default]: "Strona internetowa",
-      [LinkType.Discord]: "Discord",
-      [LinkType.Facebook]: "Facebook",
-      [LinkType.Instagram]: "Instagram",
-      [LinkType.LinkedIn]: "LinkedIn",
-      [LinkType.YouTube]: "YouTube",
-      [LinkType.TikTok]: "TikTok",
-      [LinkType.TopwrBuildings]: "Budynek ToPWR",
-      [LinkType.Phone]: "Numer telefonu",
-      [LinkType.Mail]: "Adres e-mail",
-      [LinkType.GitHub]: "GitHub",
-      [LinkType.X]: "X (dawniej Twitter)",
-      [LinkType.Twitch]: "Twitch",
-    } satisfies Record<LinkType, string>,
-  },
+  LINK_TYPE: {
+    [LinkType.Default]: "Strona internetowa",
+    [LinkType.Discord]: "Discord",
+    [LinkType.Facebook]: "Facebook",
+    [LinkType.Instagram]: "Instagram",
+    [LinkType.LinkedIn]: "LinkedIn",
+    [LinkType.YouTube]: "YouTube",
+    [LinkType.TikTok]: "TikTok",
+    [LinkType.TopwrBuildings]: "Budynek ToPWR",
+    [LinkType.Phone]: "Numer telefonu",
+    [LinkType.Mail]: "Adres e-mail",
+    [LinkType.GitHub]: "GitHub",
+    [LinkType.X]: "X (dawniej Twitter)",
+    [LinkType.Twitch]: "Twitch",
+  } satisfies Record<LinkType, string>,
   CHANGES: {
     TYPE: {
       [ChangeType.Feature]: "Funkcjonalność",
@@ -69,6 +67,49 @@ const SELECT_OPTION_LABELS = {
 
 /** Required metadata for each resource. */
 export const RESOURCE_METADATA = {
+  [Resource.AboutUs]: {
+    apiPath: "about_us",
+    itemMapper: () => ({}),
+    form: {
+      inputs: {
+        richTextInputs: {
+          description: { label: "Opis" },
+        },
+        imageInputs: {
+          coverPhotoKey: { label: "Zdjęcie w tle" },
+        },
+      },
+      defaultValues: {
+        description: "",
+        coverPhotoKey: "",
+      },
+    },
+  },
+  [Resource.AboutUsLinks]: {
+    apiPath: "about_us_links",
+    itemMapper: (item) => ({
+      name: item.linkType,
+      shortDescription: item.link,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          link: { label: "Link" },
+        },
+        selectInputs: {
+          linkType: {
+            label: "Rodzaj linku",
+            optionEnum: LinkType,
+            optionLabels: SELECT_OPTION_LABELS.LINK_TYPE,
+          },
+        },
+      },
+      defaultValues: {
+        link: "",
+        linkType: LinkType.Default,
+      },
+    },
+  },
   [Resource.Banners]: {
     apiPath: "banners",
     itemMapper: (item) => ({
@@ -206,7 +247,7 @@ export const RESOURCE_METADATA = {
           linkType: {
             label: "Rodzaj linku",
             optionEnum: LinkType,
-            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATION_LINKS.TYPE,
+            optionLabels: SELECT_OPTION_LABELS.LINK_TYPE,
           },
         },
       },
@@ -282,7 +323,7 @@ export const RESOURCE_METADATA = {
           linkType: {
             label: "Rodzaj linku",
             optionEnum: LinkType,
-            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATION_LINKS.TYPE,
+            optionLabels: SELECT_OPTION_LABELS.LINK_TYPE,
           },
         },
       },
@@ -481,7 +522,7 @@ export const RESOURCE_METADATA = {
           linkType: {
             label: "Rodzaj linku",
             optionEnum: LinkType,
-            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATION_LINKS.TYPE,
+            optionLabels: SELECT_OPTION_LABELS.LINK_TYPE,
           },
         },
       },

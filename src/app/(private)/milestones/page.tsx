@@ -7,6 +7,7 @@ export default function MilestonesPage(props: ResourcePageProps) {
     <AbstractResourceList
       resource={Resource.Milestones}
       sortableFields={["name"]}
+      parentResource={Resource.AboutUs}
       {...props}
     />
   );

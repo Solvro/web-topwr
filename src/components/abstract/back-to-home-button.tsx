@@ -1,15 +1,23 @@
 import { ChevronsLeft } from "lucide-react";
-import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-export function BackToHomeButton() {
+import { ReturnButton } from "../return-button";
+
+export function BackToHomeButton({
+  className,
+  chevronsIcon = false,
+}: {
+  className?: string;
+  chevronsIcon?: boolean;
+}) {
   return (
-    <Button variant="link" asChild className="w-fit">
-      <Link href="/">
-        <ChevronsLeft />
-        Wróć na stronę główną
-      </Link>
-    </Button>
+    <ReturnButton
+      href="/"
+      target="stronę główną"
+      returnLabel="Wróć na"
+      className={cn(className)}
+      icon={chevronsIcon ? ChevronsLeft : undefined}
+    />
   );
 }

@@ -1,4 +1,6 @@
 export enum Resource {
+  AboutUs = "about_us",
+  AboutUsLinks = "about_us_links",
   Banners = "banners",
   CalendarEvents = "calendar_events",
   Changes = "changes",

@@ -2,11 +2,10 @@ import { AbstractResourceList } from "@/components/abstract/resource-list";
 import { Resource } from "@/config/enums";
 import type { ResourcePageProps } from "@/types/components";
 
-export default function ContributorsPage(props: ResourcePageProps) {
+export default function AboutUsLinksPage(props: ResourcePageProps) {
   return (
     <AbstractResourceList
-      resource={Resource.Contributors}
-      sortableFields={["name"]}
+      resource={Resource.AboutUsLinks}
       parentResource={Resource.AboutUs}
       {...props}
     />

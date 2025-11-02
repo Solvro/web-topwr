@@ -7,7 +7,7 @@ export default function CalendarEventsPage(props: ResourcePageProps) {
   return (
     <div className="flex h-full flex-col justify-between gap-2">
       <Calendar clickable resource={Resource.CalendarEvents} {...props} />
-      <BackToHomeButton />
+      <BackToHomeButton chevronsIcon />
     </div>
   );
 }

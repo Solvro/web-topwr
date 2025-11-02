@@ -13,6 +13,7 @@ import type {
   ResourceRelation,
   XToManyResource,
 } from "@/types/app";
+import type { ResourceLabelOptions } from "@/types/components";
 import type { ResourceSchemaKey } from "@/types/forms";
 
 import { sanitizeId } from "./transformations";
@@ -97,11 +98,14 @@ export const getRecursiveRelations = (
  *
  * @example getManagingResourceLabel(Resource.StudentOrganizations) === 'Zarządzanie organizacjami'
  */
-export function getManagingResourceLabel(resource: Resource) {
+export function getManagingResourceLabel(
+  resource: Resource,
+  { firstWordOnly = true, plural = true }: ResourceLabelOptions = {},
+): string {
   const declined = declineNoun(resource, {
     case: DeclensionCase.Instrumental,
-    plural: true,
+    plural,
   });
-  const firstWord = declined.split(" ")[0];
+  const firstWord = firstWordOnly ? declined.split(" ")[0] : declined;
   return `Zarządzanie ${firstWord}`;
 }
