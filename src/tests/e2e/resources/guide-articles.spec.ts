@@ -5,8 +5,7 @@ import type { Locator, Page, Response } from "@playwright/test";
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import { Resource } from "@/config/enums";
 import { FetchError, fetchMutation } from "@/lib/fetch-utils";
-import { sanitizeId, uploadFile } from "@/lib/helpers";
-import { getResourceMetadata } from "@/lib/helpers/app";
+import { getResourceMetadata, sanitizeId, uploadFile } from "@/lib/helpers";
 import { deleteAccessToken, generateAccessToken } from "@/tests/helpers/auth";
 import { MOCK_IMAGE_FILE, MOCK_IMAGE_KEY } from "@/tests/mocks/constants";
 import type { MessageResponse, ModifyResourceResponse } from "@/types/api";
@@ -126,10 +125,13 @@ async function navigateToArticles(page: Page) {
 
 /** Sets the abstract resource list filters such that the only displayed article is the provided one. */
 async function filterSpecificArticle(page: Page, article: MockGuideArticle) {
-  await setAbstractResourceListFilters(page, {
-    searchField: "shortDesc",
-    searchFieldLabel: "krótkim opisie",
-    searchTerm: article.shortDesc,
+  await setAbstractResourceListFilters(page, resource, {
+    filters: [
+      {
+        field: "shortDesc",
+        value: article.shortDesc,
+      },
+    ],
   });
 }
 

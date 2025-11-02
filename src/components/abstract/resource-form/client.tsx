@@ -16,7 +16,9 @@ import { DatePicker } from "@/components/inputs/date-picker";
 import { DateTimePicker } from "@/components/inputs/date-time-picker";
 import { ImageUpload } from "@/components/inputs/image-upload";
 import { Inputs } from "@/components/inputs/input-row";
+import { PendingInput } from "@/components/inputs/pending-input";
 import { SelectInput } from "@/components/inputs/select-input";
+import { SelectOptions } from "@/components/inputs/select-options";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -40,13 +42,15 @@ import type { RelationContext } from "@/hooks/use-abstract-resource-form";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { renderAbstractResourceForm } from "@/lib/actions";
 import { fetchMutation } from "@/lib/fetch-utils";
-import { camelToSnakeCase, sanitizeId, toTitleCase } from "@/lib/helpers";
 import {
+  camelToSnakeCase,
   getResourceMetadata,
   getResourcePk,
   getResourceQueryName,
   getResourceRelationDefinitions,
-} from "@/lib/helpers/app";
+  sanitizeId,
+  toTitleCase,
+} from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import { cn } from "@/lib/utils";
 import { RESOURCE_SCHEMAS } from "@/schemas";
@@ -506,13 +510,7 @@ export function AbstractResourceFormInternal<T extends Resource>({
                           control={form.control}
                           name={name}
                           label={input.label}
-                          options={Object.values(input.optionEnum).map(
-                            (option) => (
-                              <SelectItem key={option} value={String(option)}>
-                                {input.optionLabels[option]}
-                              </SelectItem>
-                            ),
-                          )}
+                          options={<SelectOptions input={input} />}
                         />
                       )}
                     />
@@ -558,18 +556,11 @@ export function AbstractResourceFormInternal<T extends Resource>({
                         const elementKey = `${resource}-multiselect-${relation}`;
                         if (!isEditing) {
                           return (
-                            <Label key={elementKey} asChild>
-                              <div className="flex-col items-stretch">
-                                {inputLabel}
-                                <div className="text-foreground/50 py-2 text-center">
-                                  {toTitleCase(
-                                    relationDeclined.plural.accusative,
-                                  )}{" "}
-                                  można dodać po utworzeniu{" "}
-                                  {declensions.genitive}.
-                                </div>
-                              </div>
-                            </Label>
+                            <PendingInput
+                              key={elementKey}
+                              label={inputLabel}
+                              message={`${toTitleCase(relationDeclined.plural.accusative)} można dodać po utworzeniu ${declensions.genitive}.`}
+                            />
                           );
                         }
                         // When it's a m:n relation, we can reuse relation data that already exists

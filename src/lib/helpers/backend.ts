@@ -1,11 +1,15 @@
-import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
+import {
+  LIST_RESULTS_PER_PAGE,
+  SORT_FILTER_DEFAULT_VALUES,
+} from "@/config/constants";
+import { SortDirection } from "@/config/enums";
 import type { Resource } from "@/config/enums";
-import { fetchQuery } from "@/lib/fetch-utils";
-import { encodeQueryComponent } from "@/lib/helpers";
+import { fetchMutation, fetchQuery } from "@/lib/fetch-utils";
 import type { GetResourcesResponse } from "@/types/api";
-import type { ListSearchParameters } from "@/types/components";
+import type { FilterDefinitions } from "@/types/components";
+import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 
-import { fetchMutation } from "../fetch-utils";
+import { sanitizeFilteredFields } from "./sort-filters";
 
 /**
  * Determines the fetch configuration to use based on the provided arguments.
@@ -63,20 +67,24 @@ export async function uploadFile({
 export async function fetchResources<T extends Resource>(
   resource: T,
   page = 1,
-  searchParameters: ListSearchParameters = {},
+  {
+    sortDirection = SORT_FILTER_DEFAULT_VALUES.sortDirection,
+    sortBy = SORT_FILTER_DEFAULT_VALUES.sortBy,
+    filters = SORT_FILTER_DEFAULT_VALUES.filters,
+  }: Partial<SortFiltersFormValuesNarrowed> = {},
+  filterDefinitions: Partial<FilterDefinitions<T>> = {},
 ): Promise<GetResourcesResponse<T>> {
-  const sortBy = searchParameters.sortBy ?? "order";
-  const sortDirection = searchParameters.sortDirection === "desc" ? "-" : "+";
-  const searchField = searchParameters.searchField;
-  const searchTerm = searchParameters.searchTerm;
+  const sort = `${sortDirection === SortDirection.Ascending ? "+" : "-"}${sortBy ?? "order"}`;
 
-  const search =
-    searchField == null || searchTerm == null
-      ? ""
-      : `${encodeQueryComponent(searchField)}=${encodeQueryComponent(`%${searchTerm}%`)}&`;
-  const result = await fetchQuery<GetResourcesResponse<T>>(
-    `?${search}page=${String(page)}&limit=${String(LIST_RESULTS_PER_PAGE)}&sort=${sortDirection}${sortBy}`,
-    { resource },
-  );
+  const search = sanitizeFilteredFields(filterDefinitions, filters);
+  search.set("page", String(page));
+  search.set("limit", String(LIST_RESULTS_PER_PAGE));
+  search.set("sort", sort);
+
+  const searchString = `?${search.toString()}`;
+
+  const result = await fetchQuery<GetResourcesResponse<T>>(searchString, {
+    resource,
+  });
   return result;
 }

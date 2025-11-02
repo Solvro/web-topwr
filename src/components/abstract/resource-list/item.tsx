@@ -4,7 +4,7 @@ import { DeleteButtonWithDialog } from "@/components/abstract/delete-button-with
 import { ToggleOrganizationStatusButton } from "@/components/abstract/toggle-status-button";
 import { Badge } from "@/components/ui/badge";
 import { Resource } from "@/config/enums";
-import { getResourceMetadata } from "@/lib/helpers/app";
+import { getResourceMetadata } from "@/lib/helpers";
 import type { ListItem, ResourceDataType, RoutableResource } from "@/types/app";
 
 import { EditButton } from "../edit-button";
@@ -43,7 +43,7 @@ export function AbstractResourceListItem<T extends RoutableResource>(
           {orderable ? <DragHandle item={listItem} /> : null}
           <Badge>{listItem.id}</Badge>
         </div>
-        <span className="w-full font-medium md:text-center">
+        <span className="w-full font-medium text-balance md:text-center">
           {listItem.name}
         </span>
       </div>

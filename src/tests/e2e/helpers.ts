@@ -2,18 +2,22 @@ import { expect } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import assert from "node:assert/strict";
 
-import type { IMPLICIT_SORT_BY_ATTRIBUTES } from "@/config/constants";
 import {
-  SORT_DIRECTIONS,
+  SORT_DIRECTION_NAMES,
+  SORT_FILTER_DEFAULT_VALUES,
   SORT_FILTER_LABEL_DECLENSION_CASES,
 } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
-import { encodeQueryParameters } from "@/lib/helpers";
+import { getResourceFilterDefinitions } from "@/lib/filter-definitions";
+import { getSearchParametersFromSortFilters, quoteText } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import { SortFiltersSchema } from "@/schemas";
-import type { SortFiltersFormValues } from "@/types/forms";
+import type {
+  FilteredField,
+  ResourceSchemaKey,
+  SortFiltersFormValuesNarrowed,
+} from "@/types/forms";
 
 interface Credentials {
   email: string;
@@ -52,32 +56,18 @@ export async function selectOptionByLabel(
   await expect(selectTrigger).toHaveText(optionLabel);
 }
 
-type ImplicitSortByAttribute = (typeof IMPLICIT_SORT_BY_ATTRIBUTES)[number];
-type SortKeys = "sortBy" | "sortDirection";
-type FilterKeys = "searchField" | "searchTerm";
-type Sort = Pick<SortFiltersFormValues, SortKeys> & {
-  sortBy: ImplicitSortByAttribute;
-};
-type Filter = Pick<SortFiltersFormValues, FilterKeys> & {
-  searchFieldLabel: string;
-};
-type SortOrFilter = Sort | Filter | (Sort & Filter);
-
-const defaultSortFilters = SortFiltersSchema.parse({});
-
-export async function setAbstractResourceListFilters(
+export async function setAbstractResourceListFilters<T extends Resource>(
   page: Page,
-  options: SortOrFilter,
-): Promise<void>;
-export async function setAbstractResourceListFilters(
-  page: Page,
+  resource: T,
   {
     sortBy,
-    sortDirection = defaultSortFilters.sortDirection,
-    searchField,
-    searchTerm,
-    searchFieldLabel,
-  }: Partial<Sort & Filter>,
+    sortDirection = SORT_FILTER_DEFAULT_VALUES.sortDirection,
+    filters = [],
+  }: Partial<
+    SortFiltersFormValuesNarrowed & {
+      filters: (FilteredField & { field: ResourceSchemaKey<T> })[];
+    }
+  >,
 ) {
   await page.getByRole("button", { name: /pokaż filtry/i }).click();
   if (sortBy != null) {
@@ -91,17 +81,32 @@ export async function setAbstractResourceListFilters(
     await selectOptionByLabel(
       page,
       /w kolejności/i,
-      SORT_DIRECTIONS[sortDirection],
+      SORT_DIRECTION_NAMES[sortDirection],
     );
   }
 
-  if (searchField != null && searchTerm != null && searchFieldLabel != null) {
-    await selectOptionByLabel(page, /szukaj w/i, searchFieldLabel);
-    await page.getByLabel(/wyrażenia/i).fill(searchTerm);
+  if (filters.length > 0) {
+    const filterDefinitions = await getResourceFilterDefinitions({ resource });
+    for (const [index, { field, value }] of Object.entries(filters)) {
+      if (!(field in filterDefinitions)) {
+        throw new Error(
+          `Field '${field}' is not filterable for resource '${resource}'.`,
+        );
+      }
+      const filterDefinition = filterDefinitions[field];
+      const fieldNumber = String(Number(index) + 1);
+      await page.getByRole("button", { name: /dodaj filtr/i }).click();
+      await selectOptionByLabel(
+        page,
+        `Pole #${fieldNumber}`,
+        filterDefinition.label,
+      );
+      await page.getByLabel(`Wartość pola ${quoteText(field)}`).fill(value);
+    }
   }
   await page.getByRole("button", { name: /zatwierdź/i }).click();
   await page.waitForURL(
-    `/*?${encodeQueryParameters({ sortBy, sortDirection, searchField, searchTerm })}`,
+    `/*?${getSearchParametersFromSortFilters({ sortBy, sortDirection, filters })}`,
   );
 }
 

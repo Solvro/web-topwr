@@ -5,15 +5,15 @@ import { useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { Button } from "@/components/ui/button";
-import { fetchResources } from "@/lib/helpers";
-import { getKey, isOrderableResource } from "@/lib/helpers/app";
+import { fetchResources, getKey, isOrderableResource } from "@/lib/helpers";
 import type { GetResourcesResponse } from "@/types/api";
 import type {
   OrderableResource,
   ResourceDataType,
   RoutableResource,
 } from "@/types/app";
-import type { ListSearchParameters } from "@/types/components";
+import type { FilterDefinitions } from "@/types/components";
+import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 
 import { AbstractResourceListItems } from "./item";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
@@ -21,19 +21,25 @@ import { OrderableItemWrapper } from "./orderable-item-wrapper";
 export function InfiniteScroller<T extends RoutableResource>({
   resource,
   initialData,
-  searchParameters = {},
+  filterDefinitions = {},
+  sortFilters = {},
 }: {
   resource: T;
   initialData: GetResourcesResponse<T>;
-  searchParameters?: ListSearchParameters;
+  filterDefinitions?: Partial<FilterDefinitions<T>>;
+  sortFilters?: Partial<SortFiltersFormValuesNarrowed>;
 }) {
   const { ref, inView } = useInView();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: [getKey.query.resourceList(resource), searchParameters],
+      queryKey: [
+        getKey.query.resourceList(resource),
+        sortFilters,
+        filterDefinitions,
+      ],
       queryFn: async ({ pageParam }) =>
-        fetchResources(resource, pageParam, searchParameters),
+        fetchResources(resource, pageParam, sortFilters, filterDefinitions),
       initialPageParam: 1,
       getPreviousPageParam: ({ meta }) =>
         meta.currentPage > meta.firstPage ? meta.currentPage - 1 : undefined,

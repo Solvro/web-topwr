@@ -8,8 +8,7 @@ import type { Resource } from "@/config/enums";
 import { OrganizationStatus } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
-import { sanitizeId } from "@/lib/helpers";
-import { getKey } from "@/lib/helpers/app";
+import { getKey, sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { ModifyResourceResponse } from "@/types/api";
 

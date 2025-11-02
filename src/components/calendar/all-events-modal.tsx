@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Resource } from "@/config/enums";
-import { getRoundedDate } from "@/lib/helpers/calendar";
+import { getRoundedDate } from "@/lib/helpers";
 import type { CalendarEvent } from "@/types/calendar";
 
 import { CreateButton } from "../abstract/create-button";

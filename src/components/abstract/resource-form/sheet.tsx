@@ -18,8 +18,7 @@ import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { ArfContext } from "@/hooks/use-abstract-resource-form";
 import type { RelationContext } from "@/hooks/use-abstract-resource-form";
-import { tryParseNumber } from "@/lib/helpers";
-import { getResourcePk } from "@/lib/helpers/app";
+import { getResourcePk, tryParseNumber } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type {
   ResourceFormSheetData,

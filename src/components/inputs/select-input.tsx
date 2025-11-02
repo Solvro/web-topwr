@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Resource } from "@/config/enums";
-import { tryParseNumber } from "@/lib/helpers";
+import { isUnsetEnumField, tryParseNumber } from "@/lib/helpers";
 import type { ResourceFormValues } from "@/types/app";
 
 export function SelectInput<T extends Resource>({
@@ -39,17 +39,13 @@ export function SelectInput<T extends Resource>({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <Select
-            value={
-              field.value == null || Number(field.value) < 0
-                ? ""
-                : String(field.value)
-            }
+            value={isUnsetEnumField(field.value) ? "" : String(field.value)}
             onValueChange={(value) => {
               field.onChange(tryParseNumber(value));
             }}
           >
             <FormControl>
-              <SelectTrigger className="bg-background w-full">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>

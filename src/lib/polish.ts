@@ -12,7 +12,7 @@ import type {
   Determiner,
 } from "@/types/polish";
 
-import { typedEntries } from "./helpers";
+import { typedEntries } from "./helpers/typescript";
 
 interface DeclensionOptions {
   prependDeterminer?: Determiner | null;

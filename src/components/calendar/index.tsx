@@ -9,7 +9,7 @@ import { WEEKDAYS } from "@/config/constants";
 import type { Resource } from "@/config/enums";
 import { useQueryWrapper } from "@/hooks/use-query-wrapper";
 import { fetchQuery } from "@/lib/fetch-utils";
-import { getMonthByNumberAndYear } from "@/lib/helpers/calendar";
+import { getMonthByNumberAndYear } from "@/lib/helpers";
 import { calendarStateAtom } from "@/stores/calendar";
 import type { ApiCalendarEvent } from "@/types/api";
 import type { CalendarEvent } from "@/types/calendar";

@@ -2,12 +2,21 @@ import type { Path } from "react-hook-form";
 import type { z } from "zod";
 
 import type { Resource } from "@/config/enums";
-import type { LoginSchema, SortFiltersSchema } from "@/schemas";
+import type {
+  FilteredFieldSchema,
+  LoginSchema,
+  SortFiltersSchema,
+} from "@/schemas";
 
 import type { AppZodObject, RelationDefinitions, ResourceSchema } from "./app";
+import type { DeclinableNoun } from "./polish";
 
 export type LoginFormValues = z.infer<typeof LoginSchema>;
+export type FilteredField = z.infer<typeof FilteredFieldSchema>;
 export type SortFiltersFormValues = z.infer<typeof SortFiltersSchema>;
+export type SortFiltersFormValuesNarrowed = SortFiltersFormValues & {
+  sortBy: DeclinableNoun | null | undefined;
+};
 
 /** Picks from the T only those fields which are assignable to U. */
 type KeysOfType<T extends z.ZodRawShape, U extends z.ZodTypeAny> = {
@@ -35,7 +44,7 @@ type TypedSchemaKey<
  */
 export type ResourceSchemaKey<
   T extends Resource,
-  Y extends z.ZodTypeAny = z.ZodString,
+  Y extends z.ZodTypeAny = z.ZodTypeAny,
 > = TypedSchemaKey<ResourceSchema<T>, Y>;
 
 export interface FormInputBase {
@@ -48,17 +57,18 @@ type FormInput<
   P = unknown,
 > = Partial<Record<ResourceSchemaKey<T, S>, P & FormInputBase>>;
 
-export type FormSelectInput<
-  T extends Resource,
+export interface SelectInputOptions<
   Y extends string | number = string | number,
-> = FormInput<
+> {
+  optionEnum: Record<string, Y>;
+  optionLabels: Record<Y, string>;
+}
+
+export type FormSelectInput<T extends Resource> = FormInput<
   T,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   z.ZodNativeEnum<any> | z.ZodEnum<any>,
-  {
-    optionEnum: Record<string, Y>;
-    optionLabels: Record<Y, string>;
-  }
+  SelectInputOptions
 >;
 
 export interface AbstractResourceFormInputs<T extends Resource> {
@@ -83,3 +93,5 @@ export interface AbstractResourceFormInputs<T extends Resource> {
   /** Multiselect input boxes for related resources. */
   relationInputs?: RelationDefinitions<T>;
 }
+
+export type FormInputName = keyof AbstractResourceFormInputs<Resource>;

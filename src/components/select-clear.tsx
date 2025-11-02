@@ -2,10 +2,18 @@
 
 import type { ControllerRenderProps } from "react-hook-form";
 
+import { isEmptyValue } from "@/lib/helpers";
+
 import { Button } from "./ui/button";
 import { SelectSeparator } from "./ui/select";
 
-export function SelectClear({ field }: { field: ControllerRenderProps }) {
+export function SelectClear({
+  resetValue = "",
+  value,
+  onChange,
+}: Pick<ControllerRenderProps, "value" | "onChange"> & {
+  resetValue?: unknown;
+}) {
   return (
     <>
       <Button
@@ -13,9 +21,9 @@ export function SelectClear({ field }: { field: ControllerRenderProps }) {
         variant="ghost"
         size="sm"
         onClick={() => {
-          field.onChange("");
+          onChange(resetValue);
         }}
-        disabled={field.value === ""}
+        disabled={isEmptyValue(value)}
       >
         wyczyść
       </Button>

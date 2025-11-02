@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 
-import { getCurrentDate } from "@/lib/helpers/calendar";
+import { getCurrentDate } from "@/lib/helpers";
 
 interface CalendarState {
   displayedYear: number;

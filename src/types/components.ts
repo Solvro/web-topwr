@@ -1,28 +1,28 @@
 import type { ReactNode } from "react";
+import type { z } from "zod";
 
-import type { Resource } from "@/config/enums";
+import type { FilterType, Resource } from "@/config/enums";
 
 import type { Id, ResourceDataType, ResourceRelation } from "./app";
-import type { ResourceSchemaKey } from "./forms";
-import type { DeclinableNoun } from "./polish";
+import type {
+  FormInputBase,
+  ResourceSchemaKey,
+  SelectInputOptions,
+} from "./forms";
 
-export type SortDirection = "asc" | "desc";
-
-export interface SortFiltersOptions {
-  sortBy: DeclinableNoun | "";
-  sortDirection: SortDirection;
-  searchField: DeclinableNoun | "";
-  searchTerm: string;
-}
-
-/** The accepted search parameters for the abstract resource list. */
-export interface ListSearchParameters {
-  page?: string;
-  sortBy?: string;
-  sortDirection?: SortDirection;
-  searchField?: string;
-  searchTerm?: string;
-}
+/** The definitions of all filterable fields for a given resource. */
+export type FilterDefinitions<T extends Resource = Resource> = Record<
+  [T] extends [Resource] ? string : ResourceSchemaKey<T>,
+  FormInputBase &
+    (
+      | (SelectInputOptions & {
+          type: FilterType.Select;
+        })
+      | {
+          type: FilterType.Text | FilterType.Checkbox;
+        }
+    )
+>;
 
 export interface ResourceFormProps<T extends Resource> {
   resource: T;
@@ -66,7 +66,7 @@ export type ResourceFormSheetData<T extends Resource> =
     };
 
 export type ExistingImages<T extends Resource> = Partial<
-  Record<ResourceSchemaKey<T>, ReactNode>
+  Record<ResourceSchemaKey<T, z.ZodString>, ReactNode>
 >;
 export type ResourceRelations<T extends Resource> = {
   [L in ResourceRelation<T>]: ResourceDataType<L>[];

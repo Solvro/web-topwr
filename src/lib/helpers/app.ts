@@ -3,6 +3,7 @@ import type { z } from "zod";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resource-metadata";
+import { declineNoun } from "@/lib/polish";
 import type {
   Id,
   OrderableResource,
@@ -14,7 +15,6 @@ import type {
 } from "@/types/app";
 import type { ResourceSchemaKey } from "@/types/forms";
 
-import { declineNoun } from "../polish";
 import { sanitizeId } from "./transformations";
 import { typedKeys } from "./typescript";
 

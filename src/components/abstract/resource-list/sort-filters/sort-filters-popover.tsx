@@ -2,6 +2,7 @@
 
 import { Filter } from "lucide-react";
 import { useState } from "react";
+import type { ComponentProps } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -9,18 +10,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import type { Resource } from "@/config/enums";
-import type { ResourceDeclinableField } from "@/types/polish";
 
 import { SortFilters } from "./sort-filters";
 
-export function SortFiltersPopover<T extends Resource>({
-  sortableFields,
-  searchableFields,
-}: {
-  sortableFields: ResourceDeclinableField<T>[];
-  searchableFields: ResourceDeclinableField<T>[];
-}) {
+export function SortFiltersPopover(props: ComponentProps<typeof SortFilters>) {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -29,10 +22,9 @@ export function SortFiltersPopover<T extends Resource>({
           Pokaż filtry <Filter />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="mx-4 w-[calc(100vw-2rem)] sm:w-fit">
+      <PopoverContent className="mx-4 w-[calc(100vw-2rem)] sm:w-fit sm:min-w-lg">
         <SortFilters
-          sortableFields={sortableFields}
-          searchableFields={searchableFields}
+          {...props}
           onChangeFilters={() => {
             setIsOpen(false);
           }}
