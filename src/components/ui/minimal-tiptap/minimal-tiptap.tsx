@@ -17,7 +17,7 @@ import type { UseMinimalTiptapEditorProps } from "./hooks/use-minimal-tiptap";
 import { useMinimalTiptapEditor } from "./hooks/use-minimal-tiptap";
 import "./styles/index.css";
 
-export interface MinimalTiptapProps
+interface MinimalTiptapProps
   extends Omit<UseMinimalTiptapEditorProps, "onUpdate"> {
   value?: Content;
   onChange?: (value: Content) => void;
@@ -109,5 +109,3 @@ export function MinimalTiptapEditor({
 }
 
 MinimalTiptapEditor.displayName = "MinimalTiptapEditor";
-
-export default MinimalTiptapEditor;
