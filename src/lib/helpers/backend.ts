@@ -72,7 +72,7 @@ export async function fetchResources<T extends Resource>(
     sortBy = SORT_FILTER_DEFAULT_VALUES.sortBy,
     filters = SORT_FILTER_DEFAULT_VALUES.filters,
   }: Partial<SortFiltersFormValuesNarrowed> = {},
-  filterDefinitions: FilterDefinitions = {},
+  filterDefinitions: Partial<FilterDefinitions<T>> = {},
 ): Promise<GetResourcesResponse<T>> {
   const sort = `${sortDirection === SortDirection.Ascending ? "+" : "-"}${sortBy ?? "order"}`;
 

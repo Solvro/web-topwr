@@ -19,9 +19,9 @@ const expectFieldTypes = (
 
 describe("getFilterDefinitions function", () => {
   it("should return the correct filter definitions for banners", async () => {
-    const filterDefinitions = await getResourceFilterDefinitions(
-      Resource.Banners,
-    );
+    const filterDefinitions = await getResourceFilterDefinitions({
+      resource: Resource.Banners,
+    });
     expect(filterDefinitions).toBeDefined();
     expect(Object.keys(filterDefinitions)).toHaveLength(9);
     expectFieldTypes(filterDefinitions, FilterType.Text, [

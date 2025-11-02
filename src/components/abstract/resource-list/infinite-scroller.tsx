@@ -26,7 +26,7 @@ export function InfiniteScroller<T extends RoutableResource>({
 }: {
   resource: T;
   initialData: GetResourcesResponse<T>;
-  filterDefinitions?: FilterDefinitions;
+  filterDefinitions?: Partial<FilterDefinitions<T>>;
   sortFilters?: Partial<SortFiltersFormValuesNarrowed>;
 }) {
   const { ref, inView } = useInView();

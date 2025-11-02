@@ -84,7 +84,7 @@ export const parseSortParameter = (
 
 /** Converts the client-side search parameters to backend-compatible filters. */
 export const sanitizeFilteredFields = (
-  filterDefinitions: FilterDefinitions,
+  filterDefinitions: Partial<FilterDefinitions>,
   filters: FilteredField[],
 ) => {
   const searchParameters = new URLSearchParams();
@@ -92,13 +92,13 @@ export const sanitizeFilteredFields = (
     if (isEmptyValue(value)) {
       continue;
     }
-    if (!(field in filterDefinitions)) {
+    const options = filterDefinitions[field];
+    if (options == null) {
       if (process.env.NODE_ENV !== "test") {
         console.warn("Ignoring unknown filter parameter", { field, value });
       }
       continue;
     }
-    const options = filterDefinitions[field];
     const filterValue = options.type === FilterType.Text ? `%${value}%` : value;
     searchParameters.set(field, filterValue);
   }

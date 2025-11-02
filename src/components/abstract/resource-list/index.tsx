@@ -24,7 +24,10 @@ export async function AbstractResourceList<T extends RoutableResource>({
 }) {
   const searchParameters = await searchParams;
 
-  const filterDefinitions = await getResourceFilterDefinitions(resource);
+  const filterDefinitions = await getResourceFilterDefinitions({
+    resource,
+    includeRelations: true,
+  });
   const sortFilters: Partial<SortFiltersFormValuesNarrowed> = {
     ...parseSortParameter(searchParameters.sort, sortableFields),
     filters: parseFilterSearchParameters(searchParameters, filterDefinitions),

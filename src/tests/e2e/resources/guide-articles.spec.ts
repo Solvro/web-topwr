@@ -125,7 +125,7 @@ async function navigateToArticles(page: Page) {
 
 /** Sets the abstract resource list filters such that the only displayed article is the provided one. */
 async function filterSpecificArticle(page: Page, article: MockGuideArticle) {
-  await setAbstractResourceListFilters(page, {
+  await setAbstractResourceListFilters(page, resource, {
     filters: [
       {
         field: "shortDesc",

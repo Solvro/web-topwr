@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { z } from "zod";
 
 import type { FilterType, Resource } from "@/config/enums";
 
@@ -10,8 +11,8 @@ import type {
 } from "./forms";
 
 /** The definitions of all filterable fields for a given resource. */
-export type FilterDefinitions = Record<
-  string,
+export type FilterDefinitions<T extends Resource = Resource> = Record<
+  [T] extends [Resource] ? string : ResourceSchemaKey<T>,
   FormInputBase &
     (
       | (SelectInputOptions & {
@@ -65,7 +66,7 @@ export type ResourceFormSheetData<T extends Resource> =
     };
 
 export type ExistingImages<T extends Resource> = Partial<
-  Record<ResourceSchemaKey<T>, ReactNode>
+  Record<ResourceSchemaKey<T, z.ZodString>, ReactNode>
 >;
 export type ResourceRelations<T extends Resource> = {
   [L in ResourceRelation<T>]: ResourceDataType<L>[];

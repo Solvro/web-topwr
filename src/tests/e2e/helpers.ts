@@ -10,9 +10,14 @@ import {
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
+import { getResourceFilterDefinitions } from "@/lib/filter-definitions";
 import { getSearchParametersFromSortFilters, quoteText } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
+import type {
+  FilteredField,
+  ResourceSchemaKey,
+  SortFiltersFormValuesNarrowed,
+} from "@/types/forms";
 
 interface Credentials {
   email: string;
@@ -51,13 +56,18 @@ export async function selectOptionByLabel(
   await expect(selectTrigger).toHaveText(optionLabel);
 }
 
-export async function setAbstractResourceListFilters(
+export async function setAbstractResourceListFilters<T extends Resource>(
   page: Page,
+  resource: T,
   {
     sortBy,
     sortDirection = SORT_FILTER_DEFAULT_VALUES.sortDirection,
     filters = [],
-  }: Partial<SortFiltersFormValuesNarrowed>,
+  }: Partial<
+    SortFiltersFormValuesNarrowed & {
+      filters: (FilteredField & { field: ResourceSchemaKey<T> })[];
+    }
+  >,
 ) {
   await page.getByRole("button", { name: /pokaż filtry/i }).click();
   if (sortBy != null) {
@@ -75,13 +85,24 @@ export async function setAbstractResourceListFilters(
     );
   }
 
-  for (const [index, filter] of Object.entries(filters)) {
-    const fieldNumber = String(Number(index) + 1);
-    await page.getByRole("button", { name: /dodaj filtr/i }).click();
-    await selectOptionByLabel(page, `Pole #${fieldNumber}`, filter.field);
-    await page
-      .getByLabel(`Wartość pola ${quoteText(filter.field)}`)
-      .fill(filter.value);
+  if (filters.length > 0) {
+    const filterDefinitions = await getResourceFilterDefinitions({ resource });
+    for (const [index, { field, value }] of Object.entries(filters)) {
+      if (!(field in filterDefinitions)) {
+        throw new Error(
+          `Field '${field}' is not filterable for resource '${resource}'.`,
+        );
+      }
+      const filterDefinition = filterDefinitions[field];
+      const fieldNumber = String(Number(index) + 1);
+      await page.getByRole("button", { name: /dodaj filtr/i }).click();
+      await selectOptionByLabel(
+        page,
+        `Pole #${fieldNumber}`,
+        filterDefinition.label,
+      );
+      await page.getByLabel(`Wartość pola ${quoteText(field)}`).fill(value);
+    }
   }
   await page.getByRole("button", { name: /zatwierdź/i }).click();
   await page.waitForURL(

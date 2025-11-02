@@ -44,7 +44,7 @@ type TypedSchemaKey<
  */
 export type ResourceSchemaKey<
   T extends Resource,
-  Y extends z.ZodTypeAny = z.ZodString,
+  Y extends z.ZodTypeAny = z.ZodTypeAny,
 > = TypedSchemaKey<ResourceSchema<T>, Y>;
 
 export interface FormInputBase {

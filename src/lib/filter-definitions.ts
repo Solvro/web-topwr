@@ -6,17 +6,28 @@ import { FilterType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { FilterDefinitions } from "@/types/components";
-import type { FormInputBase, SelectInputOptions } from "@/types/forms";
+import type {
+  FormInputBase,
+  ResourceSchemaKey,
+  SelectInputOptions,
+} from "@/types/forms";
 import type { ValueOf } from "@/types/helpers";
 
 import { getResourceMetadata, typedEntries, typedFromEntries } from "./helpers";
 
 /** Obtains the filter definitions for a specific resource. */
-export const getResourceFilterDefinitions = async (
-  resource: Resource,
-  logMissingFields = false,
+export const getResourceFilterDefinitions = async <T extends Resource>(
+  {
+    resource,
+    logMissingFields = false,
+    includeRelations = false,
+  }: {
+    resource: T;
+    logMissingFields?: boolean;
+    includeRelations?: boolean;
+  },
   // eslint-disable-next-line @typescript-eslint/require-await
-): Promise<FilterDefinitions> => {
+): Promise<FilterDefinitions<T>> => {
   const metadata = getResourceMetadata(resource);
   const { relationInputs, ...inputs } = metadata.form.inputs;
   const inputEntries = typedEntries(inputs).flatMap(([inputType, input]) => {
@@ -37,10 +48,10 @@ export const getResourceFilterDefinitions = async (
             type,
             ...value,
           },
-        ] as [string, ValueOf<FilterDefinitions>],
+        ] as [ResourceSchemaKey<T>, ValueOf<FilterDefinitions<T>>],
     );
   });
-  const simpleInputs = typedFromEntries<FilterDefinitions>(inputEntries);
+  const simpleInputs = typedFromEntries<FilterDefinitions<T>>(inputEntries);
   if (logMissingFields) {
     const schema = RESOURCE_SCHEMAS[resource];
     for (const field in schema.shape) {
@@ -49,6 +60,8 @@ export const getResourceFilterDefinitions = async (
       }
     }
   }
-  // TODO: handle relation inputs
+  if (includeRelations) {
+    // TODO: handle relation inputs
+  }
   return simpleInputs;
 };

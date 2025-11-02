@@ -121,7 +121,7 @@ async function filterSpecificOrganization(
   page: Page,
   organization: MockStudentOrganization,
 ) {
-  await setAbstractResourceListFilters(page, {
+  await setAbstractResourceListFilters(page, resource, {
     filters: [
       {
         field: "description",
