@@ -32,9 +32,9 @@ function LabelSkeleton({
 
 export function AbstractResourceFormSkeleton() {
   return (
-    <div className="mx-4 flex h-full flex-col gap-4">
-      <div className="bg-background-secondary h-full rounded-xl p-4">
-        <div className="w-full space-y-4">
+    <div className="mx-4 box-border flex h-full flex-col gap-4">
+      <div className="bg-background-secondary flex-1 rounded-xl p-4">
+        <div className="flex h-full flex-col gap-4">
           {/* Text input */}
           <div>
             <LabelSkeleton />
@@ -42,15 +42,15 @@ export function AbstractResourceFormSkeleton() {
           </div>
 
           {/* Textarea */}
-          <div>
+          <div className="flex flex-1 flex-col">
             <LabelSkeleton />
-            <InputSkeleton className="h-24" />
+            <InputSkeleton className="flex-1" />
           </div>
 
           {/* Rich text editor */}
-          <div>
+          <div className="flex flex-1 flex-col">
             <LabelSkeleton />
-            <InputSkeleton className="h-32" />
+            <InputSkeleton className="flex-1" />
           </div>
 
           {/* Selects grid */}
@@ -87,7 +87,10 @@ export function AbstractResourceFormSkeleton() {
           </div>
         </div>
       </div>
-      <Button className="bg-primary/50" asChild>
+      <Button variant="secondary" className="hover:bg-secondary" asChild>
+        <Skeleton />
+      </Button>
+      <Button className="bg-primary/50 hover:bg-primary/50" asChild>
         <Skeleton />
       </Button>
     </div>
