@@ -19,11 +19,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
@@ -83,31 +78,21 @@ export function DeleteButtonWithDialog({
 
   const label = `Usuń ${declensions.accusative}`;
 
-  const button = (
-    <DialogTrigger asChild>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="text-destructive hover:text-destructive/90"
-        aria-label={label}
-        {...props}
-      >
-        {showLabel ? label : null}
-        <Trash2 />
-      </Button>
-    </DialogTrigger>
-  );
-
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      {showLabel ? (
-        button
-      ) : (
-        <Tooltip>
-          <TooltipTrigger asChild></TooltipTrigger>
-          <TooltipContent>{label}</TooltipContent>
-        </Tooltip>
-      )}
+      <DialogTrigger asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-destructive hover:text-destructive/90"
+          aria-label={label}
+          tooltip={showLabel ? undefined : label}
+          {...props}
+        >
+          {showLabel ? label : null}
+          <Trash2 />
+        </Button>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-balance">
