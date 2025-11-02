@@ -11,6 +11,7 @@ import { PendingInput } from "@/components/inputs/pending-input";
 import { SelectOptions } from "@/components/inputs/select-options";
 import { SelectClear } from "@/components/select-clear";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -46,7 +47,10 @@ import { declineNoun } from "@/lib/polish";
 import { cn } from "@/lib/utils";
 import { SortFiltersSchema } from "@/schemas";
 import type { FilterDefinitions, LayoutProps } from "@/types/components";
-import type { SortFiltersFormValues } from "@/types/forms";
+import type {
+  SortFiltersFormValues,
+  SortFiltersFormValuesNarrowed,
+} from "@/types/forms";
 import type { DeclinableNoun } from "@/types/polish";
 
 // TODO: remove this rule from @solvro/config
@@ -85,7 +89,7 @@ function FilterValueField({
   });
 
   const filterDefinition = filterDefinitions[fieldName];
-  const labelBase = "Zawartość pola";
+  const labelBase = "Wartość pola";
 
   return (
     <FormField
@@ -119,6 +123,19 @@ function FilterValueField({
                   <SelectOptions input={filterDefinition} />
                 </SelectContent>
               </Select>
+            ) : filterDefinition.type === FilterType.Checkbox ? (
+              <div className="flex h-full items-center justify-center gap-2">
+                <FormControl>
+                  <Checkbox
+                    className="mb-0"
+                    checked={field.value === "true"}
+                    onCheckedChange={(checked) => {
+                      field.onChange(String(checked === true));
+                    }}
+                  />
+                </FormControl>
+                <FormLabel>{filterDefinition.label}</FormLabel>
+              </div>
             ) : (
               <FormControl>
                 <Input
@@ -147,10 +164,10 @@ export function SortFilters({
   sortableFields?: readonly DeclinableNoun[];
   filterDefinitions?: FilterDefinitions;
   onChangeFilters?: () => void;
-  defaultValues?: Partial<SortFiltersFormValues>;
+  defaultValues?: Partial<SortFiltersFormValuesNarrowed>;
 }) {
   const router = useRouter();
-  const form = useForm<SortFiltersFormValues>({
+  const form = useForm({
     resolver: zodResolver(SortFiltersSchema),
     defaultValues: { ...SORT_FILTER_DEFAULT_VALUES, ...defaultValues },
   });
@@ -251,6 +268,12 @@ export function SortFilters({
                     value={field.value}
                     onValueChange={(value) => {
                       field.onChange(value);
+                      form.setValue(
+                        `filters.${index}.value`,
+                        filterDefinitions[value].type === FilterType.Checkbox
+                          ? "false"
+                          : "",
+                      );
                     }}
                   >
                     <FormLabel>Pole #{index + 1}</FormLabel>

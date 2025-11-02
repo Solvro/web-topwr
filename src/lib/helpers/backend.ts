@@ -1,18 +1,15 @@
 import {
-  IMPLICIT_SORTABLE_FIELDS,
   LIST_RESULTS_PER_PAGE,
-  SORT_DIRECTION_SEPARATOR,
   SORT_FILTER_DEFAULT_VALUES,
 } from "@/config/constants";
-import { FilterType, SortDirection } from "@/config/enums";
+import { SortDirection } from "@/config/enums";
 import type { Resource } from "@/config/enums";
-import { FetchError, fetchQuery } from "@/lib/fetch-utils";
+import { FetchError, fetchMutation, fetchQuery } from "@/lib/fetch-utils";
 import type { GetResourcesResponse } from "@/types/api";
 import type { FilterDefinitions } from "@/types/components";
-import type { FilteredField, SortFiltersFormValues } from "@/types/forms";
+import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 
-import { fetchMutation } from "../fetch-utils";
-import { isEmptyValue, isValidSortDirection } from "./typescript";
+import { sanitizeFilteredFields } from "./sort-filters";
 
 /**
  * Determines the fetch configuration to use based on the provided arguments.
@@ -67,53 +64,6 @@ export async function uploadFile({
   return { response, uuid, fileExtension };
 }
 
-/** Parses a string like +field or -field into distinct, URI-encodable values. */
-export const parseSortParameter = (
-  sortParameter: string | undefined,
-  sortableFields?: string[],
-): { sortDirection: SortDirection; sortBy: string } | null => {
-  if (isEmptyValue(sortParameter)) {
-    return null;
-  }
-  const [sortDirection, sortBy] = sortParameter.split(
-    SORT_DIRECTION_SEPARATOR,
-    2,
-  );
-  if (isEmptyValue(sortBy) || !isValidSortDirection(sortDirection)) {
-    return null;
-  }
-  if (
-    sortableFields != null &&
-    ![...IMPLICIT_SORTABLE_FIELDS, ...sortableFields].includes(sortBy)
-  ) {
-    return null;
-  }
-  return { sortDirection, sortBy };
-};
-
-/** Converts the client-side search parameters to backend-compatible filters. */
-export const sanitizeFilteredFields = (
-  filterDefinitions: FilterDefinitions,
-  filters: FilteredField[],
-) => {
-  const searchParameters = new URLSearchParams();
-  for (const { field, value } of filters) {
-    if (isEmptyValue(value)) {
-      continue;
-    }
-    if (!(field in filterDefinitions)) {
-      if (process.env.NODE_ENV !== "test") {
-        console.warn("Ignoring unknown filter parameter", { field, value });
-      }
-      continue;
-    }
-    const options = filterDefinitions[field];
-    const filterValue = options.type === FilterType.Text ? `%${value}%` : value;
-    searchParameters.set(field, filterValue);
-  }
-  return searchParameters;
-};
-
 export async function fetchResources<T extends Resource>(
   resource: T,
   page = 1,
@@ -121,7 +71,7 @@ export async function fetchResources<T extends Resource>(
     sortDirection = SORT_FILTER_DEFAULT_VALUES.sortDirection,
     sortBy = SORT_FILTER_DEFAULT_VALUES.sortBy,
     filters = SORT_FILTER_DEFAULT_VALUES.filters,
-  }: Partial<SortFiltersFormValues> = {},
+  }: Partial<SortFiltersFormValuesNarrowed> = {},
   filterDefinitions: FilterDefinitions = {},
 ): Promise<GetResourcesResponse<T>> {
   const sort = `${sortDirection === SortDirection.Ascending ? "+" : "-"}${sortBy ?? "order"}`;

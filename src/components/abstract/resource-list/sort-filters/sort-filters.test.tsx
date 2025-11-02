@@ -13,7 +13,7 @@ import {
 import { FilterType, SortDirection } from "@/config/enums";
 import { isEmptyValue } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import type { SortFiltersFormValues } from "@/types/forms";
+import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 import type { DeclinableNoun } from "@/types/polish";
 
 import { SortFilters } from "./sort-filters";
@@ -29,9 +29,9 @@ const MOCK_FORM_VALUES = {
       value: "test",
     },
   ],
-} satisfies SortFiltersFormValues;
+} satisfies SortFiltersFormValuesNarrowed;
 
-function renderSortFilters(defaultValues?: SortFiltersFormValues) {
+function renderSortFilters(defaultValues?: SortFiltersFormValuesNarrowed) {
   const user = userEvent.setup();
   const screen = render(
     <SortFilters
@@ -67,15 +67,14 @@ function renderSortFilters(defaultValues?: SortFiltersFormValues) {
 
 function expectFormValues(
   form: ReturnType<typeof renderSortFilters>,
-  values: SortFiltersFormValues,
+  values: SortFiltersFormValuesNarrowed,
 ) {
   const input = form.input.sortBy;
   const value = values.sortBy;
   if (isEmptyValue(value)) {
     expect(input).toHaveTextContent(SORT_FILTER_PLACEHOLDER);
   } else {
-    // TODO: narrow down the sortBy type to DeclinableNoun instead of string
-    const label = declineNoun(value as DeclinableNoun, {
+    const label = declineNoun(value, {
       case: SORT_FILTER_LABEL_DECLENSION_CASES.sortBy,
     });
     expect(input).toHaveTextContent(label);

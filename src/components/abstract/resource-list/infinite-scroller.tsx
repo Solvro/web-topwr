@@ -13,7 +13,7 @@ import type {
   RoutableResource,
 } from "@/types/app";
 import type { FilterDefinitions } from "@/types/components";
-import type { SortFiltersFormValues } from "@/types/forms";
+import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 
 import { AbstractResourceListItems } from "./item";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
@@ -27,7 +27,7 @@ export function InfiniteScroller<T extends RoutableResource>({
   resource: T;
   initialData: GetResourcesResponse<T>;
   filterDefinitions?: FilterDefinitions;
-  sortFilters?: Partial<SortFiltersFormValues>;
+  sortFilters?: Partial<SortFiltersFormValuesNarrowed>;
 }) {
   const { ref, inView } = useInView();
 

@@ -2,7 +2,6 @@ import { expect } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import assert from "node:assert/strict";
 
-import type { IMPLICIT_SORTABLE_FIELDS } from "@/config/constants";
 import {
   SORT_DIRECTION_NAMES,
   SORT_FILTER_DEFAULT_VALUES,
@@ -13,7 +12,7 @@ import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
 import { getSearchParametersFromSortFilters, quoteText } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import type { SortFiltersFormValues } from "@/types/forms";
+import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 
 interface Credentials {
   email: string;
@@ -52,25 +51,13 @@ export async function selectOptionByLabel(
   await expect(selectTrigger).toHaveText(optionLabel);
 }
 
-type ImplicitSortByAttribute = (typeof IMPLICIT_SORTABLE_FIELDS)[number];
-type SortKeys = "sortBy" | "sortDirection";
-type Sort = Pick<SortFiltersFormValues, SortKeys> & {
-  sortBy: ImplicitSortByAttribute;
-};
-type Filter = Pick<SortFiltersFormValues, "filters">;
-type SortOrFilter = Sort | Filter | (Sort & Filter);
-
-export async function setAbstractResourceListFilters(
-  page: Page,
-  options: SortOrFilter,
-): Promise<void>;
 export async function setAbstractResourceListFilters(
   page: Page,
   {
     sortBy,
     sortDirection = SORT_FILTER_DEFAULT_VALUES.sortDirection,
     filters = [],
-  }: Partial<Sort & Filter>,
+  }: Partial<SortFiltersFormValuesNarrowed>,
 ) {
   await page.getByRole("button", { name: /pokaż filtry/i }).click();
   if (sortBy != null) {
@@ -93,7 +80,7 @@ export async function setAbstractResourceListFilters(
     await page.getByRole("button", { name: /dodaj filtr/i }).click();
     await selectOptionByLabel(page, `Pole #${fieldNumber}`, filter.field);
     await page
-      .getByLabel(`Zawartość pola ${quoteText(filter.field)}`)
+      .getByLabel(`Wartość pola ${quoteText(filter.field)}`)
       .fill(filter.value);
   }
   await page.getByRole("button", { name: /zatwierdź/i }).click();

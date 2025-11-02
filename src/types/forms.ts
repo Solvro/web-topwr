@@ -9,13 +9,14 @@ import type {
 } from "@/schemas";
 
 import type { AppZodObject, RelationDefinitions, ResourceSchema } from "./app";
-
-// import type { DeclinableNoun } from "./polish";
+import type { DeclinableNoun } from "./polish";
 
 export type LoginFormValues = z.infer<typeof LoginSchema>;
 export type FilteredField = z.infer<typeof FilteredFieldSchema>;
 export type SortFiltersFormValues = z.infer<typeof SortFiltersSchema>;
-// & {sortBy: DeclinableNoun | null | undefined;};
+export type SortFiltersFormValuesNarrowed = SortFiltersFormValues & {
+  sortBy: DeclinableNoun | null | undefined;
+};
 
 /** Picks from the T only those fields which are assignable to U. */
 type KeysOfType<T extends z.ZodRawShape, U extends z.ZodTypeAny> = {
@@ -92,3 +93,5 @@ export interface AbstractResourceFormInputs<T extends Resource> {
   /** Multiselect input boxes for related resources. */
   relationInputs?: RelationDefinitions<T>;
 }
+
+export type FormInputName = keyof AbstractResourceFormInputs<Resource>;

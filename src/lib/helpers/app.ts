@@ -1,9 +1,9 @@
 import type { z } from "zod";
 
-import { SORT_DIRECTION_SEPARATOR } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resource-metadata";
+import { declineNoun } from "@/lib/polish";
 import type {
   Id,
   OrderableResource,
@@ -13,16 +13,10 @@ import type {
   ResourceRelation,
   XToManyResource,
 } from "@/types/app";
-import type { FilterDefinitions } from "@/types/components";
-import type {
-  FilteredField,
-  ResourceSchemaKey,
-  SortFiltersFormValues,
-} from "@/types/forms";
+import type { ResourceSchemaKey } from "@/types/forms";
 
-import { declineNoun } from "../polish";
 import { sanitizeId } from "./transformations";
-import { isEmptyValue, typedEntries, typedKeys } from "./typescript";
+import { typedKeys } from "./typescript";
 
 /** Generates the key for Tanstack query or mutation operations. */
 export const getKey = {
@@ -111,42 +105,3 @@ export function getManagingResourceLabel(resource: Resource) {
   const firstWord = declined.split(" ")[0];
   return `Zarządzanie ${firstWord}`;
 }
-
-/** Parses the filters from client-side search parameters. */
-export const parseFilterSearchParameters = (
-  searchParameters: Record<string, string | undefined>,
-  filterDefinitions: FilterDefinitions,
-): FilteredField[] =>
-  typedEntries(searchParameters).reduce<FilteredField[]>(
-    (filters, [field, value]) => {
-      if (
-        !isEmptyValue(field) &&
-        field in filterDefinitions &&
-        !isEmptyValue(value)
-      ) {
-        filters.push({ field, value });
-      }
-      return filters;
-    },
-    [],
-  );
-
-/** Converts the sort filter values into search parameters. */
-export const getSearchParametersFromSortFilters = (
-  values: SortFiltersFormValues,
-) => {
-  const searchParameters = new URLSearchParams();
-  if (values.sortBy != null) {
-    searchParameters.set(
-      "sort",
-      `${values.sortDirection}${SORT_DIRECTION_SEPARATOR}${values.sortBy}`,
-    );
-  }
-  for (const filter of values.filters) {
-    if (isEmptyValue(filter.field) || isEmptyValue(filter.value)) {
-      continue;
-    }
-    searchParameters.set(filter.field, filter.value);
-  }
-  return searchParameters;
-};

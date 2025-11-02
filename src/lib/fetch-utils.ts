@@ -1,10 +1,12 @@
 import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
+import {
+  getRecursiveRelations,
+  getResourceMetadata,
+  removeLeadingSlash,
+} from "@/lib/helpers";
 import { getAuthState } from "@/stores/auth";
 import type { ErrorResponse, SuccessResponse } from "@/types/api";
-
-import { removeLeadingSlash } from "./helpers";
-import { getRecursiveRelations, getResourceMetadata } from "./helpers/app";
 
 interface BaseRequestOptions<T extends Resource>
   extends Omit<RequestInit, "headers" | "method" | "body"> {

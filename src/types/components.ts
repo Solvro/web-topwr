@@ -18,7 +18,7 @@ export type FilterDefinitions = Record<
           type: FilterType.Select;
         })
       | {
-          type: FilterType.Text;
+          type: FilterType.Text | FilterType.Checkbox;
         }
     )
 >;

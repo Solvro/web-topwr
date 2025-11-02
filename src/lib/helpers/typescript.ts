@@ -1,5 +1,10 @@
 import { SortDirection } from "@/config/enums";
+import {
+  NOUN_PHRASE_TRANSFORMATIONS,
+  SIMPLE_NOUN_DECLENSIONS,
+} from "@/config/polish";
 import type { ValueOf } from "@/types/helpers";
+import type { DeclinableNoun } from "@/types/polish";
 
 type EnumerableObject = Record<string, unknown> | unknown[];
 
@@ -25,3 +30,7 @@ export const isUnsetEnumField = (value: unknown): boolean =>
 
 export const isValidSortDirection = (value: unknown): value is SortDirection =>
   value === SortDirection.Ascending || value === SortDirection.Descending;
+
+export const isDeclinableNoun = (value: unknown): value is DeclinableNoun =>
+  typeof value === "string" &&
+  (value in SIMPLE_NOUN_DECLENSIONS || value in NOUN_PHRASE_TRANSFORMATIONS);

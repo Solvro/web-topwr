@@ -1,70 +1,17 @@
-import { UNFILTERABLE_INPUT_TYPES } from "@/config/constants";
-import { FilterType } from "@/config/enums";
-import type { Resource } from "@/config/enums";
+import { getResourceFilterDefinitions } from "@/lib/filter-definitions";
 import {
   fetchResources,
-  getResourceMetadata,
   parseFilterSearchParameters,
   parseSortParameter,
-  typedEntries,
-  typedFromEntries,
 } from "@/lib/helpers";
-import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { RoutableResource } from "@/types/app";
-import type { FilterDefinitions } from "@/types/components";
-import type {
-  FormInputBase,
-  SelectInputOptions,
-  SortFiltersFormValues,
-} from "@/types/forms";
-import type { ValueOf } from "@/types/helpers";
+import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 import type { ResourceDeclinableField } from "@/types/polish";
 
 import { BackToHomeButton } from "../back-to-home-button";
 import { CreateButton } from "../create-button";
 import { InfiniteScroller } from "./infinite-scroller";
 import { SortFiltersPopover } from "./sort-filters/sort-filters-popover";
-
-const getResourceFilterDefinitions = (
-  resource: Resource,
-  logMissingFields = false,
-): FilterDefinitions => {
-  const metadata = getResourceMetadata(resource);
-  const { relationInputs, ...inputs } = metadata.form.inputs;
-  const inputEntries = typedEntries(inputs).flatMap(([inputType, input]) => {
-    if (input == null || UNFILTERABLE_INPUT_TYPES.has(inputType)) {
-      return [];
-    }
-    const type =
-      inputType === "selectInputs" ? FilterType.Select : FilterType.Text;
-    return typedEntries(
-      input as Record<
-        string,
-        FormInputBase | (FormInputBase & SelectInputOptions)
-      >,
-    ).map(
-      ([key, value]) =>
-        [
-          key,
-          {
-            type,
-            ...value,
-          },
-        ] as [string, ValueOf<FilterDefinitions>],
-    );
-  });
-  const simpleInputs = typedFromEntries<FilterDefinitions>(inputEntries);
-  if (logMissingFields) {
-    const schema = RESOURCE_SCHEMAS[resource];
-    for (const field in schema.shape) {
-      if (!(field in simpleInputs)) {
-        console.warn("Missing label for filter field", { resource, field });
-      }
-    }
-  }
-  // TODO: handle relation inputs
-  return simpleInputs;
-};
 
 export async function AbstractResourceList<T extends RoutableResource>({
   resource,
@@ -77,8 +24,8 @@ export async function AbstractResourceList<T extends RoutableResource>({
 }) {
   const searchParameters = await searchParams;
 
-  const filterDefinitions = getResourceFilterDefinitions(resource);
-  const sortFilters: Partial<SortFiltersFormValues> = {
+  const filterDefinitions = await getResourceFilterDefinitions(resource);
+  const sortFilters: Partial<SortFiltersFormValuesNarrowed> = {
     ...parseSortParameter(searchParameters.sort, sortableFields),
     filters: parseFilterSearchParameters(searchParameters, filterDefinitions),
   };

@@ -2,13 +2,17 @@ import { getErrorMessage } from "@/lib/error-handling";
 import { toTitleCase } from "@/lib/helpers";
 import type { AuthState } from "@/types/api";
 import type {
-  AbstractResourceFormInputs,
-  SortFiltersFormValues,
+  FormInputName,
+  SortFiltersFormValuesNarrowed,
 } from "@/types/forms";
 import type { Declensions, DeclinableNoun } from "@/types/polish";
 
-import { ApplicationError, DeclensionCase, SortDirection } from "./enums";
-import type { Resource } from "./enums";
+import {
+  ApplicationError,
+  DeclensionCase,
+  FilterType,
+  SortDirection,
+} from "./enums";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
@@ -62,16 +66,21 @@ export const SORT_FILTER_DEFAULT_VALUES = {
   sortBy: null,
   sortDirection: SortDirection.Ascending,
   filters: [],
-} satisfies SortFiltersFormValues;
+} satisfies SortFiltersFormValuesNarrowed;
 
-export const UNFILTERABLE_INPUT_TYPES = new Set<
-  keyof AbstractResourceFormInputs<Resource>
->(["imageInputs"]);
+export const UNFILTERABLE_INPUT_TYPES = new Set<FormInputName>(["imageInputs"]);
 
 export const SORT_FILTER_PLACEHOLDER = "Wybierz pole";
 
 /** The delimiter used to separate sort direction and sort by field. */
 export const SORT_DIRECTION_SEPARATOR = ".";
+
+export const FILTER_TYPE_MAPPINGS: Partial<Record<FormInputName, FilterType>> =
+  {
+    selectInputs: FilterType.Select,
+    checkboxInputs: FilterType.Checkbox,
+    relationInputs: FilterType.Relation,
+  };
 
 // #endregion
 
