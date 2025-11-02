@@ -1,16 +1,18 @@
 import {
-  IMPLICIT_SORT_BY_ATTRIBUTES,
+  IMPLICIT_SORTABLE_FIELDS,
   LIST_RESULTS_PER_PAGE,
   SORT_DIRECTION_SEPARATOR,
+  SORT_FILTER_DEFAULT_VALUES,
 } from "@/config/constants";
 import { FilterType, SortDirection } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { FetchError, fetchQuery } from "@/lib/fetch-utils";
 import type { GetResourcesResponse } from "@/types/api";
-import type { FilterOptions } from "@/types/components";
+import type { FilterDefinitions } from "@/types/components";
+import type { FilteredField, SortFiltersFormValues } from "@/types/forms";
 
 import { fetchMutation } from "../fetch-utils";
-import { isEmptyValue, isValidSortDirection, typedEntries } from "./typescript";
+import { isEmptyValue, isValidSortDirection } from "./typescript";
 
 /**
  * Determines the fetch configuration to use based on the provided arguments.
@@ -82,7 +84,7 @@ export const parseSortParameter = (
   }
   if (
     sortableFields != null &&
-    ![...IMPLICIT_SORT_BY_ATTRIBUTES, ...sortableFields].includes(sortBy)
+    ![...IMPLICIT_SORTABLE_FIELDS, ...sortableFields].includes(sortBy)
   ) {
     return null;
   }
@@ -90,43 +92,46 @@ export const parseSortParameter = (
 };
 
 /** Converts the client-side search parameters to backend-compatible filters. */
-const sanitizeFilterParameters = (
-  filterOptions: FilterOptions,
-  searchParameters: Record<string, string | undefined>,
+export const sanitizeFilteredFields = (
+  filterDefinitions: FilterDefinitions,
+  filters: FilteredField[],
 ) => {
-  const filters = new URLSearchParams();
-  for (const [key, value] of typedEntries(searchParameters)) {
+  const searchParameters = new URLSearchParams();
+  for (const { field, value } of filters) {
     if (isEmptyValue(value)) {
       continue;
     }
-    if (!(key in filterOptions)) {
-      console.warn("Ignoring unknown search parameter", { key, value });
+    if (!(field in filterDefinitions)) {
+      if (process.env.NODE_ENV !== "test") {
+        console.warn("Ignoring unknown filter parameter", { field, value });
+      }
       continue;
     }
-    const options = filterOptions[key];
+    const options = filterDefinitions[field];
     const filterValue = options.type === FilterType.Text ? `%${value}%` : value;
-    filters.set(key, filterValue);
+    searchParameters.set(field, filterValue);
   }
-  return filters;
+  return searchParameters;
 };
 
 export async function fetchResources<T extends Resource>(
   resource: T,
   page = 1,
-  allSearchParameters: Record<string, string | undefined> = {},
-  filterOptions: FilterOptions = {},
+  {
+    sortDirection = SORT_FILTER_DEFAULT_VALUES.sortDirection,
+    sortBy = SORT_FILTER_DEFAULT_VALUES.sortBy,
+    filters = SORT_FILTER_DEFAULT_VALUES.filters,
+  }: Partial<SortFiltersFormValues> = {},
+  filterDefinitions: FilterDefinitions = {},
 ): Promise<GetResourcesResponse<T>> {
-  const { sort: sortParameter, ...searchParameters } = allSearchParameters;
-  const parsedSort = parseSortParameter(sortParameter);
-  const sort =
-    parsedSort == null
-      ? "+order"
-      : `${parsedSort.sortDirection === SortDirection.Ascending ? "+" : "-"}${parsedSort.sortBy}`;
+  const sort = `${sortDirection === SortDirection.Ascending ? "+" : "-"}${sortBy ?? "order"}`;
 
-  const filters = sanitizeFilterParameters(filterOptions, searchParameters);
+  const search = sanitizeFilteredFields(filterDefinitions, filters);
+  search.set("page", String(page));
+  search.set("limit", String(LIST_RESULTS_PER_PAGE));
+  search.set("sort", sort);
 
-  const filterString = filters.size === 0 ? "" : `${filters}&`;
-  const searchString = `?${filterString}page=${String(page)}&limit=${String(LIST_RESULTS_PER_PAGE)}&sort=${sort}`;
+  const searchString = `?${search.toString()}`;
 
   try {
     const result = await fetchQuery<GetResourcesResponse<T>>(searchString, {

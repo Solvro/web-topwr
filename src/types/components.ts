@@ -9,7 +9,8 @@ import type {
   SelectInputOptions,
 } from "./forms";
 
-export type FilterOptions = Record<
+/** The definitions of all filterable fields for a given resource. */
+export type FilterDefinitions = Record<
   string,
   FormInputBase &
     (

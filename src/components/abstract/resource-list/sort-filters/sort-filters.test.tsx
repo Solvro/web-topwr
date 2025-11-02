@@ -1,34 +1,24 @@
 import { render, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { ReadonlyURLSearchParams } from "next/navigation";
 import assert from "node:assert/strict";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import {
+  IMPLICIT_SORTABLE_FIELDS,
   SORT_DIRECTION_NAMES,
   SORT_FILTER_DEFAULT_VALUES,
   SORT_FILTER_LABEL_DECLENSION_CASES,
   SORT_FILTER_PLACEHOLDER,
 } from "@/config/constants";
 import { FilterType, SortDirection } from "@/config/enums";
-import {
-  getSearchParametersFromSortFilters,
-  isEmptyValue,
-} from "@/lib/helpers";
+import { isEmptyValue } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import { MOCK_USE_SEARCH_PARAMS } from "@/tests/mocks/functions";
 import type { SortFiltersFormValues } from "@/types/forms";
 import type { DeclinableNoun } from "@/types/polish";
 
 import { SortFilters } from "./sort-filters";
 
-const SEARCH_FILTERS_OPTIONS = {
-  sortBy: ["description"],
-  searchField: ["description"],
-} satisfies {
-  sortBy: DeclinableNoun[];
-  searchField: DeclinableNoun[];
-};
+const MOCK_SORTABLE_FIELDS = ["description"] satisfies DeclinableNoun[];
 
 const MOCK_FORM_VALUES = {
   sortBy: "description",
@@ -41,14 +31,12 @@ const MOCK_FORM_VALUES = {
   ],
 } satisfies SortFiltersFormValues;
 
-const MOCK_SEARCH_PARAMS = getSearchParametersFromSortFilters(MOCK_FORM_VALUES);
-
 function renderSortFilters(defaultValues?: SortFiltersFormValues) {
   const user = userEvent.setup();
   const screen = render(
     <SortFilters
-      sortableFields={SEARCH_FILTERS_OPTIONS.sortBy}
-      filterableFields={{
+      sortableFields={MOCK_SORTABLE_FIELDS}
+      filterDefinitions={{
         description: { type: FilterType.Text, label: "Opis" },
       }}
       defaultValues={defaultValues}
@@ -75,12 +63,6 @@ function renderSortFilters(defaultValues?: SortFiltersFormValues) {
     buttonReset,
     buttonSubmit,
   };
-}
-
-function useMockedSearchParameters() {
-  vi.mocked(MOCK_USE_SEARCH_PARAMS).mockReturnValue(
-    new ReadonlyURLSearchParams(MOCK_SEARCH_PARAMS),
-  );
 }
 
 function expectFormValues(
@@ -113,7 +95,10 @@ describe("Abstract list sort filters", () => {
     const siblingSelect = parent?.querySelector("select");
     expect(siblingSelect).toBeInTheDocument();
     assert.ok(siblingSelect != null); // so that TS knows siblingSelect is not null, despite the previous expect
-    for (const sortByOption of SEARCH_FILTERS_OPTIONS.sortBy) {
+    for (const sortByOption of [
+      ...MOCK_SORTABLE_FIELDS,
+      ...IMPLICIT_SORTABLE_FIELDS,
+    ]) {
       const label = declineNoun(sortByOption, {
         case: SORT_FILTER_LABEL_DECLENSION_CASES.sortBy,
       });
@@ -126,7 +111,6 @@ describe("Abstract list sort filters", () => {
   });
 
   it("should populate initial values from search params", () => {
-    useMockedSearchParameters();
     const form = renderSortFilters(MOCK_FORM_VALUES);
     expectFormValues(form, MOCK_FORM_VALUES);
   });

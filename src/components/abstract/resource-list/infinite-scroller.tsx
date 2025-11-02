@@ -12,6 +12,8 @@ import type {
   ResourceDataType,
   RoutableResource,
 } from "@/types/app";
+import type { FilterDefinitions } from "@/types/components";
+import type { SortFiltersFormValues } from "@/types/forms";
 
 import { AbstractResourceListItems } from "./item";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
@@ -19,19 +21,25 @@ import { OrderableItemWrapper } from "./orderable-item-wrapper";
 export function InfiniteScroller<T extends RoutableResource>({
   resource,
   initialData,
-  searchParameters = {},
+  filterDefinitions = {},
+  sortFilters = {},
 }: {
   resource: T;
   initialData: GetResourcesResponse<T>;
-  searchParameters?: Record<string, string | undefined>;
+  filterDefinitions?: FilterDefinitions;
+  sortFilters?: Partial<SortFiltersFormValues>;
 }) {
   const { ref, inView } = useInView();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: [getKey.query.resourceList(resource), searchParameters],
+      queryKey: [
+        getKey.query.resourceList(resource),
+        sortFilters,
+        filterDefinitions,
+      ],
       queryFn: async ({ pageParam }) =>
-        fetchResources(resource, pageParam, searchParameters),
+        fetchResources(resource, pageParam, sortFilters, filterDefinitions),
       initialPageParam: 1,
       getPreviousPageParam: ({ meta }) =>
         meta.currentPage > meta.firstPage ? meta.currentPage - 1 : undefined,

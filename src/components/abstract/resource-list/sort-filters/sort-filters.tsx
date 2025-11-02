@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  IMPLICIT_SORT_BY_ATTRIBUTES,
+  IMPLICIT_SORTABLE_FIELDS,
   SORT_DIRECTION_NAMES,
   SORT_FILTER_DEFAULT_VALUES,
   SORT_FILTER_LABEL_DECLENSION_CASES,
@@ -45,7 +45,7 @@ import {
 import { declineNoun } from "@/lib/polish";
 import { cn } from "@/lib/utils";
 import { SortFiltersSchema } from "@/schemas";
-import type { FilterOptions, LayoutProps } from "@/types/components";
+import type { FilterDefinitions, LayoutProps } from "@/types/components";
 import type { SortFiltersFormValues } from "@/types/forms";
 import type { DeclinableNoun } from "@/types/polish";
 
@@ -73,18 +73,18 @@ function FieldGroup({
 function FilterValueField({
   control,
   index,
-  filterableFields,
+  filterDefinitions,
 }: {
   control: Control<SortFiltersFormValues>;
   index: number;
-  filterableFields: FilterOptions;
+  filterDefinitions: FilterDefinitions;
 }) {
   const fieldName = useWatch({
     name: `filters.${index}.field`,
     control,
   });
 
-  const filterOptions = filterableFields[fieldName];
+  const filterDefinition = filterDefinitions[fieldName];
   const labelBase = "Zawartość pola";
 
   return (
@@ -103,7 +103,7 @@ function FilterValueField({
             <FormLabel>
               {labelBase} {quoteText(fieldName)}
             </FormLabel>
-            {filterOptions.type === FilterType.Select ? (
+            {filterDefinition.type === FilterType.Select ? (
               <Select
                 value={field.value}
                 onValueChange={(value) => {
@@ -116,7 +116,7 @@ function FilterValueField({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectOptions input={filterOptions} />
+                  <SelectOptions input={filterDefinition} />
                 </SelectContent>
               </Select>
             ) : (
@@ -140,12 +140,12 @@ function FilterValueField({
 
 export function SortFilters({
   sortableFields = [],
-  filterableFields = {},
+  filterDefinitions = {},
   onChangeFilters,
   defaultValues,
 }: {
   sortableFields?: readonly DeclinableNoun[];
-  filterableFields?: FilterOptions;
+  filterDefinitions?: FilterDefinitions;
   onChangeFilters?: () => void;
   defaultValues?: Partial<SortFiltersFormValues>;
 }) {
@@ -157,7 +157,7 @@ export function SortFilters({
   const filters = useFieldArray({ control: form.control, name: "filters" });
 
   const sortLabels: [string, string][] = [
-    ...IMPLICIT_SORT_BY_ATTRIBUTES,
+    ...IMPLICIT_SORTABLE_FIELDS,
     ...sortableFields,
   ].map((field) => [
     field,
@@ -261,10 +261,10 @@ export function SortFilters({
                     </FormControl>
                     <SelectContent>
                       <SelectClear {...field} />
-                      {typedEntries(filterableFields).map(
-                        ([filterField, filterOptions]) => (
+                      {typedEntries(filterDefinitions).map(
+                        ([filterField, { label }]) => (
                           <SelectItem key={filterField} value={filterField}>
-                            {filterOptions.label}
+                            {label}
                           </SelectItem>
                         ),
                       )}
@@ -278,7 +278,7 @@ export function SortFilters({
               <FilterValueField
                 control={form.control}
                 index={index}
-                filterableFields={filterableFields}
+                filterDefinitions={filterDefinitions}
               />
               <Button
                 type="button"

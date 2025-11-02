@@ -13,7 +13,7 @@ import type {
   ResourceRelation,
   XToManyResource,
 } from "@/types/app";
-import type { FilterOptions } from "@/types/components";
+import type { FilterDefinitions } from "@/types/components";
 import type {
   FilteredField,
   ResourceSchemaKey,
@@ -115,15 +115,16 @@ export function getManagingResourceLabel(resource: Resource) {
 /** Parses the filters from client-side search parameters. */
 export const parseFilterSearchParameters = (
   searchParameters: Record<string, string | undefined>,
-  filterOptions: FilterOptions,
+  filterDefinitions: FilterDefinitions,
 ): FilteredField[] =>
   typedEntries(searchParameters).reduce<FilteredField[]>(
-    (filters, [key, value]) => {
-      if (key in filterOptions && !isEmptyValue(value)) {
-        filters.push({
-          field: key,
-          value,
-        });
+    (filters, [field, value]) => {
+      if (
+        !isEmptyValue(field) &&
+        field in filterDefinitions &&
+        !isEmptyValue(value)
+      ) {
+        filters.push({ field, value });
       }
       return filters;
     },

@@ -2,7 +2,7 @@ import { expect } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import assert from "node:assert/strict";
 
-import type { IMPLICIT_SORT_BY_ATTRIBUTES } from "@/config/constants";
+import type { IMPLICIT_SORTABLE_FIELDS } from "@/config/constants";
 import {
   SORT_DIRECTION_NAMES,
   SORT_FILTER_DEFAULT_VALUES,
@@ -52,7 +52,7 @@ export async function selectOptionByLabel(
   await expect(selectTrigger).toHaveText(optionLabel);
 }
 
-type ImplicitSortByAttribute = (typeof IMPLICIT_SORT_BY_ATTRIBUTES)[number];
+type ImplicitSortByAttribute = (typeof IMPLICIT_SORTABLE_FIELDS)[number];
 type SortKeys = "sortBy" | "sortDirection";
 type Sort = Pick<SortFiltersFormValues, SortKeys> & {
   sortBy: ImplicitSortByAttribute;

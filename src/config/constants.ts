@@ -49,7 +49,7 @@ export const SORT_DIRECTION_NAMES = {
   desc: "malejącej",
 } satisfies Record<SortDirection, string>;
 
-export const IMPLICIT_SORT_BY_ATTRIBUTES = [
+export const IMPLICIT_SORTABLE_FIELDS = [
   "createdAt",
   "updatedAt",
 ] satisfies DeclinableNoun[];

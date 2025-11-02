@@ -10,9 +10,12 @@ import type {
 
 import type { AppZodObject, RelationDefinitions, ResourceSchema } from "./app";
 
+// import type { DeclinableNoun } from "./polish";
+
 export type LoginFormValues = z.infer<typeof LoginSchema>;
 export type FilteredField = z.infer<typeof FilteredFieldSchema>;
 export type SortFiltersFormValues = z.infer<typeof SortFiltersSchema>;
+// & {sortBy: DeclinableNoun | null | undefined;};
 
 /** Picks from the T only those fields which are assignable to U. */
 type KeysOfType<T extends z.ZodRawShape, U extends z.ZodTypeAny> = {

@@ -11,8 +11,12 @@ import {
 } from "@/lib/helpers";
 import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { RoutableResource } from "@/types/app";
-import type { FilterOptions } from "@/types/components";
-import type { FormInputBase, SelectInputOptions } from "@/types/forms";
+import type { FilterDefinitions } from "@/types/components";
+import type {
+  FormInputBase,
+  SelectInputOptions,
+  SortFiltersFormValues,
+} from "@/types/forms";
 import type { ValueOf } from "@/types/helpers";
 import type { ResourceDeclinableField } from "@/types/polish";
 
@@ -21,10 +25,10 @@ import { CreateButton } from "../create-button";
 import { InfiniteScroller } from "./infinite-scroller";
 import { SortFiltersPopover } from "./sort-filters/sort-filters-popover";
 
-const getResourceFieldFilterOptions = (
+const getResourceFilterDefinitions = (
   resource: Resource,
   logMissingFields = false,
-): FilterOptions => {
+): FilterDefinitions => {
   const metadata = getResourceMetadata(resource);
   const { relationInputs, ...inputs } = metadata.form.inputs;
   const inputEntries = typedEntries(inputs).flatMap(([inputType, input]) => {
@@ -46,10 +50,10 @@ const getResourceFieldFilterOptions = (
             type,
             ...value,
           },
-        ] as [string, ValueOf<FilterOptions>],
+        ] as [string, ValueOf<FilterDefinitions>],
     );
   });
-  const simpleInputs = typedFromEntries<FilterOptions>(inputEntries);
+  const simpleInputs = typedFromEntries<FilterDefinitions>(inputEntries);
   if (logMissingFields) {
     const schema = RESOURCE_SCHEMAS[resource];
     for (const field in schema.shape) {
@@ -71,34 +75,34 @@ export async function AbstractResourceList<T extends RoutableResource>({
   sortableFields?: ResourceDeclinableField<T>[];
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
-  const page = 1;
   const searchParameters = await searchParams;
 
-  const filterOptions = getResourceFieldFilterOptions(resource);
+  const filterDefinitions = getResourceFilterDefinitions(resource);
+  const sortFilters: Partial<SortFiltersFormValues> = {
+    ...parseSortParameter(searchParameters.sort, sortableFields),
+    filters: parseFilterSearchParameters(searchParameters, filterDefinitions),
+  };
+
   const firstPageData = await fetchResources(
     resource,
-    page,
-    searchParameters,
-    filterOptions,
+    1,
+    sortFilters,
+    filterDefinitions,
   );
-
-  const initialSortFilters = {
-    ...parseSortParameter(searchParameters.sort, sortableFields),
-    filters: parseFilterSearchParameters(searchParameters, filterOptions),
-  };
 
   return (
     <div className="flex h-full flex-col">
       <SortFiltersPopover
         sortableFields={sortableFields}
-        filterableFields={filterOptions}
-        defaultValues={initialSortFilters}
+        filterDefinitions={filterDefinitions}
+        defaultValues={sortFilters}
       />
       <div className="w-full grow basis-0 overflow-y-auto pr-2">
         <InfiniteScroller
           resource={resource}
           initialData={firstPageData}
-          searchParameters={await searchParams}
+          filterDefinitions={filterDefinitions}
+          sortFilters={sortFilters}
         />
       </div>
       <div className="mt-4 flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
