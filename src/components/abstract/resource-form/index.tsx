@@ -4,11 +4,13 @@ import { ApiImage } from "@/components/api-image/server";
 import { RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
-import { tryParseNumber, typedEntries, typedFromEntries } from "@/lib/helpers";
 import {
   getResourceMetadata,
   getResourceRelationDefinitions,
-} from "@/lib/helpers/app";
+  tryParseNumber,
+  typedEntries,
+  typedFromEntries,
+} from "@/lib/helpers";
 import type {
   ResourceDataType,
   ResourceDefaultValues,

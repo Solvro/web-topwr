@@ -2,6 +2,8 @@
 
 import type { ControllerRenderProps } from "react-hook-form";
 
+import { isEmptyValue } from "@/lib/helpers";
+
 import { Button } from "./ui/button";
 import { SelectSeparator } from "./ui/select";
 
@@ -21,7 +23,7 @@ export function SelectClear({
         onClick={() => {
           onChange(resetValue);
         }}
-        disabled={value === ""}
+        disabled={isEmptyValue(value)}
       >
         wyczyść
       </Button>

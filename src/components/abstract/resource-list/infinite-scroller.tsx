@@ -5,8 +5,7 @@ import { useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { Button } from "@/components/ui/button";
-import { fetchResources } from "@/lib/helpers";
-import { getKey, isOrderableResource } from "@/lib/helpers/app";
+import { fetchResources, getKey, isOrderableResource } from "@/lib/helpers";
 import type { GetResourcesResponse } from "@/types/api";
 import type {
   OrderableResource,

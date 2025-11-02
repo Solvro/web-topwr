@@ -36,12 +36,12 @@ import {
 } from "@/config/constants";
 import { FilterType } from "@/config/enums";
 import {
+  getSearchParametersFromSortFilters,
   isEmptyValue,
   quoteText,
   tryParseNumber,
   typedEntries,
 } from "@/lib/helpers";
-import { getSearchParametersFromSortFilters } from "@/lib/helpers/app";
 import { declineNoun } from "@/lib/polish";
 import { cn } from "@/lib/utils";
 import { SortFiltersSchema } from "@/schemas";

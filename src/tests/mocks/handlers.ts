@@ -3,7 +3,7 @@ import { HttpResponse, http } from "msw";
 
 import { Resource } from "@/config/enums";
 import { env } from "@/config/env";
-import { getResourceMetadata } from "@/lib/helpers/app";
+import { getResourceMetadata } from "@/lib/helpers";
 import type {
   ApiCalendarEvent,
   ErrorResponse,

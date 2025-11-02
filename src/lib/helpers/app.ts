@@ -1,6 +1,7 @@
 import type { z } from "zod";
 
-import { DeclensionCase, SortDirection } from "@/config/enums";
+import { SORT_DIRECTION_SEPARATOR } from "@/config/constants";
+import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resource-metadata";
 import type {
@@ -20,8 +21,8 @@ import type {
 } from "@/types/forms";
 
 import { declineNoun } from "../polish";
-import { isEmptyValue, sanitizeId } from "./transformations";
-import { typedEntries, typedKeys } from "./typescript";
+import { sanitizeId } from "./transformations";
+import { isEmptyValue, typedEntries, typedKeys } from "./typescript";
 
 /** Generates the key for Tanstack query or mutation operations. */
 export const getKey = {
@@ -111,9 +112,6 @@ export function getManagingResourceLabel(resource: Resource) {
   return `Zarządzanie ${firstWord}`;
 }
 
-export const isUnsetEnumField = (value: unknown): boolean =>
-  value == null || Number(value) < 0;
-
 /** Parses the filters from client-side search parameters. */
 export const parseFilterSearchParameters = (
   searchParameters: Record<string, string | undefined>,
@@ -138,12 +136,13 @@ export const getSearchParametersFromSortFilters = (
 ) => {
   const searchParameters = new URLSearchParams();
   if (values.sortBy != null) {
-    const sortDirection =
-      values.sortDirection === SortDirection.Ascending ? "+" : "-";
-    searchParameters.set("sort", `${sortDirection}${values.sortBy}`);
+    searchParameters.set(
+      "sort",
+      `${values.sortDirection}${SORT_DIRECTION_SEPARATOR}${values.sortBy}`,
+    );
   }
   for (const filter of values.filters) {
-    if (isEmptyValue(filter.field)) {
+    if (isEmptyValue(filter.field) || isEmptyValue(filter.value)) {
       continue;
     }
     searchParameters.set(filter.field, filter.value);

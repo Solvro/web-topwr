@@ -11,8 +11,7 @@ import {
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
-import { quoteText } from "@/lib/helpers";
-import { getSearchParametersFromSortFilters } from "@/lib/helpers/app";
+import { getSearchParametersFromSortFilters, quoteText } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { SortFiltersFormValues } from "@/types/forms";
 

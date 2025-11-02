@@ -11,8 +11,10 @@ import {
   SORT_FILTER_PLACEHOLDER,
 } from "@/config/constants";
 import { FilterType, SortDirection } from "@/config/enums";
-import { isEmptyValue } from "@/lib/helpers";
-import { getSearchParametersFromSortFilters } from "@/lib/helpers/app";
+import {
+  getSearchParametersFromSortFilters,
+  isEmptyValue,
+} from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import { MOCK_USE_SEARCH_PARAMS } from "@/tests/mocks/functions";
 import type { SortFiltersFormValues } from "@/types/forms";

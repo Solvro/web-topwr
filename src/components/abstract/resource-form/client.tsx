@@ -42,13 +42,15 @@ import type { RelationContext } from "@/hooks/use-abstract-resource-form";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { renderAbstractResourceForm } from "@/lib/actions";
 import { fetchMutation } from "@/lib/fetch-utils";
-import { camelToSnakeCase, sanitizeId, toTitleCase } from "@/lib/helpers";
 import {
+  camelToSnakeCase,
   getResourceMetadata,
   getResourcePk,
   getResourceQueryName,
   getResourceRelationDefinitions,
-} from "@/lib/helpers/app";
+  sanitizeId,
+  toTitleCase,
+} from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import { cn } from "@/lib/utils";
 import { RESOURCE_SCHEMAS } from "@/schemas";

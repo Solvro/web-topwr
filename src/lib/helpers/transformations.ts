@@ -48,8 +48,3 @@ export const camelToSnakeCase = (camelCase: string): string =>
  * @example quoteText("Hello") === „Hello”
  */
 export const quoteText = (text: string): string => `„${text}”`;
-
-/** Checks if a value is empty (null, undefined, or whitespace). */
-export const isEmptyValue = (
-  value: string | null | undefined,
-): value is "" | null | undefined => value == null || value.trim() === "";

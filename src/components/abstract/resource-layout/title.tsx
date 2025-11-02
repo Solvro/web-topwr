@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 
 import type { Resource } from "@/config/enums";
-import { getManagingResourceLabel } from "@/lib/helpers/app";
+import { getManagingResourceLabel } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 
 function getTitle(resource: Resource, pathname: string): string {

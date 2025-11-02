@@ -3,14 +3,12 @@ import { FilterType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import {
   fetchResources,
+  getResourceMetadata,
+  parseFilterSearchParameters,
   parseSortParameter,
   typedEntries,
   typedFromEntries,
 } from "@/lib/helpers";
-import {
-  getResourceMetadata,
-  parseFilterSearchParameters,
-} from "@/lib/helpers/app";
 import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { RoutableResource } from "@/types/app";
 import type { FilterOptions } from "@/types/components";
@@ -85,7 +83,7 @@ export async function AbstractResourceList<T extends RoutableResource>({
   );
 
   const initialSortFilters = {
-    ...parseSortParameter(searchParameters.sort),
+    ...parseSortParameter(searchParameters.sort, sortableFields),
     filters: parseFilterSearchParameters(searchParameters, filterOptions),
   };
 

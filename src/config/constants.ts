@@ -70,6 +70,9 @@ export const UNFILTERABLE_INPUT_TYPES = new Set<
 
 export const SORT_FILTER_PLACEHOLDER = "Wybierz pole";
 
+/** The delimiter used to separate sort direction and sort by field. */
+export const SORT_DIRECTION_SEPARATOR = ".";
+
 // #endregion
 
 export const TOAST_MESSAGES = {

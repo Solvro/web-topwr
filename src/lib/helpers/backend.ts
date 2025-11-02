@@ -1,12 +1,16 @@
-import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
+import {
+  IMPLICIT_SORT_BY_ATTRIBUTES,
+  LIST_RESULTS_PER_PAGE,
+  SORT_DIRECTION_SEPARATOR,
+} from "@/config/constants";
 import { FilterType, SortDirection } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { FetchError, fetchQuery } from "@/lib/fetch-utils";
-import { isEmptyValue, typedEntries } from "@/lib/helpers";
 import type { GetResourcesResponse } from "@/types/api";
 import type { FilterOptions } from "@/types/components";
 
 import { fetchMutation } from "../fetch-utils";
+import { isEmptyValue, isValidSortDirection, typedEntries } from "./typescript";
 
 /**
  * Determines the fetch configuration to use based on the provided arguments.
@@ -62,15 +66,27 @@ export async function uploadFile({
 }
 
 /** Parses a string like +field or -field into distinct, URI-encodable values. */
-export const parseSortParameter = (sortParameter: string | undefined) => {
+export const parseSortParameter = (
+  sortParameter: string | undefined,
+  sortableFields?: string[],
+): { sortDirection: SortDirection; sortBy: string } | null => {
   if (isEmptyValue(sortParameter)) {
     return null;
   }
-  const sortBy = sortParameter.replace(/^[-+]/, "");
-  const sortDirection = sortParameter.startsWith("-")
-    ? SortDirection.Descending
-    : SortDirection.Ascending;
-  return { sortBy, sortDirection };
+  const [sortDirection, sortBy] = sortParameter.split(
+    SORT_DIRECTION_SEPARATOR,
+    2,
+  );
+  if (isEmptyValue(sortBy) || !isValidSortDirection(sortDirection)) {
+    return null;
+  }
+  if (
+    sortableFields != null &&
+    ![...IMPLICIT_SORT_BY_ATTRIBUTES, ...sortableFields].includes(sortBy)
+  ) {
+    return null;
+  }
+  return { sortDirection, sortBy };
 };
 
 /** Converts the client-side search parameters to backend-compatible filters. */

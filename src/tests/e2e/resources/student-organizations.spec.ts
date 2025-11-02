@@ -11,7 +11,7 @@ import {
   UniversityBranch,
 } from "@/config/enums";
 import { FetchError, fetchMutation } from "@/lib/fetch-utils";
-import { getResourceMetadata } from "@/lib/helpers/app";
+import { getResourceMetadata } from "@/lib/helpers";
 import { deleteAccessToken, generateAccessToken } from "@/tests/helpers/auth";
 import type { MessageResponse, ModifyResourceResponse } from "@/types/api";
 import type { Id, ResourceDataType, ResourceFormValues } from "@/types/app";
