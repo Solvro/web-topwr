@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import type { RenderResult } from "@testing-library/react";
 import { createStore } from "jotai";
 import type { ComponentType, ReactNode } from "react";
-import { useForm } from "react-hook-form";
+import { type ControllerRenderProps, useForm } from "react-hook-form";
 import { expect } from "vitest";
 
 import { Form, FormField, FormItem } from "@/components/ui/form";
@@ -41,10 +41,7 @@ export function InputComponentWrapper({
   component: Comp,
   initialValue,
 }: {
-  component: ComponentType<{
-    value: string | null;
-    onChange: (value: string | null) => void;
-  }>;
+  component: ComponentType<ControllerRenderProps>;
   initialValue?: string | null;
 }) {
   const form = useForm<{ data: string | null }>({

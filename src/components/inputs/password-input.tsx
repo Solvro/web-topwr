@@ -15,6 +15,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { Toggle } from "@/components/ui/toggle";
 
 export function PasswordInput({
   className,
@@ -27,6 +28,7 @@ export function PasswordInput({
   placeholder?: string;
 } & ControllerRenderProps) {
   const [showPassword, setShowPassword] = useState(false);
+  const labelLowerCase = label.toLowerCase();
   return (
     <FormItem>
       <FormLabel>{label}</FormLabel>
@@ -39,14 +41,17 @@ export function PasswordInput({
           />
         </FormControl>
         <InputGroupButton
-          type="button"
-          variant="ghost"
-          tooltip={`${showPassword ? "Ukryj" : "Pokaż"} ${label.toLowerCase()}`}
-          onClick={() => {
-            setShowPassword((oldValue) => !oldValue);
-          }}
+          asChild
+          tooltip={`${showPassword ? "Ukryj" : "Pokaż"} ${labelLowerCase}`}
         >
-          {showPassword ? <Eye /> : <EyeClosed />}
+          <Toggle
+            size="unset"
+            aria-label={`Pokaż ${labelLowerCase}`}
+            pressed={showPassword}
+            onPressedChange={setShowPassword}
+          >
+            {showPassword ? <Eye /> : <EyeClosed />}
+          </Toggle>
         </InputGroupButton>
       </InputGroup>
 
