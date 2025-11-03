@@ -20,7 +20,7 @@ export function EditButton({
   return (
     <Button
       variant="ghost"
-      className="h-10 w-10"
+      size="icon"
       asChild
       aria-label={`Edytuj ${resourceAccusative}`}
       tooltip="Edytuj"

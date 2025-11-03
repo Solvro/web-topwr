@@ -55,10 +55,11 @@ export function ToggleOrganizationStatusButton({
 
   return (
     <Button
-      variant={isActive ? "destructive" : "ghost"}
+      variant={isActive ? "destructive-ghost" : "ghost"}
       loading={isPending}
       tooltip={tooltip}
       aria-label={label}
+      size="icon"
       onClick={() => {
         toast.promise(
           mutateAsync({
@@ -69,7 +70,6 @@ export function ToggleOrganizationStatusButton({
           TOAST_MESSAGES.object(declensions).toggleArchived(isActive),
         );
       }}
-      className="size-10 border-none shadow-none"
     >
       {isActive ? <Archive /> : <ArchiveRestore />}
     </Button>
