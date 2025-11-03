@@ -1,15 +1,15 @@
 "use client";
 
-import { Provider } from "jotai";
+import { Provider as StoreProvider } from "jotai";
 
 import { QueryProvider } from "@/lib/query-client";
 import { globalStore } from "@/stores/global";
 import type { LayoutProps } from "@/types/components";
 
-export function Providers({ children }: LayoutProps) {
+export function RootProviders({ children }: LayoutProps) {
   return (
-    <Provider store={globalStore}>
+    <StoreProvider store={globalStore}>
       <QueryProvider>{children}</QueryProvider>
-    </Provider>
+    </StoreProvider>
   );
 }

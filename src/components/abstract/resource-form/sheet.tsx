@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/sheet";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
-import { ArfContext } from "@/hooks/use-abstract-resource-form";
-import type { RelationContext } from "@/hooks/use-abstract-resource-form";
+import { ArfRelationContext } from "@/hooks/use-arf-relation";
+import type { ArfRelationContextType } from "@/hooks/use-arf-relation";
 import { getResourcePk, tryParseNumber } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type {
@@ -68,7 +68,7 @@ function AbstractResourceFormSheetContent<T extends Resource>({
     throw new Error("Parent resource ID is missing or invalid.");
   }
 
-  const relationContext: RelationContext<T> = {
+  const relationContext: ArfRelationContextType<T> = {
     parentResource: resource,
     parentResourceId: tryParseNumber(parentResourceId),
     childResource: content.childResource,
@@ -81,15 +81,11 @@ function AbstractResourceFormSheetContent<T extends Resource>({
         <SheetTitle>{sheetTitle}</SheetTitle>
         <SheetDescription>{sheetDescription}</SheetDescription>
       </SheetHeader>
-      <ArfContext.Provider
-        value={{
-          relationContext,
-        }}
-      >
+      <ArfRelationContext.Provider value={relationContext}>
         <Suspense fallback={<AbstractResourceFormSkeleton />}>
           {content.form}
         </Suspense>
-      </ArfContext.Provider>
+      </ArfRelationContext.Provider>
       <SheetFooter className="pt-0">
         <SheetClose asChild>
           <Button variant="outline">Zamknij</Button>

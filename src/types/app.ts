@@ -6,7 +6,11 @@ import type { RESOURCE_METADATA } from "@/config/resource-metadata";
 import type { RESOURCE_SCHEMAS } from "@/schemas";
 
 import type { DatedResource } from "./api";
-import type { AbstractResourceFormInputs, ResourceSchemaKey } from "./forms";
+import type {
+  AbstractResourceFormInputs,
+  ResourceSchemaKey,
+  SelectInputOptions,
+} from "./forms";
 import type { DeclinableNoun } from "./polish";
 
 // Data types
@@ -52,18 +56,21 @@ export type ResourceDataType<T extends Resource> = PossiblyOrderable<
 /** For a given resource `T`, this type returns the union of all resources to which it is related. */
 export type ResourceRelation<T extends Resource> = {
   [R in Resource]: (typeof RESOURCE_METADATA)[R]["form"]["inputs"] extends {
-    relationInputs: Record<infer L, unknown>;
+    relationInputs: Record<Resource & infer L, unknown>;
   }
     ? L
     : never;
 }[T];
+type PivotDataDefinition = {
+  field: string;
+} & ({ relatedResource: Resource } | SelectInputOptions);
 /** Relation definitions between T and L, where T is the main resource and L is the related resource. */
 export type RelationDefinition<T extends Resource, L extends Resource> =
   | {
       type: RelationType.ManyToMany;
       foreignKey?: never;
       label?: DeclinableNoun;
-      pivotData?: Record<string, string | number | boolean>;
+      pivotData?: PivotDataDefinition;
     }
   | {
       type: RelationType.OneToMany;
@@ -86,14 +93,16 @@ export type XToManyResource = {
 
 export type RelationQueryName<T extends XToManyResource> =
   (typeof RESOURCE_METADATA)[T]["queryName"];
-export type QueriedRelations<T extends Resource> = {
+type QueriedRelations<T extends Resource> = {
   [L in XToManyResource as RelationQueryName<L>]: L extends ResourceRelation<T>
     ? ResourceDataType<L>[]
     : never;
 };
+export type ResourceDataWithRelations<R extends Resource> =
+  ResourceDataType<R> & QueriedRelations<R>;
 export type ResourceDefaultValues<R extends Resource> =
   | ResourceFormValues<R>
-  | (ResourceDataType<R> & QueriedRelations<R>);
+  | ResourceDataWithRelations<R>;
 
 // Resource metadata
 export type ResourceMetadata<R extends Resource> = Readonly<{

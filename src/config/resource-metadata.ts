@@ -35,6 +35,12 @@ const SELECT_OPTION_LABELS = {
       [OrganizationStatus.Unknown]: "Nieznany",
     } satisfies Record<OrganizationStatus, string>,
   },
+  GUIDE_ARTICLES: {
+    AUTHOR_ROLES: {
+      [GuideAuthorRole.Author]: "Autor",
+      [GuideAuthorRole.Redactor]: "Redaktor",
+    } satisfies Record<GuideAuthorRole, string>,
+  },
   LINK_TYPE: {
     [LinkType.Default]: "Strona internetowa",
     [LinkType.Discord]: "Discord",
@@ -361,7 +367,9 @@ export const RESOURCE_METADATA = {
             type: RelationType.ManyToMany,
             // TODO: support other roles
             pivotData: {
-              role: GuideAuthorRole.Author,
+              field: "role",
+              optionEnum: GuideAuthorRole,
+              optionLabels: SELECT_OPTION_LABELS.GUIDE_ARTICLES.AUTHOR_ROLES,
             },
           },
         },
@@ -601,7 +609,8 @@ export const RESOURCE_METADATA = {
             type: RelationType.ManyToMany,
             // TODO: support other roles
             pivotData: {
-              role_id: 1,
+              field: "role_id",
+              relatedResource: Resource.Roles,
             },
           },
         },
