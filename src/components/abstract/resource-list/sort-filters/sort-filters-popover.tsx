@@ -18,7 +18,7 @@ export function SortFiltersPopover(props: ComponentProps<typeof SortFilters>) {
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" className="mb-2 self-start">
+        <Button variant="ghost">
           Pokaż filtry <Filter />
         </Button>
       </PopoverTrigger>

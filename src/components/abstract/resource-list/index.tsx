@@ -11,6 +11,7 @@ import type { ResourceDeclinableField } from "@/types/polish";
 import { BackToHomeButton } from "../back-to-home-button";
 import { CreateButton } from "../create-button";
 import { InfiniteScroller } from "./infinite-scroller";
+import { AppliedFiltersCount } from "./sort-filters/applied-filters-count";
 import { SortFiltersPopover } from "./sort-filters/sort-filters-popover";
 
 export async function AbstractResourceList<T extends RoutableResource>({
@@ -41,12 +42,15 @@ export async function AbstractResourceList<T extends RoutableResource>({
   );
 
   return (
-    <div className="flex h-full flex-col">
-      <SortFiltersPopover
-        sortableFields={sortableFields}
-        filterDefinitions={filterDefinitions}
-        defaultValues={sortFilters}
-      />
+    <div className="flex h-full flex-col gap-2">
+      <div className="relative w-fit">
+        <SortFiltersPopover
+          sortableFields={sortableFields}
+          filterDefinitions={filterDefinitions}
+          defaultValues={sortFilters}
+        />
+        <AppliedFiltersCount sortFilters={sortFilters} />
+      </div>
       <div className="w-full grow basis-0 overflow-y-auto pr-2">
         <InfiniteScroller
           resource={resource}
@@ -55,7 +59,7 @@ export async function AbstractResourceList<T extends RoutableResource>({
           sortFilters={sortFilters}
         />
       </div>
-      <div className="mt-4 flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
+      <div className="mt-2 flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
         <CreateButton resource={resource} />
         <BackToHomeButton />
       </div>
