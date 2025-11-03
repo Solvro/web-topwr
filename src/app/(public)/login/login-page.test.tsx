@@ -17,8 +17,10 @@ function renderLoginPage() {
   const screen = renderWithProviders(<LoginPage />);
   const inputEmail = screen.getByLabelText("Email");
   const inputPassword = screen.getByLabelText("Hasło");
-  const inputRememberMe = screen.getByRole("checkbox");
-  const submitButton = screen.getByRole("button");
+  const inputRememberMe = screen.getByRole("checkbox", {
+    name: /zapamiętaj mnie/i,
+  });
+  const submitButton = screen.getByRole("button", { name: /zaloguj się/i });
   return {
     user,
     screen,

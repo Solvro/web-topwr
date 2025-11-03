@@ -6,6 +6,7 @@ import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { PasswordInput } from "@/components/inputs/password-input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -45,6 +46,7 @@ export function LoginForm() {
   return (
     <Form {...form}>
       <form
+        noValidate
         onSubmit={form.handleSubmit((data) =>
           toast.promise(mutateAsync(data), TOAST_MESSAGES.login),
         )}
@@ -59,6 +61,7 @@ export function LoginForm() {
               <FormControl>
                 <Input
                   className="border-primary"
+                  type="email"
                   placeholder="email"
                   {...field}
                 />
@@ -71,18 +74,7 @@ export function LoginForm() {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Hasło</FormLabel>
-              <FormControl>
-                <Input
-                  className="border-primary bg-none"
-                  type="password"
-                  placeholder="hasło"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+            <PasswordInput className="border-primary bg-none" {...field} />
           )}
         />
         <FormField

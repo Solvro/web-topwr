@@ -38,8 +38,8 @@ export function getTestUserCredentials(): Credentials {
 export async function login(page: Page, { email, password }: Credentials) {
   await page.goto("/login");
 
-  await page.getByLabel(/email/i).fill(email);
-  await page.getByLabel(/hasło/i).fill(password);
+  await page.getByRole("textbox", { name: /email/i }).fill(email);
+  await page.getByRole("textbox", { name: /hasło/i }).fill(password);
   await page.getByRole("button", { name: /zaloguj się/i }).click();
 }
 
