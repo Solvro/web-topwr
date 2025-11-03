@@ -1,4 +1,6 @@
 export enum Resource {
+  AboutUs = "about_us",
+  AboutUsLinks = "about_us_links",
   Banners = "banners",
   CalendarEvents = "calendar_events",
   Changes = "changes",
@@ -117,6 +119,7 @@ export enum ApplicationError {
   Forbidden = 403,
   NotFound = 404,
   ServerError = 500,
+  NotImplemented = 501,
 }
 
 export enum SortDirection {

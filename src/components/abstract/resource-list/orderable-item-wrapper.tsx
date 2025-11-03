@@ -28,10 +28,10 @@ import { sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { ModifyResourceResponse } from "@/types/api";
 import type {
+  EditableResource,
   Id,
   OrderableResource,
   ResourceDataType,
-  RoutableResource,
 } from "@/types/app";
 
 import { AbstractResourceListItem, AbstractResourceListItems } from "./item";
@@ -180,7 +180,7 @@ export function OrderableItemWrapper<T extends OrderableResource>({
   );
 }
 
-function SortableItem<T extends RoutableResource>({
+function SortableItem<T extends EditableResource>({
   item,
   resource,
 }: {

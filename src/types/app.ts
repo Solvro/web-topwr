@@ -22,6 +22,14 @@ export type AppZodObject = z.ZodObject<z.ZodRawShape>;
 export type RoutableResource = {
   [R in Resource]: `/${R}` extends Route ? R : never;
 }[Resource];
+export type CreatableResource = {
+  [R in Resource]: `/${R}/create` extends Route ? R : never;
+}[Resource];
+export type EditableResource = {
+  [R in Resource]: `/${R}/edit/${string}` extends Route<`/${R}/edit/${infer _}`>
+    ? R
+    : never;
+}[Resource];
 export type OrderableResource = {
   [R in Resource]: (typeof RESOURCE_METADATA)[R] extends { orderable: true }
     ? R

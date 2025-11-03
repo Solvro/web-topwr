@@ -1,4 +1,3 @@
-import { quoteText } from "@/lib/helpers/transformations";
 import type { Pluralized, RecordIntersection } from "@/types/helpers";
 import type {
   DeclensionData,
@@ -7,8 +6,6 @@ import type {
 } from "@/types/polish";
 
 import { GrammaticalGender, Resource } from "./enums";
-
-const QUOTED_ABOUT_US = quoteText("o nas");
 
 const REUSABLE_DECLENSIONS = {
   link: {
@@ -78,6 +75,28 @@ const REUSABLE_DECLENSIONS = {
 
 /** A dictionary of Polish language declensions of all resource names & other nouns, as well as their genders for use with determiners. */
 export const SIMPLE_NOUN_DECLENSIONS = {
+  [Resource.AboutUs]: {
+    gender: GrammaticalGender.Neuter,
+    singular: {
+      nominative: "dane o nas",
+      genitive: "danych o nas",
+      dative: "danym o nas",
+      accusative: "dane o nas",
+      instrumental: "danymi o nas",
+      locative: "danych o nas",
+      vocative: "dane o nas",
+    },
+    plural: {
+      nominative: "sekcja o nas",
+      genitive: "sekcji o nas",
+      dative: "sekcji o nas",
+      accusative: "sekcję o nas",
+      instrumental: "sekcją o nas",
+      locative: "sekcji o nas",
+      vocative: "sekcjo o nas",
+    },
+  },
+  [Resource.AboutUsLinks]: REUSABLE_DECLENSIONS.link,
   [Resource.Banners]: {
     gender: GrammaticalGender.Masculine,
     singular: {
@@ -335,26 +354,26 @@ export const SIMPLE_NOUN_DECLENSIONS = {
   },
   [Resource.Milestones]: {
     ...REUSABLE_DECLENSIONS.version,
-    plural: {
-      nominative: `wersje w ${QUOTED_ABOUT_US}`,
-      genitive: `wersji w ${QUOTED_ABOUT_US}`,
-      dative: `wersjom w ${QUOTED_ABOUT_US}`,
-      accusative: `wersje w ${QUOTED_ABOUT_US}`,
-      instrumental: `wersjami w ${QUOTED_ABOUT_US}`,
-      locative: `wersjach w ${QUOTED_ABOUT_US}`,
-      vocative: `wersje w ${QUOTED_ABOUT_US}`,
-    },
   },
   [Resource.Versions]: {
-    ...REUSABLE_DECLENSIONS.version,
-    plural: {
-      nominative: "wersje w dzienniku zmian",
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "wersja w dzienniku zmian",
       genitive: "wersji w dzienniku zmian",
-      dative: "wersjom w dzienniku zmian",
-      accusative: "wersje w dzienniku zmian",
-      instrumental: "wersjami w dzienniku zmian",
-      locative: "wersjach w dzienniku zmian",
-      vocative: "wersje w dzienniku zmian",
+      dative: "wersji w dzienniku zmian",
+      accusative: "wersję w dzienniku zmian",
+      instrumental: "wersją w dzienniku zmian",
+      locative: "wersji w dzienniku zmian",
+      vocative: "wersjo w dzienniku zmian",
+    },
+    plural: {
+      nominative: "dziennik zmian",
+      genitive: "dziennika zmian",
+      dative: "dziennikowi zmian",
+      accusative: "dziennika zmian",
+      instrumental: "dziennikiem zmian",
+      locative: "dzienniku zmian",
+      vocative: "dzienniku zmian",
     },
   },
   image: {
@@ -527,6 +546,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "kody ze skrótem",
     },
   },
+  link: REUSABLE_DECLENSIONS.link,
 } satisfies RecordIntersection<
   Resource,
   string,
@@ -542,6 +562,10 @@ export const NOUN_PHRASE_TRANSFORMATIONS = {
   updatedAt: {
     base: "date",
     transform: (base) => `${base} aktualizacji`,
+  },
+  [Resource.AboutUsLinks]: {
+    base: "link",
+    transform: (base) => `${base} do sociali`,
   },
 } satisfies Record<
   string,

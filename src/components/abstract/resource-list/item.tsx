@@ -4,12 +4,12 @@ import { ToggleOrganizationStatusButton } from "@/components/abstract/toggle-sta
 import { Badge } from "@/components/ui/badge";
 import { Resource } from "@/config/enums";
 import { getResourceMetadata } from "@/lib/helpers";
-import type { ListItem, ResourceDataType, RoutableResource } from "@/types/app";
+import type { EditableResource, ListItem, ResourceDataType } from "@/types/app";
 
 import { EditButton } from "../edit-button";
 import { DragHandle } from "./drag-handle";
 
-interface ItemProps<T extends RoutableResource> {
+interface ItemProps<T extends EditableResource> {
   ref?: Ref<HTMLLIElement>;
   item: ResourceDataType<T>;
   resource: T;
@@ -17,11 +17,11 @@ interface ItemProps<T extends RoutableResource> {
 }
 
 const isStudentOrganizationProps = (
-  props: ItemProps<RoutableResource>,
+  props: ItemProps<EditableResource>,
 ): props is ItemProps<Resource.StudentOrganizations> =>
   props.resource === Resource.StudentOrganizations;
 
-export function AbstractResourceListItem<T extends RoutableResource>(
+export function AbstractResourceListItem<T extends EditableResource>(
   props: ItemProps<T>,
 ) {
   const { ref, item, resource, orderable = false } = props;
@@ -69,7 +69,7 @@ export function AbstractResourceListItem<T extends RoutableResource>(
   );
 }
 
-export function AbstractResourceListItems<T extends RoutableResource>({
+export function AbstractResourceListItems<T extends EditableResource>({
   items,
   resource,
   orderable = false,
