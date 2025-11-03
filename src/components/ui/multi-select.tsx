@@ -92,8 +92,11 @@ const multiSelectVariants = cva("m-1 transition-all duration-300 ease-in-out", {
 interface MultiSelectOption {
   /** The text to display for the option. */
   label: string;
-  /** An optional component to render next to the label. */
-  addon?: React.ReactNode;
+  /**
+   * An optional component to render next to the label.
+   * @param toggleOption the function to toggle the option selection
+   */
+  action?: (toggleOption: (optionValue: string) => void) => React.ReactNode;
   /** The unique value associated with the option. */
   value: string;
   /** Optional icon component to display alongside the option. */
@@ -395,9 +398,9 @@ function MultiSelectOptionItem({
             aria-hidden="true"
           />
         )}
-        <span className="flex items-center gap-2">
+        <span className="flex w-full items-center justify-between gap-2">
           {option.label}
-          {option.addon}
+          {option.action?.(toggleOption)}
         </span>
       </CommandItem>
       {onEditItem == null ? null : (
@@ -1027,12 +1030,10 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                             )}
                             <span
                               className={cn(
-                                "flex items-center gap-2",
                                 screenSize === "mobile" && "truncate",
                               )}
                             >
                               {option.label}
-                              {option.addon}
                             </span>
                             {isReadOnly ? null : (
                               <div

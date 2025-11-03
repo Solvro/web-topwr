@@ -61,7 +61,7 @@ export type ResourceRelation<T extends Resource> = {
     ? L
     : never;
 }[T];
-type PivotDataDefinition = {
+export type PivotDataDefinition = {
   field: string;
 } & ({ relatedResource: Resource } | SelectInputOptions);
 /** Relation definitions between T and L, where T is the main resource and L is the related resource. */

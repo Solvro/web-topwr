@@ -7,8 +7,13 @@ import { MultiSelect } from "@/components/ui/multi-select";
 import { SelectItem } from "@/components/ui/select";
 import { RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { useArfRelation } from "@/hooks/use-arf-relation";
+import { useArfRelationMutation } from "@/hooks/use-arf-relation-mutation";
 import { useArfSheet } from "@/hooks/use-arf-sheet";
-import { isExistingResourceItem } from "@/lib/abstract-resource-form";
+import {
+  getMutationConfig,
+  isExistingResourceItem,
+} from "@/lib/abstract-resource-form";
 import {
   getResourceMetadata,
   getResourcePk,
@@ -27,6 +32,7 @@ import type {
 } from "@/types/app";
 import type { ResourceFormProps, ResourceRelations } from "@/types/components";
 
+import { PivotData } from "../abstract/resource-form/pivot-data";
 import { PendingInput } from "./pending-input";
 import { SelectInput } from "./select-input";
 
@@ -49,9 +55,22 @@ export function RelationInput<
   defaultValues: ResourceDefaultValues<T>;
 }) {
   const { showSheet } = useArfSheet<T>(resource);
+  const relationContext = useArfRelation();
+
+  const { endpoint } = getMutationConfig(
+    resource,
+    defaultValues,
+    relationContext,
+  );
+
+  const { mutateRelation } = useArfRelationMutation({
+    resource,
+    resourceRelation,
+    endpoint,
+  });
 
   const declensions = declineNoun(resource);
-  const relationData = relatedResources[resourceRelation];
+  const allRelatedData = relatedResources[resourceRelation];
   const config = getResourceMetadata(resourceRelation);
   const relationDeclined = {
     singular: declineNoun(resourceRelation, { plural: false }),
@@ -63,7 +82,7 @@ export function RelationInput<
         control={control}
         name={relationDefinition.foreignKey}
         label={toTitleCase(relationDeclined.singular.nominative)}
-        options={Object.values(relationData).map((option) => (
+        options={Object.values(allRelatedData).map((option) => (
           <SelectItem key={option.id} value={sanitizeId(option.id)}>
             {config.itemMapper(option).name}
           </SelectItem>
@@ -87,12 +106,12 @@ export function RelationInput<
   const action =
     relationDefinition.type === RelationType.OneToMany ? "Dodaj" : "Wybierz";
   const inputPlaceholder = `${action} ${relationDeclined.singular.accusative}`;
-  const unsafeRelationValues = defaultValues[
+  const unsafeQueriedRelations = defaultValues[
     getResourceQueryName(resourceRelation as XToManyResource)
   ] as ResourceDataType<L>[] | undefined;
-  if (unsafeRelationValues == null) {
+  if (unsafeQueriedRelations == null) {
     // TODO: ensure this never happens
-    console.warn(
+    console.error(
       "Expected relation values to be present in defaultValues but they are missing.",
       "This is a bug - please report to Konrad Guzek.",
       {
@@ -102,14 +121,14 @@ export function RelationInput<
       },
     );
   }
-  const relationValues = unsafeRelationValues ?? [];
-  const selectedValues = relationValues.map((item) =>
+  const queriedRelations = unsafeQueriedRelations ?? [];
+  const selectedValues = queriedRelations.map((item) =>
     String(get(item, primaryKeyField, "unknown-select-item")),
   );
   const relationDataOptions =
     relationDefinition.type === RelationType.OneToMany
-      ? relationValues
-      : relationData;
+      ? queriedRelations
+      : allRelatedData;
   const formProps = {
     resource: resourceRelation,
     className: "w-full px-4",
@@ -132,8 +151,45 @@ export function RelationInput<
           const value = String(
             get(option, primaryKeyField, `item-${String(index)}`),
           );
-          return { label, value };
+          return {
+            label,
+            value,
+            action: (toggleOption: (optionValue: string) => void) => (
+              <PivotData
+                resource={resource}
+                endpoint={endpoint}
+                resourceRelation={resourceRelation}
+                // TODO: option does not contain pivot data for related items, fix this
+                data={option}
+                optionValue={value}
+                toggleOption={toggleOption}
+              />
+            ),
+          };
         })}
+        onOptionToggled={async (id, deleted) => {
+          if (relationDefinition.type !== RelationType.ManyToMany) {
+            toast.error(
+              `Nastąpił nieoczekiwany błąd: dodanie ${relationDeclined.singular.genitive} obecnie nie jest możliwe. Proszę zgłosić ten błąd deweloperom.`,
+            );
+            return false;
+          }
+          if (relationDefinition.pivotData == null) {
+            // fetch without pivot data
+            try {
+              await mutateRelation({
+                id,
+                deleted,
+                body: undefined,
+              });
+              return true;
+            } catch {
+              return false;
+            }
+          }
+          // don't allow direct fetching; wait for pivot field(s) to be selected
+          return false;
+        }}
         onValueChange={() => {
           toast.info(
             "Zmiana wszystkich wartości na raz nie jest jeszcze dostępna. Dodawaj lub usuwaj pojedynczo.",
