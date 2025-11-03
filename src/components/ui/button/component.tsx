@@ -36,7 +36,7 @@ export function Button({
       {loading ? (
         <>
           <Spinner className="size-4" />
-          {children}
+          {tooltip ? null : children}
         </>
       ) : (
         children
