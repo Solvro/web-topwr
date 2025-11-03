@@ -1,49 +1,53 @@
 "use client";
 
 import { useAtom } from "jotai";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { WEEKDAYS } from "@/config/constants";
-import type { Resource } from "@/config/enums";
+import { Resource } from "@/config/enums";
 import { useQueryWrapper } from "@/hooks/use-query-wrapper";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { getMonthByNumberAndYear } from "@/lib/helpers";
+import { getKey } from "@/lib/helpers/app";
+import {
+  checkAcademicSemesterEvents,
+  extractStartDate,
+} from "@/lib/helpers/calendar";
 import { calendarStateAtom } from "@/stores/calendar";
-import type { ApiCalendarEvent } from "@/types/api";
-import type { CalendarEvent } from "@/types/calendar";
+import type { GetResourceWithRelationsResponse } from "@/types/api";
+import type { CreatableResource } from "@/types/app";
 
-import { DayBlock } from "./day-button";
+import { AcademicSemesterListButton } from "./academic-semester-list-button";
+import { DayButton } from "./day-button";
 
 export function Calendar({
   clickable = false,
   resource,
 }: {
   clickable?: boolean;
-  resource: Resource;
+  resource: CreatableResource;
 }) {
   const currentDate = new Date();
-  const { data } = useQueryWrapper(`calendarEvents-${resource}`, async () =>
-    fetchQuery<{ data: ApiCalendarEvent[] }>("", { resource }),
+  const { data } = useQueryWrapper(
+    getKey.query.resourceList(resource),
+    async () =>
+      fetchQuery<GetResourceWithRelationsResponse<typeof resource>>("", {
+        resource,
+        includeRelations: true,
+      }),
   );
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [events, setEvents] = useState<
+    GetResourceWithRelationsResponse<typeof resource>["data"][]
+  >([]);
 
   useEffect(() => {
     if (data === undefined) {
       setEvents([]);
       return;
     }
-    const transformedEvents = data.data.map((apiEvent) => ({
-      id: apiEvent.id,
-      name: apiEvent.name,
-      description: apiEvent.description ?? undefined,
-      startTime: new Date(apiEvent.startTime),
-      endTime: new Date(apiEvent.endTime),
-      location: apiEvent.location ?? undefined,
-      googleCallId: apiEvent.googleCallId ?? undefined,
-    }));
-    setEvents(transformedEvents);
+    setEvents(Array.isArray(data.data) ? data.data : [data.data]);
   }, [data]);
 
   const [calendarState, setCalendarState] = useAtom(calendarStateAtom);
@@ -53,7 +57,8 @@ export function Calendar({
     displayedMonth,
     displayedYear,
   );
-  const goToPreviousMonth = () => {
+
+  function goToPreviousMonth() {
     if (displayedMonth === 1) {
       setCalendarState({
         displayedMonth: 12,
@@ -65,9 +70,9 @@ export function Calendar({
         displayedYear,
       });
     }
-  };
+  }
 
-  const goToNextMonth = () => {
+  function goToNextMonth() {
     if (displayedMonth === 12) {
       setCalendarState({
         displayedMonth: 1,
@@ -79,7 +84,7 @@ export function Calendar({
         displayedYear,
       });
     }
-  };
+  }
 
   const firstDayOfMonth = new Date(displayedYear, displayedMonth - 1, 1);
   const startDayOfWeek = (firstDayOfMonth.getDay() + 6) % 7;
@@ -98,80 +103,107 @@ export function Calendar({
         },
   );
 
-  const getEventsForDay = (day: number) => {
+  function getEventsForDay(day: number) {
     return events.filter((event) => {
-      const eventDate = new Date(event.startTime);
-      return (
+      const eventDate = extractStartDate(event);
+      if (eventDate === null) {
+        return false;
+      }
+      const dayMatches =
         eventDate.getDate() === day &&
         eventDate.getMonth() + 1 === displayedMonth &&
-        eventDate.getFullYear() === displayedYear
-      );
+        eventDate.getFullYear() === displayedYear;
+
+      if (resource === Resource.AcademicSemesters) {
+        const dayDate = new Date(displayedYear, displayedMonth - 1, day);
+        const { hasDaySwap, hasHoliday } = checkAcademicSemesterEvents(
+          event,
+          dayDate,
+        );
+        return dayMatches || hasDaySwap || hasHoliday;
+      }
+
+      return dayMatches;
     });
-  };
+  }
 
   return (
-    <div className="mx-auto grid h-fit w-[95%] grid-cols-7 sm:w-[90%] md:max-w-7xl lg:w-[85%]">
-      <div className="col-span-7 flex items-center justify-center gap-4 text-center text-base font-bold sm:text-lg">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={goToPreviousMonth}
-          className="h-8 w-8 p-0"
-          aria-label="Previous month"
-        >
-          <ArrowLeft />
-        </Button>
-        <span className="min-w-[200px]">
-          {currentDisplayedMonth.name} {displayedYear}
-        </span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={goToNextMonth}
-          className="h-8 w-8 p-0"
-          aria-label="Next month"
-        >
-          <ArrowRight />
-        </Button>
-      </div>
-      <div className="col-span-7 mt-4 grid grid-cols-7 gap-1 sm:gap-2">
-        {WEEKDAYS.map((day) => (
-          <div
-            key={day}
-            className="text-center text-xs font-semibold sm:text-sm"
+    <>
+      <div className="mx-auto grid h-min w-[95%] grid-cols-7 gap-1 sm:w-[90%] md:max-w-7xl lg:w-[85%]">
+        <div className="col-span-7 flex items-center justify-center gap-4 text-center text-base font-bold sm:text-lg">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={goToPreviousMonth}
+            className="h-8 w-8 rounded-xs border-2 p-0"
+            aria-label="Previous month"
           >
-            {day}
-          </div>
-        ))}
-      </div>
-      {calendarDays.map((cell) => {
-        if (cell.type === "empty") {
-          return (
-            <div key={cell.id} className="h-16 sm:h-24 md:h-28 lg:h-32"></div>
-          );
-        }
+            <ChevronLeft />
+          </Button>
+          <span className="min-w-[200px]">
+            {currentDisplayedMonth.name} {displayedYear}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={goToNextMonth}
+            className="h-8 w-8 rounded-xs border-2 p-0"
+            aria-label="Next month"
+          >
+            <ChevronRight />
+          </Button>
+        </div>
+        <div className="col-span-7 mt-4 grid grid-cols-7 gap-1 sm:gap-2">
+          {WEEKDAYS.map((day) => (
+            <div
+              key={day}
+              className="text-center text-xs font-semibold sm:text-sm"
+            >
+              {day}
+            </div>
+          ))}
+        </div>
+        {calendarDays.map((cell) => {
+          if (cell.type === "empty") {
+            return <div key={cell.id} className="h-16 md:h-20 lg:h-24"></div>;
+          }
 
-        if (cell.type === "day" && cell.day !== undefined) {
-          const dayEvents = getEventsForDay(cell.day);
-          const displayedDateObject = {
-            year: displayedYear,
-            month: currentDisplayedMonth,
-            day: cell.day,
-          };
-          return (
-            <DayBlock
-              key={cell.id}
-              day={cell.day}
-              today={displayedDateObject}
-              clickable={clickable}
-              events={dayEvents}
-              resource={resource}
-              currentDate={currentDate}
-            />
-          );
-        }
-        return null;
-      })}
-    </div>
+          if (cell.type === "day" && cell.day !== undefined) {
+            const dayEvents = getEventsForDay(cell.day);
+            const displayedDateObject = {
+              year: displayedYear,
+              month: currentDisplayedMonth,
+              day: cell.day,
+            };
+            return (
+              <DayButton
+                key={cell.id}
+                day={cell.day}
+                today={displayedDateObject}
+                clickable={clickable}
+                events={dayEvents}
+                allEvents={events}
+                resource={resource}
+                currentDate={currentDate}
+              />
+            );
+          }
+          return null;
+        })}
+      </div>
+      <div className="mt-4 flex w-[95%] flex-1 flex-row-reverse sm:w-[90%] md:max-w-7xl lg:w-[85%]">
+        {resource === Resource.AcademicSemesters && (
+          <AcademicSemesterListButton
+            resource={resource}
+            events={
+              events as GetResourceWithRelationsResponse<
+                typeof resource
+              >["data"][]
+            }
+            clickable={clickable}
+          />
+        )}
+      </div>
+    </>
   );
 }
