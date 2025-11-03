@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import type { ComponentProps } from "react";
 
 import { Button } from "@/components/ui/button";
 import { DeclensionCase } from "@/config/enums";
@@ -10,32 +11,33 @@ export function CreateButton<T extends CreatableResource>({
   className,
   resource,
   prefillAttributes = {},
-  asSheet = false,
-  onClick,
+  ...props
 }: {
   className?: string;
   resource: T;
   prefillAttributes?: Partial<Record<keyof ResourceFormValues<T>, string>>;
-  asSheet?: boolean;
-  onClick?: () => void;
-}) {
+} & Omit<ComponentProps<typeof Button>, "asChild">) {
   const resourceAccusative = declineNoun(resource, {
     case: DeclensionCase.Accusative,
   });
   const searchParameters = new URLSearchParams(
     prefillAttributes as Record<string, string>,
   ).toString();
-  return asSheet ? (
-    <Button variant="default" className={className} onClick={onClick}>
+
+  const content = (
+    <>
       Dodaj {resourceAccusative}
       <Plus />
-    </Button>
-  ) : (
-    <Button asChild className={className}>
-      <Link href={`/${resource}/create?${searchParameters}`}>
-        Dodaj {resourceAccusative}
-        <Plus />
-      </Link>
+    </>
+  );
+  const isLink = props.onClick == null;
+  return (
+    <Button asChild={isLink} className={className} {...props}>
+      {isLink ? (
+        <Link href={`/${resource}/create?${searchParameters}`}>{content}</Link>
+      ) : (
+        content
+      )}
     </Button>
   );
 }

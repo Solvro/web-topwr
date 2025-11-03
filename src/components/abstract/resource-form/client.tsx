@@ -297,7 +297,13 @@ export function AbstractResourceFormInternal<T extends Resource>({
   }
 
   return (
-    <div className={cn("mx-auto flex h-full flex-col", className)}>
+    <div
+      className={cn(
+        "flex h-full flex-col",
+        isEmbedded ? "mx-4 sm:mx-8" : "mx-auto",
+        className,
+      )}
+    >
       <Form {...form}>
         <form
           className="flex grow flex-col gap-4"

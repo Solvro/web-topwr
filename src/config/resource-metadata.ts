@@ -508,12 +508,12 @@ export const RESOURCE_METADATA = {
     }),
     form: {
       inputs: {
+        textareaInputs: {
+          description: { label: "Opis" },
+        },
         dateInputs: {
           startDate: { label: "Data rozpoczęcia" },
           lastDate: { label: "Data zakończenia" },
-        },
-        textInputs: {
-          description: { label: "Opis" },
         },
       },
       defaultValues: {

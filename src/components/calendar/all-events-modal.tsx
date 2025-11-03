@@ -396,196 +396,201 @@ export function AllEventsModal<T extends CreatableResource>({
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="h-max max-h-[80vh] max-w-lg">
-        <DialogHeader>
-          <DialogTitle>
-            {baseDate == null ? (
-              <>
-                {declineNoun(resource, {
-                  case: DeclensionCase.Nominative,
-                  plural: true,
-                })}
-              </>
-            ) : (
-              <>Wydarzenia {format(baseDate, "d MMMM yyyy", { locale: pl })}</>
-            )}
-          </DialogTitle>
-          <DialogDescription>
-            {baseDate === null && resource === Resource.AcademicSemesters ? (
-              <span>
-                {displayEvents.length === 0
-                  ? "Brak semestrów akademickich"
-                  : "Wszystkie semestry akademickie"}
-              </span>
-            ) : resourceRelation.length > 0 ? (
-              <span>
-                {displayEvents.length === 0
-                  ? "Brak zmian dni akademickich lub świąt w tym dniu"
-                  : "Wszystkie zmiany dni i święta zaplanowane na ten dzień"}
-              </span>
-            ) : (
-              <span>
-                {displayEvents.length === 0
-                  ? "Brak wydarzeń zaplanowanych na ten dzień"
-                  : "Wszystkie wydarzenia zaplanowane na ten dzień"}
-              </span>
-            )}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex flex-col items-end gap-2">
-          {displayEvents.map((event) => {
-            if (resource === Resource.AcademicSemesters && "__type" in event) {
-              switch (event.__type) {
-                case "holiday": {
-                  const holidayEvent =
-                    event as unknown as AcademicCalendarEvent<T, "holiday">;
-
-                  return (
-                    <HolidayEventCard
-                      key={holidayEvent.id}
-                      holidayEvent={holidayEvent}
-                      clickable={clickable}
-                      showSheet={showSheet}
-                    />
-                  );
-                }
-
-                case "daySwap": {
-                  const daySwapEvent =
-                    event as ResourceDataType<Resource.DaySwaps> & {
-                      __type: "daySwap";
-                      __parentSemester: GetResourceWithRelationsResponse<T>["data"];
-                    };
-
-                  return (
-                    <DaySwapEventCard
-                      key={daySwapEvent.id}
-                      daySwapEvent={daySwapEvent}
-                      clickable={clickable}
-                      showSheet={showSheet}
-                    />
-                  );
-                }
-
-                default: {
-                  return null;
-                }
-              }
-            }
-
-            const regularEvent =
-              event as GetResourceWithRelationsResponse<T>["data"];
-            const startDate = extractStartDate(regularEvent);
-            const endDate = extractEndDate(regularEvent);
-            const eventName = extractEventName(regularEvent);
-            const eventDescription = extractEventDescription(regularEvent);
-
-            return (
-              <div
-                key={regularEvent.id}
-                className="bg-accent flex h-max w-full justify-between rounded-md p-3 text-left text-sm"
-                title={eventDescription ?? ""}
-              >
-                <div
-                  className={cn(
-                    resource === Resource.AcademicSemesters && "my-auto",
-                  )}
-                >
-                  <div className="font-medium">{eventName}</div>
-                  {resource !== Resource.AcademicSemesters &&
-                    startDate != null &&
-                    endDate != null && (
-                      <div className="mt-1 text-xs">
-                        {formatTime(startDate, endDate, true)}
-                        {startDate.getTime() === endDate.getTime() ? (
-                          ""
-                        ) : (
-                          <>—{formatTime(startDate, endDate, false)}</>
-                        )}
-                      </div>
-                    )}
-                </div>
-                {clickable ? (
-                  <div className="flex items-center">
-                    <EditButton resource={resource} id={regularEvent.id} />
-                    <DeleteButtonWithDialog
-                      resource={resource}
-                      itemName={eventName}
-                      id={regularEvent.id}
-                    />
-                  </div>
-                ) : null}
-              </div>
-            );
-          })}
-          {clickable ? (
-            <div>
-              {resourceRelation.length > 0 ? (
+    <>
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <DialogContent className="h-max max-h-[80vh] max-w-lg">
+          <DialogHeader>
+            <DialogTitle>
+              {baseDate == null ? (
                 <>
-                  {resourceRelation.map(
-                    ([childResource, relationDefinition], index) => (
-                      <CreateButton
-                        key={String(childResource)}
-                        className={`mt-4 ${index < resourceRelation.length - 1 ? "mr-2" : ""}`}
-                        resource={childResource}
-                        prefillAttributes={{}}
-                        asSheet
-                        onClick={() => {
-                          if (
-                            day === undefined ||
-                            month === undefined ||
-                            year === undefined
-                          ) {
-                            return;
-                          }
-
-                          const parentResource = findParentResourceForDate(
-                            day,
-                            month,
-                            year,
-                          );
-
-                          if (parentResource === null) {
-                            toast.error(
-                              `Nie znaleziono ${declineNoun(resource, { case: DeclensionCase.Genitive })} dla wybranej daty. Utwórz najpierw ${declineNoun(resource, { case: DeclensionCase.Accusative })}.`,
-                            );
-                            return;
-                          }
-
-                          showSheet(
-                            {
-                              item: null,
-                              childResource,
-                              parentResourceData:
-                                parentResource as ResourceDataType<T>,
-                            },
-                            {
-                              resource: childResource as Resource,
-                              defaultValues: getDefaultValuesForResource(
-                                parentResource,
-                                childResource as Resource,
-                                relationDefinition,
-                              ),
-                            },
-                          );
-                        }}
-                      />
-                    ),
-                  )}
+                  {declineNoun(resource, {
+                    case: DeclensionCase.Nominative,
+                    plural: true,
+                  })}
                 </>
               ) : (
-                <CreateButton className="mt-4" resource={resource} />
+                <>
+                  Wydarzenia {format(baseDate, "d MMMM yyyy", { locale: pl })}
+                </>
               )}
-            </div>
-          ) : null}
-        </div>
-      </DialogContent>
+            </DialogTitle>
+            <DialogDescription>
+              {baseDate === null && resource === Resource.AcademicSemesters ? (
+                <span>
+                  {displayEvents.length === 0
+                    ? "Brak semestrów akademickich"
+                    : "Wszystkie semestry akademickie"}
+                </span>
+              ) : resourceRelation.length > 0 ? (
+                <span>
+                  {displayEvents.length === 0
+                    ? "Brak zmian dni akademickich lub świąt w tym dniu"
+                    : "Wszystkie zmiany dni i święta zaplanowane na ten dzień"}
+                </span>
+              ) : (
+                <span>
+                  {displayEvents.length === 0
+                    ? "Brak wydarzeń zaplanowanych na ten dzień"
+                    : "Wszystkie wydarzenia zaplanowane na ten dzień"}
+                </span>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col items-end gap-2">
+            {displayEvents.map((event) => {
+              if (
+                resource === Resource.AcademicSemesters &&
+                "__type" in event
+              ) {
+                switch (event.__type) {
+                  case "holiday": {
+                    const holidayEvent =
+                      event as unknown as AcademicCalendarEvent<T, "holiday">;
+
+                    return (
+                      <HolidayEventCard
+                        key={holidayEvent.id}
+                        holidayEvent={holidayEvent}
+                        clickable={clickable}
+                        showSheet={showSheet}
+                      />
+                    );
+                  }
+
+                  case "daySwap": {
+                    const daySwapEvent =
+                      event as ResourceDataType<Resource.DaySwaps> & {
+                        __type: "daySwap";
+                        __parentSemester: GetResourceWithRelationsResponse<T>["data"];
+                      };
+
+                    return (
+                      <DaySwapEventCard
+                        key={daySwapEvent.id}
+                        daySwapEvent={daySwapEvent}
+                        clickable={clickable}
+                        showSheet={showSheet}
+                      />
+                    );
+                  }
+
+                  default: {
+                    return null;
+                  }
+                }
+              }
+
+              const regularEvent =
+                event as GetResourceWithRelationsResponse<T>["data"];
+              const startDate = extractStartDate(regularEvent);
+              const endDate = extractEndDate(regularEvent);
+              const eventName = extractEventName(regularEvent);
+              const eventDescription = extractEventDescription(regularEvent);
+
+              return (
+                <div
+                  key={regularEvent.id}
+                  className="bg-accent flex h-max w-full justify-between rounded-md p-3 text-left text-sm"
+                  title={eventDescription ?? ""}
+                >
+                  <div
+                    className={cn(
+                      resource === Resource.AcademicSemesters && "my-auto",
+                    )}
+                  >
+                    <div className="font-medium">{eventName}</div>
+                    {resource !== Resource.AcademicSemesters &&
+                      startDate != null &&
+                      endDate != null && (
+                        <div className="mt-1 text-xs">
+                          {formatTime(startDate, endDate, true)}
+                          {startDate.getTime() === endDate.getTime() ? (
+                            ""
+                          ) : (
+                            <>—{formatTime(startDate, endDate, false)}</>
+                          )}
+                        </div>
+                      )}
+                  </div>
+                  {clickable ? (
+                    <div className="flex items-center">
+                      <EditButton resource={resource} id={regularEvent.id} />
+                      <DeleteButtonWithDialog
+                        resource={resource}
+                        itemName={eventName}
+                        id={regularEvent.id}
+                      />
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+            {clickable ? (
+              <div>
+                {resourceRelation.length > 0 ? (
+                  <>
+                    {resourceRelation.map(
+                      ([childResource, relationDefinition], index) => (
+                        <CreateButton
+                          key={String(childResource)}
+                          className={`mt-4 ${index < resourceRelation.length - 1 ? "mr-2" : ""}`}
+                          resource={childResource}
+                          onClick={() => {
+                            if (
+                              day === undefined ||
+                              month === undefined ||
+                              year === undefined
+                            ) {
+                              return;
+                            }
+
+                            const parentResource = findParentResourceForDate(
+                              day,
+                              month,
+                              year,
+                            );
+
+                            if (parentResource === null) {
+                              toast.error(
+                                `Nie znaleziono ${declineNoun(resource, { case: DeclensionCase.Genitive })} dla wybranej daty. Utwórz najpierw ${declineNoun(resource, { case: DeclensionCase.Accusative })}.`,
+                              );
+                              return;
+                            }
+
+                            showSheet(
+                              {
+                                item: null,
+                                childResource,
+                                parentResourceData:
+                                  parentResource as ResourceDataType<T>,
+                              },
+                              {
+                                resource: childResource as Resource,
+                                defaultValues: getDefaultValuesForResource(
+                                  parentResource,
+                                  childResource as Resource,
+                                  relationDefinition,
+                                ),
+                              },
+                            );
+                          }}
+                        />
+                      ),
+                    )}
+                  </>
+                ) : (
+                  <CreateButton className="mt-4" resource={resource} />
+                )}
+              </div>
+            ) : null}
+          </div>
+        </DialogContent>
+      </Dialog>
       <AbstractResourceFormSheet
         resource={resource}
         sheet={sheet}
         setSheet={setSheet}
       />
-    </Dialog>
+    </>
   );
 }
