@@ -12,6 +12,8 @@ import {
   sanitizeId,
 } from "@/lib/helpers";
 import type {
+  PivotDataDefinition,
+  RelationPivotDataDefinition,
   ResourceDataType,
   ResourceDataWithRelations,
   ResourceDefaultValues,
@@ -109,10 +111,13 @@ export const getDefaultValues = <T extends Resource>(
   if (relationDefinition.type !== RelationType.OneToMany) {
     return defaultValues;
   }
-  const foreignKey = relationDefinition.foreignKey;
   const combinedDefaultValues = {
     ...defaultValues,
-    [foreignKey]: parentResourcePkValue,
+    [relationDefinition.foreignKey]: parentResourcePkValue,
   };
   return combinedDefaultValues;
 };
+
+export const isRelationPivotDefinition = (
+  definition: PivotDataDefinition,
+): definition is RelationPivotDataDefinition => "relatedResource" in definition;

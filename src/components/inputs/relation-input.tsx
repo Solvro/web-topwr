@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
+import type { SetOptionSelected } from "@/components/ui/multi-select";
 import { SelectItem } from "@/components/ui/select";
 import { RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
@@ -139,7 +140,10 @@ export function RelationInput<
       <MultiSelect
         deduplicateOptions
         hideSelectAll
-        isReadOnly={relationDefinition.type === RelationType.OneToMany}
+        isReadOnly={
+          relationDefinition.type === RelationType.OneToMany ||
+          relationDefinition.pivotData != null
+        }
         animationConfig={{
           badgeAnimation: "none",
         }}
@@ -151,18 +155,21 @@ export function RelationInput<
           const value = String(
             get(option, primaryKeyField, `item-${String(index)}`),
           );
+          const queriedRelationData = queriedRelations.find(
+            (queriedRelation) => queriedRelation.id === option.id,
+          );
           return {
             label,
             value,
-            action: (toggleOption: (optionValue: string) => void) => (
+            action: (setOptionSelected: SetOptionSelected) => (
               <PivotData
                 resource={resource}
                 endpoint={endpoint}
                 resourceRelation={resourceRelation}
-                // TODO: option does not contain pivot data for related items, fix this
                 data={option}
+                queriedRelationData={queriedRelationData}
                 optionValue={value}
-                toggleOption={toggleOption}
+                setOptionSelected={setOptionSelected}
               />
             ),
           };
@@ -174,21 +181,16 @@ export function RelationInput<
             );
             return false;
           }
-          if (relationDefinition.pivotData == null) {
-            // fetch without pivot data
-            try {
-              await mutateRelation({
-                id,
-                deleted,
-                body: undefined,
-              });
-              return true;
-            } catch {
-              return false;
-            }
+          try {
+            await mutateRelation({
+              id,
+              deleted,
+              body: undefined,
+            });
+            return true;
+          } catch {
+            return false;
           }
-          // don't allow direct fetching; wait for pivot field(s) to be selected
-          return false;
         }}
         onValueChange={() => {
           toast.info(

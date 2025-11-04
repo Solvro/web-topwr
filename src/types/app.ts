@@ -56,14 +56,22 @@ export type ResourceDataType<T extends Resource> = PossiblyOrderable<
 /** For a given resource `T`, this type returns the union of all resources to which it is related. */
 export type ResourceRelation<T extends Resource> = {
   [R in Resource]: (typeof RESOURCE_METADATA)[R]["form"]["inputs"] extends {
-    relationInputs: Record<Resource & infer L, unknown>;
+    relationInputs: Record<infer L extends Resource, unknown>;
   }
     ? L
     : never;
 }[T];
-export type PivotDataDefinition = {
+interface PivotDataDefinitionBase {
   field: string;
-} & ({ relatedResource: Resource } | SelectInputOptions);
+}
+export interface RelationPivotDataDefinition extends PivotDataDefinitionBase {
+  relatedResource: Resource;
+}
+export type EnumPivotDataDefinition = PivotDataDefinitionBase &
+  SelectInputOptions;
+export type PivotDataDefinition =
+  | RelationPivotDataDefinition
+  | EnumPivotDataDefinition;
 /** Relation definitions between T and L, where T is the main resource and L is the related resource. */
 export type RelationDefinition<T extends Resource, L extends Resource> =
   | {

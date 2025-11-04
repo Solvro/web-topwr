@@ -1,7 +1,8 @@
 import { toast } from "sonner";
 
 import { TOAST_MESSAGES } from "@/config/constants";
-import { RelationType, type Resource } from "@/config/enums";
+import { RelationType } from "@/config/enums";
+import type { Resource } from "@/config/enums";
 import { fetchMutation } from "@/lib/fetch-utils";
 import {
   camelToSnakeCase,

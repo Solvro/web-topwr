@@ -41,6 +41,11 @@ import { conjugateNumeric } from "@/lib/polish";
 import { cn } from "@/lib/utils";
 import type { OptionalPromise } from "@/types/helpers";
 
+export type SetOptionSelected = (
+  optionValue: string,
+  selected: boolean,
+) => void;
+
 /**
  * Animation types and configurations
  */
@@ -94,9 +99,9 @@ interface MultiSelectOption {
   label: string;
   /**
    * An optional component to render next to the label.
-   * @param toggleOption the function to toggle the option selection
+   * @param setOptionSelected the function to set the option state
    */
-  action?: (toggleOption: (optionValue: string) => void) => React.ReactNode;
+  action?: (setOptionSelected: SetOptionSelected) => React.ReactNode;
   /** The unique value associated with the option. */
   value: string;
   /** Optional icon component to display alongside the option. */
@@ -357,11 +362,13 @@ function MultiSelectOptionItem({
   selectedValues,
   onEditItem,
   toggleOption,
+  setOptionSelected,
   isReadOnly = false,
 }: Pick<MultiSelectProps, "onEditItem" | "isReadOnly"> & {
   option: MultiSelectOption;
   selectedValues: string[];
   toggleOption: (optionValue: string) => void;
+  setOptionSelected: SetOptionSelected;
 }) {
   const isSelected = selectedValues.includes(option.value);
   return (
@@ -400,7 +407,7 @@ function MultiSelectOptionItem({
         )}
         <span className="flex w-full items-center justify-between gap-2">
           {option.label}
-          {option.action?.(toggleOption)}
+          {option.action?.(setOptionSelected)}
         </span>
       </CommandItem>
       {onEditItem == null ? null : (
@@ -758,6 +765,18 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       }
     };
 
+    const setOptionSelected: SetOptionSelected = (optionValue, selected) => {
+      if (disabled) return;
+      const option = getOptionByValue(optionValue);
+      if (option?.disabled) return;
+      const wasSelected = selectedValues.includes(optionValue);
+      if (wasSelected === selected) return;
+      const newSelectedValues = selected
+        ? [...selectedValues, optionValue]
+        : selectedValues.filter((value) => value !== optionValue);
+      setSelectedValues(newSelectedValues);
+    };
+
     const handleClear = () => {
       if (disabled) return;
       if (onValueChange([]) !== false) {
@@ -943,7 +962,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                 getAllOptions().length
               } options selected. ${placeholder}`}
               className={cn(
-                "flex h-auto min-h-10 items-center justify-between rounded-md border bg-inherit p-1 hover:bg-inherit [&_svg]:pointer-events-auto",
+                "flex h-auto min-h-10 items-center justify-between rounded-md border p-1 hover:bg-inherit [&_svg]:pointer-events-auto",
                 autoSize ? "w-auto" : "w-full",
                 responsiveSettings.compactMode && "min-h-8 text-sm",
                 screenSize === "mobile" && "min-h-12 text-base",
@@ -1245,6 +1264,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                           isReadOnly={isReadOnly}
                           selectedValues={selectedValues}
                           toggleOption={toggleOption}
+                          setOptionSelected={setOptionSelected}
                           onEditItem={onEditItem}
                         />
                       ))}
@@ -1259,6 +1279,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                         isReadOnly={isReadOnly}
                         selectedValues={selectedValues}
                         toggleOption={toggleOption}
+                        setOptionSelected={setOptionSelected}
                         onEditItem={onEditItem}
                       />
                     ))}
