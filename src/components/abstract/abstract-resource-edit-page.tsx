@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import type { Resource } from "@/config/enums";
 import { ApplicationError, DeclensionCase } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
@@ -21,7 +20,7 @@ export async function AbstractResourceEditPage({
   let resourceData;
   try {
     const response = await fetchQuery<
-      GetResourceWithRelationsResponse<Resource>
+      GetResourceWithRelationsResponse<typeof resource>
     >(sanitizeId(id), { resource, includeRelations: true });
     resourceData = response.data;
   } catch {
@@ -41,9 +40,6 @@ export async function AbstractResourceEditPage({
   }
 
   return (
-    <AbstractResourceForm
-      resource={resource as Resource}
-      defaultValues={resourceData}
-    />
+    <AbstractResourceForm resource={resource} defaultValues={resourceData} />
   );
 }

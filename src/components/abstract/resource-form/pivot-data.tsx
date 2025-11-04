@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "nextjs-toploader/app";
+
 import { SelectOptions } from "@/components/inputs/select-options";
 import { SelectClear } from "@/components/select-clear";
 import type { SetOptionSelected } from "@/components/ui/multi-select";
@@ -19,6 +21,8 @@ import {
   tryParseNumber,
 } from "@/lib/helpers";
 import type { Id, ResourceDataType, ResourceRelation } from "@/types/app";
+
+import { PivotRelationOptions } from "./pivot-relation-options";
 
 export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
   resource,
@@ -42,6 +46,8 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
     endpoint,
   });
 
+  const router = useRouter();
+
   const relationDefinitions = getResourceRelationDefinitions(resource);
   const relationDefinition = relationDefinitions[resourceRelation];
 
@@ -63,9 +69,9 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
     ? ""
     : String(pivotDataValue);
 
-  const mutate = async (pivotValueId: Id | null) => {
-    setOptionSelected(optionValue, pivotValueId != null);
-    return mutateRelation({
+  /** Passes the correct arguments to `mutateRelation`. */
+  const mutateDirectly = async (pivotValueId: Id | null) =>
+    mutateRelation({
       id: optionValue,
       deleted: pivotValueId == null,
       body:
@@ -75,6 +81,24 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
               [relationDefinition.pivotData.field]: pivotValueId,
             },
     });
+
+  /** Performs the mutation and updates the client-side state. */
+  const mutate = async (pivotValueId: Id | null) => {
+    const relationAdded = pivotValueId != null;
+
+    if (relationAdded && !isUnsetEnumField(pivotDataValue)) {
+      // remove the old relation first, before adding a new one
+      // TODO?: support multiple relations (e.g. a contributor being both PM and UI/UX)
+      await mutateDirectly(null);
+    }
+    setOptionSelected(optionValue, relationAdded);
+
+    try {
+      const result = await mutateDirectly(pivotValueId);
+      return result;
+    } finally {
+      router.refresh();
+    }
   };
 
   return (
@@ -91,7 +115,11 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
           value={selectValue}
           onChange={async () => mutate(null)}
         />
-        {isRelationPivotDefinition(relationDefinition.pivotData) ? null : (
+        {isRelationPivotDefinition(relationDefinition.pivotData) ? (
+          <PivotRelationOptions
+            resource={relationDefinition.pivotData.relatedResource}
+          />
+        ) : (
           <SelectOptions input={relationDefinition.pivotData} />
         )}
       </SelectContent>

@@ -372,7 +372,7 @@ function MultiSelectOptionItem({
 }) {
   const isSelected = selectedValues.includes(option.value);
   return (
-    <div className="flex">
+    <div className="flex items-center">
       <CommandItem
         onSelect={isReadOnly ? undefined : () => toggleOption(option.value)}
         role="option"
