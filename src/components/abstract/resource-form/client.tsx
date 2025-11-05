@@ -32,6 +32,7 @@ import type {
   Id,
   ResourceDefaultValues,
   ResourceFormValues,
+  ResourcePivotRelationData,
   RoutableResource,
 } from "@/types/app";
 import type {
@@ -47,11 +48,13 @@ export function AbstractResourceFormClient<T extends Resource>({
   defaultValues,
   existingImages,
   relatedResources,
+  pivotResources,
   className,
 }: ResourceFormProps<T> & {
   defaultValues: ResourceDefaultValues<T>;
   existingImages: ExistingImages<T>;
   relatedResources: ResourceRelations<T>;
+  pivotResources: ResourcePivotRelationData<T>;
 }) {
   const schema = RESOURCE_SCHEMAS[resource];
   const router = useRouter();
@@ -129,6 +132,7 @@ export function AbstractResourceFormClient<T extends Resource>({
             defaultValues={defaultValues}
             existingImages={existingImages}
             relatedResources={relatedResources}
+            pivotResources={pivotResources}
           />
           <div
             className={cn(

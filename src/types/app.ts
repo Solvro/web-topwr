@@ -34,8 +34,10 @@ export type EditableResource = {
     ? R
     : never;
 }[Resource];
+type SpecificResourceMetadata<R extends Resource> =
+  (typeof RESOURCE_METADATA)[R];
 export type OrderableResource = {
-  [R in Resource]: (typeof RESOURCE_METADATA)[R] extends { orderable: true }
+  [R in Resource]: SpecificResourceMetadata<R> extends { orderable: true }
     ? R
     : never;
 }[Resource] &
@@ -55,12 +57,27 @@ export type ResourceDataType<T extends Resource> = PossiblyOrderable<
 // Relations
 /** For a given resource `T`, this type returns the union of all resources to which it is related. */
 export type ResourceRelation<T extends Resource> = {
-  [R in Resource]: (typeof RESOURCE_METADATA)[R]["form"]["inputs"] extends {
+  [R in Resource]: SpecificResourceMetadata<R>["form"]["inputs"] extends {
     relationInputs: Record<infer L extends Resource, unknown>;
   }
     ? L
     : never;
 }[T];
+/** For a given resource `T`, this type returns the union of all resources which are used as a pivot resource between `T` and `ResourceRelation<T>`. */
+export type ResourcePivotRelation<T extends Resource> = {
+  [R in Resource]: SpecificResourceMetadata<R>["form"]["inputs"] extends {
+    relationInputs: Record<string, unknown>;
+  }
+    ? SpecificResourceMetadata<R>["form"]["inputs"]["relationInputs"][ResourceRelation<T>] extends {
+        pivotData: { relatedResource: infer P extends Resource };
+      }
+      ? P
+      : never
+    : never;
+}[T];
+export type ResourcePivotRelationData<T extends Resource> = {
+  [R in ResourcePivotRelation<T>]: ResourceDataType<R>[];
+};
 interface PivotDataDefinitionBase {
   field: string;
 }
@@ -72,14 +89,15 @@ export type EnumPivotDataDefinition = PivotDataDefinitionBase &
 export type PivotDataDefinition =
   | RelationPivotDataDefinition
   | EnumPivotDataDefinition;
+export interface PivotRelationDefinition {
+  type: RelationType.ManyToMany;
+  foreignKey?: never;
+  label?: DeclinableNoun;
+  pivotData?: PivotDataDefinition;
+}
 /** Relation definitions between T and L, where T is the main resource and L is the related resource. */
 export type RelationDefinition<T extends Resource, L extends Resource> =
-  | {
-      type: RelationType.ManyToMany;
-      foreignKey?: never;
-      label?: DeclinableNoun;
-      pivotData?: PivotDataDefinition;
-    }
+  | PivotRelationDefinition
   | {
       type: RelationType.OneToMany;
       foreignKey: ResourceSchemaKey<L, z.ZodString | z.ZodNumber>;

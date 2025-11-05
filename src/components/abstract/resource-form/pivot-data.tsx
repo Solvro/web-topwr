@@ -9,29 +9,39 @@ import type { SetOptionSelected } from "@/components/ui/multi-select";
 import {
   Select,
   SelectContent,
+  SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DeclensionCase, RelationType } from "@/config/enums";
+import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useArfRelationMutation } from "@/hooks/use-arf-relation-mutation";
-import { isRelationPivotDefinition } from "@/lib/abstract-resource-form";
 import {
+  isPivotRelationDefinition,
+  isRelationPivotDefinition,
+} from "@/lib/abstract-resource-form";
+import {
+  getResourceMetadata,
   getResourceRelationDefinitions,
   isEmptyValue,
   isUnsetEnumField,
   tryParseNumber,
 } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import type { Id, ResourceDataType, ResourceRelation } from "@/types/app";
-
-import { PivotRelationOptions } from "./pivot-relation-options";
+import type {
+  Id,
+  ResourceDataType,
+  ResourcePivotRelation,
+  ResourcePivotRelationData,
+  ResourceRelation,
+} from "@/types/app";
 
 export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
   resource,
   resourceRelation,
   endpoint,
   queriedRelationData,
+  pivotResources,
   optionValue,
   setOptionSelected,
   ...props
@@ -40,6 +50,7 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
   resourceRelation: L;
   endpoint: string;
   queriedRelationData: ResourceDataType<L> | undefined;
+  pivotResources: ResourcePivotRelationData<T>;
   optionValue: string;
   setOptionSelected: SetOptionSelected;
 } & ComponentProps<typeof SelectTrigger>) {
@@ -53,11 +64,9 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
 
   const relationDefinitions = getResourceRelationDefinitions(resource);
   const relationDefinition = relationDefinitions[resourceRelation];
+  const isPivotRelation = isPivotRelationDefinition<T, L>(relationDefinition);
 
-  if (
-    relationDefinition.type !== RelationType.ManyToMany ||
-    relationDefinition.pivotData == null
-  ) {
+  if (!isPivotRelation) {
     return null;
   }
 
@@ -77,12 +86,9 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
     mutateRelation({
       id: optionValue,
       deleted: pivotValueId == null,
-      body:
-        relationDefinition.pivotData == null
-          ? undefined
-          : {
-              [relationDefinition.pivotData.field]: pivotValueId,
-            },
+      body: {
+        [relationDefinition.pivotData.field]: pivotValueId,
+      },
     });
 
   /** Performs the mutation and updates the client-side state. */
@@ -104,6 +110,8 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
     }
   };
 
+  const pivotData = relationDefinition.pivotData;
+
   return (
     <Select
       value={selectValue}
@@ -117,12 +125,19 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
           value={selectValue}
           label={`Usuń ${declineNoun(resourceRelation, { case: DeclensionCase.Accusative })}`}
         />
-        {isRelationPivotDefinition(relationDefinition.pivotData) ? (
-          <PivotRelationOptions
-            resource={relationDefinition.pivotData.relatedResource}
-          />
+        {isRelationPivotDefinition(pivotData) ? (
+          pivotResources[
+            pivotData.relatedResource as ResourcePivotRelation<T>
+          ].map((item) => (
+            <SelectItem key={item.id} value={String(item.id)}>
+              {
+                getResourceMetadata(pivotData.relatedResource).itemMapper(item)
+                  .name
+              }
+            </SelectItem>
+          ))
         ) : (
-          <SelectOptions input={relationDefinition.pivotData} />
+          <SelectOptions input={pivotData} />
         )}
       </SelectContent>
     </Select>

@@ -29,6 +29,7 @@ import type {
   ResourceDataType,
   ResourceDefaultValues,
   ResourceFormValues,
+  ResourcePivotRelationData,
   ResourceRelation,
   XToManyResource,
 } from "@/types/app";
@@ -45,6 +46,7 @@ export function RelationInput<
   resource,
   resourceRelation,
   relatedResources,
+  pivotResources,
   relationDefinition,
   control,
   defaultValues,
@@ -52,6 +54,7 @@ export function RelationInput<
   resource: T;
   resourceRelation: L;
   relatedResources: ResourceRelations<T>;
+  pivotResources: ResourcePivotRelationData<T>;
   relationDefinition: RelationDefinition<T, L>;
   control: Control<ResourceFormValues<T>>;
   defaultValues: ResourceDefaultValues<T>;
@@ -171,6 +174,7 @@ export function RelationInput<
                 resource={resource}
                 endpoint={endpoint}
                 resourceRelation={resourceRelation}
+                pivotResources={pivotResources}
                 queriedRelationData={queriedRelationData}
                 optionValue={value}
                 setOptionSelected={setOptionSelected}

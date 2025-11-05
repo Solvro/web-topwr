@@ -6,7 +6,7 @@ import { useInView } from "react-intersection-observer";
 
 import { Button } from "@/components/ui/button";
 import { fetchResources, getKey, isOrderableResource } from "@/lib/helpers";
-import type { GetResourcesResponse } from "@/types/api";
+import type { GetResourcesResponsePaginated } from "@/types/api";
 import type {
   EditableResource,
   OrderableResource,
@@ -25,7 +25,7 @@ export function InfiniteScroller<T extends EditableResource>({
   sortFilters = {},
 }: {
   resource: T;
-  initialData: GetResourcesResponse<T>;
+  initialData: GetResourcesResponsePaginated<T>;
   filterDefinitions?: Partial<FilterDefinitions<T>>;
   sortFilters?: Partial<SortFiltersFormValuesNarrowed>;
 }) {

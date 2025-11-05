@@ -29,6 +29,7 @@ import type {
   RelationDefinition,
   ResourceDefaultValues,
   ResourceFormValues,
+  ResourcePivotRelationData,
   ResourceRelation,
 } from "@/types/app";
 import type { ExistingImages, ResourceRelations } from "@/types/components";
@@ -39,12 +40,14 @@ export function ArfInputs<T extends Resource>({
   defaultValues,
   existingImages,
   relatedResources,
+  pivotResources,
 }: {
   resource: T;
   control: Control<ResourceFormValues<T>>;
   defaultValues: ResourceDefaultValues<T>;
   existingImages: ExistingImages<T>;
   relatedResources: ResourceRelations<T>;
+  pivotResources: ResourcePivotRelationData<T>;
 }) {
   const relationContext = useArfRelation();
 
@@ -287,6 +290,7 @@ export function ArfInputs<T extends Resource>({
                       >
                     }
                     relatedResources={relatedResources}
+                    pivotResources={pivotResources}
                     control={control}
                     defaultValues={defaultValues}
                   />

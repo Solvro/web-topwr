@@ -6,7 +6,10 @@ import { SortDirection } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
 import { fetchMutation, fetchQuery } from "@/lib/fetch-utils";
-import type { GetResourcesResponse } from "@/types/api";
+import type {
+  GetResourcesResponse,
+  GetResourcesResponsePaginated,
+} from "@/types/api";
 import type { FilterDefinitions } from "@/types/components";
 import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 
@@ -74,7 +77,9 @@ export async function fetchResources<T extends Resource, P extends number>(
     filters = SORT_FILTER_DEFAULT_VALUES.filters,
   }: Partial<SortFiltersFormValuesNarrowed> = {},
   filterDefinitions: Partial<FilterDefinitions<T>> = {},
-): Promise<Omit<GetResourcesResponse<T>, P extends -1 ? "meta" : never>> {
+): Promise<
+  P extends -1 ? GetResourcesResponse<T> : GetResourcesResponsePaginated<T>
+> {
   const sort = `${sortDirection === SortDirection.Ascending ? "+" : "-"}${sortBy ?? "order"}`;
 
   const search = sanitizeFilteredFields(filterDefinitions, filters);
@@ -86,9 +91,12 @@ export async function fetchResources<T extends Resource, P extends number>(
 
   const searchString = `?${search.toString()}`;
 
-  const result = await fetchQuery<GetResourcesResponse<T>>(searchString, {
-    resource,
-  });
+  const result = await fetchQuery<GetResourcesResponsePaginated<T>>(
+    searchString,
+    {
+      resource,
+    },
+  );
   return result;
 }
 
