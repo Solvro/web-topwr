@@ -6,6 +6,7 @@ import {
   removeTrailingSlash,
   sanitizeId,
   toTitleCase,
+  tryParseNumber,
 } from "./transformations";
 
 describe("sanitizeId function", () => {
@@ -64,5 +65,20 @@ describe("camelToSnakeCase function", () => {
   it("should return the same string if there are no uppercase letters", () => {
     expect(camelToSnakeCase("nouppercase")).toBe("nouppercase");
     expect(camelToSnakeCase("already_snake_case")).toBe("already_snake_case");
+  });
+});
+
+describe("tryParseNumber function", () => {
+  it("should parse numeric strings to numbers", () => {
+    expect(tryParseNumber("123")).toBe(123);
+    expect(tryParseNumber("45.67")).toBe(45.67);
+  });
+
+  it("should return non-numeric values as is", () => {
+    expect(tryParseNumber("abc")).toBe("abc");
+    expect(tryParseNumber("123abc")).toBe("123abc");
+    expect(tryParseNumber(null)).toBe(null);
+    expect(tryParseNumber("")).toBe("");
+    expect(tryParseNumber(Number.NaN)).toBe(Number.NaN);
   });
 });
