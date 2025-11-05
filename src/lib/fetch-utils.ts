@@ -1,8 +1,8 @@
 import type { Resource } from "@/config/enums";
-import { env } from "@/config/env";
 import {
   getRecursiveRelations,
   getResourceMetadata,
+  getVersionedApiBase,
   removeLeadingSlash,
 } from "@/lib/helpers";
 import { getAuthState } from "@/stores/auth";
@@ -85,6 +85,12 @@ async function handleResponse<T>(response: Response): Promise<NonNullable<T>> {
 
 const getAccessToken = () => getAuthState()?.accessToken;
 
+const getResourceApiVersion = (resource: Resource | undefined): number =>
+  resource == null ? 1 : (getResourceMetadata(resource).apiVersion ?? 1);
+
+export const getResourceApiBase = (resource: Resource | undefined) =>
+  getVersionedApiBase(getResourceApiVersion(resource));
+
 const getResourceEndpointPrefix = (resource: Resource | undefined) =>
   resource == null ? "" : `${getResourceMetadata(resource).apiPath}/`;
 
@@ -129,7 +135,7 @@ function createRequest<T extends Resource>(
   );
   const url = isAbsolutePath(endpoint)
     ? endpoint
-    : `${env.NEXT_PUBLIC_API_URL}/${endpointPrefix}${removeLeadingSlash(endpoint)}${queryParameters}`;
+    : `${getResourceApiBase(resource)}/${endpointPrefix}${removeLeadingSlash(endpoint)}${queryParameters}`;
 
   const token = accessTokenOverride ?? getAccessToken();
   const isMultipart = body instanceof FormData;

@@ -19,7 +19,7 @@ export function generateFileEntry(): FileEntry {
     ...mockDatedResource(),
     id,
     fileExtension,
-    url: `${env.NEXT_PUBLIC_API_FILES_URL}/${id}.${fileExtension}`,
+    url: `${env.NEXT_PUBLIC_API_URL}/uploads/${id}.${fileExtension}`,
   };
 }
 

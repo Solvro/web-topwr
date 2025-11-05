@@ -23,7 +23,7 @@ import type {
   ResourceRelations,
 } from "@/types/components";
 
-import { AbstractResourceFormInternal } from "./client";
+import { AbstractResourceFormClient } from "./client";
 
 type LabelledRelationData<T extends ResourceRelation<Resource>> = [
   T,
@@ -91,7 +91,7 @@ export async function AbstractResourceForm<T extends Resource>({
   const relatedResources = await fetchRelatedResources(resource);
 
   return (
-    <AbstractResourceFormInternal
+    <AbstractResourceFormClient
       resource={resource}
       defaultValues={defaultValues}
       existingImages={existingImages}

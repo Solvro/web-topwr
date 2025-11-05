@@ -2,8 +2,7 @@ import type { PathParams, RequestHandler } from "msw";
 import { HttpResponse, http } from "msw";
 
 import { Resource } from "@/config/enums";
-import { env } from "@/config/env";
-import { getResourceMetadata } from "@/lib/helpers";
+import { getResourceMetadata, getVersionedApiBase } from "@/lib/helpers";
 import type {
   ApiCalendarEvent,
   ErrorResponse,
@@ -22,7 +21,7 @@ import {
   MOCK_USER,
 } from "./constants";
 
-const API_URL = env.NEXT_PUBLIC_API_URL;
+const API_URL = getVersionedApiBase();
 const EVENT_CALENDAR_URL = `${API_URL}/${getResourceMetadata(Resource.CalendarEvents).apiPath}`;
 
 export const handlers = [

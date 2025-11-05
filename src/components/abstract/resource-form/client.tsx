@@ -42,7 +42,7 @@ import type {
 
 import { ArfInputs } from "./inputs";
 
-export function AbstractResourceFormInternal<T extends Resource>({
+export function AbstractResourceFormClient<T extends Resource>({
   resource,
   defaultValues,
   existingImages,

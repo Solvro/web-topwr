@@ -75,6 +75,8 @@ const SELECT_OPTION_LABELS = {
 export const RESOURCE_METADATA = {
   [Resource.AboutUs]: {
     apiPath: "about_us",
+    apiVersion: 2,
+    isSingleton: true,
     itemMapper: () => ({}),
     form: {
       inputs: {

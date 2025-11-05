@@ -58,7 +58,7 @@ export type ResourceLayoutProps = Readonly<
 >;
 
 export type ResourceEditPageProps = Readonly<{
-  params: Promise<{ id: string }>;
+  params: Promise<{ id?: string }>;
 }>;
 
 export type ResourceCreatePageProps = Readonly<{

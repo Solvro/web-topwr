@@ -6,6 +6,7 @@ import type { Resource } from "@/config/enums";
 import type { ArfRelationContextType } from "@/hooks/use-arf-relation";
 import {
   camelToSnakeCase,
+  getResourceMetadata,
   getResourcePk,
   getResourceQueryName,
   getResourceRelationDefinitions,
@@ -28,7 +29,20 @@ export const isExistingResourceItem = <T extends Resource>(
   return value != null && value !== "";
 };
 
-const getEditConfig = <T extends Resource>(
+const BASE_EDIT_CONFIG = {
+  method: "PATCH",
+  submitLabel: "Zapisz",
+  SubmitIconComponent: Save,
+} as const;
+
+const getSingletonEditConfig = (resource: Resource) =>
+  ({
+    ...BASE_EDIT_CONFIG,
+    mutationKey: `update__${resource}__singleton`,
+    endpoint: "/",
+  }) as const;
+
+const getMultiInstanceEditConfig = <T extends Resource>(
   resource: T,
   defaultValues: ResourceDataType<T>,
 ) => {
@@ -41,11 +55,9 @@ const getEditConfig = <T extends Resource>(
   }
   const pkValue = sanitizeId(unsanitizedPkValue);
   return {
+    ...BASE_EDIT_CONFIG,
     mutationKey: `update__${resource}__${pkValue}`,
     endpoint: pkValue,
-    method: "PATCH",
-    submitLabel: "Zapisz",
-    SubmitIconComponent: Save,
   } as const;
 };
 
@@ -65,7 +77,9 @@ export const getMutationConfig = <T extends Resource>(
 ) => {
   const isEditing = isExistingResourceItem(resource, defaultValues);
   const parentConfig = isEditing
-    ? getEditConfig(resource, defaultValues)
+    ? getResourceMetadata(resource).isSingleton === true
+      ? getSingletonEditConfig(resource)
+      : getMultiInstanceEditConfig(resource, defaultValues)
     : getCreateConfig(resource);
   if (relationContext == null || isEditing) {
     // always fetch the resource directly if editing a related resource
