@@ -143,6 +143,7 @@ export function OrderableItemWrapper<T extends OrderableResource>({
 
   return (
     <DndContext
+      id={`dnd-context-${resource}`}
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragStart={(event) => {
