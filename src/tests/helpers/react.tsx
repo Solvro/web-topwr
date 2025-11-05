@@ -2,7 +2,8 @@ import { render, screen } from "@testing-library/react";
 import type { RenderResult } from "@testing-library/react";
 import { createStore } from "jotai";
 import type { ComponentType, ReactNode } from "react";
-import { type ControllerRenderProps, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import type { ControllerRenderProps } from "react-hook-form";
 import { expect } from "vitest";
 
 import { Form, FormField, FormItem } from "@/components/ui/form";

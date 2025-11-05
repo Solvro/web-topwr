@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { DeclensionCase } from "@/config/enums";
-import { sanitizeId } from "@/lib/helpers";
+import { sanitizeId } from "@/lib/helpers/transformations";
 import { declineNoun } from "@/lib/polish";
 import type { EditableResource, Id } from "@/types/app";
 
