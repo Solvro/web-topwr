@@ -9,7 +9,7 @@ export function PivotRelationOptions({ resource }: { resource: Resource }) {
   // TODO: make this data available server-side, not with a client query
   const { data } = useQueryWrapper(
     getKey.query.resourceList(resource),
-    async () => fetchResources(resource),
+    async () => fetchResources(resource, -1),
   );
 
   const metadata = getResourceMetadata(resource);

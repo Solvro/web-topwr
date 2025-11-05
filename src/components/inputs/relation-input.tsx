@@ -174,6 +174,7 @@ export function RelationInput<
                 queriedRelationData={queriedRelationData}
                 optionValue={value}
                 setOptionSelected={setOptionSelected}
+                aria-label={`Ustaw relację między ${declensions.instrumental} a ${relationDeclined.singular.instrumental} ${label}`}
               />
             ),
           };

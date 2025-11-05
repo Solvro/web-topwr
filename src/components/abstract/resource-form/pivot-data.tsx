@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "nextjs-toploader/app";
+import type { ComponentProps } from "react";
 
 import { SelectOptions } from "@/components/inputs/select-options";
 import { SelectClear } from "@/components/select-clear";
@@ -11,15 +12,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RelationType } from "@/config/enums";
+import { DeclensionCase, RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useArfRelationMutation } from "@/hooks/use-arf-relation-mutation";
 import { isRelationPivotDefinition } from "@/lib/abstract-resource-form";
 import {
   getResourceRelationDefinitions,
+  isEmptyValue,
   isUnsetEnumField,
   tryParseNumber,
 } from "@/lib/helpers";
+import { declineNoun } from "@/lib/polish";
 import type { Id, ResourceDataType, ResourceRelation } from "@/types/app";
 
 import { PivotRelationOptions } from "./pivot-relation-options";
@@ -31,6 +34,7 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
   queriedRelationData,
   optionValue,
   setOptionSelected,
+  ...props
 }: {
   resource: T;
   resourceRelation: L;
@@ -38,7 +42,7 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
   queriedRelationData: ResourceDataType<L> | undefined;
   optionValue: string;
   setOptionSelected: SetOptionSelected;
-}) {
+} & ComponentProps<typeof SelectTrigger>) {
   const { mutateRelation } = useArfRelationMutation({
     resource,
     resourceRelation,
@@ -83,7 +87,7 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
 
   /** Performs the mutation and updates the client-side state. */
   const mutate = async (pivotValueId: Id | null) => {
-    const relationAdded = pivotValueId != null;
+    const relationAdded = !isEmptyValue(pivotValueId);
 
     if (relationAdded && !isUnsetEnumField(pivotDataValue)) {
       // remove the old relation first, before adding a new one
@@ -105,14 +109,13 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
       value={selectValue}
       onValueChange={async (value) => mutate(tryParseNumber(value))}
     >
-      <SelectTrigger size="sm">
+      <SelectTrigger size="sm" {...props}>
         <SelectValue placeholder="Dodaj" />
       </SelectTrigger>
       <SelectContent>
         <SelectClear
-          label="Usuń"
           value={selectValue}
-          onChange={async () => mutate(null)}
+          label={`Usuń ${declineNoun(resourceRelation, { case: DeclensionCase.Accusative })}`}
         />
         {isRelationPivotDefinition(relationDefinition.pivotData) ? (
           <PivotRelationOptions

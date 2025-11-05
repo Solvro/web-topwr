@@ -1,19 +1,18 @@
 "use client";
 
 import type { ReactNode } from "react";
-import type { ControllerRenderProps } from "react-hook-form";
 
 import { isEmptyValue } from "@/lib/helpers";
 
 import { Button } from "./ui/button";
-import { SelectSeparator } from "./ui/select";
+import { SelectItem, SelectSeparator } from "./ui/select";
 
 export function SelectClear({
-  resetValue = "",
-  label = "wyczyść",
   value,
-  onChange,
-}: Pick<ControllerRenderProps, "value" | "onChange"> & {
+  resetValue = null,
+  label = "wyczyść",
+}: {
+  value: unknown;
   resetValue?: unknown;
   label?: ReactNode;
 }) {
@@ -23,12 +22,10 @@ export function SelectClear({
         className="w-full"
         variant="ghost"
         size="sm"
-        onClick={() => {
-          onChange(resetValue);
-        }}
         disabled={isEmptyValue(value)}
+        asChild
       >
-        {label}
+        <SelectItem value={resetValue as string}>{label}</SelectItem>
       </Button>
       <SelectSeparator />
     </>

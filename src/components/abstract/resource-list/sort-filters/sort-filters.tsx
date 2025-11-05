@@ -213,7 +213,7 @@ export function SortFilters({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectClear resetValue={null} {...field} />
+                    <SelectClear value={field.value} />
                     {sortLabels.map(([value, label]) => (
                       <SelectItem key={value} value={value}>
                         {label}
@@ -283,7 +283,7 @@ export function SortFilters({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectClear {...field} />
+                      <SelectClear value={field.value} />
                       {typedEntries(filterDefinitions).map(
                         ([filterField, { label }]) => (
                           <SelectItem key={filterField} value={filterField}>

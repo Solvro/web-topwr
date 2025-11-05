@@ -405,16 +405,17 @@ function MultiSelectOptionItem({
             aria-hidden="true"
           />
         )}
-        <span className="flex w-full items-center justify-between gap-2">
+        <label className="flex w-full items-center justify-between gap-2">
           {option.label}
           {option.action?.(setOptionSelected)}
-        </span>
+        </label>
       </CommandItem>
       {onEditItem == null ? null : (
         <Button
           variant="icon"
           size="sm"
           onClick={() => onEditItem(option.value)}
+          aria-label={`Edytuj opcję ${option.label}`}
         >
           <EditIcon />
         </Button>
