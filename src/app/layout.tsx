@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 
-import { Providers } from "@/components/providers";
+import { RootProviders } from "@/components/providers/root-providers";
 import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/config/env";
 import { cn } from "@/lib/utils";
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang="pl" className="overflow-hidden">
-      <Providers>
+      <RootProviders>
         <body
           className={cn(
             "flex h-screen flex-col overflow-auto font-sans antialiased",
@@ -49,7 +49,7 @@ export default function RootLayout({ children }: LayoutProps) {
           <Toaster position="top-right" />
           {children}
         </body>
-      </Providers>
+      </RootProviders>
     </html>
   );
 }

@@ -235,7 +235,7 @@ test.describe("Guide Articles CRUD", () => {
         await getEditButton(page).click();
         await page.waitForURL(`/${resource}/edit/*`);
         const submitButton = page.getByRole("button", { name: /zapisz/i });
-        // TODO: for some reason the button is sometimes iniitally enabled
+        // TODO: for some reason the button is sometimes initially enabled
         // when the rich text editor is rendered
         // await expect(submitButton).toBeDisabled();
         const titleInput = page.getByLabel("Tytuł");

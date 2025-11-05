@@ -26,7 +26,7 @@ export const isEmptyValue = (value: unknown): value is "" | null | undefined =>
   value == null || (typeof value === "string" && value.trim() === "");
 
 export const isUnsetEnumField = (value: unknown): boolean =>
-  value == null || Number(value) < 0;
+  isEmptyValue(value) || Number(value) < 0;
 
 export const isValidSortDirection = (value: unknown): value is SortDirection =>
   value === SortDirection.Ascending || value === SortDirection.Descending;
