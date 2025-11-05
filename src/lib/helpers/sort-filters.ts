@@ -4,7 +4,7 @@ import {
 } from "@/config/constants";
 import { FilterType } from "@/config/enums";
 import type { SortDirection } from "@/config/enums";
-import type { FilterDefinitions } from "@/types/components";
+import type { FilterDefinitions, SearchParameters } from "@/types/components";
 import type { FilteredField, SortFiltersFormValues } from "@/types/forms";
 import type { DeclinableNoun } from "@/types/polish";
 
@@ -17,7 +17,7 @@ import {
 
 /** Parses the filters from client-side search parameters. */
 export const parseFilterSearchParameters = (
-  searchParameters: Record<string, string | undefined>,
+  searchParameters: SearchParameters,
   filterDefinitions: FilterDefinitions,
 ): FilteredField[] =>
   typedEntries(searchParameters).reduce<FilteredField[]>(

@@ -6,6 +6,7 @@ import {
   parseSortParameter,
 } from "@/lib/helpers";
 import type { CreatableResource, RoutableResource } from "@/types/app";
+import type { SearchParameters } from "@/types/components";
 import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 import type { ResourceDeclinableField } from "@/types/polish";
 
@@ -23,7 +24,7 @@ export async function AbstractResourceList<T extends CreatableResource>({
 }: {
   resource: T;
   sortableFields?: ResourceDeclinableField<T>[];
-  searchParams: Promise<Record<string, string | undefined>>;
+  searchParams: Promise<SearchParameters>;
   parentResource?: RoutableResource;
 }) {
   const searchParameters = await searchParams;
