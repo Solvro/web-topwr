@@ -6,9 +6,9 @@ import type { KeyboardEvent, MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { CALENDAR_MAX_EVENTS_PER_DAY } from "@/config/constants";
 import type { Resource } from "@/config/enums";
-import { cn } from "@/lib/utils";
 import type { CalendarEvent, DateObject } from "@/types/calendar";
 
+import { Badge } from "../ui/badge";
 import { AllEventsModal } from "./all-events-modal";
 
 export function DayBlock({
@@ -49,21 +49,22 @@ export function DayBlock({
   return (
     <>
       <Button
-        variant="ghost"
-        className={cn(
-          "relative flex h-16 flex-col rounded-none border p-1 sm:h-24 md:h-28 lg:h-32",
-          { "bg-blue-500 text-white": isCurrentDay },
-        )}
+        variant={isCurrentDay ? "default" : "secondary"}
+        className="relative flex h-16 flex-col p-1 md:h-20 lg:h-28"
         onClick={handleDayClick}
         onKeyDown={handleDayKeyDown}
       >
-        <div className="absolute top-1 left-1 text-xs font-semibold sm:text-sm">
+        <div className="text-s absolute top-1.5 left-2 font-bold sm:text-lg">
           {day}
         </div>
 
         <div className="mt-4 flex min-h-0 w-full flex-1 flex-col-reverse gap-0.5 overflow-hidden sm:mt-6 md:mt-13">
           {events.slice(0, CALENDAR_MAX_EVENTS_PER_DAY).map((event) => (
-            <div key={event.id} className="bg-primary h-2 rounded-md" />
+            <Badge
+              key={event.id}
+              className="h-2 w-1/3 truncate"
+              variant={isCurrentDay ? "secondary" : "default"}
+            />
           ))}
         </div>
       </Button>
