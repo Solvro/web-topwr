@@ -103,6 +103,10 @@ interface PaginationMetadata {
 
 export interface GetResourcesResponse<T extends Resource> {
   data: ResourceDataType<T>[];
+}
+
+export interface GetResourcesResponsePaginated<T extends Resource> {
+  data: ResourceDataType<T>[];
   meta: PaginationMetadata;
 }
 

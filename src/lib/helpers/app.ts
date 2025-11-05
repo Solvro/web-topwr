@@ -23,6 +23,7 @@ import { typedKeys } from "./typescript";
 export const getKey = {
   query: {
     resourceList: (resource: Resource) => `${resource}-list-page`,
+    pivotData: (resource: Resource) => `${resource}-pivot-data`,
   },
   mutation: {
     deleteResource: (resource: Resource, id: Id) =>

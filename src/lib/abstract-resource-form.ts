@@ -6,18 +6,26 @@ import type { Resource } from "@/config/enums";
 import type { ArfRelationContextType } from "@/hooks/use-arf-relation";
 import {
   camelToSnakeCase,
+  fetchResources,
   getResourceMetadata,
   getResourcePk,
   getResourceQueryName,
   getResourceRelationDefinitions,
   sanitizeId,
+  typedFromEntries,
 } from "@/lib/helpers";
 import type {
   PivotDataDefinition,
+  PivotRelationDefinition,
+  RelationDefinition,
+  RelationDefinitions,
   RelationPivotDataDefinition,
   ResourceDataType,
   ResourceDataWithRelations,
   ResourceDefaultValues,
+  ResourcePivotRelation,
+  ResourcePivotRelationData,
+  ResourceRelation,
   XToManyResource,
 } from "@/types/app";
 
@@ -132,6 +140,52 @@ export const getDefaultValues = <T extends Resource>(
   return combinedDefaultValues;
 };
 
+export const isPivotRelationDefinition = <
+  T extends Resource,
+  L extends ResourceRelation<T>,
+>(
+  definition: RelationDefinition<T, L>,
+): definition is PivotRelationDefinition & {
+  pivotData: PivotDataDefinition;
+} =>
+  definition.type === RelationType.ManyToMany && definition.pivotData != null;
+
 export const isRelationPivotDefinition = (
   definition: PivotDataDefinition,
 ): definition is RelationPivotDataDefinition => "relatedResource" in definition;
+
+export const fetchPivotResources = async <T extends Resource>(
+  relationInputs: RelationDefinitions<T> | undefined,
+): Promise<ResourcePivotRelationData<T>> => {
+  if (relationInputs == null) {
+    return {} as ResourcePivotRelationData<T>;
+  }
+  const responses = await Promise.all(
+    Object.values(relationInputs).map(async (relationDefinition) => {
+      const definition = relationDefinition as RelationDefinition<
+        T,
+        ResourceRelation<T>
+      >;
+      if (
+        !isPivotRelationDefinition(definition) ||
+        !isRelationPivotDefinition(definition.pivotData)
+      ) {
+        return [];
+      }
+      const resource = definition.pivotData.relatedResource;
+      const response = await fetchResources(resource, -1);
+      const data = response.data as ResourceDataType<typeof resource>[];
+      return [
+        [resource, data] satisfies [
+          typeof resource,
+          ResourceDataType<typeof resource>[],
+        ],
+      ];
+    }),
+  );
+  const entries = responses.flat() as [
+    ResourcePivotRelation<T>,
+    ResourceDataType<ResourcePivotRelation<T>>[],
+  ][];
+  return typedFromEntries<ResourcePivotRelationData<T>>(entries);
+};

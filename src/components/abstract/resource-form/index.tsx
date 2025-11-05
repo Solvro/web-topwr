@@ -3,6 +3,7 @@ import { get } from "react-hook-form";
 import { ApiImage } from "@/components/api-image/server";
 import { RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { fetchPivotResources } from "@/lib/abstract-resource-form";
 import { fetchQuery } from "@/lib/fetch-utils";
 import {
   getResourceMetadata,
@@ -89,6 +90,9 @@ export async function AbstractResourceForm<T extends Resource>({
   }
 
   const relatedResources = await fetchRelatedResources(resource);
+  const pivotResources = await fetchPivotResources(
+    metadata.form.inputs.relationInputs,
+  );
 
   return (
     <AbstractResourceFormClient
@@ -96,6 +100,7 @@ export async function AbstractResourceForm<T extends Resource>({
       defaultValues={defaultValues}
       existingImages={existingImages}
       relatedResources={relatedResources}
+      pivotResources={pivotResources}
       {...props}
     />
   );
