@@ -35,7 +35,6 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
   resource: T;
   resourceRelation: L;
   endpoint: string;
-  data: ResourceDataType<L>;
   queriedRelationData: ResourceDataType<L> | undefined;
   optionValue: string;
   setOptionSelected: SetOptionSelected;

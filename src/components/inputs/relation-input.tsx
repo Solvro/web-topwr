@@ -24,6 +24,7 @@ import {
 } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type {
+  Id,
   RelationDefinition,
   ResourceDataType,
   ResourceDefaultValues,
@@ -123,9 +124,10 @@ export function RelationInput<
     );
   }
   const queriedRelations = unsafeQueriedRelations ?? [];
-  const selectedValues = queriedRelations.map((item) =>
-    String(get(item, primaryKeyField, "unknown-select-item")),
-  );
+  const selectedValues = queriedRelations.flatMap((item) => {
+    const value = get(item, primaryKeyField, null) as Id | null;
+    return value == null ? [] : String(value);
+  });
   const relationDataOptions =
     relationDefinition.type === RelationType.OneToMany
       ? queriedRelations
@@ -155,9 +157,12 @@ export function RelationInput<
           const value = String(
             get(option, primaryKeyField, `item-${String(index)}`),
           );
-          const queriedRelationData = queriedRelations.find(
-            (queriedRelation) => queriedRelation.id === option.id,
-          );
+          const queriedRelationData =
+            relationDefinition.type === RelationType.OneToMany
+              ? option
+              : queriedRelations.find(
+                  (queriedRelation) => queriedRelation.id === option.id,
+                );
           return {
             label,
             value,
@@ -166,7 +171,6 @@ export function RelationInput<
                 resource={resource}
                 endpoint={endpoint}
                 resourceRelation={resourceRelation}
-                data={option}
                 queriedRelationData={queriedRelationData}
                 optionValue={value}
                 setOptionSelected={setOptionSelected}
@@ -234,7 +238,7 @@ export function RelationInput<
             },
           );
         }}
-        defaultValue={selectedValues}
+        defaultValue={[...new Set(selectedValues)]}
       />
     </Label>
   );
