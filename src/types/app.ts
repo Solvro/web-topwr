@@ -122,6 +122,8 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
   apiPath: string;
   /** The API version to be used when fetching this resource. Defaults to 1. */
   apiVersion?: number;
+  /** Whether the resource is a singleton (i.e., only one instance exists). */
+  isSingleton?: boolean;
   /** Whether the resource is orderable within the Abstract Resource List. */
   orderable?: boolean;
   /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */

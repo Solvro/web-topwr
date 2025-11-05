@@ -4,8 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { AbstractResourceForm } from "@/components/abstract/resource-form";
 import { Resource } from "@/config/enums";
-import { env } from "@/config/env";
-import { fetchQuery } from "@/lib/fetch-utils";
+import { fetchQuery, getResourceApiBase } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import { mockDatedResource } from "@/tests/helpers/mocks";
 import { renderWithProviders } from "@/tests/helpers/react";
@@ -42,7 +41,7 @@ describe("edit page for existing banner", () => {
   it("reads banner data and populates form", async () => {
     server.use(
       http.get(
-        `${env.NEXT_PUBLIC_API_URL}/banners/${String(MOCK_BANNER.id)}`,
+        `${getResourceApiBase(resource)}/${resource}/${String(MOCK_BANNER.id)}`,
         () => HttpResponse.json({ data: MOCK_BANNER }),
       ),
     );
