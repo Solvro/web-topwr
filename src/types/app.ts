@@ -120,6 +120,8 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
   pk?: ResourceSchemaKey<R, z.ZodString | z.ZodNumber>;
   /** A mapping of the client-side resources to their paths in the backend API. */
   apiPath: string;
+  /** The API version to be used when fetching this resource. Defaults to 1. */
+  apiVersion?: number;
   /** Whether the resource is orderable within the Abstract Resource List. */
   orderable?: boolean;
   /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */

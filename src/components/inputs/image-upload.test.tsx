@@ -2,7 +2,7 @@ import userEvent from "@testing-library/user-event";
 import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
-import { env } from "@/config/env";
+import { getVersionedApiBase } from "@/lib/helpers";
 import {
   InputComponentWrapper,
   getToaster,
@@ -70,7 +70,7 @@ describe("ImageUpload Component", () => {
     const mockFile = MOCK_FILES[0];
 
     server.use(
-      http.post(`${env.NEXT_PUBLIC_API_URL}/files`, () => {
+      http.post(`${getVersionedApiBase()}/files`, () => {
         return HttpResponse.json({
           key: mockFile.id,
         });

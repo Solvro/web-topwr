@@ -31,7 +31,7 @@ describe("API Image component", () => {
         expect(imageElement).toBeInTheDocument();
         expect(imageElement).toHaveAttribute(
           "src",
-          `${env.NEXT_PUBLIC_API_FILES_URL}/${image.id}.${image.fileExtension}`,
+          `${env.NEXT_PUBLIC_API_URL}/uploads/${image.id}.${image.fileExtension}`,
         );
       }
     });

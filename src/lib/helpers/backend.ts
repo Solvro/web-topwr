@@ -4,6 +4,7 @@ import {
 } from "@/config/constants";
 import { SortDirection } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { env } from "@/config/env";
 import { fetchMutation, fetchQuery } from "@/lib/fetch-utils";
 import type { GetResourcesResponse } from "@/types/api";
 import type { FilterDefinitions } from "@/types/components";
@@ -90,3 +91,6 @@ export async function fetchResources<T extends Resource, P extends number>(
   });
   return result;
 }
+
+export const getVersionedApiBase = (version = 1) =>
+  `${env.NEXT_PUBLIC_API_URL}/api/v${String(version)}`;

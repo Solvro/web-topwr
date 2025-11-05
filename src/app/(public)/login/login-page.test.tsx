@@ -3,8 +3,8 @@ import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
 import { API_ERROR_MESSAGES } from "@/config/constants";
-import { env } from "@/config/env";
 import { getErrorMessage } from "@/lib/error-handling";
+import { getVersionedApiBase } from "@/lib/helpers";
 import { getToaster, renderWithProviders } from "@/tests/helpers/react";
 import { MOCK_PASSWORD, MOCK_USER } from "@/tests/mocks/constants";
 import { server } from "@/tests/mocks/server";
@@ -84,7 +84,7 @@ describe("Login page", () => {
 
   it("should fall back to email if user has no full name", async () => {
     server.use(
-      http.get(`${env.NEXT_PUBLIC_API_URL}/auth/me`, () =>
+      http.get(`${getVersionedApiBase()}/auth/me`, () =>
         HttpResponse.json<GetUserResponse>({
           ...MOCK_USER.valid,
           fullName: null,

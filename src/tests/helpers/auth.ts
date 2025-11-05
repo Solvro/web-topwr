@@ -1,7 +1,7 @@
 import { http, passthrough } from "msw";
 
-import { env } from "@/config/env";
 import { fetchMutation } from "@/lib/fetch-utils";
+import { getVersionedApiBase } from "@/lib/helpers";
 import type {
   LogInResponse,
   MessageResponse,
@@ -14,7 +14,7 @@ import { server } from "../mocks/server";
 
 function bypassMockServer(endpoint: string) {
   server.use(
-    http.post(`${env.NEXT_PUBLIC_API_URL}/${endpoint}`, () => passthrough()),
+    http.post(`${getVersionedApiBase()}/${endpoint}`, () => passthrough()),
   );
 }
 
