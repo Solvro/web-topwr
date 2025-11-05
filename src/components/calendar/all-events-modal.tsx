@@ -45,7 +45,12 @@ export function AllEventsModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="h-max max-h-[80vh] max-w-lg">
+      <DialogContent
+        className="h-max max-h-[80vh] max-w-lg"
+        onOpenAutoFocus={(event_) => {
+          event_.preventDefault();
+        }}
+      >
         <DialogHeader>
           <DialogTitle>
             Wydarzenia {formatDate(baseDate, "d MMMM yyyy", { locale: pl })}

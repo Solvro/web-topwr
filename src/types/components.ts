@@ -39,8 +39,10 @@ export interface ResourceFormProps<T extends Resource> {
   className?: string;
 }
 
+export type SearchParameters = Record<string, string | undefined>;
+
 export type ResourcePageProps = Readonly<{
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<SearchParameters>;
 }>;
 
 export type ResourceLabelOptions = Readonly<{
@@ -60,7 +62,7 @@ export type ResourceEditPageProps = Readonly<{
 }>;
 
 export type ResourceCreatePageProps = Readonly<{
-  searchParams?: Promise<Record<string, string | undefined>>;
+  searchParams?: Promise<SearchParameters>;
 }>;
 
 export interface ResourceFormSheetDataContent<T extends Resource> {

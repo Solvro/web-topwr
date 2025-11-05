@@ -14,6 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { isEmptyValue } from "@/lib/helpers";
 
 export function DatePicker({
   value,
@@ -22,7 +23,7 @@ export function DatePicker({
   value: string | null;
   onChange: (date: string | null) => void;
 }) {
-  const date = value == null || value === "" ? undefined : new Date(value);
+  const date = isEmptyValue(value) ? null : new Date(value);
   return (
     <>
       <FormControl>
@@ -52,7 +53,7 @@ export function DatePicker({
         <PopoverContent className="w-auto p-0">
           <Calendar
             mode="single"
-            selected={date}
+            selected={date ?? undefined}
             onSelect={(newValue) => {
               onChange(newValue?.toISOString() ?? null);
             }}

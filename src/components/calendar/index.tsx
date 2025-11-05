@@ -1,85 +1,52 @@
-"use client";
-
-import { useAtom } from "jotai";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { parse } from "date-fns";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { WEEKDAYS } from "@/config/constants";
 import type { Resource } from "@/config/enums";
-import { useQueryWrapper } from "@/hooks/use-query-wrapper";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { getMonthByNumberAndYear } from "@/lib/helpers";
-import { calendarStateAtom } from "@/stores/calendar";
 import type { ApiCalendarEvent } from "@/types/api";
-import type { CalendarEvent } from "@/types/calendar";
+import type { ResourcePageProps } from "@/types/components";
 
-import { DayBlock } from "./day-button";
+import { DayBlock } from "./day-block";
 
-export function Calendar({
+export async function Calendar({
   clickable = false,
   resource,
+  searchParams,
 }: {
   clickable?: boolean;
   resource: Resource;
-}) {
+} & ResourcePageProps) {
+  const { data } = await fetchQuery<{ data: ApiCalendarEvent[] }>("", {
+    resource,
+  });
+
+  const events = data.map((apiEvent) => ({
+    id: apiEvent.id,
+    name: apiEvent.name,
+    description: apiEvent.description ?? undefined,
+    startTime: new Date(apiEvent.startTime),
+    endTime: new Date(apiEvent.endTime),
+    location: apiEvent.location ?? undefined,
+    googleCallId: apiEvent.googleCallId ?? undefined,
+  }));
+
+  const { year, month } = await searchParams;
   const currentDate = new Date();
-  const { data } = useQueryWrapper(`calendarEvents-${resource}`, async () =>
-    fetchQuery<{ data: ApiCalendarEvent[] }>("", { resource }),
-  );
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-
-  useEffect(() => {
-    if (data === undefined) {
-      setEvents([]);
-      return;
-    }
-    const transformedEvents = data.data.map((apiEvent) => ({
-      id: apiEvent.id,
-      name: apiEvent.name,
-      description: apiEvent.description ?? undefined,
-      startTime: new Date(apiEvent.startTime),
-      endTime: new Date(apiEvent.endTime),
-      location: apiEvent.location ?? undefined,
-      googleCallId: apiEvent.googleCallId ?? undefined,
-    }));
-    setEvents(transformedEvents);
-  }, [data]);
-
-  const [calendarState, setCalendarState] = useAtom(calendarStateAtom);
-  const { displayedYear, displayedMonth } = calendarState;
+  const displayedYear = (
+    year == null ? currentDate : parse(year, "yyyy", currentDate)
+  ).getFullYear();
+  const displayedMonth =
+    (month == null ? currentDate : parse(month, "MM", currentDate)).getMonth() +
+    1;
 
   const currentDisplayedMonth = getMonthByNumberAndYear(
     displayedMonth,
     displayedYear,
   );
-  const goToPreviousMonth = () => {
-    if (displayedMonth === 1) {
-      setCalendarState({
-        displayedMonth: 12,
-        displayedYear: displayedYear - 1,
-      });
-    } else {
-      setCalendarState({
-        displayedMonth: displayedMonth - 1,
-        displayedYear,
-      });
-    }
-  };
-
-  const goToNextMonth = () => {
-    if (displayedMonth === 12) {
-      setCalendarState({
-        displayedMonth: 1,
-        displayedYear: displayedYear + 1,
-      });
-    } else {
-      setCalendarState({
-        displayedMonth: displayedMonth + 1,
-        displayedYear,
-      });
-    }
-  };
 
   const firstDayOfMonth = new Date(displayedYear, displayedMonth - 1, 1);
   const startDayOfWeek = (firstDayOfMonth.getDay() + 6) % 7;
@@ -87,15 +54,15 @@ export function Calendar({
   const totalCells = startDayOfWeek + currentDisplayedMonth.daysInMonth;
   const calendarDays = Array.from({ length: totalCells }, (_, index) =>
     index < startDayOfWeek
-      ? {
+      ? ({
           type: "empty",
           id: `empty-${displayedYear.toString()}-${displayedMonth.toString()}-${index.toString()}`,
-        }
-      : {
+        } as const)
+      : ({
           type: "day",
           id: index - startDayOfWeek + 1,
           day: index - startDayOfWeek + 1,
-        },
+        } as const),
   );
 
   const getEventsForDay = (day: number) => {
@@ -109,36 +76,37 @@ export function Calendar({
     });
   };
 
+  const getMonthLink = (newYear: number, newMonth: number) => {
+    const adjustedDate = new Date(newYear, newMonth - 1);
+    const urlSearchParameters = new URLSearchParams({
+      year: adjustedDate.getFullYear().toString(),
+      month: (adjustedDate.getMonth() + 1).toString(),
+    });
+    return `?${urlSearchParameters}` as const;
+  };
+
   return (
-    <div className="mx-auto grid h-fit w-[95%] grid-cols-7 sm:w-[90%] md:max-w-7xl lg:w-[85%]">
-      <div className="col-span-7 flex items-center justify-center gap-4 text-center text-base font-bold sm:text-lg">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={goToPreviousMonth}
-          className="h-8 w-8 p-0"
-          aria-label="Previous month"
-        >
-          <ArrowLeft />
+    <div className="mx-auto grid h-fit w-[95%] grid-cols-7 gap-2 sm:w-[90%] md:max-w-7xl lg:w-[85%]">
+      <div className="col-span-full flex items-center justify-center gap-4 text-center text-base font-bold sm:text-lg">
+        <Button variant="ghost" size="icon" aria-label="Previous month" asChild>
+          <Link href={getMonthLink(displayedYear, displayedMonth - 1)}>
+            <ChevronLeft />
+          </Link>
         </Button>
         <span className="min-w-[200px]">
           {currentDisplayedMonth.name} {displayedYear}
         </span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={goToNextMonth}
-          className="h-8 w-8 p-0"
-          aria-label="Next month"
-        >
-          <ArrowRight />
+        <Button variant="ghost" size="icon" aria-label="Next month" asChild>
+          <Link href={getMonthLink(displayedYear, displayedMonth + 1)}>
+            <ChevronRight />
+          </Link>
         </Button>
       </div>
-      <div className="col-span-7 mt-4 grid grid-cols-7 gap-1 sm:gap-2">
+      <div className="col-span-full mt-4 grid grid-cols-subgrid gap-1">
         {WEEKDAYS.map((day) => (
           <div
             key={day}
-            className="text-center text-xs font-semibold sm:text-sm"
+            className="text-center text-xs font-semibold uppercase sm:text-sm"
           >
             {day}
           </div>
@@ -146,31 +114,25 @@ export function Calendar({
       </div>
       {calendarDays.map((cell) => {
         if (cell.type === "empty") {
-          return (
-            <div key={cell.id} className="h-16 sm:h-24 md:h-28 lg:h-32"></div>
-          );
+          return <div key={cell.id} />;
         }
-
-        if (cell.type === "day" && cell.day !== undefined) {
-          const dayEvents = getEventsForDay(cell.day);
-          const displayedDateObject = {
-            year: displayedYear,
-            month: currentDisplayedMonth,
-            day: cell.day,
-          };
-          return (
-            <DayBlock
-              key={cell.id}
-              day={cell.day}
-              today={displayedDateObject}
-              clickable={clickable}
-              events={dayEvents}
-              resource={resource}
-              currentDate={currentDate}
-            />
-          );
-        }
-        return null;
+        const dayEvents = getEventsForDay(cell.day);
+        const displayedDateObject = {
+          year: displayedYear,
+          month: currentDisplayedMonth,
+          day: cell.day,
+        };
+        return (
+          <DayBlock
+            key={cell.id}
+            day={cell.day}
+            today={displayedDateObject}
+            clickable={clickable}
+            events={dayEvents}
+            resource={resource}
+            currentDate={currentDate}
+          />
+        );
       })}
     </div>
   );
