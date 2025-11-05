@@ -50,6 +50,7 @@ const CalendarEventSchema = z.object({
   description: z.string().nullish(),
   location: z.string().nullish(),
   googleCalId: z.string().nullish(),
+  accentColor: ColorValueSchema.nullish(),
 });
 
 const ChangesSchema = z.object({

@@ -172,6 +172,9 @@ export const RESOURCE_METADATA = {
           startTime: { label: "Czas rozpoczęcia" },
           endTime: { label: "Czas zakończenia" },
         },
+        colorInputs: {
+          accentColor: { label: "Kolor akcentu" },
+        },
       },
       defaultValues: {
         name: "",
@@ -179,6 +182,7 @@ export const RESOURCE_METADATA = {
         description: "",
         startTime: getRoundedDate(0),
         endTime: getRoundedDate(24),
+        accentColor: null,
       },
     },
   },
