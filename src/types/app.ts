@@ -18,6 +18,7 @@ export type Id = string | number;
 export interface ListItem {
   id: Id;
   name?: string;
+  badges?: string[];
   shortDescription?: string | null;
 }
 export type AppZodObject = z.ZodObject<z.ZodRawShape>;

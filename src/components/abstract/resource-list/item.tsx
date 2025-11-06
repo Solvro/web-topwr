@@ -35,26 +35,36 @@ export function AbstractResourceListItem<T extends EditableResource>(
   return (
     <li
       ref={ref}
-      className="bg-accent text-accent-foreground grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[1fr_2fr_auto] md:gap-x-4"
+      className="bg-accent text-accent-foreground flex flex-row items-center space-x-4 rounded-xl p-4"
     >
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1 sm:gap-2">
           {orderable ? <DragHandle item={listItem} /> : null}
           <Badge>{listItem.id}</Badge>
         </div>
-        <span className="w-full font-medium text-balance md:text-center">
-          {listItem.name}
-        </span>
       </div>
-      <span className="hidden truncate md:block">
-        {listItem.shortDescription == null ||
-        listItem.shortDescription.trim() === "" ? (
-          <p className="text-muted-foreground">Brak opisu</p>
-        ) : (
-          listItem.shortDescription
-        )}
-      </span>
-      <div className="space-x-0.5 sm:space-x-2">
+      <div className="grow space-y-1 overflow-hidden">
+        <div className="flex w-full flex-row justify-start space-x-2">
+          <p className="font-semibold">{listItem.name}</p>
+          {listItem.badges?.map((badge) => (
+            <Badge
+              key={badge}
+              className="border-muted-foreground text-muted-foreground bg-transparent py-0"
+            >
+              {badge}
+            </Badge>
+          ))}
+        </div>
+        <p className="hidden truncate md:block">
+          {listItem.shortDescription == null ||
+          listItem.shortDescription.trim() === "" ? (
+            <span className="text-muted-foreground">Brak opisu</span>
+          ) : (
+            listItem.shortDescription
+          )}
+        </p>
+      </div>
+      <div className="flex flex-row space-x-0.5 sm:space-x-2">
         <EditButton resource={resource} id={listItem.id} />
 
         {isStudentOrganizationProps(props) ? (

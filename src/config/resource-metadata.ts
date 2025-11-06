@@ -450,6 +450,10 @@ export const RESOURCE_METADATA = {
     apiPath: "student_organizations",
     itemMapper: (item) => ({
       name: item.name,
+      badges: [
+        SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.TYPE[item.organizationType],
+        SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.SOURCE[item.source],
+      ],
       shortDescription: item.shortDescription,
     }),
     form: {
