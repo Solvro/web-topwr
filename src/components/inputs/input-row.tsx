@@ -15,7 +15,11 @@ export function InputRow({
 }: LayoutProps & {
   className?: string;
 }) {
-  return <div className={cn("flex flex-row gap-4", className)}>{children}</div>;
+  return (
+    <div className={cn("flex flex-row flex-wrap gap-4", className)}>
+      {children}
+    </div>
+  );
 }
 
 export function Inputs<
