@@ -2,13 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
+import { useEffect } from "react";
 import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 
 import { DeleteButtonWithDialog } from "@/components/abstract/delete-button-with-dialog";
+import { Link } from "@/components/link";
 import { ArfSheetProvider } from "@/components/providers/arf-sheet-provider";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -17,6 +18,7 @@ import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useArfRelation } from "@/hooks/use-arf-relation";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import {
   getDefaultValues,
   getMutationConfig,
@@ -68,9 +70,23 @@ export function AbstractResourceFormClient<T extends Resource>({
       relationContext,
     ) as DefaultValues<ResourceFormValues<T>>,
   });
+  const { setHasUnsavedChanges } = useUnsavedChanges();
 
   const isEditing = isExistingResourceItem(resource, defaultValues);
   const isEmbedded = relationContext != null;
+
+  form.subscribe({
+    formState: { isDirty: true },
+    callback: ({ isDirty }) => {
+      setHasUnsavedChanges(isDirty ?? false);
+    },
+  });
+
+  useEffect(() => {
+    return () => {
+      setHasUnsavedChanges(false);
+    };
+  }, [setHasUnsavedChanges]);
 
   const {
     mutationKey,

@@ -3,9 +3,9 @@
 import { useHydrateAtoms } from "jotai/utils";
 import { UserRound } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 
 import LogoToPWR from "@/assets/logo-topwr-color.png";
+import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

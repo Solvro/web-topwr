@@ -1,7 +1,7 @@
 import { parse } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import Link from "next/link";
 
+import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
 import { WEEKDAYS } from "@/config/constants";
 import type { Resource } from "@/config/enums";

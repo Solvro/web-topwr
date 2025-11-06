@@ -1,8 +1,8 @@
 import type { VariantProps } from "class-variance-authority";
 import type { LucideIcon } from "lucide-react";
 import type { Route } from "next";
-import Link from "next/link";
 
+import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
 import { DeclensionCase } from "@/config/enums";
 import { getManagingResourceLabel, toTitleCase } from "@/lib/helpers";
