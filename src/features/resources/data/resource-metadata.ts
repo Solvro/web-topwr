@@ -766,6 +766,10 @@ export const RESOURCE_METADATA = {
     apiPath: "student_organizations",
     itemMapper: (item) => ({
       name: item.name,
+      badges: {
+        [Resource.Departments]: "name",
+        [Resource.StudentOrganizationTags]: "tag",
+      },
       shortDescription: item.shortDescription,
     }),
     form: {

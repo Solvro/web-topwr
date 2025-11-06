@@ -11,5 +11,5 @@ export function getRelationQueryParameters(
   const relationSearchParameters = Object.fromEntries(
     getRecursiveRelations(resource).map((relation) => [relation, "true"]),
   );
-  return `?${new URLSearchParams(relationSearchParameters).toString()}`;
+  return new URLSearchParams(relationSearchParameters).toString();
 }

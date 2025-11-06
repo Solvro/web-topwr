@@ -17,6 +17,7 @@ import type {
   FilterDefinitions,
   SortFiltersFormValuesNarrowed,
 } from "@/features/sort-filters/types";
+import type { ResourceRelations } from "@/types/components";
 
 import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
 import { ArlItems } from "./arl-items";
@@ -27,11 +28,13 @@ export function InfiniteScroller<T extends EditableResource>({
   initialData,
   filterDefinitions = {},
   sortFilters = {},
+  relatedResources,
 }: {
   resource: T;
   initialData: GetResourcesResponsePaginated<T>;
   filterDefinitions?: Partial<FilterDefinitions<T>>;
   sortFilters?: Partial<SortFiltersFormValuesNarrowed>;
+  relatedResources: ResourceRelations<T>;
 }) {
   const { ref, inView } = useInView();
 
@@ -73,10 +76,17 @@ export function InfiniteScroller<T extends EditableResource>({
       {isOrderableResource(resource) ? (
         <OrderableItemWrapper
           resource={resource}
+          relatedResources={
+            relatedResources as ResourceRelations<OrderableResource>
+          }
           data={flatData as ResourceDataType<OrderableResource>[]}
         />
       ) : (
-        <ArlItems items={flatData} resource={resource} />
+        <ArlItems
+          items={flatData}
+          resource={resource}
+          relatedResources={relatedResources}
+        />
       )}
       <Button
         ref={ref}
