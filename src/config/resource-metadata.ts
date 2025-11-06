@@ -488,6 +488,7 @@ export const RESOURCE_METADATA = {
         },
         checkboxInputs: {
           isStrategic: { label: "Czy jest kołem strategicznym?" },
+          coverPreview: { label: "Używaj banera jako zdjęcia podglądowego?" },
         },
         relationInputs: {
           [Resource.Departments]: {

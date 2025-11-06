@@ -1159,7 +1159,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                       </>
                     ) : null}
                     <ChevronDown
-                      className="text-muted-foreground mx-2 h-4 cursor-pointer"
+                      className="text-muted-foreground/50 mx-2 h-4 cursor-pointer"
                       aria-hidden="true"
                     />
                   </div>
@@ -1169,7 +1169,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                   <span className="text-muted-foreground mx-3 text-sm">
                     {placeholder}
                   </span>
-                  <ChevronDown className="text-muted-foreground mx-2 h-4 cursor-pointer" />
+                  <ChevronDown className="text-muted-foreground/50 mx-2 h-4 cursor-pointer" />
                 </div>
               )}
             </InputSlot>
