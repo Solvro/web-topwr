@@ -1,4 +1,10 @@
-import { Link, ScrollText, Settings, UsersRound } from "lucide-react";
+import {
+  Link,
+  ScrollText,
+  Settings,
+  ShieldUser,
+  UsersRound,
+} from "lucide-react";
 
 import { BackToHomeButton } from "@/components/abstract/back-to-home-button";
 import { DashboardButton } from "@/components/dashboard-button";
@@ -33,6 +39,12 @@ export default function AboutUsPage(_props: ResourcePageProps) {
       <DashboardButton
         resource={Resource.Contributors}
         icon={UsersRound}
+        longLabel
+        variant="outline"
+      />
+      <DashboardButton
+        resource={Resource.Roles}
+        icon={ShieldUser}
         longLabel
         variant="outline"
       />
