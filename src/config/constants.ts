@@ -105,7 +105,7 @@ export const TOAST_MESSAGES = {
     },
     delete: {
       loading: `Trwa usuwanie ${declensions.genitive}...`,
-      success: `Pomyślnie usunięto ${declensions.accusative}`,
+      success: `Pomyślnie usunięto ${declensions.accusative}!`,
       error: `Wystąpił błąd podczas usuwania ${declensions.genitive}`,
     },
     upload: {

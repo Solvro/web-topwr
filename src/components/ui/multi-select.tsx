@@ -230,6 +230,9 @@ interface MultiSelectProps
    */
   hideSelectAll?: boolean;
 
+  /** If true, shows an X icon in on the trigger next to the selected values. */
+  showClearButton?: boolean;
+
   /**
    * If true, shows search functionality in the popover.
    * If false, hides the search input completely.
@@ -456,6 +459,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       deduplicateOptions = false,
       resetOnDefaultValueChange = true,
       closeOnSelect = false,
+      showClearButton = false,
       ...props
     },
     ref,
@@ -1127,29 +1131,33 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                     )}
                   </div>
                   <div className="flex items-center justify-between">
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleClear();
-                      }}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          event.stopPropagation();
-                          handleClear();
-                        }
-                      }}
-                      aria-label={`Clear all ${selectedValues.length} selected options`}
-                      className="text-muted-foreground hover:text-foreground focus:ring-ring mx-2 flex h-4 w-4 cursor-pointer items-center justify-center rounded-sm focus:ring-2 focus:ring-offset-1 focus:outline-none"
-                    >
-                      <XIcon className="h-4 w-4" />
-                    </div>
-                    <Separator
-                      orientation="vertical"
-                      className="flex h-full min-h-6"
-                    />
+                    {showClearButton ? (
+                      <>
+                        <div
+                          role="button"
+                          tabIndex={0}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleClear();
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              handleClear();
+                            }
+                          }}
+                          aria-label={`Clear all ${selectedValues.length} selected options`}
+                          className="text-muted-foreground hover:text-foreground focus:ring-ring mx-2 flex h-4 w-4 cursor-pointer items-center justify-center rounded-sm focus:ring-2 focus:ring-offset-1 focus:outline-none"
+                        >
+                          <XIcon className="h-4 w-4" />
+                        </div>
+                        <Separator
+                          orientation="vertical"
+                          className="flex h-full min-h-6"
+                        />
+                      </>
+                    ) : null}
                     <ChevronDown
                       className="text-muted-foreground mx-2 h-4 cursor-pointer"
                       aria-hidden="true"

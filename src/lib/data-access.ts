@@ -56,9 +56,17 @@ function getUserPermissions(user: User | null): string[] {
   return roles;
 }
 
+/**
+ * Returns the route permissions, defaulting to an empty array in case the route's permissions are not specified.
+ * The route permissions configuration is typed to include all routable resources, so this is enforced by TypeScript,
+ * but during development it helps by displaying a 403 Forbidden error rather than a runtime error in case of missing routes.
+ */
+const getRoutePermissions = (route: RoutePermission): string[] =>
+  (ROUTE_PERMISSIONS[route] as string[] | undefined) ?? [];
+
 /* Determines whether or not the user is permitted to access the given route segment. */
 export const permit = cache(async (route: RoutePermission) => {
-  const requiredPermissions = ROUTE_PERMISSIONS[route];
+  const requiredPermissions = getRoutePermissions(route);
   if (requiredPermissions.length === 0) {
     // ensures that the route has defined permissions
     return false;
