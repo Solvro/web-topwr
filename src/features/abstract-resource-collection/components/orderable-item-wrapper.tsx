@@ -30,6 +30,7 @@ import type {
   ResourcePk,
 } from "@/features/resources/types";
 import { getToastMessages } from "@/lib/get-toast-messages";
+import type { ResourceRelations } from "@/types/components";
 import { sanitizeId } from "@/utils";
 
 import { ArlItem } from "./arl-item";
@@ -59,9 +60,11 @@ function calculateNewSortValue(
 
 export function OrderableItemWrapper<T extends OrderableResource>({
   resource,
+  relatedResources,
   data,
 }: {
   resource: T;
+  relatedResources: ResourceRelations<T>;
   data: ResourceDataType<T>[];
 }) {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -158,8 +161,11 @@ export function OrderableItemWrapper<T extends OrderableResource>({
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         <ArlItems
-          items={items}
+          items={items as ResourceDataType<EditableResource>[]}
           resource={resource}
+          relatedResources={
+            relatedResources as ResourceRelations<EditableResource>
+          }
           orderable
           ItemComponent={SortableItem}
         />
@@ -167,7 +173,12 @@ export function OrderableItemWrapper<T extends OrderableResource>({
       <DragOverlay>
         {activeId == null ? null : (
           <div className="opacity-80 drop-shadow-xl">
-            <ArlItem item={getActiveItem()} resource={resource} orderable />
+            <ArlItem
+              item={getActiveItem()}
+              resource={resource}
+              relatedResources={relatedResources}
+              orderable
+            />
           </div>
         )}
       </DragOverlay>
@@ -178,9 +189,11 @@ export function OrderableItemWrapper<T extends OrderableResource>({
 function SortableItem<T extends EditableResource>({
   item,
   resource,
+  relatedResources,
 }: {
   item: ResourceDataType<T>;
   resource: T;
+  relatedResources: ResourceRelations<T>;
 }) {
   const { setNodeRef, transform, transition } = useSortable({ id: item.id });
 
@@ -191,7 +204,13 @@ function SortableItem<T extends EditableResource>({
 
   return (
     <div style={style}>
-      <ArlItem ref={setNodeRef} item={item} resource={resource} orderable />
+      <ArlItem
+        ref={setNodeRef}
+        item={item}
+        resource={resource}
+        relatedResources={relatedResources}
+        orderable
+      />
     </div>
   );
 }
