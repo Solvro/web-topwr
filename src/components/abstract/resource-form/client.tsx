@@ -74,19 +74,21 @@ export function AbstractResourceFormClient<T extends Resource>({
 
   const isEditing = isExistingResourceItem(resource, defaultValues);
   const isEmbedded = relationContext != null;
-
-  form.subscribe({
-    formState: { isDirty: true },
-    callback: ({ isDirty }) => {
-      setHasUnsavedChanges(isDirty ?? false);
-    },
-  });
+  const { subscribe } = form;
 
   useEffect(() => {
+    const unsubscribe = subscribe({
+      formState: { isDirty: true },
+      callback: ({ isDirty }) => {
+        setHasUnsavedChanges(isDirty ?? false);
+      },
+    });
+
     return () => {
+      unsubscribe();
       setHasUnsavedChanges(false);
     };
-  }, [setHasUnsavedChanges]);
+  }, [setHasUnsavedChanges, subscribe]);
 
   const {
     mutationKey,

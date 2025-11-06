@@ -17,6 +17,7 @@ export function Link<T>(props: LinkProps<T>) {
         if (hasUnsavedChanges) {
           showConfirmDialog(props.href as Route);
           event_.preventDefault();
+          // This needs to be a timeout, not a microtask, becuase otherwise it tries to stop before it starts
           setTimeout(() => {
             topLoader.done();
           });
