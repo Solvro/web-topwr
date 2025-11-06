@@ -54,7 +54,14 @@ export function DashboardButton({
     >
       <Link href={href}>
         <Icon className="ml-2 size-5" />
-        <span className="text-lg md:text-xl">{toTitleCase(label)}</span>
+        <span
+          className="text-lg md:text-xl"
+          style={{
+            viewTransitionName: resource,
+          }}
+        >
+          {toTitleCase(label)}
+        </span>
       </Link>
     </Button>
   );

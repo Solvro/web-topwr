@@ -9,7 +9,12 @@ export function AbstractResourceLayoutInternal({
 }: ResourceLayoutProps) {
   return (
     <div className="flex h-full flex-col space-y-4 pt-2 pb-4">
-      <h2 className="bg-primary w-2xs max-w-full rounded-r-xl p-3 text-center text-sm font-medium whitespace-nowrap text-white sm:w-[25rem] sm:p-5 sm:text-lg md:w-[30rem] xl:w-[40rem]">
+      <h2
+        className="bg-primary w-2xs max-w-full rounded-r-xl p-3 text-center text-sm font-medium whitespace-nowrap text-white sm:w-[25rem] sm:p-5 sm:text-lg md:w-[30rem] xl:w-[40rem]"
+        style={{
+          viewTransitionName: resource,
+        }}
+      >
         <AbstractResourceLayoutTitle
           resource={resource}
           labelOptions={labelOptions}

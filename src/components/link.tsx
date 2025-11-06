@@ -1,7 +1,7 @@
 "use client";
 
 import type { Route } from "next";
-import NextLink from "next/link";
+import { Link as TransitionLink } from "next-view-transitions";
 import type { LinkProps } from "next/link";
 import { useTopLoader } from "nextjs-toploader";
 
@@ -12,7 +12,8 @@ export function Link<T>(props: LinkProps<T>) {
   const topLoader = useTopLoader();
 
   return (
-    <NextLink
+    // @ts-expect-error TransitionLink does not support typed routes
+    <TransitionLink
       onNavigate={(event_) => {
         if (hasUnsavedChanges) {
           showConfirmDialog(props.href as Route);
