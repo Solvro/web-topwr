@@ -3,8 +3,8 @@
 import { CircleX } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
+import type { LinkProps } from "next/link";
 import { useEffect, useState } from "react";
-import type { ComponentProps } from "react";
 
 import {
   Dialog,
@@ -26,7 +26,7 @@ const DEFAULT_CONFIRM_NAVIGATION_ROUTE: Route = "/";
 export function UnsavedChangesProvider({ children }: LayoutProps) {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [confirmNavigationTo, setConfirmNavigationTo] = useState<
-    ComponentProps<typeof Link>["href"] | null
+    LinkProps<Route>["href"] | null
   >(null);
 
   useEffect(() => {

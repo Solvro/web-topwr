@@ -1,12 +1,13 @@
 "use client";
 
+import type { Route } from "next";
 import NextLink from "next/link";
+import type { LinkProps } from "next/link";
 import { useTopLoader } from "nextjs-toploader";
-import type { ComponentProps } from "react";
 
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 
-export function Link(props: ComponentProps<typeof NextLink>) {
+export function Link<T>(props: LinkProps<T>) {
   const { hasUnsavedChanges, showConfirmDialog } = useUnsavedChanges();
   const topLoader = useTopLoader();
 
@@ -14,7 +15,7 @@ export function Link(props: ComponentProps<typeof NextLink>) {
     <NextLink
       onNavigate={(event_) => {
         if (hasUnsavedChanges) {
-          showConfirmDialog(props.href);
+          showConfirmDialog(props.href as Route);
           event_.preventDefault();
           setTimeout(() => {
             topLoader.done();
