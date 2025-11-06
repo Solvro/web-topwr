@@ -6,9 +6,8 @@ import { useForm } from "react-hook-form";
 import type { ControllerRenderProps } from "react-hook-form";
 import { expect } from "vitest";
 
+import { TestProviders } from "@/components/providers/test-providers";
 import { Form, FormField, FormItem } from "@/components/ui/form";
-
-import { TestProviders } from "../test-providers";
 
 interface RenderResultWithStore extends RenderResult {
   store: ReturnType<typeof createStore>;

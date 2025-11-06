@@ -86,4 +86,25 @@ test.describe("About Us Versions CRUD", () => {
     await konrad.click();
     await expect(konradPivotData).toHaveText("Dodaj");
   });
+
+  test("should show a dialog when navigating away with unsaved changes", async ({
+    page,
+  }) => {
+    await filterFirstVersion(page);
+    await getEditButton(page).click();
+    const input = page.getByLabel(/nazwa/i);
+    await expect(input).toBeVisible();
+    await input.fill("TEST");
+    const backButton = page.getByRole("link", { name: /wróć/i });
+
+    await backButton.click();
+    await expect(page.getByText(/masz niezapisane zmiany/i)).toBeVisible();
+    await page.getByRole("button", { name: /anuluj/i }).click();
+    await expect(input).toBeVisible();
+
+    await backButton.click();
+    await page.getByRole("link", { name: /kontynuuj/i }).click();
+    await filterFirstVersion(page);
+    await expect(getEditButton(page)).toBeVisible();
+  });
 });

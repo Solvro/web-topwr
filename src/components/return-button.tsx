@@ -1,8 +1,8 @@
 import { ArrowLeft } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Route } from "next";
-import Link from "next/link";
 
+import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
 import { DeclensionCase } from "@/config/enums";
 import { declineNoun } from "@/lib/polish";
@@ -34,7 +34,7 @@ export function ReturnButton({
     <Button variant="link" asChild>
       <Link
         href={returnHref}
-        className={cn("group text-foreground mt-2 text-sm", className)}
+        className={cn("group text-foreground text-sm", className)}
       >
         <Icon
           size={16}

@@ -18,18 +18,31 @@ export const env = createEnv({
     TEST_USER_PASSWORD: z.string().optional(),
   },
   client: {
+    /** The URL to the index path of the external API. */
     NEXT_PUBLIC_API_URL: UrlBaseSchema.refine(
       (value) => !value.includes("api/v"),
       { message: "NEXT_PUBLIC_API_URL must not include API version string" },
     ),
+    /**
+     * Used for website metadata, like OpenGraph images or canonical URLs.
+     * Defaults to http://localhost:3000 in development.
+     */
     NEXT_PUBLIC_WEBSITE_URL: UrlBaseSchema,
+    /**
+     * Prevents the 'are you sure?' browser dialog from appearing when closing or refreshing the page.
+     * Does not prevent the component dialog that appears when navigating within the app.
+     * Useful when developing features related to the resource edit or creation pages.
+     * Defaults to `true` in development, and `false` in production.
+     */
+    NEXT_PUBLIC_DISABLE_NAVIGATION_CONFIRMATION: z.boolean().default(false),
   },
   runtimeEnv: {
     TEST_USER_EMAIL: process.env.TEST_USER_EMAIL,
     TEST_USER_PASSWORD: process.env.TEST_USER_PASSWORD,
-    /** The URL to the index path of the external API. */
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
+    NEXT_PUBLIC_DISABLE_NAVIGATION_CONFIRMATION:
+      process.env.NEXT_PUBLIC_DISABLE_NAVIGATION_CONFIRMATION === "true",
   },
   skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
 });
