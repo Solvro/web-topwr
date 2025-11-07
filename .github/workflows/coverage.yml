@@ -32,7 +32,7 @@ jobs:
           git checkout origin/main
 
       - name: Install dependencies on base branch
-        run: npm ci
+        run: npm ci --force
 
       - name: Run tests on base branch
         run: npm run test:coverage

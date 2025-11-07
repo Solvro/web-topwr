@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
+import Link from "next/link";
 import ResizeObserver from "resize-observer-polyfill";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
@@ -37,6 +38,10 @@ vi.mock("next/navigation", async (importOriginal) => {
   } satisfies NextNavigationModule;
 });
 vi.mock("nextjs-toploader/app", () => ({ useRouter: () => MOCK_USE_ROUTER }));
+vi.mock("next-view-transitions", () => ({
+  useTransitionRouter: () => MOCK_USE_ROUTER,
+  Link,
+}));
 
 vi.mock("next/image", () => ({ default: MockImage }));
 vi.mock("@/lib/error-handling", { spy: true });

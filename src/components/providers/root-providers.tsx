@@ -1,6 +1,7 @@
 "use client";
 
 import { QueryClient } from "@tanstack/react-query";
+import { ViewTransitions } from "next-view-transitions";
 
 import { globalStore } from "@/stores/global";
 import type { LayoutProps } from "@/types/components";
@@ -17,8 +18,10 @@ const queryClient = new QueryClient({
 
 export function RootProviders({ children }: LayoutProps) {
   return (
-    <InternalProviders queryClient={queryClient} jotaiStore={globalStore}>
-      {children}
-    </InternalProviders>
+    <ViewTransitions>
+      <InternalProviders queryClient={queryClient} jotaiStore={globalStore}>
+        {children}
+      </InternalProviders>
+    </ViewTransitions>
   );
 }
