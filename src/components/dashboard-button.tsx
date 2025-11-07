@@ -57,7 +57,7 @@ export function DashboardButton({
         <span
           className="text-lg md:text-xl"
           style={{
-            viewTransitionName: resource,
+            viewTransitionName: variant === "default" ? resource : undefined,
           }}
         >
           {toTitleCase(label)}

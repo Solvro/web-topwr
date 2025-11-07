@@ -2,7 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "nextjs-toploader/app";
+import { useTransitionRouter } from "next-view-transitions";
+import { useTopLoader } from "nextjs-toploader";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -24,7 +25,8 @@ import { LoginSchema } from "@/schemas";
 import type { LoginFormValues } from "@/types/forms";
 
 export function LoginForm() {
-  const router = useRouter();
+  const router = useTransitionRouter();
+  const topLoader = useTopLoader();
   const auth = useAuth();
 
   const form = useForm<LoginFormValues>({
@@ -39,6 +41,7 @@ export function LoginForm() {
   const { mutateAsync, isPending, isSuccess } = useMutation({
     mutationFn: auth.login,
     onSuccess: () => {
+      topLoader.start();
       router.push("/");
     },
   });

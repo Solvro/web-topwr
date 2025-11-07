@@ -2,9 +2,7 @@
 
 import { useHydrateAtoms } from "jotai/utils";
 import { UserRound } from "lucide-react";
-import Image from "next/image";
 
-import LogoToPWR from "@/assets/logo-topwr-color.png";
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +17,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { authStateAtom } from "@/stores/auth";
 import type { AuthState } from "@/types/api";
 
+import { Logo } from "./logo";
 import { LogoutButton } from "./logout-button";
 
 export function Navbar({ authState }: { authState: AuthState | null }) {
@@ -35,7 +34,7 @@ export function Navbar({ authState }: { authState: AuthState | null }) {
     <nav>
       <div className="container mx-auto flex flex-row items-center justify-between">
         <Link href="/" passHref className="w-32 p-4">
-          <Image src={LogoToPWR} alt="logo ToPWR" className="h-auto w-full" />
+          <Logo variant="color" className="h-auto w-full" />
         </Link>
         <div className="space-x-4 p-4">
           <DropdownMenu>
