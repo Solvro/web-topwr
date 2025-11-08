@@ -45,7 +45,7 @@ export function ImageUpload<T extends z.infer<AppZodObject>>({
         {label}
         <InputSlot
           renderAs="div"
-          className="flex aspect-video w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border hover:bg-inherit md:h-48 md:w-48"
+          className="aspect-video max-h-48 w-full cursor-pointer rounded-lg md:size-48"
         >
           {isPending ? (
             <Spinner />
@@ -53,12 +53,12 @@ export function ImageUpload<T extends z.infer<AppZodObject>>({
             <ApiImage imageKey={data.key} alt={label} />
           ) : (
             (existingImage ?? (
-              <>
-                <Camera className="text-image-input-icon h-12 w-12" />
+              <div className="flex size-full flex-col items-center justify-center">
+                <Camera className="text-image-input-icon size-12" />
                 <span className="text-muted-foreground text-xs">
                   Kliknij, aby dodać {declensions.nominative}
                 </span>
-              </>
+              </div>
             ))
           )}
         </InputSlot>

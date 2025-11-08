@@ -6,6 +6,7 @@ import { BrushCleaning, Check, Plus, Trash } from "lucide-react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import type { Control } from "react-hook-form";
 
+import { Counter } from "@/components/counter";
 import { PendingInput } from "@/components/inputs/pending-input";
 import { SelectOptions } from "@/components/inputs/select-options";
 import { SelectClear } from "@/components/select-clear";
@@ -39,7 +40,6 @@ import { useRouter } from "@/hooks/use-router";
 import {
   getSearchParametersFromSortFilters,
   isEmptyValue,
-  quoteText,
   tryParseNumber,
   typedEntries,
 } from "@/lib/helpers";
@@ -89,7 +89,7 @@ function FilterValueField({
   });
 
   const filterDefinition = filterDefinitions[fieldName];
-  const labelBase = "Wartość pola";
+  const label = `Wartość pola #${index + 1}`;
 
   return (
     <FormField
@@ -98,15 +98,13 @@ function FilterValueField({
       render={({ field }) =>
         isEmptyValue(fieldName) ? (
           <PendingInput
-            label={labelBase}
+            label={label}
             message="Wybierz najpierw pole"
             className="size-full"
           />
         ) : (
           <FormItem className="flex-1">
-            <FormLabel>
-              {labelBase} {quoteText(fieldName)}
-            </FormLabel>
+            <FormLabel>{label}</FormLabel>
             {filterDefinition.type === FilterType.Select ? (
               <Select
                 value={field.value}
@@ -124,7 +122,7 @@ function FilterValueField({
                 </SelectContent>
               </Select>
             ) : filterDefinition.type === FilterType.Checkbox ? (
-              <div className="flex h-full items-center justify-center gap-2">
+              <div className="flex h-full items-center gap-2">
                 <FormControl>
                   <Checkbox
                     className="mb-0"
@@ -191,7 +189,7 @@ export function SortFilters({
   return (
     <Form {...form}>
       <form
-        className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-[2fr_3fr]"
+        className="grid grid-cols-1 gap-x-4 gap-y-2 md:grid-cols-[2fr_3fr]"
         onSubmit={form.handleSubmit(handleSubmit)}
       >
         <FieldGroup>
@@ -257,77 +255,81 @@ export function SortFilters({
             )}
           />
         </FieldGroup>
-        {filters.fields.map((filter, index) => (
-          <FieldGroup key={filter.id}>
-            <FormField
-              control={form.control}
-              name={`filters.${index}.field`}
-              render={({ field }) => (
-                <FormItem>
-                  <Select
-                    value={field.value}
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      form.setValue(
-                        `filters.${index}.value`,
-                        filterDefinitions[value].type === FilterType.Checkbox
-                          ? "false"
-                          : "",
-                      );
-                    }}
-                  >
-                    <FormLabel>Pole #{index + 1}</FormLabel>
-                    <FormControl className="mb-0 w-full">
-                      <SelectTrigger>
-                        <SelectValue placeholder={SORT_FILTER_PLACEHOLDER} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectClear value={field.value} />
-                      {typedEntries(filterDefinitions).map(
-                        ([filterField, { label }]) => (
-                          <SelectItem key={filterField} value={filterField}>
-                            {label}
-                          </SelectItem>
-                        ),
-                      )}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex gap-2">
-              <FilterValueField
+        <FieldGroup className="max-h-56 overflow-y-auto">
+          {filters.fields.map((filter, index) => (
+            <FieldGroup key={filter.id}>
+              <FormField
                 control={form.control}
-                index={index}
-                filterDefinitions={filterDefinitions}
+                name={`filters.${index}.field`}
+                render={({ field }) => (
+                  <FormItem>
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        form.setValue(
+                          `filters.${index}.value`,
+                          filterDefinitions[value].type === FilterType.Checkbox
+                            ? "false"
+                            : "",
+                        );
+                      }}
+                    >
+                      <FormLabel>Pole #{index + 1}</FormLabel>
+                      <FormControl className="mb-0 w-full">
+                        <SelectTrigger>
+                          <SelectValue placeholder={SORT_FILTER_PLACEHOLDER} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectClear value={field.value} />
+                        {typedEntries(filterDefinitions).map(
+                          ([filterField, { label }]) => (
+                            <SelectItem key={filterField} value={filterField}>
+                              {label}
+                            </SelectItem>
+                          ),
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <Button
-                type="button"
-                size="icon"
-                aria-label={`Usuń filtr pola #${index + 1}`}
-                className="ml-auto self-end"
-                variant="destructive"
-                onClick={() => {
-                  filters.remove(index);
-                }}
-              >
-                <Trash />
-              </Button>
-            </div>
-          </FieldGroup>
-        ))}
+              <div className="flex gap-2">
+                <FilterValueField
+                  control={form.control}
+                  index={index}
+                  filterDefinitions={filterDefinitions}
+                />
+                <Button
+                  type="button"
+                  size="icon"
+                  aria-label={`Usuń filtr pola #${index + 1}`}
+                  className="ml-auto self-end"
+                  variant="destructive"
+                  onClick={() => {
+                    filters.remove(index);
+                  }}
+                >
+                  <Trash />
+                </Button>
+              </div>
+            </FieldGroup>
+          ))}
+        </FieldGroup>
         <Button
           type="button"
-          className="col-span-full mt-2"
+          className="relative col-span-full mt-2"
           size="sm"
           variant="secondary"
           onClick={() => {
             filters.append({ field: "", value: "" });
           }}
         >
-          Dodaj filtr <Plus />
+          Dodaj filtr
+          <Plus />
+          <Counter values={filters.fields} label="Liczba filtrowanych pól" />
         </Button>
         <FieldGroup className="justify-between">
           <Button

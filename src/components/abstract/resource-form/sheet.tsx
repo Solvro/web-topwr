@@ -81,7 +81,13 @@ function AbstractResourceFormSheetContent<T extends Resource>({
         <SheetDescription>{sheetDescription}</SheetDescription>
       </SheetHeader>
       <ArfRelationContext.Provider value={relationContext}>
-        <Suspense fallback={<AbstractResourceFormSkeleton />}>
+        <Suspense
+          fallback={
+            <AbstractResourceFormSkeleton
+              showDeleteButton={content.item != null}
+            />
+          }
+        >
           {content.form}
         </Suspense>
       </ArfRelationContext.Provider>

@@ -77,7 +77,7 @@ export function ArfInputs<T extends Resource>({
       >
         <Inputs
           container
-          className="flex-col"
+          className="flex-col flex-nowrap"
           inputs={imageInputs}
           mapper={([name, input]) => (
             <FormField

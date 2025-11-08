@@ -1,5 +1,8 @@
+"use client";
+
 import { formatDate, isSameDay } from "date-fns";
 import { pl } from "date-fns/locale";
+import type { ReactNode } from "react";
 
 import {
   Dialog,
@@ -7,6 +10,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Resource } from "@/config/enums";
 import { getRoundedDate } from "@/lib/helpers";
@@ -29,8 +33,7 @@ export function AllEventsModal({
   month,
   year,
   clickable,
-  isOpen,
-  onOpenChange,
+  children,
 }: {
   resource: Resource;
   events: CalendarEvent[];
@@ -38,13 +41,13 @@ export function AllEventsModal({
   month: { name: string; value: number };
   year: number;
   clickable: boolean;
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
+  children: ReactNode;
 }) {
   const baseDate = new Date(year, month.value - 1, day);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         className="h-max max-h-[80vh] max-w-lg"
         onOpenAutoFocus={(event_) => {

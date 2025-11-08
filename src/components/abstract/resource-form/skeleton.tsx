@@ -30,7 +30,11 @@ function LabelSkeleton({
   );
 }
 
-export function AbstractResourceFormSkeleton() {
+export function AbstractResourceFormSkeleton({
+  showDeleteButton = true,
+}: {
+  showDeleteButton?: boolean;
+}) {
   return (
     <div className="mx-4 box-border flex h-full flex-col gap-4">
       <div className="bg-background-secondary flex-1 rounded-xl p-4">
@@ -87,12 +91,14 @@ export function AbstractResourceFormSkeleton() {
           </div>
         </div>
       </div>
-      <Button variant="secondary" className="hover:bg-secondary" asChild>
-        <Skeleton />
-      </Button>
       <Button className="bg-primary/50 hover:bg-primary/50" asChild>
         <Skeleton />
       </Button>
+      {showDeleteButton ? (
+        <Button variant="secondary" className="hover:bg-secondary" asChild>
+          <Skeleton />
+        </Button>
+      ) : null}
     </div>
   );
 }

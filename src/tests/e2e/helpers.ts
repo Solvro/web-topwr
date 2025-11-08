@@ -11,7 +11,7 @@ import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
 import { getResourceFilterDefinitions } from "@/lib/filter-definitions";
-import { getSearchParametersFromSortFilters, quoteText } from "@/lib/helpers";
+import { getSearchParametersFromSortFilters } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type {
   FilteredField,
@@ -101,7 +101,7 @@ export async function setAbstractResourceListFilters<T extends Resource>(
         `Pole #${fieldNumber}`,
         filterDefinition.label,
       );
-      await page.getByLabel(`Wartość pola ${quoteText(field)}`).fill(value);
+      await page.getByLabel(`Wartość pola ${fieldNumber}`).fill(value);
     }
   }
   await page.getByRole("button", { name: /zatwierdź/i }).click();
