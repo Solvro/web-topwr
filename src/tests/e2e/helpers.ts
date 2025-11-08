@@ -101,7 +101,7 @@ export async function setAbstractResourceListFilters<T extends Resource>(
         `Pole #${fieldNumber}`,
         filterDefinition.label,
       );
-      await page.getByLabel(`Wartość pola ${fieldNumber}`).fill(value);
+      await page.getByLabel(`Wartość pola #${fieldNumber}`).fill(value);
     }
   }
   await page.getByRole("button", { name: /zatwierdź/i }).click();
