@@ -3,7 +3,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { VariantProps } from "class-variance-authority";
 import { Shredder, Trash2 } from "lucide-react";
-import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -23,6 +22,7 @@ import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
+import { useRouter } from "@/hooks/use-router";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { getKey, quoteText, sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";

@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "nextjs-toploader/app";
 import type { ComponentProps } from "react";
 
 import { SelectOptions } from "@/components/inputs/select-options";
@@ -16,6 +15,7 @@ import {
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useArfRelationMutation } from "@/hooks/use-arf-relation-mutation";
+import { useRouter } from "@/hooks/use-router";
 import {
   isPivotRelationDefinition,
   isRelationPivotDefinition,

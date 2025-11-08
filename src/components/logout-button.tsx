@@ -1,17 +1,14 @@
 "use client";
 
-import { useTransitionRouter } from "@solvro/next-view-transitions";
 import { LogOut } from "lucide-react";
-import { useTopLoader } from "nextjs-toploader";
 
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-
-import { Button } from "./ui/button";
+import { useRouter } from "@/hooks/use-router";
 
 export function LogoutButton() {
   const auth = useAuth();
-  const router = useTransitionRouter();
-  const topLoader = useTopLoader();
+  const router = useRouter();
 
   return (
     <Button
@@ -19,7 +16,6 @@ export function LogoutButton() {
       className="aspect-square h-10 rounded-full"
       onClick={async () => {
         await auth.logout();
-        topLoader.start();
         router.push("/login");
       }}
       tooltip="Wyloguj się"

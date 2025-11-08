@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
-import { useRouter } from "nextjs-toploader/app";
 import { useEffect } from "react";
 import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
@@ -18,6 +17,7 @@ import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useArfRelation } from "@/hooks/use-arf-relation";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
+import { useRouter } from "@/hooks/use-router";
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import {
   getDefaultValues,
