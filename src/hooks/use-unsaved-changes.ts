@@ -1,11 +1,11 @@
-import type { Route } from "next";
-import type { LinkProps } from "next/link";
 import { createContext, useContext } from "react";
+
+import type { RouteHref } from "@/types/components";
 
 export interface UnsavedChangesContextType {
   hasUnsavedChanges: boolean;
   setHasUnsavedChanges: (hasChanges: boolean) => void;
-  showConfirmDialog: (target: LinkProps<Route>["href"]) => void;
+  showConfirmDialog: (target: RouteHref) => void;
 }
 
 export const UnsavedChangesContext =
