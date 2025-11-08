@@ -1,6 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { Archive, ArchiveRestore } from "lucide-react";
-import { useRouter } from "nextjs-toploader/app";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,7 @@ import { TOAST_MESSAGES } from "@/config/constants";
 import type { Resource } from "@/config/enums";
 import { OrganizationStatus } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
+import { useRouter } from "@/hooks/use-router";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { getKey, sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";

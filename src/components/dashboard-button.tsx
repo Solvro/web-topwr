@@ -43,6 +43,9 @@ export function DashboardButton({
                 plural: true,
               })),
         ];
+
+  const useViewTransition = resource != null && variant === "default";
+
   return (
     <Button
       className={cn(
@@ -52,9 +55,25 @@ export function DashboardButton({
       variant={variant}
       asChild
     >
-      <Link href={href}>
+      <Link
+        href={href}
+        style={{
+          viewTransitionName: useViewTransition
+            ? `resource-card-${resource}`
+            : undefined,
+        }}
+      >
         <Icon className="ml-2 size-5" />
-        <span className="text-lg md:text-xl">{toTitleCase(label)}</span>
+        <span
+          className="text-lg md:text-xl"
+          style={{
+            viewTransitionName: useViewTransition
+              ? `resource-title-${resource}`
+              : undefined,
+          }}
+        >
+          {toTitleCase(label)}
+        </span>
       </Link>
     </Button>
   );

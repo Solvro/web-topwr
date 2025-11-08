@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ClassValue } from "clsx";
 import { BrushCleaning, Check, Plus, Trash } from "lucide-react";
-import { useRouter } from "nextjs-toploader/app";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import type { Control } from "react-hook-form";
 
@@ -36,6 +35,7 @@ import {
   SORT_FILTER_PLACEHOLDER,
 } from "@/config/constants";
 import { FilterType } from "@/config/enums";
+import { useRouter } from "@/hooks/use-router";
 import {
   getSearchParametersFromSortFilters,
   isEmptyValue,

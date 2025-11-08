@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -20,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { TOAST_MESSAGES } from "@/config/constants";
 import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "@/hooks/use-router";
 import { LoginSchema } from "@/schemas";
 import type { LoginFormValues } from "@/types/forms";
 

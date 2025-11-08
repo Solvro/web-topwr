@@ -1,11 +1,10 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import { useRouter } from "nextjs-toploader/app";
 
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-
-import { Button } from "./ui/button";
+import { useRouter } from "@/hooks/use-router";
 
 export function LogoutButton() {
   const auth = useAuth();

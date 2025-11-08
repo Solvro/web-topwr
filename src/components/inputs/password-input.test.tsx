@@ -8,7 +8,9 @@ import { MOCK_PASSWORD } from "@/tests/mocks/constants";
 import { PasswordInput } from "./password-input";
 
 function renderColorInput() {
-  const screen = render(<InputComponentWrapper component={PasswordInput} />);
+  const screen = render(
+    <InputComponentWrapper component={PasswordInput} initialValue="" />,
+  );
   const user = userEvent.setup();
   const input = {
     password: screen.getByLabelText("Hasło"),

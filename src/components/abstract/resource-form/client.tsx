@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
-import { useRouter } from "nextjs-toploader/app";
 import { useEffect } from "react";
 import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
@@ -18,6 +17,7 @@ import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useArfRelation } from "@/hooks/use-arf-relation";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
+import { useRouter } from "@/hooks/use-router";
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import {
   getDefaultValues,
@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 import { RESOURCE_SCHEMAS } from "@/schemas";
 import type { ModifyResourceResponse } from "@/types/api";
 import type {
+  EditableResource,
   Id,
   ResourceDefaultValues,
   ResourceFormValues,
@@ -111,7 +112,10 @@ export function AbstractResourceFormClient<T extends Resource>({
     // initially disables the save button after successful edit
     form.reset(wasCreated ? undefined : response.data);
     if (relationContext == null && wasCreated) {
-      router.push(`/${resource}/edit/${sanitizeId(response.data.id)}`);
+      router.push(
+        // assume that creatable resources in non-embedded forms are editable
+        `/${resource as EditableResource}/edit/${sanitizeId(response.data.id)}`,
+      );
     } else {
       if (wasCreated && relationContext != null) {
         relationContext.closeSheet();
@@ -201,7 +205,8 @@ export function AbstractResourceFormClient<T extends Resource>({
                     }
                   : {
                       onDeleteSuccess: () => {
-                        router.push(`/${resource}`);
+                        // again, assume that only routable resources use non-embedded forms
+                        router.push(`/${resource as RoutableResource}`);
                         return false;
                       },
                     })}
