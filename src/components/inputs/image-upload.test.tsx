@@ -2,6 +2,7 @@ import userEvent from "@testing-library/user-event";
 import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
+import type { Resource } from "@/config/enums";
 import { getVersionedApiBase } from "@/lib/helpers";
 import {
   InputComponentWrapper,
@@ -23,9 +24,9 @@ function ImageUploadMapper({
   onChange: (value: string | null) => void;
 }) {
   return (
-    <ImageUpload
+    <ImageUpload<Resource.StudentOrganizations>
       label={IMAGE_UPLOAD_LABEL}
-      name="data"
+      name="logoKey"
       onChange={onChange}
       existingImage={value}
     />

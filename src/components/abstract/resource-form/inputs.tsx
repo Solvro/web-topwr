@@ -88,7 +88,7 @@ export function ArfInputs<T extends Resource>({
                 <FormItem>
                   <ImageUpload
                     {...field}
-                    label={input.label}
+                    {...input}
                     existingImage={existingImages[field.name]}
                   />
                   <FormMessage />

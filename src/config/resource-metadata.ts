@@ -4,6 +4,7 @@ import type { ResourceMetadata } from "@/types/app";
 import {
   ChangeType,
   GuideAuthorRole,
+  ImageType,
   LinkType,
   OrganizationSource,
   OrganizationStatus,
@@ -84,7 +85,7 @@ export const RESOURCE_METADATA = {
           description: { label: "Opis" },
         },
         imageInputs: {
-          coverPhotoKey: { label: "Zdjęcie w tle" },
+          coverPhotoKey: { label: "Zdjęcie w tle", type: ImageType.Banner },
         },
       },
       defaultValues: {
@@ -228,7 +229,7 @@ export const RESOURCE_METADATA = {
           name: { label: "Imię i nazwisko" },
         },
         imageInputs: {
-          photoKey: { label: "Zdjęcie" },
+          photoKey: { label: "Zdjęcie", type: ImageType.Logo },
         },
         relationInputs: {
           [Resource.ContributorSocialLinks]: {
@@ -286,7 +287,7 @@ export const RESOURCE_METADATA = {
           addressLine2: { label: "Adres - linia 2" },
         },
         imageInputs: {
-          logoKey: { label: "Logo" },
+          logoKey: { label: "Logo", type: ImageType.Logo },
         },
         richTextInputs: { description: { label: "Opis" } },
         colorInputs: {
@@ -357,7 +358,7 @@ export const RESOURCE_METADATA = {
     form: {
       inputs: {
         imageInputs: {
-          imageKey: { label: "Zdjęcie" },
+          imageKey: { label: "Zdjęcie", type: ImageType.Banner },
         },
         textInputs: {
           title: { label: "Tytuł" },
@@ -454,8 +455,8 @@ export const RESOURCE_METADATA = {
     form: {
       inputs: {
         imageInputs: {
-          logoKey: { label: "Logo" },
-          coverKey: { label: "Baner" },
+          logoKey: { label: "Logo", type: ImageType.Logo },
+          coverKey: { label: "Baner", type: ImageType.Banner },
         },
         textInputs: {
           name: { label: "Nazwa" },
