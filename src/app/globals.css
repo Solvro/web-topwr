@@ -117,3 +117,21 @@
   --color-gradient-2: #df381c;
   --color-image-input-icon: #dddddd;
 }
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  mix-blend-mode: normal;
+  height: 100%;
+}
+
+::view-transition-new(*) {
+  object-fit: cover;
+  overflow: clip;
+  @apply rounded-r-xl;
+}
+
+::view-transition-old(topwr-logo),
+::view-transition-new(topwr-logo) {
+  height: unset;
+  border-radius: 0;
+}
