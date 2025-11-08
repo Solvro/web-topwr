@@ -7,7 +7,9 @@ import { useTopLoader } from "nextjs-toploader";
 
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 
-export function Link(props: LinkProps<Route>) {
+export function Link<T extends string>(
+  props: LinkProps<T> & { href: Route<T> },
+) {
   const { hasUnsavedChanges, showConfirmDialog } = useUnsavedChanges();
   const topLoader = useTopLoader();
 
@@ -17,9 +19,9 @@ export function Link(props: LinkProps<Route>) {
         if (!hasUnsavedChanges) {
           return;
         }
-        showConfirmDialog(props.href);
+        showConfirmDialog(props.href as Route<T>);
         event_.preventDefault();
-        // This needs to be a timeout, not a microtask, becuase otherwise it tries to stop before it starts
+        // This needs to be a timeout, not a microtask, because otherwise it tries to stop before it starts
         setTimeout(() => {
           topLoader.done();
         });

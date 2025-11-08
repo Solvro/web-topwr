@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { env } from "@/config/env";
 import { UnsavedChangesContext } from "@/hooks/use-unsaved-changes";
-import type { LayoutProps, RouteHref } from "@/types/components";
+import type { LayoutProps } from "@/types/components";
 
 import { Button } from "../ui/button";
 
@@ -24,8 +24,9 @@ const DEFAULT_CONFIRM_NAVIGATION_ROUTE: Route = "/";
 
 export function UnsavedChangesProvider({ children }: LayoutProps) {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [confirmNavigationTo, setConfirmNavigationTo] =
-    useState<RouteHref | null>(null);
+  const [confirmNavigationTo, setConfirmNavigationTo] = useState<Route | null>(
+    null,
+  );
 
   useEffect(() => {
     const handleBeforeUnload = (event_: BeforeUnloadEvent) => {
@@ -50,7 +51,9 @@ export function UnsavedChangesProvider({ children }: LayoutProps) {
       value={{
         hasUnsavedChanges,
         setHasUnsavedChanges,
-        showConfirmDialog: setConfirmNavigationTo,
+        showConfirmDialog: (value) => {
+          setConfirmNavigationTo(value as Route);
+        },
       }}
     >
       <Dialog

@@ -1,6 +1,10 @@
 import { useTransitionRouter } from "@solvro/next-view-transitions";
+import type { Route } from "next";
 import { useTopLoader } from "nextjs-toploader";
 import { useRouter as useTopLoaderRouter } from "nextjs-toploader/app";
+
+type TransitionRouter = ReturnType<typeof useTransitionRouter>;
+type NavigateOptionsWithTransition = Parameters<TransitionRouter["push"]>[1];
 
 /**
  * This hook combines `useRouter` from `nextjs-toploader` and `useTransitionRouter` from `@solvro/next-view-transitions`
@@ -11,16 +15,20 @@ export const useRouter = () => {
   const topLoaderRouter = useTopLoaderRouter();
   const transitionRouter = useTransitionRouter();
 
-  const push = (...arguments_: Parameters<typeof transitionRouter.push>) => {
-    topLoader.start();
-    transitionRouter.push(...arguments_);
-  };
-
-  const replace = (
-    ...arguments_: Parameters<typeof transitionRouter.replace>
+  const push = <T extends string>(
+    href: Route<T>,
+    options?: NavigateOptionsWithTransition,
   ) => {
     topLoader.start();
-    transitionRouter.replace(...arguments_);
+    transitionRouter.push(href, options);
+  };
+
+  const replace = <T extends string>(
+    href: Route<T>,
+    options?: NavigateOptionsWithTransition,
+  ) => {
+    topLoader.start();
+    transitionRouter.replace(href, options);
   };
 
   return { ...topLoaderRouter, push, replace };

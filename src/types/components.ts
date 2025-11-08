@@ -1,5 +1,3 @@
-import type { Route } from "next";
-import type { LinkProps } from "next/link";
 import type { ReactNode } from "react";
 import type { z } from "zod";
 
@@ -95,5 +93,3 @@ export type ResourceRelations<T extends Resource> = {
 };
 
 export type RoutePermission = keyof typeof ROUTE_PERMISSIONS;
-
-export type RouteHref = LinkProps<Route>["href"];
