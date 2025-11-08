@@ -5,6 +5,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -17,8 +18,6 @@ import {
 import { env } from "@/config/env";
 import { UnsavedChangesContext } from "@/hooks/use-unsaved-changes";
 import type { LayoutProps } from "@/types/components";
-
-import { Button } from "../ui/button";
 
 const DEFAULT_CONFIRM_NAVIGATION_ROUTE: Route = "/";
 

@@ -8,6 +8,7 @@ import type { Resource } from "@/config/enums";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { getMonthByNumberAndYear } from "@/lib/helpers";
 import type { ApiCalendarEvent } from "@/types/api";
+import type { CalendarEvent } from "@/types/calendar";
 import type { ResourcePageProps } from "@/types/components";
 
 import { DayBlock } from "./day-block";
@@ -24,14 +25,10 @@ export async function Calendar({
     resource,
   });
 
-  const events = data.map((apiEvent) => ({
-    id: apiEvent.id,
-    name: apiEvent.name,
-    description: apiEvent.description ?? undefined,
+  const events: CalendarEvent[] = data.map((apiEvent) => ({
+    ...apiEvent,
     startTime: new Date(apiEvent.startTime),
     endTime: new Date(apiEvent.endTime),
-    location: apiEvent.location ?? undefined,
-    googleCallId: apiEvent.googleCallId ?? undefined,
   }));
 
   const { year, month } = await searchParams;
@@ -65,16 +62,13 @@ export async function Calendar({
         } as const),
   );
 
-  const getEventsForDay = (day: number) => {
-    return events.filter((event) => {
-      const eventDate = new Date(event.startTime);
-      return (
-        eventDate.getDate() === day &&
-        eventDate.getMonth() + 1 === displayedMonth &&
-        eventDate.getFullYear() === displayedYear
-      );
-    });
-  };
+  const getEventsForDay = (day: number) =>
+    events.filter(
+      (event) =>
+        event.startTime.getDate() === day &&
+        event.startTime.getMonth() + 1 === displayedMonth &&
+        event.startTime.getFullYear() === displayedYear,
+    );
 
   const getMonthLink = (newYear: number, newMonth: number) => {
     const adjustedDate = new Date(newYear, newMonth - 1);
@@ -86,7 +80,7 @@ export async function Calendar({
   };
 
   return (
-    <div className="mx-auto grid h-fit w-[95%] grid-cols-7 gap-2 sm:w-[90%] md:max-w-7xl lg:w-[85%]">
+    <div className="mx-auto grid h-fit w-full grid-cols-7 gap-1.5 sm:gap-2 lg:w-3/4">
       <div className="col-span-full flex items-center justify-center gap-4 text-center text-base font-bold sm:text-lg">
         <Button variant="ghost" size="icon" aria-label="Previous month" asChild>
           <Link href={getMonthLink(displayedYear, displayedMonth - 1)}>

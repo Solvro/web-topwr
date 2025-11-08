@@ -1,14 +1,9 @@
-"use client";
-
-import { useState } from "react";
-import type { KeyboardEvent, MouseEvent } from "react";
-
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CALENDAR_MAX_EVENTS_PER_DAY } from "@/config/constants";
 import type { Resource } from "@/config/enums";
 import type { CalendarEvent, DateObject } from "@/types/calendar";
 
-import { Badge } from "../ui/badge";
 import { AllEventsModal } from "./all-events-modal";
 
 export function DayBlock({
@@ -27,34 +22,28 @@ export function DayBlock({
   events?: CalendarEvent[];
   onDayClick?: () => void;
 }) {
-  const [isAllEventsModalOpen, setIsAllEventsModalOpen] = useState(false);
   const isCurrentDay =
     day === currentDate.getDate() &&
     today.month.value === currentDate.getMonth() + 1 &&
     today.year === currentDate.getFullYear();
 
-  function handleDayClick(clickEvent: MouseEvent) {
-    clickEvent.stopPropagation();
-    setIsAllEventsModalOpen(true);
-  }
-
-  function handleDayKeyDown(keyEvent: KeyboardEvent) {
-    if (keyEvent.key === "Enter" || keyEvent.key === " ") {
-      keyEvent.preventDefault();
-      keyEvent.stopPropagation();
-      setIsAllEventsModalOpen(true);
-    }
-  }
-
   return (
-    <>
+    <AllEventsModal
+      resource={resource}
+      clickable={clickable}
+      events={events}
+      day={day}
+      month={today.month}
+      year={today.year}
+    >
       <Button
         variant={isCurrentDay ? "default" : "secondary"}
-        className="relative flex h-16 flex-col p-1 md:h-20 lg:h-28"
-        onClick={handleDayClick}
-        onKeyDown={handleDayKeyDown}
+        className="relative flex h-16 flex-col p-1 md:h-20 lg:h-24 xl:h-28"
+        style={{
+          viewTransitionName: `calendar-day-${String(day)}`,
+        }}
       >
-        <div className="text-s absolute top-1.5 left-2 font-bold sm:text-lg">
+        <div className="absolute top-1.5 left-2 text-xs font-semibold sm:font-bold md:text-base lg:text-lg">
           {day}
         </div>
 
@@ -62,23 +51,12 @@ export function DayBlock({
           {events.slice(0, CALENDAR_MAX_EVENTS_PER_DAY).map((event) => (
             <Badge
               key={event.id}
-              className="h-2 w-1/3 truncate"
+              className="h-2 w-full md:w-2/3 lg:w-1/3"
               variant={isCurrentDay ? "secondary" : "default"}
             />
           ))}
         </div>
       </Button>
-
-      <AllEventsModal
-        resource={resource}
-        clickable={clickable}
-        events={events}
-        day={day}
-        month={today.month}
-        year={today.year}
-        isOpen={isAllEventsModalOpen}
-        onOpenChange={setIsAllEventsModalOpen}
-      />
-    </>
+    </AllEventsModal>
   );
 }

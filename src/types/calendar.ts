@@ -1,3 +1,5 @@
+import type { ApiCalendarEvent } from "./api";
+
 export interface DateObject {
   year: number;
   month: {
@@ -8,12 +10,7 @@ export interface DateObject {
   day: number;
 }
 
-export interface CalendarEvent {
-  id: string;
-  name: string;
-  description?: string;
+export type CalendarEvent = Omit<ApiCalendarEvent, "startTime" | "endTime"> & {
   startTime: Date;
   endTime: Date;
-  location?: string;
-  googleCallId?: string;
-}
+};

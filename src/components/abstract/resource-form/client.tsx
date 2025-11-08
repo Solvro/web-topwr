@@ -8,12 +8,11 @@ import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 
 import { DeleteButtonWithDialog } from "@/components/abstract/delete-button-with-dialog";
-import { Link } from "@/components/link";
 import { ArfSheetProvider } from "@/components/providers/arf-sheet-provider";
+import { ReturnButton } from "@/components/return-button";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { TOAST_MESSAGES } from "@/config/constants";
-import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useArfRelation } from "@/hooks/use-arf-relation";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
@@ -158,32 +157,19 @@ export function AbstractResourceFormClient<T extends Resource>({
           />
           <div
             className={cn(
-              "flex w-full items-center gap-x-4 gap-y-2 max-sm:flex-col",
-              {
-                "w-full flex-col items-stretch gap-y-4": isEmbedded,
-              },
+              "flex w-full flex-col flex-wrap items-center gap-x-4 gap-y-2",
+              isEmbedded
+                ? "flex-col items-stretch gap-y-4"
+                : "lg:flex-row-reverse",
             )}
           >
-            {isEmbedded ? null : (
-              <Button
-                variant="link"
-                className="text-primary hover:text-primary mr-4 sm:mr-auto"
-                size="sm"
-                asChild
-              >
-                {/* It would be too complex to relate `isEmbedded` to `resource` being a `RoutableResource`, */}
-                {/* so I'm going to assume the codebase won't use `AbstractResourceForm` anywhere except for */}
-                {/* routable resources with `isEmbedded` set to `false` and otherwise with it set to `true`. */}
-                <Link href={`/${resource as RoutableResource}`}>
-                  <ChevronLeft />
-                  Wróć do{" "}
-                  {declineNoun(resource, {
-                    case: DeclensionCase.Genitive,
-                    plural: true,
-                  })}
-                </Link>
-              </Button>
-            )}
+            <Button
+              type="submit"
+              loading={isPending}
+              disabled={!form.formState.isDirty}
+            >
+              {submitLabel} {declensions.accusative} <SubmitIconComponent />
+            </Button>
             {isEditing ? (
               <DeleteButtonWithDialog
                 resource={resource}
@@ -212,13 +198,18 @@ export function AbstractResourceFormClient<T extends Resource>({
                     })}
               />
             ) : null}
-            <Button
-              type="submit"
-              loading={isPending}
-              disabled={!form.formState.isDirty}
-            >
-              {submitLabel} {declensions.accusative} <SubmitIconComponent />
-            </Button>
+
+            {isEmbedded ? null : (
+              // It would be too complex to relate `isEmbedded` to `resource` being a `RoutableResource`,
+              // so I'm going to assume the codebase won't use `AbstractResourceForm` anywhere except for
+              // routable resources with `isEmbedded` set to `false` and otherwise with it set to `true`.
+              <ReturnButton
+                className="lg:mr-auto"
+                resource={resource as RoutableResource}
+                returnLabel="Wróć do"
+                icon={ChevronLeft}
+              />
+            )}
           </div>
         </form>
       </Form>
