@@ -1,7 +1,7 @@
 "use client";
 
+import { ViewTransitions } from "@solvro/next-view-transitions";
 import { QueryClient } from "@tanstack/react-query";
-import { ViewTransitions } from "next-view-transitions";
 
 import { globalStore } from "@/stores/global";
 import type { LayoutProps } from "@/types/components";

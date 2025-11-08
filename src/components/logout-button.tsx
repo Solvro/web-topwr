@@ -1,7 +1,7 @@
 "use client";
 
+import { useTransitionRouter } from "@solvro/next-view-transitions";
 import { LogOut } from "lucide-react";
-import { useTransitionRouter } from "next-view-transitions";
 import { useTopLoader } from "nextjs-toploader";
 
 import { useAuth } from "@/hooks/use-auth";
