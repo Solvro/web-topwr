@@ -14,7 +14,7 @@ export function InputSlot<T extends ElementType>({
   return (
     <Comp
       className={cn(
-        "bg-background transition-colors",
+        "bg-background transition-colors max-sm:text-xs",
         "placeholder:text-muted-foreground selection:text-primary-foreground file:text-foreground selection:bg-primary",
         "border-input aria-invalid:border-destructive focus-visible:border-ring border",
         "focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 focus-visible:ring-[3px]",

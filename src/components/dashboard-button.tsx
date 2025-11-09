@@ -49,7 +49,7 @@ export function DashboardButton({
   return (
     <Button
       className={cn(
-        "h-20 w-full justify-start space-x-2 rounded-xl",
+        "h-16 w-full justify-start space-x-2 rounded-xl sm:h-20",
         className,
       )}
       variant={variant}
@@ -65,7 +65,7 @@ export function DashboardButton({
       >
         <Icon className="ml-2 size-5" />
         <span
-          className="text-lg md:text-xl"
+          className="sm:text-lg md:text-xl"
           style={{
             viewTransitionName: useViewTransition
               ? `resource-title-${resource}`
