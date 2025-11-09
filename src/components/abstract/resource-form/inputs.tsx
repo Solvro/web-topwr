@@ -71,7 +71,7 @@ export function ArfInputs<T extends Resource>({
     <div className="grow basis-0 overflow-y-auto">
       <div
         className={cn(
-          "bg-background-secondary flex min-h-full flex-col gap-4 rounded-xl p-4",
+          "bg-accent text-accent-foreground flex min-h-full flex-col gap-4 rounded-xl p-4",
           { "md:flex-row": !isEmbedded },
         )}
       >

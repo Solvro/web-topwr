@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ThemeProvider } from "next-themes";
 import { Space_Grotesk } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 
@@ -37,17 +38,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps) {
   return (
-    <html lang="pl" className="overflow-hidden">
+    <html lang="pl" className="overflow-hidden" suppressHydrationWarning>
       <RootProviders>
         <body
           className={cn(
-            "flex h-screen flex-col overflow-auto font-sans antialiased",
+            "bg-background text-foreground flex h-screen flex-col overflow-auto font-sans antialiased",
             space_grotesk.variable,
           )}
         >
-          <NextTopLoader color="var(--color-primary)" showSpinner={false} />
-          <Toaster position="top-right" />
-          {children}
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <NextTopLoader color="var(--color-primary)" showSpinner={false} />
+            <Toaster position="top-center" />
+            {children}
+          </ThemeProvider>
         </body>
       </RootProviders>
     </html>

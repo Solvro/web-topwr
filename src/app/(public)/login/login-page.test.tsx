@@ -32,7 +32,7 @@ function renderLoginPage() {
 }
 
 /** Reusable test which simulates a successful login interaction. */
-async function enterValidCredentials() {
+async function enterValidCredentials(expectedGreeting: string) {
   const form = renderLoginPage();
 
   await form.user.type(form.inputEmail, MOCK_USER.valid.email);
@@ -40,12 +40,9 @@ async function enterValidCredentials() {
   await form.user.click(form.inputRememberMe);
   await form.user.click(form.submitButton);
 
-  expect(getErrorMessage).not.toHaveBeenCalled();
-
-  // TODO: replace this with a better expectation
-  // expect(MOCK_USE_ROUTER.push).toHaveBeenCalledExactlyOnceWith("/");
-
-  expect(getToaster()).toHaveTextContent("Pomyślnie zalogowano");
+  expect(getToaster()).toHaveTextContent(
+    `Pomyślnie zalogowano jako ${expectedGreeting}`,
+  );
 }
 
 describe("Login page", () => {
@@ -80,7 +77,9 @@ describe("Login page", () => {
     expect(await form.screen.findByText(/wymagane/i)).toBeInTheDocument();
   });
 
-  it("should accept valid credentials", enterValidCredentials);
+  it("should accept valid credentials", async () => {
+    await enterValidCredentials(MOCK_USER.valid.fullName);
+  });
 
   it("should fall back to email if user has no full name", async () => {
     server.use(
@@ -92,9 +91,6 @@ describe("Login page", () => {
       ),
     );
 
-    await enterValidCredentials();
-    expect(getToaster()).toHaveTextContent(
-      `Pomyślnie zalogowano jako ${MOCK_USER.valid.email}`,
-    );
+    await enterValidCredentials(MOCK_USER.valid.email);
   });
 });

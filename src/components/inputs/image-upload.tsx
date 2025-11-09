@@ -51,7 +51,7 @@ export function ImageUpload<T extends Resource>({
         {label}
         <InputSlot
           renderAs="div"
-          className="aspect-video max-h-48 w-full cursor-pointer rounded-lg md:size-48"
+          className="aspect-video max-h-48 w-full cursor-pointer overflow-hidden rounded-lg md:size-48"
         >
           {isPending ? (
             <Spinner />
