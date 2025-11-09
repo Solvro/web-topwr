@@ -65,7 +65,7 @@ export function DashboardButton({
       >
         <Icon className="ml-2 size-5" />
         <span
-          className="sm:text-lg md:text-xl"
+          className="sm:text-base md:text-xl"
           style={{
             viewTransitionName: useViewTransition
               ? `resource-title-${resource}`

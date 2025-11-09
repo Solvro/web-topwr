@@ -256,7 +256,7 @@ export function SortFilters({
           />
         </FieldGroup>
         {filters.fields.length === 0 ? null : (
-          <FieldGroup className="mb-2 max-h-24 overflow-y-auto sm:max-h-56">
+          <FieldGroup className="mb-2 max-h-28 overflow-y-auto sm:max-h-56">
             {filters.fields.map((filter, index) => (
               <FieldGroup key={filter.id}>
                 <FormField
