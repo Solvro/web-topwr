@@ -677,9 +677,9 @@ export const RESOURCE_METADATA = {
             type: RelationType.ManyToOne,
             foreignKey: "milestoneId",
           },
-          [Resource.ChangeScreenshots]: {
+          [Resource.VersionScreenshots]: {
             type: RelationType.OneToMany,
-            foreignKey: "changeId",
+            foreignKey: "versionId",
           },
         },
       },
