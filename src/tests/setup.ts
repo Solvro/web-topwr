@@ -37,7 +37,6 @@ vi.mock("next/navigation", async (importOriginal) => {
     useSearchParams: MOCK_USE_SEARCH_PARAMS,
   } satisfies NextNavigationModule;
 });
-vi.mock("nextjs-toploader/app", () => ({ useRouter: () => MOCK_USE_ROUTER }));
 vi.mock("@solvro/next-view-transitions", () => ({
   useTransitionRouter: () => MOCK_USE_ROUTER,
   Link,

@@ -3,7 +3,7 @@ import type { ComponentType, Ref } from "react";
 import { ToggleOrganizationStatusButton } from "@/components/abstract/toggle-status-button";
 import { Badge } from "@/components/ui/badge";
 import { Resource } from "@/config/enums";
-import { getResourceMetadata } from "@/lib/helpers";
+import { getResourceMetadata, sanitizeId } from "@/lib/helpers";
 import type { EditableResource, ListItem, ResourceDataType } from "@/types/app";
 
 import { EditButton } from "../edit-button";
@@ -36,6 +36,9 @@ export function AbstractResourceListItem<T extends EditableResource>(
     <li
       ref={ref}
       className="bg-accent text-accent-foreground grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[1fr_2fr_auto] md:gap-x-4"
+      style={{
+        viewTransitionName: `arl-item-${resource}-${sanitizeId(listItem.id)}`,
+      }}
     >
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1 sm:gap-2">
