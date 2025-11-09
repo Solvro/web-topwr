@@ -49,7 +49,9 @@ export function ErrorMessage({
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex flex-col items-center justify-center gap-2">
         <h2 className="order-1 -mt-18 text-5xl font-semibold">{type}</h2>
-        <p className="order-2">{message ?? APPLICATION_ERROR_MESSAGES[type]}</p>
+        <p className="order-2 text-center text-balance">
+          {message ?? APPLICATION_ERROR_MESSAGES[type]}
+        </p>
         {contextInfo ?? null}
         <div className="order-4">
           {returnToResource == null ? (

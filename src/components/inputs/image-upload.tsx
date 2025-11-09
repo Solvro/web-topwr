@@ -152,7 +152,7 @@ export function ImageUpload<T extends Resource>({
                   type={type}
                   width={1500}
                   style={{ background: "none" }}
-                  className="object-scale-down"
+                  className="max-h-[80svh] object-scale-down"
                 />
               ))
         }

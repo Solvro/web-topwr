@@ -41,7 +41,7 @@ export default function RootLayout({ children }: LayoutProps) {
       <RootProviders>
         <body
           className={cn(
-            "bg-background text-foreground flex h-screen flex-col overflow-auto font-sans antialiased",
+            "bg-background text-foreground flex h-dvh flex-col overflow-auto font-sans antialiased",
             space_grotesk.variable,
           )}
         >

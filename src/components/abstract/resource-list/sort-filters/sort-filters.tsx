@@ -255,72 +255,77 @@ export function SortFilters({
             )}
           />
         </FieldGroup>
-        <FieldGroup className="max-h-56 overflow-y-auto">
-          {filters.fields.map((filter, index) => (
-            <FieldGroup key={filter.id}>
-              <FormField
-                control={form.control}
-                name={`filters.${index}.field`}
-                render={({ field }) => (
-                  <FormItem>
-                    <Select
-                      value={field.value}
-                      onValueChange={(value) => {
-                        field.onChange(value);
-                        form.setValue(
-                          `filters.${index}.value`,
-                          filterDefinitions[value].type === FilterType.Checkbox
-                            ? "false"
-                            : "",
-                        );
-                      }}
-                    >
-                      <FormLabel>Pole #{index + 1}</FormLabel>
-                      <FormControl className="mb-0 w-full">
-                        <SelectTrigger>
-                          <SelectValue placeholder={SORT_FILTER_PLACEHOLDER} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectClear value={field.value} />
-                        {typedEntries(filterDefinitions).map(
-                          ([filterField, { label }]) => (
-                            <SelectItem key={filterField} value={filterField}>
-                              {label}
-                            </SelectItem>
-                          ),
-                        )}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex gap-2">
-                <FilterValueField
+        {filters.fields.length === 0 ? null : (
+          <FieldGroup className="mb-2 max-h-28 overflow-y-auto sm:max-h-56">
+            {filters.fields.map((filter, index) => (
+              <FieldGroup key={filter.id}>
+                <FormField
                   control={form.control}
-                  index={index}
-                  filterDefinitions={filterDefinitions}
+                  name={`filters.${index}.field`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <Select
+                        value={field.value}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          form.setValue(
+                            `filters.${index}.value`,
+                            filterDefinitions[value].type ===
+                              FilterType.Checkbox
+                              ? "false"
+                              : "",
+                          );
+                        }}
+                      >
+                        <FormLabel>Pole #{index + 1}</FormLabel>
+                        <FormControl className="mb-0 w-full">
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={SORT_FILTER_PLACEHOLDER}
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectClear value={field.value} />
+                          {typedEntries(filterDefinitions).map(
+                            ([filterField, { label }]) => (
+                              <SelectItem key={filterField} value={filterField}>
+                                {label}
+                              </SelectItem>
+                            ),
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <Button
-                  type="button"
-                  size="icon"
-                  aria-label={`Usuń filtr pola #${index + 1}`}
-                  className="ml-auto self-end"
-                  variant="destructive"
-                  onClick={() => {
-                    filters.remove(index);
-                  }}
-                >
-                  <Trash />
-                </Button>
-              </div>
-            </FieldGroup>
-          ))}
-        </FieldGroup>
+                <div className="flex gap-2">
+                  <FilterValueField
+                    control={form.control}
+                    index={index}
+                    filterDefinitions={filterDefinitions}
+                  />
+                  <Button
+                    type="button"
+                    size="icon"
+                    aria-label={`Usuń filtr pola #${index + 1}`}
+                    className="ml-auto self-end"
+                    variant="destructive"
+                    onClick={() => {
+                      filters.remove(index);
+                    }}
+                  >
+                    <Trash />
+                  </Button>
+                </div>
+              </FieldGroup>
+            ))}
+          </FieldGroup>
+        )}
         <Button
           type="button"
-          className="relative col-span-full mt-2"
+          className="relative col-span-full"
           size="sm"
           variant="secondary"
           onClick={() => {
@@ -331,7 +336,7 @@ export function SortFilters({
           <Plus />
           <Counter values={filters.fields} label="Liczba filtrowanych pól" />
         </Button>
-        <FieldGroup className="justify-between">
+        <FieldGroup className="grid-cols-2">
           <Button
             type="reset"
             variant="ghost"

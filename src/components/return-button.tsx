@@ -34,7 +34,7 @@ export function ReturnButton({
     <Button variant="link" asChild>
       <Link
         href={returnHref}
-        className={cn("group text-foreground text-sm", className)}
+        className={cn("group text-foreground", className)}
       >
         <Icon
           size={16}

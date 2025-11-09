@@ -10,7 +10,7 @@ import { LoginForm } from "./form";
 export default function LoginPage() {
   return (
     <div className="from-gradient-1 to-gradient-2 flex size-full flex-col items-center justify-center bg-linear-to-r">
-      <div className="flex w-96 flex-1 flex-col items-stretch justify-center space-y-4 p-4">
+      <div className="flex flex-1 flex-col items-stretch justify-center space-y-4 p-4 sm:w-96">
         <div className="p-10">
           <Logo variant="white" className="w-full" />
         </div>
@@ -18,7 +18,7 @@ export default function LoginPage() {
       </div>
       <Link
         href={SOLVRO_WEBPAGE_URL}
-        className="mt-auto h-6 md:mb-8"
+        className="mt-auto mb-4 h-6 md:mb-8"
         target="_blank"
         rel="noreferrer"
       >
