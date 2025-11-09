@@ -1,5 +1,3 @@
-"use client";
-
 import {
   BookOpen,
   Building,
@@ -13,20 +11,21 @@ import {
 
 import { DashboardButton } from "@/components/dashboard-button";
 import { Resource } from "@/config/enums";
-import { useAuth } from "@/hooks/use-auth";
+import { getAuthState } from "@/lib/data-access";
 import { getUserDisplayName } from "@/lib/helpers";
 
-export default function Home() {
-  const auth = useAuth();
+export default async function Home() {
+  const authState = await getAuthState();
+  const user = authState?.user;
 
-  if (!auth.isAuthenticated) {
+  if (user == null) {
     return null;
   }
 
   return (
     <div className="container mx-auto flex h-full flex-col items-center space-y-8 p-4 sm:p-8 2xl:max-w-[1280px]">
       <span className="mt-4 w-full text-2xl">
-        Cześć, {getUserDisplayName(auth.user)}!
+        Cześć, {getUserDisplayName(user)}!
       </span>
       <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
         <div className="col-span-full grid grid-cols-subgrid gap-4">

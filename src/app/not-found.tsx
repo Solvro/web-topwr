@@ -8,7 +8,7 @@ export default async function NotFound() {
   const authState = await getAuthState();
   return (
     <>
-      {authState == null ? null : <Navbar authState={authState} />}
+      <Navbar authState={authState} />
       <ContentWrapper>
         <ErrorMessage type={ApplicationError.NotFound} />
       </ContentWrapper>

@@ -200,7 +200,7 @@ export function SortFilters({
               <FormItem>
                 <FormLabel>Sortuj według</FormLabel>
                 <Select
-                  value={field.value ?? undefined}
+                  value={field.value ?? ""}
                   onValueChange={(value) => {
                     field.onChange(value);
                   }}

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Space_Grotesk } from "next/font/google";
-import NextTopLoader from "nextjs-toploader";
 
 import { RootProviders } from "@/components/providers/root-providers";
 import { Toaster } from "@/components/ui/sonner";
@@ -47,7 +46,6 @@ export default function RootLayout({ children }: LayoutProps) {
           )}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <NextTopLoader color="var(--color-primary)" showSpinner={false} />
             <Toaster position="top-center" />
             {children}
           </ThemeProvider>

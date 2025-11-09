@@ -129,8 +129,12 @@
   @apply rounded-r-xl;
 }
 
+::view-transition-old(root),
+::view-transition-new(root),
 ::view-transition-old(topwr-logo),
-::view-transition-new(topwr-logo) {
+::view-transition-new(topwr-logo),
+::view-transition-old(theme-toggle),
+::view-transition-new(theme-toggle) {
   height: unset;
   border-radius: 0;
 }
