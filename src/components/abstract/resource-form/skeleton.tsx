@@ -37,7 +37,7 @@ export function AbstractResourceFormSkeleton({
 }) {
   return (
     <div className="mx-4 box-border flex h-full flex-col gap-4">
-      <div className="bg-background-secondary flex-1 rounded-xl p-4">
+      <div className="bg-accent flex-1 rounded-xl p-4">
         <div className="flex h-full flex-col gap-4">
           {/* Text input */}
           <div>

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { ContentWrapper } from "@/components/content-wrapper";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { getAuthState } from "@/lib/data-access";
 import type { LayoutProps } from "@/types/components";
 
@@ -12,5 +13,10 @@ export default async function PublicLayout({ children }: LayoutProps) {
     return redirect("/");
   }
 
-  return <ContentWrapper>{children}</ContentWrapper>;
+  return (
+    <>
+      <ThemeToggle className="absolute right-0 m-2" variant="secondary" />
+      <ContentWrapper>{children}</ContentWrapper>
+    </>
+  );
 }

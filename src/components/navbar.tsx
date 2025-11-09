@@ -19,6 +19,7 @@ import type { AuthState } from "@/types/api";
 
 import { Logo } from "./logo";
 import { LogoutButton } from "./logout-button";
+import { ThemeToggle } from "./theme-toggle";
 
 export function Navbar({ authState }: { authState: AuthState | null }) {
   useHydrateAtoms([[authStateAtom, authState]]);
@@ -34,7 +35,7 @@ export function Navbar({ authState }: { authState: AuthState | null }) {
     <nav>
       <div className="container mx-auto flex flex-row items-center justify-between">
         <Link href="/" passHref className="w-32 p-4">
-          <Logo variant="color" className="h-auto w-full" />
+          <Logo variant="dynamic" className="h-auto w-full" />
         </Link>
         <div className="space-x-4 p-4">
           <DropdownMenu>
@@ -53,6 +54,7 @@ export function Navbar({ authState }: { authState: AuthState | null }) {
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
+          <ThemeToggle />
           <LogoutButton />
         </div>
       </div>

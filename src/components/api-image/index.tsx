@@ -45,7 +45,7 @@ export function ApiImageInternal({
       src={fileEntry.url}
       alt={alt}
       className={cn(
-        "size-full",
+        "dark:bg-foreground size-full",
         type === ImageType.Logo ? "object-contain p-1 sm:p-2" : "object-cover",
       )}
       style={backgroundColor}
