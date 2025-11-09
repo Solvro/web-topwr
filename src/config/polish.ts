@@ -1,3 +1,4 @@
+import { quoteText } from "@/lib/helpers/transformations";
 import type { Pluralized, RecordIntersection } from "@/types/helpers";
 import type {
   DeclensionData,
@@ -69,6 +70,27 @@ const REUSABLE_DECLENSIONS = {
       instrumental: "krótkimi opisami",
       locative: "krótkich opisach",
       vocative: "krótkie opisy",
+    },
+  },
+  screenshot: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "zrzut ekranu",
+      genitive: "zrzutu ekranu",
+      dative: "zrzutowi ekranu",
+      accusative: "zrzut ekranu",
+      instrumental: "zrzutem ekranu",
+      locative: "zrzucie ekranu",
+      vocative: "zrzucie ekranu",
+    },
+    plural: {
+      nominative: "zrzuty ekranu",
+      genitive: "zrzutów ekranu",
+      dative: "zrzutom ekranu",
+      accusative: "zrzuty ekranu",
+      instrumental: "zrzutami ekranu",
+      locative: "zrzutach ekranu",
+      vocative: "zrzuty ekranu",
     },
   },
 } satisfies Record<string, Pluralized<Declensions> & DeclensionData>;
@@ -160,6 +182,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "zmiany",
     },
   },
+  [Resource.ChangeScreenshots]: REUSABLE_DECLENSIONS.screenshot,
   [Resource.Contributors]: {
     gender: GrammaticalGender.Masculine,
     singular: {
@@ -354,6 +377,10 @@ export const SIMPLE_NOUN_DECLENSIONS = {
   },
   [Resource.Milestones]: {
     ...REUSABLE_DECLENSIONS.version,
+    singular: {
+      ...REUSABLE_DECLENSIONS.version.singular,
+      nominative: `wersja w sekcji ${quoteText("o nas")}`,
+    },
   },
   [Resource.Versions]: {
     gender: GrammaticalGender.Feminine,
@@ -376,6 +403,7 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "dzienniku zmian",
     },
   },
+  [Resource.VersionScreenshots]: REUSABLE_DECLENSIONS.screenshot,
   image: {
     gender: GrammaticalGender.Neuter,
     singular: {

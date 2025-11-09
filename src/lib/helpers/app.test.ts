@@ -28,9 +28,11 @@ describe("getRecursiveRelations function", () => {
     ]);
     expect(getRecursiveRelations(Resource.Versions)).toEqual([
       "changes",
+      "changes.screenshots",
       "milestones",
       "milestones.contributors",
       "milestones.contributors.socialLinks",
+      "screenshots",
     ]);
   });
 });

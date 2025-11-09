@@ -207,12 +207,41 @@ export const RESOURCE_METADATA = {
             optionLabels: SELECT_OPTION_LABELS.CHANGES.TYPE,
           },
         },
+        relationInputs: {
+          [Resource.ChangeScreenshots]: {
+            type: RelationType.OneToMany,
+            foreignKey: "changeId",
+          },
+        },
       },
       defaultValues: {
         name: "",
         description: "",
         versionId: -1,
         type: ChangeType.Feature,
+      },
+    },
+  },
+  [Resource.ChangeScreenshots]: {
+    queryName: "screenshots",
+    apiPath: "change_screenshots",
+    itemMapper: (item) => ({
+      name: item.subtitle ?? `Zdjęcie ${String(item.id)}`,
+      shortDescription: null,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          subtitle: { label: "Podpis" },
+        },
+        imageInputs: {
+          imageKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
+      },
+      defaultValues: {
+        changeId: -1,
+        imageKey: "",
+        subtitle: null,
       },
     },
   },
@@ -648,6 +677,10 @@ export const RESOURCE_METADATA = {
             type: RelationType.ManyToOne,
             foreignKey: "milestoneId",
           },
+          [Resource.ChangeScreenshots]: {
+            type: RelationType.OneToMany,
+            foreignKey: "changeId",
+          },
         },
       },
       defaultValues: {
@@ -655,6 +688,29 @@ export const RESOURCE_METADATA = {
         description: null,
         releaseDate: getRoundedDate(0),
         milestoneId: -1,
+      },
+    },
+  },
+  [Resource.VersionScreenshots]: {
+    queryName: "screenshots",
+    apiPath: "version_screenshots",
+    itemMapper: (item) => ({
+      name: item.subtitle ?? `Zdjęcie ${String(item.id)}`,
+      shortDescription: null,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          subtitle: { label: "Podpis" },
+        },
+        imageInputs: {
+          imageKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
+      },
+      defaultValues: {
+        versionId: -1,
+        imageKey: "",
+        subtitle: null,
       },
     },
   },
