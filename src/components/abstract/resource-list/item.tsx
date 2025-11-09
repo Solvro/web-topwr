@@ -1,34 +1,19 @@
 import type { ComponentType, Ref } from "react";
-import type * as z from "zod";
 
 import { ToggleOrganizationStatusButton } from "@/components/abstract/toggle-status-button";
 import { Badge } from "@/components/ui/badge";
-import { RelationType, Resource } from "@/config/enums";
+import { Resource } from "@/config/enums";
 import {
   getResourceMetadata,
   getResourceRelationDefinitions,
+  isManyToOneRelationDefinition,
   typedKeys,
 } from "@/lib/helpers";
 import type { EditableResource, ListItem, ResourceDataType } from "@/types/app";
 import type { ResourceRelations } from "@/types/components";
-import type { ResourceSchemaKey } from "@/types/forms";
 
 import { EditButton } from "../edit-button";
 import { DragHandle } from "./drag-handle";
-
-export const isManyToOneRelationDefinition = <T extends Resource>(
-  definition: unknown,
-): definition is {
-  type: RelationType.ManyToOne;
-  foreignKey: ResourceSchemaKey<T, z.ZodString | z.ZodNumber>;
-} => {
-  return (
-    typeof definition === "object" &&
-    definition !== null &&
-    "type" in definition &&
-    definition.type === RelationType.ManyToOne
-  );
-};
 
 interface ItemProps<T extends EditableResource> {
   ref?: Ref<HTMLLIElement>;
@@ -68,17 +53,17 @@ export function getBadgeLabels<T extends EditableResource>(
       }
 
       const relatedMap = relatedResources[relationName];
-      const related = relatedMap[foreignKeyValue as keyof typeof relatedMap];
-      if (related == null) {
+      const relatedResource =
+        relatedMap[foreignKeyValue as keyof typeof relatedMap];
+      if (relatedResource == null) {
         continue;
       }
 
       labels.push(
-        (related as Record<PropertyKey, unknown>)[
+        (relatedResource as Record<PropertyKey, unknown>)[
           badge.displayField as PropertyKey
         ] as string,
       );
-
       break;
     }
   }

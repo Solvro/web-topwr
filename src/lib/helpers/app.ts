@@ -142,3 +142,28 @@ export async function fetchRelatedResources<T extends Resource>(
   );
   return typedFromEntries<ResourceRelations<T>>(responses.flat());
 }
+
+export const isManyToOneRelationDefinition = <T extends Resource>(
+  definition: unknown,
+): definition is {
+  type: RelationType.ManyToOne;
+  foreignKey: ResourceSchemaKey<T, z.ZodString | z.ZodNumber>;
+} => {
+  return (
+    typeof definition === "object" &&
+    definition !== null &&
+    "type" in definition &&
+    definition.type === RelationType.ManyToOne
+  );
+};
+
+export const isManyToManyRelationDefinition = (
+  definition: unknown,
+): definition is { type: RelationType.ManyToMany } => {
+  return (
+    typeof definition === "object" &&
+    definition !== null &&
+    "type" in definition &&
+    definition.type === RelationType.ManyToMany
+  );
+};
