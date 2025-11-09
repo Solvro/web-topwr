@@ -13,7 +13,8 @@ export function LogoutButton() {
   return (
     <Button
       variant="ghost"
-      className="aspect-square h-10 rounded-full"
+      size="icon"
+      className="rounded-full"
       onClick={async () => {
         await auth.logout();
         router.push("/login");

@@ -73,6 +73,9 @@ export function UnsavedChangesProvider({ children }: LayoutProps) {
           </DialogHeader>
           <DialogFooter>
             <DialogClose asChild>
+              <Button variant="secondary">Anuluj</Button>
+            </DialogClose>
+            <DialogClose asChild>
               <Button variant="destructive" asChild>
                 <Link
                   href={confirmNavigationTo ?? DEFAULT_CONFIRM_NAVIGATION_ROUTE}
@@ -80,9 +83,6 @@ export function UnsavedChangesProvider({ children }: LayoutProps) {
                   Kontynuuj <CircleX />
                 </Link>
               </Button>
-            </DialogClose>
-            <DialogClose asChild>
-              <Button variant="secondary">Anuluj</Button>
             </DialogClose>
           </DialogFooter>
         </DialogContent>

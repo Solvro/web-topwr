@@ -38,7 +38,7 @@ export function AbstractResourceListItem<T extends EditableResource>(
       className="bg-accent text-accent-foreground grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 md:grid-cols-[1fr_2fr_auto] md:gap-x-4"
     >
       <div className="flex items-center gap-4">
-        <div className="flex flex-col items-center gap-1 sm:flex-row sm:gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           {orderable ? <DragHandle item={listItem} /> : null}
           <Badge>{listItem.id}</Badge>
         </div>

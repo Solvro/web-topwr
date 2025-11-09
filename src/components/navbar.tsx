@@ -37,14 +37,14 @@ export function Navbar({ authState }: { authState: AuthState | null }) {
         <Link href="/" passHref className="w-32 p-4">
           <Logo variant="dynamic" className="h-auto w-full" />
         </Link>
-        <div className="space-x-4 p-4">
+        <div className="flex items-center gap-2 p-4 sm:gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button className="aspect-square h-10 rounded-full">
+              <Button size="icon" className="rounded-full">
                 <UserRound />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="mr-4 w-56">
+            <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>Moje konto</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
@@ -54,7 +54,7 @@ export function Navbar({ authState }: { authState: AuthState | null }) {
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-          <ThemeToggle />
+          <ThemeToggle className="rounded-full" />
           <LogoutButton />
         </div>
       </div>

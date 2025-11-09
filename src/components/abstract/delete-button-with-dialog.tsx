@@ -82,9 +82,8 @@ export function DeleteButtonWithDialog({
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="ghost"
+          variant="destructive-ghost"
           size="sm"
-          className="text-destructive hover:text-destructive/90"
           aria-label={label}
           tooltip={showLabel ? undefined : label}
           {...props}
