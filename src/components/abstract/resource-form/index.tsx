@@ -1,57 +1,22 @@
 import { get } from "react-hook-form";
 
 import { ApiImage } from "@/components/api-image/server";
-import { RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { fetchPivotResources } from "@/lib/abstract-resource-form";
-import { fetchQuery } from "@/lib/fetch-utils";
 import {
+  fetchRelatedResources,
   getResourceMetadata,
-  getResourceRelationDefinitions,
   tryParseNumber,
   typedEntries,
-  typedFromEntries,
 } from "@/lib/helpers";
-import type {
-  ResourceDataType,
-  ResourceDefaultValues,
-  ResourceRelation,
-} from "@/types/app";
+import type { ResourceDefaultValues } from "@/types/app";
 import type {
   ExistingImages,
   ResourceCreatePageProps,
   ResourceFormProps,
-  ResourceRelations,
 } from "@/types/components";
 
 import { AbstractResourceFormClient } from "./client";
-
-type LabelledRelationData<T extends ResourceRelation<Resource>> = [
-  T,
-  ResourceDataType<T>[],
-];
-
-async function fetchRelatedResources<T extends Resource>(
-  resource: T,
-): Promise<ResourceRelations<T>> {
-  const responses = await Promise.all(
-    typedEntries(getResourceRelationDefinitions(resource)).map(
-      async ([relation, relationDefinition]) =>
-        relationDefinition.type === RelationType.OneToMany
-          ? []
-          : [
-              [
-                relation,
-                await fetchQuery<{ data: ResourceDataType<typeof relation>[] }>(
-                  "",
-                  { resource: relation, includeRelations: true },
-                ).then(({ data }) => data),
-              ] as LabelledRelationData<ResourceRelation<T>>,
-            ],
-    ),
-  );
-  return typedFromEntries<ResourceRelations<T>>(responses.flat());
-}
 
 export async function AbstractResourceForm<T extends Resource>({
   resource,

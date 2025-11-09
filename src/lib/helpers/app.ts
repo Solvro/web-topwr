@@ -1,6 +1,6 @@
 import type { z } from "zod";
 
-import { DeclensionCase } from "@/config/enums";
+import { DeclensionCase, RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resource-metadata";
 import { declineNoun } from "@/lib/polish";
@@ -9,15 +9,20 @@ import type {
   OrderableResource,
   RelationDefinition,
   RelationQueryName,
+  ResourceDataType,
   ResourceMetadata,
   ResourceRelation,
   XToManyResource,
 } from "@/types/app";
-import type { ResourceLabelOptions } from "@/types/components";
+import type {
+  ResourceLabelOptions,
+  ResourceRelations,
+} from "@/types/components";
 import type { ResourceSchemaKey } from "@/types/forms";
 
+import { fetchQuery } from "../fetch-utils";
 import { sanitizeId } from "./transformations";
-import { typedKeys } from "./typescript";
+import { typedEntries, typedFromEntries, typedKeys } from "./typescript";
 
 /** Generates the key for Tanstack query or mutation operations. */
 export const getKey = {
@@ -109,4 +114,31 @@ export function getManagingResourceLabel(
   });
   const firstWord = firstWordOnly ? declined.split(" ")[0] : declined;
   return `Zarządzanie ${firstWord}`;
+}
+
+type LabelledRelationData<T extends ResourceRelation<Resource>> = [
+  T,
+  ResourceDataType<T>[],
+];
+
+export async function fetchRelatedResources<T extends Resource>(
+  resource: T,
+): Promise<ResourceRelations<T>> {
+  const responses = await Promise.all(
+    typedEntries(getResourceRelationDefinitions(resource)).map(
+      async ([relation, relationDefinition]) =>
+        relationDefinition.type === RelationType.OneToMany
+          ? []
+          : [
+              [
+                relation,
+                await fetchQuery<{ data: ResourceDataType<typeof relation>[] }>(
+                  "",
+                  { resource: relation, includeRelations: true },
+                ).then(({ data }) => data),
+              ] as LabelledRelationData<ResourceRelation<T>>,
+            ],
+    ),
+  );
+  return typedFromEntries<ResourceRelations<T>>(responses.flat());
 }

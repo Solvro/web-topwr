@@ -12,7 +12,7 @@ import type {
   OrderableResource,
   ResourceDataType,
 } from "@/types/app";
-import type { FilterDefinitions } from "@/types/components";
+import type { FilterDefinitions, ResourceRelations } from "@/types/components";
 import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 
 import { AbstractResourceListItems } from "./item";
@@ -23,11 +23,13 @@ export function InfiniteScroller<T extends EditableResource>({
   initialData,
   filterDefinitions = {},
   sortFilters = {},
+  relatedResources,
 }: {
   resource: T;
   initialData: GetResourcesResponsePaginated<T>;
   filterDefinitions?: Partial<FilterDefinitions<T>>;
   sortFilters?: Partial<SortFiltersFormValuesNarrowed>;
+  relatedResources: ResourceRelations<T>;
 }) {
   const { ref, inView } = useInView();
 
@@ -64,10 +66,17 @@ export function InfiniteScroller<T extends EditableResource>({
       {isOrderableResource(resource) ? (
         <OrderableItemWrapper
           resource={resource}
+          relatedResources={
+            relatedResources as ResourceRelations<OrderableResource>
+          }
           data={flatData as ResourceDataType<OrderableResource>[]}
         />
       ) : (
-        <AbstractResourceListItems items={flatData} resource={resource} />
+        <AbstractResourceListItems
+          items={flatData}
+          resource={resource}
+          relatedResources={relatedResources}
+        />
       )}
       <div className="mt-4 flex justify-center">
         <Button

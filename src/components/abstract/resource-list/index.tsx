@@ -2,6 +2,7 @@ import { Counter } from "@/components/counter";
 import { ReturnButton } from "@/components/return-button";
 import { getResourceFilterDefinitions } from "@/lib/filter-definitions";
 import {
+  fetchRelatedResources,
   fetchResources,
   parseFilterSearchParameters,
   parseSortParameter,
@@ -44,6 +45,7 @@ export async function AbstractResourceList<T extends CreatableResource>({
     sortFilters,
     filterDefinitions,
   );
+  const relatedResources = await fetchRelatedResources(resource);
 
   return (
     <div className="flex h-full flex-col gap-2">
@@ -64,6 +66,7 @@ export async function AbstractResourceList<T extends CreatableResource>({
           initialData={firstPageData}
           filterDefinitions={filterDefinitions}
           sortFilters={sortFilters}
+          relatedResources={relatedResources}
         />
       </div>
       <div className="mt-2 flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">

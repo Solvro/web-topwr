@@ -33,6 +33,7 @@ import type {
   OrderableResource,
   ResourceDataType,
 } from "@/types/app";
+import type { ResourceRelations } from "@/types/components";
 
 import { AbstractResourceListItem, AbstractResourceListItems } from "./item";
 
@@ -60,9 +61,11 @@ function calculateNewSortValue(
 
 export function OrderableItemWrapper<T extends OrderableResource>({
   resource,
+  relatedResources,
   data,
 }: {
   resource: T;
+  relatedResources: ResourceRelations<T>;
   data: ResourceDataType<T>[];
 }) {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -160,8 +163,11 @@ export function OrderableItemWrapper<T extends OrderableResource>({
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         <AbstractResourceListItems
-          items={items}
+          items={items as ResourceDataType<EditableResource>[]}
           resource={resource}
+          relatedResources={
+            relatedResources as ResourceRelations<EditableResource>
+          }
           orderable
           ItemComponent={SortableItem}
         />
@@ -172,6 +178,7 @@ export function OrderableItemWrapper<T extends OrderableResource>({
             <AbstractResourceListItem
               item={getActiveItem()}
               resource={resource}
+              relatedResources={relatedResources}
               orderable
             />
           </div>
@@ -184,9 +191,11 @@ export function OrderableItemWrapper<T extends OrderableResource>({
 function SortableItem<T extends EditableResource>({
   item,
   resource,
+  relatedResources,
 }: {
   item: ResourceDataType<T>;
   resource: T;
+  relatedResources: ResourceRelations<T>;
 }) {
   const { setNodeRef, transform, transition } = useSortable({ id: item.id });
 
@@ -201,6 +210,7 @@ function SortableItem<T extends EditableResource>({
         ref={setNodeRef}
         item={item}
         resource={resource}
+        relatedResources={relatedResources}
         orderable
       />
     </div>

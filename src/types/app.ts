@@ -15,10 +15,15 @@ import type { DeclinableNoun } from "./polish";
 
 // Data types
 export type Id = string | number;
+interface ListItemBadge<R extends Resource> {
+  resource: Resource;
+  displayField: keyof ResourceFormValues<R>;
+}
 export interface ListItem {
   id: Id;
   name?: string;
-  badges?: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  badges?: ListItemBadge<any>[];
   shortDescription?: string | null;
 }
 export type AppZodObject = z.ZodObject<z.ZodRawShape>;
