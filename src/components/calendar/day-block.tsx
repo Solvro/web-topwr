@@ -38,24 +38,43 @@ export function DayBlock({
     >
       <Button
         variant={isCurrentDay ? "default" : "secondary"}
-        className="relative flex h-16 flex-col p-1 md:h-20 lg:h-24 xl:h-28"
+        className="relative flex h-16 flex-col items-start justify-between p-1 md:h-20 lg:h-24 xl:h-28"
         style={{
           viewTransitionName: `calendar-day-${String(day)}`,
         }}
       >
-        <div className="absolute top-1.5 left-2 text-xs font-semibold sm:font-bold md:text-base lg:text-lg">
+        <div className="mt-0.5 ml-1 text-xs font-semibold sm:mt-1.5 sm:ml-2 sm:font-bold md:text-base lg:text-lg">
           {day}
         </div>
 
-        <div className="mt-4 flex min-h-0 w-full flex-1 flex-col-reverse gap-0.5 overflow-hidden sm:mt-6 md:mt-13">
-          {events.slice(0, CALENDAR_MAX_EVENTS_PER_DAY).map((event) => (
+        <div className="flex w-full items-center gap-2 overflow-hidden max-sm:hidden max-sm:flex-col">
+          <div className="relative flex w-full flex-col-reverse gap-0.5 md:w-2/3 lg:w-1/2">
+            {events.slice(0, CALENDAR_MAX_EVENTS_PER_DAY).map((event) => (
+              <Badge
+                key={event.id}
+                className="h-2 w-full"
+                variant={isCurrentDay ? "secondary" : "default"}
+              />
+            ))}
+          </div>
+          {events.length > CALENDAR_MAX_EVENTS_PER_DAY ? (
             <Badge
-              key={event.id}
-              className="h-2 w-full md:w-2/3 lg:w-1/3"
-              variant={isCurrentDay ? "secondary" : "default"}
-            />
-          ))}
+              size="counter"
+              aria-label={`Liczba ukrytych wydarzeń dnia ${String(day)}`}
+            >
+              +{events.length - CALENDAR_MAX_EVENTS_PER_DAY}
+            </Badge>
+          ) : null}
         </div>
+        {events.length === 0 ? null : (
+          <Badge
+            size="counter"
+            className="m-auto sm:hidden"
+            aria-label={`Liczba wydarzeń dnia ${String(day)}`}
+          >
+            {events.length}
+          </Badge>
+        )}
       </Button>
     </AllEventsModal>
   );
