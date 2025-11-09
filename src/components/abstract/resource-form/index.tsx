@@ -68,12 +68,20 @@ export async function AbstractResourceForm<T extends Resource>({
     for (const [name, input] of typedEntries(
       metadata.form.inputs.imageInputs,
     )) {
+      if (input == null) {
+        continue;
+      }
       const imageKey = get(defaultValues, name, null) as string | null;
       if (imageKey == null || imageKey === "" || typeof imageKey !== "string") {
         continue;
       }
       existingImages[name] = (
-        <ApiImage imageKey={imageKey} alt={input?.label ?? imageKey} />
+        <ApiImage
+          imageKey={imageKey}
+          alt={input.label}
+          type={input.type}
+          resourceData={defaultValues}
+        />
       );
     }
   }

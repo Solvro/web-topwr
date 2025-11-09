@@ -2,7 +2,6 @@
 
 import { Camera } from "lucide-react";
 import type { ReactNode } from "react";
-import type { Path } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 
@@ -12,21 +11,28 @@ import { Spinner } from "@/components/spinner";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { TOAST_MESSAGES } from "@/config/constants";
+import type { Resource } from "@/config/enums";
+import { ImageType } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { uploadFile } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import type { AppZodObject } from "@/types/app";
+import type { ResourceFormValues } from "@/types/app";
+import type { ResourceSchemaKey } from "@/types/forms";
 
-export function ImageUpload<T extends z.infer<AppZodObject>>({
+export function ImageUpload<T extends Resource>({
   name,
   onChange,
   label,
+  type = ImageType.Logo,
   existingImage,
+  resourceData,
 }: {
   label: string;
-  name: Path<T>;
+  type?: ImageType;
+  name: ResourceSchemaKey<T, z.ZodString>;
   existingImage?: ReactNode;
   onChange: (value: string) => void;
+  resourceData?: ResourceFormValues<T>;
 }) {
   const { mutateAsync, isSuccess, isPending, data } = useMutationWrapper(
     `create__files__image__${name}`,
@@ -50,7 +56,12 @@ export function ImageUpload<T extends z.infer<AppZodObject>>({
           {isPending ? (
             <Spinner />
           ) : isSuccess ? (
-            <ApiImage imageKey={data.key} alt={label} />
+            <ApiImage
+              imageKey={data.key}
+              alt={label}
+              resourceData={resourceData}
+              type={type}
+            />
           ) : (
             (existingImage ?? (
               <div className="flex size-full flex-col items-center justify-center">

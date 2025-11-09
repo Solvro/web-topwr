@@ -20,6 +20,7 @@ export function generateFileEntry(): FileEntry {
     id,
     fileExtension,
     url: `${env.NEXT_PUBLIC_API_URL}/uploads/${id}.${fileExtension}`,
+    miniaturesUrl: `${env.NEXT_PUBLIC_API_URL}/uploads/miniatures/${id}.${fileExtension}`,
   };
 }
 

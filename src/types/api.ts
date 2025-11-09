@@ -76,6 +76,7 @@ export interface FileEntry extends DatedResource {
   id: string;
   fileExtension: string;
   url: string;
+  miniaturesUrl: string;
 }
 
 // API response type from the event_calendar endpoint

@@ -1,7 +1,7 @@
 import type { Path } from "react-hook-form";
 import type { z } from "zod";
 
-import type { Resource } from "@/config/enums";
+import type { ImageType, Resource } from "@/config/enums";
 import type {
   FilteredFieldSchema,
   LoginSchema,
@@ -73,7 +73,7 @@ export type FormSelectInput<T extends Resource> = FormInput<
 
 export interface AbstractResourceFormInputs<T extends Resource> {
   /** Image upload inputs for image key fields. */
-  imageInputs?: FormInput<T>;
+  imageInputs?: FormInput<T, z.ZodString, { type: ImageType }>;
   /** Standard text input fields. */
   textInputs?: FormInput<T>;
   /** Resizable longer text input fields. */

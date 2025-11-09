@@ -133,3 +133,8 @@ export enum FilterType {
   Checkbox = "checkbox",
   Relation = "relation",
 }
+
+export enum ImageType {
+  Logo = "logo",
+  Banner = "banner",
+}
