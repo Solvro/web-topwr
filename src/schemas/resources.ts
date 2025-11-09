@@ -62,6 +62,12 @@ const ChangesSchema = z.object({
   }),
 });
 
+const ChangeScreenshotsSchema = z.object({
+  changeId: NumericIdSchema,
+  imageKey: RequiredStringSchema,
+  subtitle: z.string().nullish(),
+});
+
 const ContributorSchema = z.object({
   name: RequiredStringSchema,
   photoKey: z.string().nullish(),
@@ -172,12 +178,19 @@ const VersionsSchema = z.object({
   milestoneId: NumericIdSchema,
 });
 
+const VersionScreenshotsSchema = z.object({
+  versionId: NumericIdSchema,
+  imageKey: RequiredStringSchema,
+  subtitle: z.string().nullish(),
+});
+
 export const RESOURCE_SCHEMAS = {
   [Resource.AboutUs]: AboutUsSchema,
   [Resource.AboutUsLinks]: AboutUsLinkSchema,
   [Resource.Banners]: BannerSchema,
   [Resource.CalendarEvents]: CalendarEventSchema,
   [Resource.Changes]: ChangesSchema,
+  [Resource.ChangeScreenshots]: ChangeScreenshotsSchema,
   [Resource.Contributors]: ContributorSchema,
   [Resource.ContributorSocialLinks]: ContributorSocialLinkSchema,
   [Resource.Departments]: DepartmentSchema,
@@ -192,4 +205,5 @@ export const RESOURCE_SCHEMAS = {
   [Resource.Majors]: MajorSchema,
   [Resource.Milestones]: MilestonesSchema,
   [Resource.Versions]: VersionsSchema,
+  [Resource.VersionScreenshots]: VersionScreenshotsSchema,
 } satisfies Record<Resource, AppZodObject>;

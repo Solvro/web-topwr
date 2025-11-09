@@ -4,6 +4,7 @@ export enum Resource {
   Banners = "banners",
   CalendarEvents = "calendar_events",
   Changes = "changes",
+  ChangeScreenshots = "change_screenshots",
   Contributors = "contributors",
   ContributorSocialLinks = "contributor_social_links",
   Departments = "departments",
@@ -18,6 +19,7 @@ export enum Resource {
   Majors = "majors",
   Milestones = "milestones",
   Versions = "versions",
+  VersionScreenshots = "version_screenshots",
 }
 
 export enum OrganizationType {
