@@ -25,7 +25,7 @@ import type { LoginFormValues } from "@/types/forms";
 
 export function LoginForm() {
   const router = useRouter();
-  const auth = useAuth();
+  const { login } = useAuth();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(LoginSchema),
@@ -37,7 +37,7 @@ export function LoginForm() {
   });
 
   const { mutateAsync, isPending, isSuccess } = useMutation({
-    mutationFn: auth.login,
+    mutationFn: login,
     onSuccess: () => {
       router.push("/");
     },

@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "@/hooks/use-router";
 
 export function LogoutButton() {
-  const auth = useAuth();
+  const { logout } = useAuth();
   const router = useRouter();
 
   return (
@@ -15,9 +15,8 @@ export function LogoutButton() {
       variant="ghost"
       size="icon"
       className="rounded-full"
-      onClick={async () => {
-        await auth.logout();
-        router.push("/login");
+      onClick={() => {
+        router.push("/login", { onSnapshotTaken: logout });
       }}
       tooltip="Wyloguj się"
     >

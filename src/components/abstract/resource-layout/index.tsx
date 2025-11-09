@@ -5,7 +5,7 @@ import { AbstractResourceLayoutInternal } from "./internal";
 
 export function AbstractResourceLayout(props: ResourceLayoutProps) {
   return (
-    <Bouncer route={`/${props.resource}`}>
+    <Bouncer resource={props.resource}>
       <AbstractResourceLayoutInternal {...props} />
     </Bouncer>
   );
