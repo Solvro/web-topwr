@@ -64,42 +64,43 @@ export function AllEventsModal({
               : "Wszystkie wydarzenia zaplanowane na ten dzień"}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col items-end gap-2">
-          {events.map((event) => (
-            <div
-              key={event.id}
-              className="bg-accent flex h-max w-full justify-between rounded-md p-3 text-left text-sm"
-              title={event.description ?? ""}
-            >
-              <div>
-                <div className="font-medium">{event.name}</div>
-                <div className="mt-1 text-xs">
-                  {formatTime(event, "startTime")}
-                  {event.startTime === event.endTime ? (
-                    ""
-                  ) : (
-                    <>—{formatTime(event, "endTime")}</>
-                  )}
+        <div className="flex flex-col gap-4">
+          <div className="flex max-h-[50svh] flex-col gap-2 overflow-y-auto">
+            {events.map((event) => (
+              <div
+                key={event.id}
+                className="bg-accent flex w-full justify-between rounded-md p-3 text-left text-sm"
+                title={event.description ?? ""}
+              >
+                <div>
+                  <div className="font-medium">{event.name}</div>
+                  <div className="mt-1 text-xs">
+                    {formatTime(event, "startTime")}
+                    {event.startTime === event.endTime ? (
+                      ""
+                    ) : (
+                      <>—{formatTime(event, "endTime")}</>
+                    )}
+                  </div>
                 </div>
+                {clickable ? (
+                  <div className="flex items-center">
+                    <EditButton
+                      resource={Resource.CalendarEvents}
+                      id={event.id}
+                    />
+                    <DeleteButtonWithDialog
+                      resource={Resource.CalendarEvents}
+                      itemName={event.name}
+                      id={event.id}
+                    />
+                  </div>
+                ) : null}
               </div>
-              {clickable ? (
-                <div className="flex items-center">
-                  <EditButton
-                    resource={Resource.CalendarEvents}
-                    id={event.id}
-                  />
-                  <DeleteButtonWithDialog
-                    resource={Resource.CalendarEvents}
-                    itemName={event.name}
-                    id={event.id}
-                  />
-                </div>
-              ) : null}
-            </div>
-          ))}
+            ))}
+          </div>
           {clickable ? (
             <CreateButton
-              className="mt-4"
               resource={Resource.CalendarEvents}
               prefillAttributes={{
                 startTime: getRoundedDate(8, baseDate),
