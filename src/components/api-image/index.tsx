@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ComponentProps } from "react";
 
 import type { Resource } from "@/config/enums";
 import { ImageType } from "@/config/enums";
@@ -7,8 +7,7 @@ import { cn } from "@/lib/utils";
 import type { FileEntry } from "@/types/api";
 import type { ResourceFormValues } from "@/types/app";
 
-interface ApiImagePropsBase {
-  alt: string;
+interface ApiImagePropsBase extends Omit<ComponentProps<typeof Image>, "src"> {
   resourceData?: ResourceFormValues<Resource>;
   type: ImageType;
 }
@@ -37,20 +36,23 @@ export function ApiImageInternal({
   resourceData,
   fileEntry,
   type,
-  alt,
+  className,
+  style,
+  ...props
 }: { fileEntry: FileEntry } & ApiImagePropsBase) {
   const backgroundColor = getBackgroundColor(resourceData);
   return (
     <Image
       src={fileEntry.url}
-      alt={alt}
       className={cn(
         "dark:bg-accent-foreground size-full",
         type === ImageType.Logo ? "object-contain p-1 sm:p-2" : "object-cover",
+        className,
       )}
-      style={backgroundColor}
+      style={{ ...backgroundColor, ...style }}
       width={256}
       height={256}
+      {...props}
     />
   );
 }
