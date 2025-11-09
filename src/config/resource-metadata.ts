@@ -455,6 +455,11 @@ export const RESOURCE_METADATA = {
           resource: Resource.Departments,
           displayField: "name",
         },
+        {
+          resource: Resource.StudentOrganizationTags,
+          displayField: "tag",
+          resourceField: "tags",
+        },
       ],
       shortDescription: item.shortDescription,
     }),

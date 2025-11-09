@@ -2,8 +2,8 @@ import {
   LIST_RESULTS_PER_PAGE,
   SORT_FILTER_DEFAULT_VALUES,
 } from "@/config/constants";
-import { SortDirection } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { SortDirection } from "@/config/enums";
 import { env } from "@/config/env";
 import { fetchMutation, fetchQuery } from "@/lib/fetch-utils";
 import type {
@@ -13,7 +13,13 @@ import type {
 import type { FilterDefinitions } from "@/types/components";
 import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 
+import {
+  getResourceMetadata,
+  getResourceRelationDefinitions,
+  isManyToManyRelationDefinition,
+} from "./app";
 import { sanitizeFilteredFields } from "./sort-filters";
+import { typedKeys } from "./typescript";
 
 /**
  * Determines the fetch configuration to use based on the provided arguments.
@@ -88,6 +94,19 @@ export async function fetchResources<T extends Resource, P extends number>(
     search.set("limit", String(LIST_RESULTS_PER_PAGE));
   }
   search.set("sort", sort);
+
+  const relationDefinitions = getResourceRelationDefinitions(resource);
+  for (const relationName of typedKeys(relationDefinitions)) {
+    const relation = relationDefinitions[relationName];
+    if (!isManyToManyRelationDefinition(relation)) {
+      continue;
+    }
+
+    const queryName = getResourceMetadata(relationName).queryName;
+    if (queryName != null) {
+      search.set(queryName, "true");
+    }
+  }
 
   const searchString = `?${search.toString()}`;
 

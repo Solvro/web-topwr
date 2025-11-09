@@ -15,9 +15,10 @@ import type { DeclinableNoun } from "./polish";
 
 // Data types
 export type Id = string | number;
-interface ListItemBadge<R extends Resource> {
-  resource: Resource;
+export interface ListItemBadge<R extends Resource> {
+  resource: R;
   displayField: keyof ResourceFormValues<R>;
+  resourceField?: string;
 }
 export interface ListItem {
   id: Id;

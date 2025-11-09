@@ -6,6 +6,7 @@ import { Resource } from "@/config/enums";
 import {
   getResourceMetadata,
   getResourceRelationDefinitions,
+  isManyToManyRelationDefinition,
   isManyToOneRelationDefinition,
   typedKeys,
 } from "@/lib/helpers";
@@ -41,33 +42,46 @@ export function getBadgeLabels<T extends EditableResource>(
 
   for (const badge of listItem.badges ?? []) {
     for (const relationName of typedKeys(relationDefinitions)) {
-      const relation = relationDefinitions[relationName];
-      if (!isManyToOneRelationDefinition(relation)) {
-        continue;
-      }
+      if (relationName === badge.resource) {
+        const relation = relationDefinitions[relationName];
 
-      const foreignKey = relation.foreignKey as keyof typeof item;
-      const foreignKeyValue = item[foreignKey];
-      if (foreignKeyValue == null) {
-        continue;
-      }
+        if (isManyToOneRelationDefinition(relation)) {
+          const foreignKey = relation.foreignKey as keyof typeof item;
+          const foreignKeyValue = item[foreignKey];
+          if (foreignKeyValue == null) {
+            continue;
+          }
+          const relatedMap = relatedResources[relationName];
+          const relatedResource =
+            relatedMap[foreignKeyValue as keyof typeof relatedMap];
+          if (relatedResource == null) {
+            continue;
+          }
+          labels.push(
+            (relatedResource as Record<PropertyKey, unknown>)[
+              badge.displayField as PropertyKey
+            ] as string,
+          );
+        } else if (isManyToManyRelationDefinition(relation)) {
+          if (badge.resourceField == null) {
+            break;
+          }
+          const relationItems = item[badge.resourceField as keyof typeof item];
+          if (Array.isArray(relationItems)) {
+            for (const relationItem of relationItems) {
+              labels.push(
+                (relationItem as Record<PropertyKey, unknown>)[
+                  badge.displayField as PropertyKey
+                ] as string,
+              );
+            }
+          }
+        }
 
-      const relatedMap = relatedResources[relationName];
-      const relatedResource =
-        relatedMap[foreignKeyValue as keyof typeof relatedMap];
-      if (relatedResource == null) {
-        continue;
+        break;
       }
-
-      labels.push(
-        (relatedResource as Record<PropertyKey, unknown>)[
-          badge.displayField as PropertyKey
-        ] as string,
-      );
-      break;
     }
   }
-
   return labels;
 }
 
