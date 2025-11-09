@@ -88,6 +88,7 @@ export function ArfInputs<T extends Resource>({
                 <FormItem>
                   <ImageUpload
                     {...field}
+                    value={(field.value ?? null) as string | null}
                     {...input}
                     existingImage={existingImages[field.name]}
                   />

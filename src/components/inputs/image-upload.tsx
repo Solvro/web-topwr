@@ -1,13 +1,16 @@
 "use client";
 
-import { Camera } from "lucide-react";
+import { Camera, ImageUp, Trash } from "lucide-react";
+import { useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { toast } from "sonner";
 import type { z } from "zod";
 
 import { ApiImage } from "@/components/api-image/client";
+import { ImagePreview } from "@/components/api-image/image-preview";
 import { InputSlot } from "@/components/inputs/input-slot";
 import { Spinner } from "@/components/spinner";
+import { Button } from "@/components/ui/button";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { TOAST_MESSAGES } from "@/config/constants";
@@ -17,24 +20,40 @@ import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { uploadFile } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { ResourceFormValues } from "@/types/app";
+import type { LayoutProps } from "@/types/components";
 import type { ResourceSchemaKey } from "@/types/forms";
+
+function InputBox({ children }: LayoutProps) {
+  return (
+    <InputSlot
+      renderAs="div"
+      className="aspect-video h-fit max-h-48 w-full overflow-hidden rounded-lg md:size-48"
+    >
+      {children}
+    </InputSlot>
+  );
+}
 
 export function ImageUpload<T extends Resource>({
   name,
   onChange,
+  value,
   label,
   type = ImageType.Logo,
   existingImage,
   resourceData,
 }: {
+  name: ResourceSchemaKey<T, z.ZodString>;
+  value: string | null;
+  onChange: (value: string | null) => void;
   label: string;
   type?: ImageType;
-  name: ResourceSchemaKey<T, z.ZodString>;
   existingImage?: ReactNode;
-  onChange: (value: string) => void;
   resourceData?: ResourceFormValues<T>;
 }) {
-  const { mutateAsync, isSuccess, isPending, data } = useMutationWrapper(
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const { mutateAsync, isSuccess, isPending, data, reset } = useMutationWrapper(
     `create__files__image__${name}`,
     async (metadata: { file: File }) => {
       const { uuid, response } = await uploadFile(metadata);
@@ -44,53 +63,123 @@ export function ImageUpload<T extends Resource>({
   );
 
   const declensions = declineNoun("image");
+  const spinner = isPending ? <Spinner /> : null;
+
+  const uploadedImage = isSuccess ? (
+    <ApiImage
+      imageKey={data.key}
+      alt={label}
+      resourceData={resourceData}
+      type={type}
+    />
+  ) : (
+    spinner
+  );
+  const serverImage = value == null ? null : existingImage;
+  const image = uploadedImage ?? serverImage;
+  const hasImage = image != null;
+  const imageKey = data?.key ?? value;
+
+  function openUploadDialog() {
+    inputRef.current?.click();
+  }
+
+  const input = (
+    <Input
+      ref={inputRef}
+      type="file"
+      accept="image/*"
+      onChange={(event) => {
+        const file = event.target.files?.[0];
+        if (file == null) {
+          return;
+        }
+        toast.promise(
+          mutateAsync({ file }),
+          TOAST_MESSAGES.object(declensions).upload,
+        );
+      }}
+      className="hidden"
+    />
+  );
 
   return (
     <>
       <FormLabel className="flex flex-col items-start space-y-1.5">
         {label}
-        <InputSlot
-          renderAs="div"
-          className="aspect-video max-h-48 w-full cursor-pointer overflow-hidden rounded-lg md:size-48"
-        >
-          {isPending ? (
-            <Spinner />
-          ) : isSuccess ? (
-            <ApiImage
-              imageKey={data.key}
-              alt={label}
-              resourceData={resourceData}
-              type={type}
-            />
-          ) : (
-            (existingImage ?? (
-              <div className="flex size-full flex-col items-center justify-center">
-                <Camera className="text-image-input-icon size-12" />
-                <span className="text-muted-foreground text-xs">
-                  Kliknij, aby dodać {declensions.nominative}
-                </span>
-              </div>
-            ))
-          )}
-        </InputSlot>
+        {hasImage ? null : (
+          <InputBox>
+            <div className="flex size-full cursor-pointer flex-col items-center justify-center">
+              <Camera className="text-image-input-icon size-12" />
+              <span className="text-muted-foreground text-xs">
+                Kliknij, aby dodać {declensions.nominative}
+              </span>
+            </div>
+          </InputBox>
+        )}
       </FormLabel>
-      <FormControl>
-        <Input
-          type="file"
-          accept="image/*"
-          onChange={(event) => {
-            const file = event.target.files?.[0];
-            if (file == null) {
-              return;
-            }
-            toast.promise(
-              mutateAsync({ file }),
-              TOAST_MESSAGES.object(declensions).upload,
-            );
-          }}
-          className="hidden"
-        />
-      </FormControl>
+      {hasImage ? (
+        <InputBox>
+          <FormControl>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-full cursor-zoom-in"
+              onClick={() => {
+                setIsPreviewOpen(true);
+              }}
+            >
+              {image}
+            </Button>
+          </FormControl>
+          {input}
+        </InputBox>
+      ) : (
+        <FormControl>{input}</FormControl>
+      )}
+      <ImagePreview
+        isOpen={isPreviewOpen}
+        setIsOpen={setIsPreviewOpen}
+        image={
+          imageKey == null
+            ? null
+            : (spinner ?? (
+                <ApiImage
+                  imageKey={imageKey}
+                  alt={label}
+                  resourceData={resourceData}
+                  type={type}
+                  width={1500}
+                  style={{ background: "none" }}
+                  className="object-scale-down"
+                />
+              ))
+        }
+        footer={
+          <>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => {
+                onChange(null);
+                reset();
+                setIsPreviewOpen(false);
+              }}
+            >
+              Usuń zdjęcie <Trash />
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                openUploadDialog();
+              }}
+            >
+              Zmień zdjęcie <ImageUp />
+            </Button>
+          </>
+        }
+      />
     </>
   );
 }

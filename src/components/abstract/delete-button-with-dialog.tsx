@@ -110,13 +110,10 @@ export function DeleteButtonWithDialog({
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="secondary" className="h-12 w-1/2">
-              Anuluj
-            </Button>
+            <Button variant="secondary">Anuluj</Button>
           </DialogClose>
           <Button
             variant="destructive"
-            className="h-12 w-1/2"
             onClick={handleDelete}
             loading={isPending}
             disabled={isSuccess}

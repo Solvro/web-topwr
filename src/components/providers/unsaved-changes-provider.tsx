@@ -1,8 +1,8 @@
 "use client";
 
+import { Link } from "@solvro/next-view-transitions";
 import { CircleX } from "lucide-react";
 import type { Route } from "next";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";

@@ -19,16 +19,19 @@ const IMAGE_UPLOAD_LABEL = "TEST_IMAGE_UPLOAD_LABEL";
 function ImageUploadMapper({
   value,
   onChange,
+  existingImage,
 }: {
   value?: string | null;
   onChange: (value: string | null) => void;
+  existingImage?: string | null;
 }) {
   return (
     <ImageUpload<Resource.StudentOrganizations>
       label={IMAGE_UPLOAD_LABEL}
       name="logoKey"
       onChange={onChange}
-      existingImage={value}
+      value={value ?? null}
+      existingImage={existingImage ?? null}
     />
   );
 }
@@ -38,6 +41,7 @@ function renderImageUpload(initialValue?: string) {
     <InputComponentWrapper
       component={ImageUploadMapper}
       initialValue={initialValue}
+      existingImage={initialValue}
     />,
   );
   const user = userEvent.setup();
@@ -60,11 +64,8 @@ describe("ImageUpload Component", () => {
 
   it("should display existing image if provided", () => {
     const existingImageContent = "EXISTING_IMAGE_CONTENT";
-    const { screen, trigger } = renderImageUpload(existingImageContent);
-    const triggerByContent = screen.getByLabelText(
-      new RegExp(existingImageContent),
-    );
-    expect(trigger).toEqual(triggerByContent);
+    const { trigger } = renderImageUpload(existingImageContent);
+    expect(trigger).toHaveTextContent(existingImageContent);
   });
 
   it("should allow file upload when clicked", async () => {

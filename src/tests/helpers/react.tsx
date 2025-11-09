@@ -37,11 +37,12 @@ export function getToaster() {
 export const getLoadingIndicator = () =>
   screen.queryByLabelText(/trwa ładowanie zasobu/i);
 
-export function InputComponentWrapper({
+export function InputComponentWrapper<T>({
   component: Comp,
   initialValue,
-}: {
-  component: ComponentType<ControllerRenderProps>;
+  ...props
+}: Omit<T, keyof ControllerRenderProps> & {
+  component: ComponentType<T | ControllerRenderProps>;
   initialValue?: string | null;
 }) {
   const form = useForm<{ data: string | null }>({
@@ -55,7 +56,7 @@ export function InputComponentWrapper({
           name="data"
           render={({ field }) => (
             <FormItem>
-              <Comp {...field} />
+              <Comp {...field} {...props} />
             </FormItem>
           )}
         />
