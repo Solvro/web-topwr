@@ -31,12 +31,16 @@ jobs:
         run: npm run format:check
         if: always()
 
-      - name: Lint code
-        run: npm run lint
+      - name: Generate typed routes
+        run: npm run types:generate
         if: always()
 
       - name: Check types
-        run: npm run typecheck
+        run: npm run types:check
+        if: always()
+
+      - name: Lint code
+        run: npm run lint
         if: always()
 
       - name: Run unit tests
