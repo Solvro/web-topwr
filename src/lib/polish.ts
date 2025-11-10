@@ -67,7 +67,9 @@ export function declineNoun(
   if (isNounPhrase) {
     const transform = NOUN_PHRASE_TRANSFORMATIONS[noun].transform;
     for (const [key, value] of typedEntries(declensions)) {
-      declensions[key] = transform(value);
+      const result = transform(value);
+      declensions[key] =
+        typeof result === "string" ? result : result[plurality];
     }
   }
   if (prependDeterminer != null) {

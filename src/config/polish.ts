@@ -597,7 +597,11 @@ export const NOUN_PHRASE_TRANSFORMATIONS = {
   },
 } satisfies Record<
   string,
-  { base: DeclinableSimpleNoun; transform: (base: string) => string }
+  // TODO: use the Pluralized type
+  {
+    base: DeclinableSimpleNoun;
+    transform: (base: string) => string | { singular: string; plural: string };
+  }
 >;
 
 /** A static dictionary of declensions for determiners in the Polish language. */
