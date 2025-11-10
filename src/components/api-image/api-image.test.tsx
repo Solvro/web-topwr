@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import { waitFor } from "@testing-library/dom";
 import { describe, expect, it } from "vitest";
 
+import { ImageType } from "@/config/enums";
 import { env } from "@/config/env";
 import {
   getLoadingIndicator,
@@ -21,7 +22,12 @@ describe("API Image component", () => {
     const screen = renderWithProviders(
       <>
         {MOCK_IMAGES.map((image) => (
-          <ApiImage key={image.id} imageKey={image.id} alt={image.alt} />
+          <ApiImage
+            key={image.id}
+            imageKey={image.id}
+            alt={image.alt}
+            type={ImageType.Logo}
+          />
         ))}
       </>,
     );
@@ -40,7 +46,11 @@ describe("API Image component", () => {
   it("should render nothing for non-existing image", async () => {
     const alt = faker.lorem.sentence();
     const screen = renderWithProviders(
-      <ApiImage imageKey="non-existing-image" alt={alt} />,
+      <ApiImage
+        imageKey="non-existing-image"
+        alt={alt}
+        type={ImageType.Banner}
+      />,
     );
     expect(getLoadingIndicator()).toBeInTheDocument();
     await waitFor(
