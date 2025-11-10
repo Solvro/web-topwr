@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { FORM_ERROR_MESSAGES } from "@/config/constants";
+import { FORM_ERROR_MESSAGES, TOPIC_NAME_REGEX } from "@/config/constants";
 import {
   ChangeType,
   LinkType,
@@ -120,6 +120,36 @@ const GuideQuestionSchema = z.object({
   articleId: NumericIdSchema,
 });
 
+const MajorSchema = z.object({
+  name: RequiredStringSchema,
+  url: z.string().url().nullish(),
+  isEnglish: z.boolean().default(false),
+  studiesType: z.nativeEnum(StudiesType),
+  hasWeekendOption: z.boolean().default(false),
+  departmentId: NumericIdSchema,
+});
+
+const MilestonesSchema = z.object({
+  name: RequiredStringSchema,
+});
+
+const NotificationSchema = z.object({
+  notification: z.object({
+    title: RequiredStringSchema,
+    body: RequiredStringSchema,
+  }),
+  topics: z.array(RequiredStringSchema),
+});
+
+const NotificationTopicSchema = z.object({
+  topicName: RequiredStringSchema.regex(TOPIC_NAME_REGEX, {
+    message: FORM_ERROR_MESSAGES.INVALID_TOPIC_NAME,
+  }),
+  isActive: z.boolean().default(false),
+  deactivatedAt: z.string().datetime().nullish(),
+  description: z.string().nullish(),
+});
+
 const RoleSchema = z.object({
   name: RequiredStringSchema,
 });
@@ -158,19 +188,6 @@ const StudentOrganizationSchema = z.object({
   branch: z.nativeEnum(UniversityBranch),
 });
 
-const MajorSchema = z.object({
-  name: RequiredStringSchema,
-  url: z.string().url().nullish(),
-  isEnglish: z.boolean().default(false),
-  studiesType: z.nativeEnum(StudiesType),
-  hasWeekendOption: z.boolean().default(false),
-  departmentId: NumericIdSchema,
-});
-
-const MilestonesSchema = z.object({
-  name: RequiredStringSchema,
-});
-
 const VersionsSchema = z.object({
   name: RequiredStringSchema,
   description: z.string().nullish(),
@@ -198,12 +215,14 @@ export const RESOURCE_SCHEMAS = {
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.GuideAuthors]: GuideAuthorSchema,
   [Resource.GuideQuestions]: GuideQuestionSchema,
+  [Resource.Majors]: MajorSchema,
+  [Resource.Milestones]: MilestonesSchema,
+  [Resource.Notifications]: NotificationSchema,
+  [Resource.NotificationTopics]: NotificationTopicSchema,
   [Resource.Roles]: RoleSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
   [Resource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
   [Resource.StudentOrganizationTags]: StudentOrganizationTagSchema,
-  [Resource.Majors]: MajorSchema,
-  [Resource.Milestones]: MilestonesSchema,
   [Resource.Versions]: VersionsSchema,
   [Resource.VersionScreenshots]: VersionScreenshotsSchema,
 } satisfies Record<Resource, AppZodObject>;

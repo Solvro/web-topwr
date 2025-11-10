@@ -9,6 +9,27 @@ import type {
 import { GrammaticalGender, Resource } from "./enums";
 
 const REUSABLE_DECLENSIONS = {
+  category: {
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "kategoria",
+      genitive: "kategorii",
+      dative: "kategorii",
+      accusative: "kategorię",
+      instrumental: "kategorią",
+      locative: "kategorii",
+      vocative: "kategorio",
+    },
+    plural: {
+      nominative: "kategorie",
+      genitive: "kategorii",
+      dative: "kategoriom",
+      accusative: "kategorie",
+      instrumental: "kategoriami",
+      locative: "kategoriach",
+      vocative: "kategorie",
+    },
+  },
   link: {
     gender: GrammaticalGender.Masculine,
     singular: {
@@ -28,48 +49,6 @@ const REUSABLE_DECLENSIONS = {
       instrumental: "linkami",
       locative: "linkach",
       vocative: "linki",
-    },
-  },
-  version: {
-    gender: GrammaticalGender.Feminine,
-    singular: {
-      nominative: "wersja",
-      genitive: "wersji",
-      dative: "wersji",
-      accusative: "wersję",
-      instrumental: "wersją",
-      locative: "wersji",
-      vocative: "wersjo",
-    },
-    plural: {
-      nominative: "wersje",
-      genitive: "wersji",
-      dative: "wersjom",
-      accusative: "wersje",
-      instrumental: "wersjami",
-      locative: "wersjach",
-      vocative: "wersje",
-    },
-  },
-  shortDescription: {
-    gender: GrammaticalGender.Masculine,
-    singular: {
-      nominative: "krótki opis",
-      genitive: "krótkiego opisu",
-      dative: "krótkiemu opisowi",
-      accusative: "krótki opis",
-      instrumental: "krótkim opisem",
-      locative: "krótkim opisie",
-      vocative: "krótkim opisie",
-    },
-    plural: {
-      nominative: "krótkie opisy",
-      genitive: "krótkich opisów",
-      dative: "krótkim opisom",
-      accusative: "krótkie opisy",
-      instrumental: "krótkimi opisami",
-      locative: "krótkich opisach",
-      vocative: "krótkie opisy",
     },
   },
   screenshot: {
@@ -93,10 +72,53 @@ const REUSABLE_DECLENSIONS = {
       vocative: "zrzuty ekranu",
     },
   },
+  shortDescription: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "krótki opis",
+      genitive: "krótkiego opisu",
+      dative: "krótkiemu opisowi",
+      accusative: "krótki opis",
+      instrumental: "krótkim opisem",
+      locative: "krótkim opisie",
+      vocative: "krótkim opisie",
+    },
+    plural: {
+      nominative: "krótkie opisy",
+      genitive: "krótkich opisów",
+      dative: "krótkim opisom",
+      accusative: "krótkie opisy",
+      instrumental: "krótkimi opisami",
+      locative: "krótkich opisach",
+      vocative: "krótkie opisy",
+    },
+  },
+  version: {
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "wersja",
+      genitive: "wersji",
+      dative: "wersji",
+      accusative: "wersję",
+      instrumental: "wersją",
+      locative: "wersji",
+      vocative: "wersjo",
+    },
+    plural: {
+      nominative: "wersje",
+      genitive: "wersji",
+      dative: "wersjom",
+      accusative: "wersje",
+      instrumental: "wersjami",
+      locative: "wersjach",
+      vocative: "wersje",
+    },
+  },
 } satisfies Record<string, Pluralized<Declensions> & DeclensionData>;
 
 /** A dictionary of Polish language declensions of all resource names & other nouns, as well as their genders for use with determiners. */
 export const SIMPLE_NOUN_DECLENSIONS = {
+  ...REUSABLE_DECLENSIONS,
   [Resource.AboutUs]: {
     gender: GrammaticalGender.Neuter,
     singular: {
@@ -290,6 +312,56 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "pytania",
     },
   },
+  [Resource.Majors]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "kierunek",
+      genitive: "kierunku",
+      dative: "kierunkowi",
+      accusative: "kierunek",
+      instrumental: "kierunkiem",
+      locative: "kierunku",
+      vocative: "kierunku",
+    },
+    plural: {
+      nominative: "kierunki",
+      genitive: "kierunków",
+      dative: "kierunkom",
+      accusative: "kierunki",
+      instrumental: "kierunkami",
+      locative: "kierunkach",
+      vocative: "kierunki",
+    },
+  },
+  [Resource.Milestones]: {
+    ...REUSABLE_DECLENSIONS.version,
+    singular: {
+      ...REUSABLE_DECLENSIONS.version.singular,
+      nominative: `wersja w sekcji ${quoteText("o nas")}`,
+    },
+  },
+  [Resource.Notifications]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "powiadomienie",
+      genitive: "powiadomienia",
+      dative: "powiadomieniu",
+      accusative: "powiadomienie",
+      instrumental: "powiadomieniem",
+      locative: "powiadomieniu",
+      vocative: "powiadomienie",
+    },
+    plural: {
+      nominative: "powiadomienia",
+      genitive: "powiadomień",
+      dative: "powiadomieniom",
+      accusative: "powiadomienia",
+      instrumental: "powiadomieniami",
+      locative: "powiadomieniach",
+      vocative: "powiadomienia",
+    },
+  },
+  [Resource.NotificationTopics]: REUSABLE_DECLENSIONS.category,
   [Resource.Roles]: {
     gender: GrammaticalGender.Feminine,
     singular: {
@@ -352,34 +424,6 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       instrumental: "tagami",
       locative: "tagach",
       vocative: "tagi",
-    },
-  },
-  [Resource.Majors]: {
-    gender: GrammaticalGender.Masculine,
-    singular: {
-      nominative: "kierunek",
-      genitive: "kierunku",
-      dative: "kierunkowi",
-      accusative: "kierunek",
-      instrumental: "kierunkiem",
-      locative: "kierunku",
-      vocative: "kierunku",
-    },
-    plural: {
-      nominative: "kierunki",
-      genitive: "kierunków",
-      dative: "kierunkom",
-      accusative: "kierunki",
-      instrumental: "kierunkami",
-      locative: "kierunkach",
-      vocative: "kierunki",
-    },
-  },
-  [Resource.Milestones]: {
-    ...REUSABLE_DECLENSIONS.version,
-    singular: {
-      ...REUSABLE_DECLENSIONS.version.singular,
-      nominative: `wersja w sekcji ${quoteText("o nas")}`,
     },
   },
   [Resource.Versions]: {
@@ -488,7 +532,6 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "opisy",
     },
   },
-  shortDescription: REUSABLE_DECLENSIONS.shortDescription,
   shortDesc: REUSABLE_DECLENSIONS.shortDescription,
   id: {
     gender: GrammaticalGender.Masculine,
@@ -574,7 +617,6 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       vocative: "kody ze skrótem",
     },
   },
-  link: REUSABLE_DECLENSIONS.link,
 } satisfies RecordIntersection<
   Resource,
   string,
@@ -594,6 +636,13 @@ export const NOUN_PHRASE_TRANSFORMATIONS = {
   [Resource.AboutUsLinks]: {
     base: "link",
     transform: (base) => `${base} do sociali`,
+  },
+  [Resource.NotificationTopics]: {
+    base: "category",
+    transform: (base) => ({
+      singular: `${base} powiadomienia`,
+      plural: `${base} powiadomień`,
+    }),
   },
 } satisfies Record<
   string,

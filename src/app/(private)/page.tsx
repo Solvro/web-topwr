@@ -1,4 +1,5 @@
 import {
+  Bell,
   BookOpen,
   Building,
   Calendar,
@@ -51,6 +52,7 @@ export default async function Home() {
             icon={CircleQuestionMark}
             label="Sekcja o nas"
           />
+          <DashboardButton resource={Resource.Notifications} icon={Bell} />
         </div>
       </div>
     </div>

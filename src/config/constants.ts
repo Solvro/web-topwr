@@ -46,6 +46,8 @@ export const FORM_ERROR_MESSAGES = {
     "Niepoprawny kod wydziału. Musi zaczynać się od litery 'W' i zawierać 1-2 cyfry.",
   INVALID_DEPARTMENT_BETTER_CODE:
     "Niepoprawny kod wydziału. Musi zawierać tylko duże litery i zaczynać się od 'W'.",
+  INVALID_TOPIC_NAME:
+    "Niepoprawna nazwa powiadomienia. Dozwolone są tylko litery, cyfry oraz znaki - _ . ~ %",
 };
 
 // #region Sort filter constants
@@ -127,3 +129,6 @@ export const WEEKDAYS = ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"];
 export const DEFAULT_COLOR = "#ffffff";
 
 export const CALENDAR_MAX_EVENTS_PER_DAY = 5;
+
+/* Copied from https://github.com/Solvro/backend-topwr/blob/main/app/models/firebase_topic.ts */
+export const TOPIC_NAME_REGEX = /^[a-zA-Z0-9-_.~%]{1,900}$/;
