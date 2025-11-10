@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Space_Grotesk } from "next/font/google";
 
+import { Analytics } from "@/components/analytics";
 import { RootProviders } from "@/components/providers/root-providers";
 import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/config/env";
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: LayoutProps) {
             <Toaster position="top-center" />
             {children}
           </ThemeProvider>
+          <Analytics />
         </body>
       </RootProviders>
     </html>
