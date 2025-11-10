@@ -19,7 +19,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
-    "preflight": "npm run format && npm run lint && npm run typecheck && npm run test:unit && npm run build",
+    "preflight": "npm run types:check && npm run lint && npm run test:unit",
+    "preflight:build": "npm run preflight && npm run build",
     "prepare": "husky || true",
     "start": "next start",
     "test": "vitest",
@@ -27,7 +28,8 @@
     "test:e2e": "NODE_ENV=test playwright test",
     "test:e2e:prepare": "playwright install",
     "test:unit": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "types:check": "tsc --noEmit",
+    "types:generate": "next typegen"
   },
   "lint-staged": {
     "*": "prettier -w --ignore-unknown",
