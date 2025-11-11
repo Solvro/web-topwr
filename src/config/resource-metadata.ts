@@ -553,14 +553,11 @@ export const RESOURCE_METADATA = {
           topicName: { label: "Nazwa" },
           description: { label: "Opis" },
         },
-        checkboxInputs: {
-          isActive: { label: "Aktywna?" },
-        },
       },
       defaultValues: {
         topicName: "",
         description: null,
-        isActive: false,
+        isActive: true,
         deactivatedAt: null,
       },
     },

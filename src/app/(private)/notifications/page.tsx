@@ -12,6 +12,7 @@ export default function NotificationsPage() {
         resource={Resource.NotificationTopics}
         variant="outline"
         icon={BellPlus}
+        longLabel
       />
       <DashboardButton
         resource={Resource.Notifications}

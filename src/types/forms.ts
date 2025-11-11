@@ -18,11 +18,10 @@ export type SortFiltersFormValuesNarrowed = SortFiltersFormValues & {
   sortBy: DeclinableNoun | null | undefined;
 };
 
-/** Picks from the T only those fields which are assignable to U. */
-type KeysOfType<T extends z.ZodRawShape, U extends z.ZodTypeAny> = {
-  [K in keyof T]: BaseZodType<T[K]> extends U ? K : never;
-}[keyof T];
-
+/**
+ * Extracts the base Zod type by unwrapping Nullable, Default, and Optional wrappers.
+ * @example type Base = BaseZodType<z.ZodNullable<z.ZodString>> // yields ZodString
+ */
 type BaseZodType<T extends z.ZodTypeAny> = T extends
   | z.ZodNullable<infer U>
   | z.ZodDefault<infer U>
@@ -30,16 +29,43 @@ type BaseZodType<T extends z.ZodTypeAny> = T extends
   ? BaseZodType<U>
   : T;
 
-/** Extracts all path values of schema S, such that the schema type of the value at that path extends Y. */
+/**
+ * Resolves the Zod type located at path P in schema S, included recursively nested paths.
+ * @example type NotificationTitle = ResolvePath<ResourceSchema<Resource.Notifications>, "notification.title"> // yields ZodString
+ */
+type ResolvePath<
+  S extends AppZodObject,
+  P extends Path<z.infer<S>>,
+> = P extends `${infer K}.${infer V}`
+  ? K extends keyof S["shape"]
+    ? S["shape"][K] extends AppZodObject
+      ? V extends Path<z.infer<S["shape"][K]>>
+        ? ResolvePath<S["shape"][K], V>
+        : never
+      : never
+    : never
+  : P extends keyof S["shape"]
+    ? S["shape"][P]
+    : never;
+
+/**
+ * Extracts all path values of schema S, such that the schema type of the value at that path extends Y.
+ * @param S - Zod schema object to extract paths from
+ * @param Y - Zod type to filter paths by (defaults to ZodString)
+ * @example type StringPaths = TypedSchemaKey<ResourceSchema<Resource.Notifications>> // yields 'notification.title' | 'notification.body' | `topics.${number}`
+ * @example type BooleanPaths = TypedSchemaKey<ResourceSchema<Resource.StudentOrganizations>, z.ZodBoolean> // yields 'coverPreview' | 'isStrategic'
+ */
 type TypedSchemaKey<
   S extends AppZodObject,
   Y extends z.ZodTypeAny = z.ZodString,
 > = {
-  [K in Path<z.infer<S>>]: K extends KeysOfType<S["shape"], Y> ? K : never;
+  [P in Path<z.infer<S>>]: BaseZodType<ResolvePath<S, P>> extends Y ? P : never;
 }[Path<z.infer<S>>];
 
-/** Extracts all paths to the form values of T, such that the type of the value at that path extends Y.
- *
+/**
+ * Extracts all paths to the form values of T, such that the type of the value at that path extends Y.
+ * @param T - Resource to extract schema paths from
+ * @param Y - Zod type to filter paths by (defaults to ZodTypeAny)
  * @example type BooleanPaths = ResourceSchemaKey<Resource.StudentOrganizations, z.ZodBoolean> // yields 'isStrategic' | 'coverPreview' as those are the only boolean fields defined in the schema
  */
 export type ResourceSchemaKey<
