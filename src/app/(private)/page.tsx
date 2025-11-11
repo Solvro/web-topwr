@@ -24,10 +24,10 @@ export default async function Home() {
   }
 
   return (
-    <div className="container mx-auto flex h-full flex-col items-center space-y-8 p-4 sm:p-8 2xl:max-w-[1280px]">
-      <span className="mt-4 w-full text-2xl">
+    <div className="container mx-auto flex h-full flex-col items-center gap-8 p-4 sm:p-8">
+      <h1 className="mt-4 w-full text-2xl">
         Cześć, {getUserDisplayName(user)}!
-      </span>
+      </h1>
       <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
         <div className="col-span-full grid grid-cols-subgrid gap-4">
           <DashboardButton

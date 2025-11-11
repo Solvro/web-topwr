@@ -35,36 +35,37 @@ export function AbstractResourceListItem<T extends EditableResource>(
   return (
     <li
       ref={ref}
-      className="bg-accent text-accent-foreground grid grid-cols-[1fr_auto] items-center gap-x-1 rounded-xl p-4 max-sm:text-xs md:grid-cols-[1fr_2fr_auto] md:gap-x-4"
+      className="bg-accent text-accent-foreground rounded-xl p-4 marker:content-none max-sm:text-xs"
     >
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-1 sm:gap-2">
-          {orderable ? <DragHandle item={listItem} /> : null}
-          <Badge>{listItem.id}</Badge>
-        </div>
-        <span className="w-full font-medium text-balance md:text-center">
-          {listItem.name}
-        </span>
-      </div>
-      <span className="hidden truncate md:block">
-        {listItem.shortDescription == null ||
-        listItem.shortDescription.trim() === "" ? (
-          <p className="text-muted-foreground">Brak opisu</p>
-        ) : (
-          listItem.shortDescription
-        )}
-      </span>
-      <div className="space-x-0.5 sm:space-x-2">
-        <EditButton resource={resource} id={listItem.id} />
-
-        {isStudentOrganizationProps(props) ? (
-          <ToggleOrganizationStatusButton
-            id={Number(listItem.id)}
-            resource={resource}
-            organizationStatus={props.item.organizationStatus}
-          />
-        ) : null}
-      </div>
+      <article className="grid grid-cols-[1fr_auto] items-center gap-x-1 md:grid-cols-[1fr_2fr_auto] md:gap-x-4">
+        <header className="flex items-center gap-4">
+          <div className="flex items-center gap-1 sm:gap-2">
+            {orderable ? <DragHandle item={listItem} /> : null}
+            <Badge>{listItem.id}</Badge>
+          </div>
+          <h2 className="w-full font-medium text-balance md:text-center">
+            {listItem.name}
+          </h2>
+        </header>
+        <p className="hidden truncate md:block">
+          {listItem.shortDescription == null ||
+          listItem.shortDescription.trim() === "" ? (
+            <span className="text-muted-foreground">Brak opisu</span>
+          ) : (
+            listItem.shortDescription
+          )}
+        </p>
+        <footer className="flex gap-0.5 sm:gap-2">
+          <EditButton resource={resource} id={listItem.id} />
+          {isStudentOrganizationProps(props) ? (
+            <ToggleOrganizationStatusButton
+              id={Number(listItem.id)}
+              resource={resource}
+              organizationStatus={props.item.organizationStatus}
+            />
+          ) : null}
+        </footer>
+      </article>
     </li>
   );
 }
@@ -81,7 +82,7 @@ export function AbstractResourceListItems<T extends EditableResource>({
   ItemComponent?: ComponentType<ItemProps<T>>;
 }) {
   return (
-    <ul className="space-y-4">
+    <ul className="flex flex-col gap-4">
       {items.map((item) => (
         <ItemComponent
           key={String(item.id)}

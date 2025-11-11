@@ -3,10 +3,15 @@ import type { ResourceLayoutProps } from "@/types/components";
 
 import { AbstractResourceLayoutInternal } from "./internal";
 
-export function AbstractResourceLayout(props: ResourceLayoutProps) {
+export function AbstractResourceLayout({
+  children,
+  ...props
+}: ResourceLayoutProps) {
   return (
-    <Bouncer resource={props.resource}>
-      <AbstractResourceLayoutInternal {...props} />
+    <Bouncer {...props}>
+      <AbstractResourceLayoutInternal {...props}>
+        {children}
+      </AbstractResourceLayoutInternal>
     </Bouncer>
   );
 }

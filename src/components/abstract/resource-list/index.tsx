@@ -52,8 +52,8 @@ export async function AbstractResourceList<
   );
 
   return (
-    <div className="flex h-full flex-col gap-2">
-      <div className="relative w-fit">
+    <section className="flex h-full flex-col gap-2">
+      <header className="relative w-fit">
         <SortFiltersPopover
           sortableFields={sortableFields}
           filterDefinitions={filterDefinitions}
@@ -63,8 +63,8 @@ export async function AbstractResourceList<
           values={sortFilters.filters ?? []}
           label="Liczba zastosowanych filtrów"
         />
-      </div>
-      <div className="w-full grow basis-0 overflow-y-auto pr-2">
+      </header>
+      <div className="grow basis-0 overflow-y-auto pr-2">
         <InfiniteScroller
           resource={resource}
           initialData={firstPageData}
@@ -72,14 +72,14 @@ export async function AbstractResourceList<
           sortFilters={sortFilters}
         />
       </div>
-      <div className="mt-2 flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
+      <footer className="mt-2 flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
         <CreateButton resource={resource} />
         {parentResource == null ? (
           <BackToHomeButton chevronsIcon />
         ) : (
           <ReturnButton resource={parentResource} />
         )}
-      </div>
-    </div>
+      </footer>
+    </section>
   );
 }

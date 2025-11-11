@@ -69,7 +69,7 @@ export function InfiniteScroller<T extends EditableResource>({
   );
 
   return (
-    <>
+    <section className="flex flex-col gap-4">
       {isOrderableResource(resource) ? (
         <OrderableItemWrapper
           resource={resource}
@@ -78,19 +78,16 @@ export function InfiniteScroller<T extends EditableResource>({
       ) : (
         <AbstractResourceListItems items={flatData} resource={resource} />
       )}
-      <div className="mt-4 flex justify-center">
-        <Button
-          ref={ref}
-          onClick={() => void fetchNextPage()}
-          disabled={!hasNextPage}
-          loading={isFetchingNextPage}
-          variant="secondary"
-        >
-          {hasNextPage
-            ? "Załaduj więcej"
-            : "To już jest koniec, nie ma już nic!"}
-        </Button>
-      </div>
-    </>
+      <Button
+        ref={ref}
+        onClick={() => void fetchNextPage()}
+        disabled={!hasNextPage}
+        loading={isFetchingNextPage}
+        variant="secondary"
+        className="self-center"
+      >
+        {hasNextPage ? "Załaduj więcej" : "To już jest koniec, nie ma już nic!"}
+      </Button>
+    </section>
   );
 }
