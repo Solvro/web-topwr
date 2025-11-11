@@ -1,3 +1,5 @@
+import { SendHorizonal } from "lucide-react";
+
 import { getRoundedDate } from "@/lib/helpers/calendar";
 import type { ResourceMetadata } from "@/types/app";
 
@@ -538,6 +540,12 @@ export const RESOURCE_METADATA = {
           body: "",
         },
         topics: [],
+      },
+      submitConfiguration: {
+        create: {
+          submitLabel: "Wyślij",
+          submitIcon: SendHorizonal,
+        },
       },
     },
   },

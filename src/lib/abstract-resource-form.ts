@@ -40,7 +40,7 @@ export const isExistingResourceItem = <T extends Resource>(
 const BASE_EDIT_CONFIG = {
   method: "PATCH",
   submitLabel: "Zapisz",
-  SubmitIconComponent: Save,
+  submitIcon: Save,
 } as const;
 
 const getSingletonEditConfig = (resource: Resource) =>
@@ -75,7 +75,7 @@ const getCreateConfig = <T extends Resource>(resource: T) =>
     endpoint: "/",
     method: "POST",
     submitLabel: "Utwórz",
-    SubmitIconComponent: FilePlus2,
+    submitIcon: FilePlus2,
   }) as const;
 
 export const getMutationConfig = <T extends Resource>(
@@ -84,11 +84,16 @@ export const getMutationConfig = <T extends Resource>(
   relationContext: ArfRelationContextType<T> | null,
 ) => {
   const isEditing = isExistingResourceItem(resource, defaultValues);
+  const metadata = getResourceMetadata(resource);
+  const submitConfigurations = metadata.form.submitConfiguration;
   const parentConfig = isEditing
-    ? getResourceMetadata(resource).isSingleton === true
-      ? getSingletonEditConfig(resource)
-      : getMultiInstanceEditConfig(resource, defaultValues)
-    : getCreateConfig(resource);
+    ? {
+        ...(metadata.isSingleton === true
+          ? getSingletonEditConfig(resource)
+          : getMultiInstanceEditConfig(resource, defaultValues)),
+        ...submitConfigurations?.edit,
+      }
+    : { ...getCreateConfig(resource), ...submitConfigurations?.create };
   if (relationContext == null || isEditing) {
     // always fetch the resource directly if editing a related resource
     // e.g. PATCH /api/v1/student_organization_links

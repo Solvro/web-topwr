@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react";
 import type { Route } from "next";
 import type { z } from "zod";
 
@@ -130,6 +131,11 @@ export type ResourceDefaultValues<R extends Resource> =
   | ResourceFormValues<R>
   | ResourceDataWithRelations<R>;
 
+export type SubmitFormConfiguration = Readonly<{
+  submitLabel: string;
+  submitIcon: LucideIcon;
+}>;
+
 // Resource metadata
 export type ResourceMetadata<R extends Resource> = Readonly<{
   /** The name of the query param used to fetch this resource from the API, if this is the related resource in a 1-m:n relation. */
@@ -151,5 +157,10 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
     inputs: AbstractResourceFormInputs<R>;
     /** The default values to be used in the form for the resource. */
     defaultValues: ResourceFormValues<R>;
+    /** Submit button label and icon overrides. */
+    submitConfiguration?: {
+      edit?: SubmitFormConfiguration;
+      create?: SubmitFormConfiguration;
+    };
   };
 }>;

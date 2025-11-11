@@ -94,7 +94,7 @@ export function AbstractResourceFormClient<T extends Resource>({
     mutationKey,
     endpoint,
     submitLabel,
-    SubmitIconComponent,
+    submitIcon: SubmitIconComponent,
     ...mutationOptions
   } = getMutationConfig(resource, defaultValues, relationContext);
 
