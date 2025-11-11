@@ -3,12 +3,12 @@ import { Archive, ArchiveRestore } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { TOAST_MESSAGES } from "@/config/constants";
 import type { Resource } from "@/config/enums";
 import { OrganizationStatus } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { useRouter } from "@/hooks/use-router";
 import { fetchMutation } from "@/lib/fetch-utils";
+import { getToastMessages } from "@/lib/get-toast-messages";
 import { getKey, sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { ModifyResourceResponse } from "@/types/api";
@@ -67,7 +67,7 @@ export function ToggleOrganizationStatusButton({
               ? OrganizationStatus.Inactive
               : OrganizationStatus.Active,
           }),
-          TOAST_MESSAGES.object(declensions).toggleArchived(isActive),
+          getToastMessages.resource(resource).toggleArchived(isActive),
         );
       }}
     >

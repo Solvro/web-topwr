@@ -1,11 +1,8 @@
-import { getErrorMessage } from "@/lib/error-handling";
-import { toTitleCase } from "@/lib/helpers";
-import type { AuthState } from "@/types/api";
 import type {
   FormInputName,
   SortFiltersFormValuesNarrowed,
 } from "@/types/forms";
-import type { Declensions, DeclinableNoun } from "@/types/polish";
+import type { DeclinableNoun } from "@/types/polish";
 
 import {
   ApplicationError,
@@ -87,41 +84,6 @@ export const FILTER_TYPE_MAPPINGS: Partial<Record<FormInputName, FilterType>> =
   };
 
 // #endregion
-
-export const TOAST_MESSAGES = {
-  login: {
-    loading: "Trwa logowanie...",
-    success: (response: AuthState) =>
-      `Pomyślnie zalogowano jako ${response.user.fullName ?? response.user.email}!`,
-    error: (error: unknown) =>
-      getErrorMessage(error, "Nastąpił błąd podczas logowania"),
-  },
-  object: (declensions: Declensions) => ({
-    read: {
-      error: `Wystąpił nieoczekiwany błąd podczas wczytywania ${declensions.genitive}. Spróbuj ponownie później.`,
-    },
-    modify: {
-      loading: "Trwa przetwarzanie...",
-      success: "Pomyślnie zapisano!",
-      error: "Wystąpił błąd podczas zapisywania.",
-    },
-    delete: {
-      loading: `Trwa usuwanie ${declensions.genitive}...`,
-      success: `Pomyślnie usunięto ${declensions.accusative}!`,
-      error: `Wystąpił błąd podczas usuwania ${declensions.genitive}`,
-    },
-    upload: {
-      loading: `Trwa przesyłanie ${declensions.genitive}...`,
-      success: `Pomyślnie przesłano ${declensions.accusative}!`,
-      error: `Wystąpił błąd podczas przesyłania ${declensions.genitive}`,
-    },
-    toggleArchived: (isArchived: boolean) => ({
-      loading: `Trwa ${isArchived ? "archiwizowanie" : "przywracanie"} ${declensions.genitive}...`,
-      success: `${toTitleCase(declensions.nominative)} została ${isArchived ? "zarchiwizowana" : "przywrócona"}.`,
-      error: `Nie udało się ${isArchived ? "zarchiwizować" : "przywrócić"} ${declensions.genitive}`,
-    }),
-  }),
-};
 
 export const WEEKDAYS = ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"];
 

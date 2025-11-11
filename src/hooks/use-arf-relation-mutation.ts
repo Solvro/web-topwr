@@ -1,16 +1,15 @@
 import { toast } from "sonner";
 
-import { TOAST_MESSAGES } from "@/config/constants";
 import { RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { fetchMutation } from "@/lib/fetch-utils";
+import { getToastMessages } from "@/lib/get-toast-messages";
 import {
   camelToSnakeCase,
   getResourceQueryName,
   getResourceRelationDefinitions,
   sanitizeId,
 } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
 import type { ModifyResourceResponse } from "@/types/api";
 import type { Id, ResourceRelation, XToManyResource } from "@/types/app";
 
@@ -65,13 +64,11 @@ export const useArfRelationMutation = <T extends Resource>({
     },
   );
 
-  const declensions = declineNoun(resourceRelation);
-
   const mutateRelation = async (mutationOptions: MutateRelationOptions) =>
     toast
       .promise(
         relationMutation.mutateAsync(mutationOptions),
-        TOAST_MESSAGES.object(declensions).modify,
+        getToastMessages.resource(resourceRelation).modify,
       )
       .unwrap();
 

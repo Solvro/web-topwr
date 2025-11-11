@@ -21,11 +21,10 @@ import { CSS } from "@dnd-kit/utilities";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { TOAST_MESSAGES } from "@/config/constants";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
+import { getToastMessages } from "@/lib/get-toast-messages";
 import { sanitizeId } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
 import type { ModifyResourceResponse } from "@/types/api";
 import type {
   EditableResource,
@@ -134,10 +133,9 @@ export function OrderableItemWrapper<T extends OrderableResource>({
     const newItems = arrayMove(items, oldIndex, newIndex);
     setItems(newItems);
     const order = calculateNewSortValue(items, oldIndex, newIndex);
-    const declensions = declineNoun(resource);
     toast.promise(
       mutateAsync({ id: getActiveItem().id, order }),
-      TOAST_MESSAGES.object(declensions).modify,
+      getToastMessages.resource(resource).modify,
     );
   }
 
