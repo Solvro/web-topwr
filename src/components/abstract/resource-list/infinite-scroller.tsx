@@ -78,7 +78,7 @@ export function InfiniteScroller<T extends EditableResource>({
       ) : (
         <AbstractResourceListItems items={flatData} resource={resource} />
       )}
-      <div className="mt-4 flex justify-center">
+      <header className="mt-4 flex justify-center">
         <Button
           ref={ref}
           onClick={() => void fetchNextPage()}
@@ -90,7 +90,7 @@ export function InfiniteScroller<T extends EditableResource>({
             ? "Załaduj więcej"
             : "To już jest koniec, nie ma już nic!"}
         </Button>
-      </div>
+      </header>
     </>
   );
 }

@@ -52,11 +52,15 @@ export type ResourceLabelOptions = Readonly<{
   plural?: boolean;
 }>;
 
+export type RouteOrResource =
+  | { route: RoutePermission; resource?: never }
+  | { route?: never; resource: RoutableResource };
+
 export type ResourceLayoutProps = Readonly<
   LayoutProps & {
-    resource: RoutableResource;
     labelOptions?: ResourceLabelOptions;
-  }
+    header?: ReactNode;
+  } & RouteOrResource
 >;
 
 export type ResourceEditPageProps = Readonly<{

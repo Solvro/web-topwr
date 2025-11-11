@@ -1,7 +1,6 @@
 import { ApplicationError } from "@/config/enums";
 import { permit } from "@/lib/data-access";
-import type { RoutableResource } from "@/types/app";
-import type { LayoutProps, RoutePermission } from "@/types/components";
+import type { LayoutProps, RouteOrResource } from "@/types/components";
 
 import { ErrorMessage } from "./error-message";
 
@@ -13,11 +12,7 @@ export async function Bouncer({
   children,
   route,
   resource,
-}: LayoutProps &
-  (
-    | { route: RoutePermission; resource?: never }
-    | { route?: never; resource: RoutableResource }
-  )) {
+}: LayoutProps & RouteOrResource) {
   const routePermission = route ?? `/${resource}`;
   const hasPermission = await permit(routePermission);
 

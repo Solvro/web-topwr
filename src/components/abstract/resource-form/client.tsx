@@ -155,7 +155,7 @@ export function AbstractResourceFormClient<T extends Resource>({
             relatedResources={relatedResources}
             pivotResources={pivotResources}
           />
-          <div
+          <footer
             className={cn(
               "flex w-full flex-col flex-wrap items-center gap-x-4 gap-y-2",
               isEmbedded
@@ -210,7 +210,7 @@ export function AbstractResourceFormClient<T extends Resource>({
                 icon={ChevronLeft}
               />
             )}
-          </div>
+          </footer>
         </form>
       </Form>
     </ArfSheetProvider>

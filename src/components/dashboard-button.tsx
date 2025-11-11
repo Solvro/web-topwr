@@ -64,7 +64,7 @@ export function DashboardButton({
         }}
       >
         <Icon className="ml-2 size-5" />
-        <span
+        <h2
           className="sm:text-base md:text-xl"
           style={{
             viewTransitionName: useViewTransition
@@ -73,7 +73,7 @@ export function DashboardButton({
           }}
         >
           {toTitleCase(label)}
-        </span>
+        </h2>
       </Link>
     </Button>
   );
