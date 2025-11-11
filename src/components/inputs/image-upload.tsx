@@ -13,10 +13,10 @@ import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { TOAST_MESSAGES } from "@/config/constants";
 import type { Resource } from "@/config/enums";
 import { ImageType } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
+import { getToastMessages } from "@/lib/get-toast-messages";
 import { uploadFile } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { ResourceFormValues } from "@/types/app";
@@ -96,7 +96,7 @@ export function ImageUpload<T extends Resource>({
         }
         toast.promise(
           mutateAsync({ file }),
-          TOAST_MESSAGES.object(declensions).upload,
+          getToastMessages.object(declensions).upload,
         );
       }}
       className="hidden"

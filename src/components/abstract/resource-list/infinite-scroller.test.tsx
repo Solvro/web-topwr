@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import { Resource } from "@/config/enums";
-import { fetchResources } from "@/lib/helpers";
+import { fetchPaginatedResources } from "@/lib/helpers";
 import {
   getLoadingIndicator,
   renderWithProviders,
@@ -16,7 +16,7 @@ const resource = Resource.StudentOrganizations;
 
 async function renderInfiniteScroll() {
   const user = userEvent.setup();
-  const initialData = await fetchResources(resource);
+  const initialData = await fetchPaginatedResources(resource);
   const screen = renderWithProviders(
     <InfiniteScroller resource={resource} initialData={initialData} />,
   );

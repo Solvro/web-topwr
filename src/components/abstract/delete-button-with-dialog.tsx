@@ -18,12 +18,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { TOAST_MESSAGES } from "@/config/constants";
 import { DeclensionCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { useRouter } from "@/hooks/use-router";
 import { fetchMutation } from "@/lib/fetch-utils";
+import { getToastMessages } from "@/lib/get-toast-messages";
 import { getKey, quoteText, sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { MessageResponse } from "@/types/api";
@@ -67,15 +67,14 @@ export function DeleteButtonWithDialog({
     return response;
   });
 
-  const declensions = declineNoun(resource);
-
   function handleDelete() {
     toast.promise(
       mutateAsync(sanitizeId(id)),
-      TOAST_MESSAGES.object(declensions).delete,
+      getToastMessages.resource(resource).delete,
     );
   }
 
+  const declensions = declineNoun(resource);
   const label = `Usuń ${declensions.accusative}`;
 
   return (

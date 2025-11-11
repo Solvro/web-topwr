@@ -12,7 +12,6 @@ import { ArfSheetProvider } from "@/components/providers/arf-sheet-provider";
 import { ReturnButton } from "@/components/return-button";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { TOAST_MESSAGES } from "@/config/constants";
 import type { Resource } from "@/config/enums";
 import { useArfRelation } from "@/hooks/use-arf-relation";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
@@ -24,6 +23,7 @@ import {
   isExistingResourceItem,
 } from "@/lib/abstract-resource-form";
 import { fetchMutation } from "@/lib/fetch-utils";
+import { getToastMessages } from "@/lib/get-toast-messages";
 import { getResourceMetadata, getResourcePk, sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import { cn } from "@/lib/utils";
@@ -94,7 +94,7 @@ export function AbstractResourceFormClient<T extends Resource>({
     mutationKey,
     endpoint,
     submitLabel,
-    SubmitIconComponent,
+    submitIcon: SubmitIconComponent,
     ...mutationOptions
   } = getMutationConfig(resource, defaultValues, relationContext);
 
@@ -143,7 +143,7 @@ export function AbstractResourceFormClient<T extends Resource>({
           onSubmit={form.handleSubmit((values) =>
             toast.promise(
               mutateAsync(values),
-              TOAST_MESSAGES.object(declensions).modify,
+              getToastMessages.resource(resource).modify,
             ),
           )}
         >

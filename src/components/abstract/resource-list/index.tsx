@@ -2,11 +2,15 @@ import { Counter } from "@/components/counter";
 import { ReturnButton } from "@/components/return-button";
 import { getResourceFilterDefinitions } from "@/lib/filter-definitions";
 import {
-  fetchResources,
+  fetchPaginatedResources,
   parseFilterSearchParameters,
   parseSortParameter,
 } from "@/lib/helpers";
-import type { CreatableResource, RoutableResource } from "@/types/app";
+import type {
+  CreatableResource,
+  EditableResource,
+  RoutableResource,
+} from "@/types/app";
 import type { SearchParameters } from "@/types/components";
 import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 import type { ResourceDeclinableField } from "@/types/polish";
@@ -16,7 +20,9 @@ import { CreateButton } from "../create-button";
 import { InfiniteScroller } from "./infinite-scroller";
 import { SortFiltersPopover } from "./sort-filters/sort-filters-popover";
 
-export async function AbstractResourceList<T extends CreatableResource>({
+export async function AbstractResourceList<
+  T extends CreatableResource & EditableResource,
+>({
   resource,
   searchParams,
   sortableFields = [],
@@ -38,7 +44,7 @@ export async function AbstractResourceList<T extends CreatableResource>({
     filters: parseFilterSearchParameters(searchParameters, filterDefinitions),
   };
 
-  const firstPageData = await fetchResources(
+  const firstPageData = await fetchPaginatedResources(
     resource,
     1,
     sortFilters,

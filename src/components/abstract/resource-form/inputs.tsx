@@ -2,6 +2,7 @@
 
 import type { Control } from "react-hook-form";
 
+import { ArrayInput } from "@/components/inputs/array-input";
 import { CheckboxInput } from "@/components/inputs/checkbox-input";
 import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";
@@ -64,6 +65,7 @@ export function ArfInputs<T extends Resource>({
     colorInputs,
     selectInputs,
     checkboxInputs,
+    arrayInputs,
     relationInputs,
   } = metadata.form.inputs;
 
@@ -257,6 +259,20 @@ export function ArfInputs<T extends Resource>({
               />
             )}
           />
+          <Inputs
+            container
+            inputs={arrayInputs}
+            mapper={([name, { label, ...options }]) => (
+              <ArrayInput
+                key={name}
+                control={control}
+                name={name}
+                label={label}
+                inputOptions={options}
+                relatedResources={relatedResources}
+              />
+            )}
+          />
           {selectInputs == null && relationInputs == null ? null : (
             <div
               className={cn("grid grid-cols-1 items-start gap-4", {
@@ -277,25 +293,32 @@ export function ArfInputs<T extends Resource>({
               />
               <Inputs
                 inputs={relationInputs}
-                mapper={([resourceRelation, relationDefinition]) => (
-                  <RelationInput
-                    key={`${resource}-multiselect-${resourceRelation}`}
-                    resource={resource}
-                    // these type assertions are needed because the values are extracted from RESOURCE_METADATA
-                    // the types are inferred from the structure of RESOURCE_METADATA, so they are fundamentally equivalent
-                    resourceRelation={resourceRelation as ResourceRelation<T>}
-                    relationDefinition={
-                      relationDefinition as RelationDefinition<
-                        T,
-                        typeof resourceRelation
-                      >
-                    }
-                    relatedResources={relatedResources}
-                    pivotResources={pivotResources}
-                    control={control}
-                    defaultValues={defaultValues}
-                  />
-                )}
+                mapper={([
+                  untypedResourceRelation,
+                  untypedRelationDefinition,
+                ]) => {
+                  // these type assertions are needed because the values are extracted from RESOURCE_METADATA
+                  // the types are inferred from the structure of RESOURCE_METADATA, so they are fundamentally equivalent
+                  const resourceRelation =
+                    untypedResourceRelation as ResourceRelation<T>;
+                  const relationDefinition =
+                    untypedRelationDefinition as RelationDefinition<
+                      T,
+                      typeof resourceRelation
+                    >;
+                  return (
+                    <RelationInput
+                      key={`${resource}-multiselect-${resourceRelation}`}
+                      resource={resource}
+                      resourceRelation={resourceRelation}
+                      relationDefinition={relationDefinition}
+                      relatedResources={relatedResources}
+                      pivotResources={pivotResources}
+                      control={control}
+                      defaultValues={defaultValues}
+                    />
+                  );
+                }}
               />
             </div>
           )}

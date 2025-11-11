@@ -6,7 +6,9 @@ import type { ROUTE_PERMISSIONS } from "@/config/route-permissions";
 
 import type {
   Id,
+  RelatedResource,
   ResourceDataType,
+  ResourceDataWithRelations,
   ResourceRelation,
   RoutableResource,
 } from "./app";
@@ -89,7 +91,9 @@ export type ExistingImages<T extends Resource> = Partial<
   Record<ResourceSchemaKey<T, z.ZodString>, ReactNode>
 >;
 export type ResourceRelations<T extends Resource> = {
-  [L in ResourceRelation<T>]: ResourceDataType<L>[];
+  [L in RelatedResource<T>]:
+    | ResourceDataType<L>[]
+    | ResourceDataWithRelations<L>[];
 };
 
 export type RoutePermission = keyof typeof ROUTE_PERMISSIONS;

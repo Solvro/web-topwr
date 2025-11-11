@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react";
 import type { Route } from "next";
 import type { z } from "zod";
 
@@ -63,6 +64,18 @@ export type ResourceRelation<T extends Resource> = {
     ? L
     : never;
 }[T];
+/** For a given resource `T`, this type returns the union of all resources which it uses in its array input fields. */
+export type ArrayResources<T extends Resource> = {
+  [R in Resource]: SpecificResourceMetadata<R>["form"]["inputs"] extends {
+    arrayInputs: Record<string, { itemsResource: infer L extends Resource }>;
+  }
+    ? L
+    : never;
+}[T];
+/** The union of all types which need to be prefetched when fetching this resource's data. */
+export type RelatedResource<T extends Resource> =
+  | ResourceRelation<T>
+  | ArrayResources<T>;
 /** For a given resource `T`, this type returns the union of all resources which are used as a pivot resource between `T` and `ResourceRelation<T>`. */
 export type ResourcePivotRelation<T extends Resource> = {
   [R in Resource]: SpecificResourceMetadata<R>["form"]["inputs"] extends {
@@ -130,6 +143,11 @@ export type ResourceDefaultValues<R extends Resource> =
   | ResourceFormValues<R>
   | ResourceDataWithRelations<R>;
 
+export type SubmitFormConfiguration = Readonly<{
+  submitLabel: string;
+  submitIcon: LucideIcon;
+}>;
+
 // Resource metadata
 export type ResourceMetadata<R extends Resource> = Readonly<{
   /** The name of the query param used to fetch this resource from the API, if this is the related resource in a 1-m:n relation. */
@@ -151,5 +169,10 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
     inputs: AbstractResourceFormInputs<R>;
     /** The default values to be used in the form for the resource. */
     defaultValues: ResourceFormValues<R>;
+    /** Submit button label and icon overrides. */
+    submitConfiguration?: {
+      edit?: SubmitFormConfiguration;
+      create?: SubmitFormConfiguration;
+    };
   };
 }>;

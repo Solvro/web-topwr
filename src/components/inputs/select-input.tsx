@@ -39,7 +39,10 @@ export function SelectInput<T extends Resource>({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <Select
-            value={isUnsetEnumField(field.value) ? "" : String(field.value)}
+            value={
+              // TODO: infer the field value type from the form schema limiting it to schema keys that correspond to enums
+              isUnsetEnumField(field.value) ? "" : String(field.value as number)
+            }
             onValueChange={(value) => {
               field.onChange(tryParseNumber(value));
             }}

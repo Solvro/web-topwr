@@ -1,11 +1,8 @@
-import { getErrorMessage } from "@/lib/error-handling";
-import { toTitleCase } from "@/lib/helpers";
-import type { AuthState } from "@/types/api";
 import type {
   FormInputName,
   SortFiltersFormValuesNarrowed,
 } from "@/types/forms";
-import type { Declensions, DeclinableNoun } from "@/types/polish";
+import type { DeclinableNoun } from "@/types/polish";
 
 import {
   ApplicationError,
@@ -46,6 +43,8 @@ export const FORM_ERROR_MESSAGES = {
     "Niepoprawny kod wydziału. Musi zaczynać się od litery 'W' i zawierać 1-2 cyfry.",
   INVALID_DEPARTMENT_BETTER_CODE:
     "Niepoprawny kod wydziału. Musi zawierać tylko duże litery i zaczynać się od 'W'.",
+  INVALID_TOPIC_NAME:
+    "Niepoprawna nazwa. Dozwolone są tylko litery, cyfry oraz znaki - _ . ~ %",
 };
 
 // #region Sort filter constants
@@ -86,44 +85,12 @@ export const FILTER_TYPE_MAPPINGS: Partial<Record<FormInputName, FilterType>> =
 
 // #endregion
 
-export const TOAST_MESSAGES = {
-  login: {
-    loading: "Trwa logowanie...",
-    success: (response: AuthState) =>
-      `Pomyślnie zalogowano jako ${response.user.fullName ?? response.user.email}!`,
-    error: (error: unknown) =>
-      getErrorMessage(error, "Nastąpił błąd podczas logowania"),
-  },
-  object: (declensions: Declensions) => ({
-    read: {
-      error: `Wystąpił nieoczekiwany błąd podczas wczytywania ${declensions.genitive}. Spróbuj ponownie później.`,
-    },
-    modify: {
-      loading: "Trwa przetwarzanie...",
-      success: "Pomyślnie zapisano!",
-      error: "Wystąpił błąd podczas zapisywania.",
-    },
-    delete: {
-      loading: `Trwa usuwanie ${declensions.genitive}...`,
-      success: `Pomyślnie usunięto ${declensions.accusative}!`,
-      error: `Wystąpił błąd podczas usuwania ${declensions.genitive}`,
-    },
-    upload: {
-      loading: `Trwa przesyłanie ${declensions.genitive}...`,
-      success: `Pomyślnie przesłano ${declensions.accusative}!`,
-      error: `Wystąpił błąd podczas przesyłania ${declensions.genitive}`,
-    },
-    toggleArchived: (isArchived: boolean) => ({
-      loading: `Trwa ${isArchived ? "archiwizowanie" : "przywracanie"} ${declensions.genitive}...`,
-      success: `${toTitleCase(declensions.nominative)} została ${isArchived ? "zarchiwizowana" : "przywrócona"}.`,
-      error: `Nie udało się ${isArchived ? "zarchiwizować" : "przywrócić"} ${declensions.genitive}`,
-    }),
-  }),
-};
-
 export const WEEKDAYS = ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"];
 
 /** Used as the initially-selected color in the color picker input. */
 export const DEFAULT_COLOR = "#ffffff";
 
 export const CALENDAR_MAX_EVENTS_PER_DAY = 5;
+
+/* Copied from https://github.com/Solvro/backend-topwr/blob/main/app/models/firebase_topic.ts */
+export const TOPIC_NAME_REGEX = /^[a-zA-Z0-9-_.~%]{1,900}$/;

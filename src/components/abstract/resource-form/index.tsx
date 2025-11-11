@@ -4,53 +4,60 @@ import { ApiImage } from "@/components/api-image/server";
 import { RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { fetchPivotResources } from "@/lib/abstract-resource-form";
-import { fetchQuery } from "@/lib/fetch-utils";
 import {
+  fetchResources,
+  getResourceArrayInputResources,
   getResourceMetadata,
   getResourceRelationDefinitions,
   tryParseNumber,
   typedEntries,
   typedFromEntries,
 } from "@/lib/helpers";
-import type {
-  ResourceDataType,
-  ResourceDefaultValues,
-  ResourceRelation,
-} from "@/types/app";
+import type { ArrayResources, ResourceDefaultValues } from "@/types/app";
 import type {
   ExistingImages,
   ResourceCreatePageProps,
   ResourceFormProps,
   ResourceRelations,
 } from "@/types/components";
+import type { ValueOf } from "@/types/helpers";
 
 import { AbstractResourceFormClient } from "./client";
 
-type LabelledRelationData<T extends ResourceRelation<Resource>> = [
-  T,
-  ResourceDataType<T>[],
+type LabelledRelationData<T extends Resource> = [
+  keyof ResourceRelations<T>,
+  ValueOf<ResourceRelations<T>>,
 ];
 
 async function fetchRelatedResources<T extends Resource>(
   resource: T,
 ): Promise<ResourceRelations<T>> {
-  const responses = await Promise.all(
-    typedEntries(getResourceRelationDefinitions(resource)).map(
-      async ([relation, relationDefinition]) =>
-        relationDefinition.type === RelationType.OneToMany
-          ? []
-          : [
-              [
-                relation,
-                await fetchQuery<{ data: ResourceDataType<typeof relation>[] }>(
-                  "",
-                  { resource: relation, includeRelations: true },
-                ).then(({ data }) => data),
-              ] as LabelledRelationData<ResourceRelation<T>>,
-            ],
-    ),
+  const arrayInputResources = typedEntries(
+    getResourceArrayInputResources(resource),
+  ).map(async ([_field, inputOptions]) => [
+    [
+      inputOptions.itemsResource as ArrayResources<T>,
+      await fetchResources(inputOptions.itemsResource),
+    ] as LabelledRelationData<T>,
+  ]);
+  const relationDefinitionResourcePromises = typedEntries(
+    getResourceRelationDefinitions(resource),
+  ).map(async ([relation, relationDefinition]) =>
+    relationDefinition.type === RelationType.OneToMany
+      ? []
+      : [
+          [
+            relation,
+            await fetchResources(relation, true),
+          ] as LabelledRelationData<T>,
+        ],
   );
-  return typedFromEntries<ResourceRelations<T>>(responses.flat());
+  const responses = await Promise.all([
+    ...arrayInputResources,
+    ...relationDefinitionResourcePromises,
+  ]);
+  const labelledRelationData = responses.flat();
+  return typedFromEntries<ResourceRelations<T>>(labelledRelationData);
 }
 
 export async function AbstractResourceForm<T extends Resource>({

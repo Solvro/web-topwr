@@ -6,7 +6,7 @@ import {
   UsersRound,
 } from "lucide-react";
 
-import { BackToHomeButton } from "@/components/abstract/back-to-home-button";
+import { AbstractResourceGroup } from "@/components/abstract/resource-group";
 import { DashboardButton } from "@/components/dashboard-button";
 import { Resource } from "@/config/enums";
 import { getManagingResourceLabel } from "@/lib/helpers";
@@ -14,7 +14,7 @@ import type { ResourcePageProps } from "@/types/components";
 
 export default function AboutUsPage(_props: ResourcePageProps) {
   return (
-    <div className="flex h-full flex-col items-start gap-4 sm:pt-4 lg:pt-16">
+    <AbstractResourceGroup>
       <DashboardButton
         resource={Resource.AboutUs}
         icon={Settings}
@@ -48,7 +48,6 @@ export default function AboutUsPage(_props: ResourcePageProps) {
         longLabel
         variant="outline"
       />
-      <BackToHomeButton className="mt-auto" chevronsIcon />
-    </div>
+    </AbstractResourceGroup>
   );
 }

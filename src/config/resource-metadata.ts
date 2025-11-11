@@ -1,3 +1,5 @@
+import { SendHorizonal } from "lucide-react";
+
 import { getRoundedDate } from "@/lib/helpers/calendar";
 import type { ResourceMetadata } from "@/types/app";
 
@@ -458,6 +460,123 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.Majors]: {
+    apiPath: "fields_of_study",
+    queryName: "fieldsOfStudy",
+    itemMapper: (item) => ({
+      name: `${item.name} (${SELECT_OPTION_LABELS.MAJORS.STUDIES_TYPE[item.studiesType]})`,
+      shortDescription: item.url,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa kierunku" },
+          url: { label: "URL kierunku" },
+        },
+        selectInputs: {
+          studiesType: {
+            label: "Typ studiów",
+            optionEnum: StudiesType,
+            optionLabels: SELECT_OPTION_LABELS.MAJORS.STUDIES_TYPE,
+          },
+        },
+        checkboxInputs: {
+          isEnglish: { label: "Zajęcia w j. angielskim" },
+          hasWeekendOption: { label: "Możliwość studiów weekendowych" },
+        },
+      },
+      defaultValues: {
+        name: "",
+        url: null,
+        isEnglish: false,
+        studiesType: StudiesType.FirstDegree,
+        hasWeekendOption: false,
+        departmentId: -1,
+      },
+    },
+  },
+  [Resource.Milestones]: {
+    queryName: "milestones",
+    apiPath: "milestones",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: "",
+    }),
+    form: {
+      inputs: {
+        textInputs: { name: { label: "Nazwa" } },
+        relationInputs: {
+          [Resource.Contributors]: {
+            type: RelationType.ManyToMany,
+            // TODO: support other roles
+            pivotData: {
+              field: "role_id",
+              relatedResource: Resource.Roles,
+            },
+          },
+        },
+      },
+      defaultValues: {
+        name: "",
+      },
+    },
+  },
+  [Resource.Notifications]: {
+    apiPath: "firebase/broadcast",
+    itemMapper: (item) => ({
+      name: item.notification.title,
+      shortDescription: item.notification.body,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          "notification.title": { label: "Tytuł powiadomienia" },
+          "notification.body": { label: "Treść powiadomienia" },
+        },
+        arrayInputs: {
+          // TODO: uncomment this when GET /firebase/topics is made consistent with other list endpoints
+          // topics: {
+          //   label: "Kategorie",
+          //   itemsResource: Resource.NotificationTopics,
+          // },
+        },
+      },
+      defaultValues: {
+        notification: {
+          title: "",
+          body: "",
+        },
+        topics: [],
+      },
+      submitConfiguration: {
+        create: {
+          submitLabel: "Wyślij",
+          submitIcon: SendHorizonal,
+        },
+      },
+    },
+  },
+  [Resource.NotificationTopics]: {
+    apiPath: "firebase/topic",
+    itemMapper: (item) => ({
+      name: item.topicName,
+      shortDescription: item.description,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          topicName: { label: "Nazwa" },
+          description: { label: "Opis" },
+        },
+      },
+      defaultValues: {
+        topicName: "",
+        description: null,
+        isActive: true,
+        deactivatedAt: null,
+      },
+    },
+  },
   [Resource.Roles]: {
     queryName: "roles",
     apiPath: "roles",
@@ -593,67 +712,6 @@ export const RESOURCE_METADATA = {
       },
       defaultValues: {
         tag: "",
-      },
-    },
-  },
-  [Resource.Majors]: {
-    apiPath: "fields_of_study",
-    queryName: "fieldsOfStudy",
-    itemMapper: (item) => ({
-      name: `${item.name} (${SELECT_OPTION_LABELS.MAJORS.STUDIES_TYPE[item.studiesType]})`,
-      shortDescription: item.url,
-    }),
-    form: {
-      inputs: {
-        textInputs: {
-          name: { label: "Nazwa kierunku" },
-          url: { label: "URL kierunku" },
-        },
-        selectInputs: {
-          studiesType: {
-            label: "Typ studiów",
-            optionEnum: StudiesType,
-            optionLabels: SELECT_OPTION_LABELS.MAJORS.STUDIES_TYPE,
-          },
-        },
-        checkboxInputs: {
-          isEnglish: { label: "Zajęcia w j. angielskim" },
-          hasWeekendOption: { label: "Możliwość studiów weekendowych" },
-        },
-      },
-      defaultValues: {
-        name: "",
-        url: null,
-        isEnglish: false,
-        studiesType: StudiesType.FirstDegree,
-        hasWeekendOption: false,
-        departmentId: -1,
-      },
-    },
-  },
-  [Resource.Milestones]: {
-    queryName: "milestones",
-    apiPath: "milestones",
-    itemMapper: (item) => ({
-      name: item.name,
-      shortDescription: "",
-    }),
-    form: {
-      inputs: {
-        textInputs: { name: { label: "Nazwa" } },
-        relationInputs: {
-          [Resource.Contributors]: {
-            type: RelationType.ManyToMany,
-            // TODO: support other roles
-            pivotData: {
-              field: "role_id",
-              relatedResource: Resource.Roles,
-            },
-          },
-        },
-      },
-      defaultValues: {
-        name: "",
       },
     },
   },

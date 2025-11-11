@@ -9,7 +9,9 @@ import { fetchMutation, fetchQuery } from "@/lib/fetch-utils";
 import type {
   GetResourcesResponse,
   GetResourcesResponsePaginated,
+  GetResourcesWithRelationsResponse,
 } from "@/types/api";
+import type { ResourceDataType, ResourceDataWithRelations } from "@/types/app";
 import type { FilterDefinitions } from "@/types/components";
 import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 
@@ -68,7 +70,26 @@ export async function uploadFile({
   return { response, uuid, fileExtension };
 }
 
-export async function fetchResources<T extends Resource, P extends number>(
+export async function fetchResources<
+  T extends Resource,
+  B extends boolean = false,
+>(
+  resource: T,
+  includeRelations: B = false as B,
+): Promise<
+  B extends true ? ResourceDataWithRelations<T>[] : ResourceDataType<T>[]
+> {
+  const result = await fetchQuery<GetResourcesWithRelationsResponse<T>>("", {
+    resource,
+    includeRelations,
+  });
+  return result.data;
+}
+
+export async function fetchPaginatedResources<
+  T extends Resource,
+  P extends number,
+>(
   resource: T,
   page: P = 1 as P,
   {

@@ -17,9 +17,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { TOAST_MESSAGES } from "@/config/constants";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "@/hooks/use-router";
+import { getToastMessages } from "@/lib/get-toast-messages";
 import { LoginSchema } from "@/schemas";
 import type { LoginFormValues } from "@/types/forms";
 
@@ -48,7 +48,7 @@ export function LoginForm() {
       <form
         noValidate
         onSubmit={form.handleSubmit((data) =>
-          toast.promise(mutateAsync(data), TOAST_MESSAGES.login),
+          toast.promise(mutateAsync(data), getToastMessages.login),
         )}
         className="bg-background w-full space-y-4 rounded-xl px-6 py-8"
       >
