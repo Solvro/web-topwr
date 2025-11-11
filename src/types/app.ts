@@ -64,6 +64,18 @@ export type ResourceRelation<T extends Resource> = {
     ? L
     : never;
 }[T];
+/** For a given resource `T`, this type returns the union of all resources which it uses in its array input fields. */
+export type ArrayResources<T extends Resource> = {
+  [R in Resource]: SpecificResourceMetadata<R>["form"]["inputs"] extends {
+    arrayInputs: Record<string, { itemsResource: infer L extends Resource }>;
+  }
+    ? L
+    : never;
+}[T];
+/** The union of all types which need to be prefetched when fetching this resource's data. */
+export type RelatedResource<T extends Resource> =
+  | ResourceRelation<T>
+  | ArrayResources<T>;
 /** For a given resource `T`, this type returns the union of all resources which are used as a pivot resource between `T` and `ResourceRelation<T>`. */
 export type ResourcePivotRelation<T extends Resource> = {
   [R in Resource]: SpecificResourceMetadata<R>["form"]["inputs"] extends {

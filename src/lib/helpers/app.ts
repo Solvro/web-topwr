@@ -14,7 +14,11 @@ import type {
   XToManyResource,
 } from "@/types/app";
 import type { ResourceLabelOptions } from "@/types/components";
-import type { ResourceSchemaKey } from "@/types/forms";
+import type {
+  ArrayInputField,
+  ArrayInputOptions,
+  ResourceSchemaKey,
+} from "@/types/forms";
 
 import { sanitizeId } from "./transformations";
 import { typedKeys } from "./typescript";
@@ -49,6 +53,14 @@ export const getResourceRelationDefinitions = <R extends Resource>(
   (getResourceMetadata(resource).form.inputs.relationInputs ?? {}) as {
     [L in ResourceRelation<R>]: RelationDefinition<R, L>;
   };
+
+export const getResourceArrayInputResources = <R extends Resource>(
+  resource: R,
+) =>
+  (getResourceMetadata(resource).form.inputs.arrayInputs ?? {}) as Record<
+    ArrayInputField<R>,
+    ArrayInputOptions
+  >;
 
 /**
  * Returns the query name for a many-to-many resource, typed as definite.

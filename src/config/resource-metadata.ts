@@ -533,6 +533,13 @@ export const RESOURCE_METADATA = {
           "notification.title": { label: "Tytuł powiadomienia" },
           "notification.body": { label: "Treść powiadomienia" },
         },
+        arrayInputs: {
+          // TODO: uncomment this when GET /firebase/topics is made consistent with other list endpoints
+          // topics: {
+          //   label: "Kategorie",
+          //   itemsResource: Resource.NotificationTopics,
+          // },
+        },
       },
       defaultValues: {
         notification: {

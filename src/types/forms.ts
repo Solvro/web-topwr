@@ -1,4 +1,4 @@
-import type { Path } from "react-hook-form";
+import type { ArrayPath, Path } from "react-hook-form";
 import type { z } from "zod";
 
 import type { ImageType, Resource } from "@/config/enums";
@@ -8,7 +8,12 @@ import type {
   SortFiltersSchema,
 } from "@/schemas";
 
-import type { AppZodObject, RelationDefinitions, ResourceSchema } from "./app";
+import type {
+  AppZodObject,
+  RelationDefinitions,
+  ResourceFormValues,
+  ResourceSchema,
+} from "./app";
 import type { DeclinableNoun } from "./polish";
 
 export type LoginFormValues = z.infer<typeof LoginSchema>;
@@ -90,11 +95,25 @@ export interface SelectInputOptions<
   optionLabels: Record<Y, string>;
 }
 
-export type FormSelectInput<T extends Resource> = FormInput<
+type FormSelectInputs<T extends Resource> = FormInput<
   T,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   z.ZodNativeEnum<any> | z.ZodEnum<any>,
   SelectInputOptions
+>;
+
+export type ArrayInputField<T extends Resource> = ArrayPath<
+  ResourceFormValues<T>
+> &
+  ResourceSchemaKey<T, z.ZodArray<z.ZodString>>;
+
+// this can be extended to support other item types in the future
+export interface ArrayInputOptions {
+  itemsResource: Resource;
+}
+
+type ArrayInputs<T extends Resource> = Partial<
+  Record<ArrayInputField<T>, FormInputBase & ArrayInputOptions>
 >;
 
 export interface AbstractResourceFormInputs<T extends Resource> {
@@ -113,9 +132,11 @@ export interface AbstractResourceFormInputs<T extends Resource> {
   /** Color picker input fields for HEX string fields. */
   colorInputs?: FormInput<T>;
   /** Select input fields for dropdowns. */
-  selectInputs?: FormSelectInput<T>;
+  selectInputs?: FormSelectInputs<T>;
   /** Checkbox input fields for boolean values. */
   checkboxInputs?: FormInput<T, z.ZodBoolean>;
+  /** Multiselect input boxes for (non-relation) array fields. */
+  arrayInputs?: ArrayInputs<T>;
   /** Multiselect input boxes for related resources. */
   relationInputs?: RelationDefinitions<T>;
 }

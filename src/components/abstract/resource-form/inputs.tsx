@@ -2,6 +2,7 @@
 
 import type { Control } from "react-hook-form";
 
+import { ArrayInput } from "@/components/inputs/array-input";
 import { CheckboxInput } from "@/components/inputs/checkbox-input";
 import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";
@@ -64,6 +65,7 @@ export function ArfInputs<T extends Resource>({
     colorInputs,
     selectInputs,
     checkboxInputs,
+    arrayInputs,
     relationInputs,
   } = metadata.form.inputs;
 
@@ -254,6 +256,20 @@ export function ArfInputs<T extends Resource>({
                     onChange={field.onChange}
                   />
                 )}
+              />
+            )}
+          />
+          <Inputs
+            container
+            inputs={arrayInputs}
+            mapper={([name, { label, ...options }]) => (
+              <ArrayInput
+                key={name}
+                control={control}
+                name={name}
+                label={label}
+                inputOptions={options}
+                relatedResources={relatedResources}
               />
             )}
           />
