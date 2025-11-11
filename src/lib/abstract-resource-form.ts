@@ -177,9 +177,9 @@ export const fetchPivotResources = async <T extends Resource>(
       ) {
         return [];
       }
-      const resource = definition.pivotData.relatedResource;
-      const response = await fetchResources(resource, -1);
-      const data = response.data as ResourceDataType<typeof resource>[];
+      const resource = definition.pivotData
+        .relatedResource as ResourcePivotRelation<T>;
+      const data = await fetchResources(resource);
       return [
         [resource, data] satisfies [
           typeof resource,
@@ -188,9 +188,6 @@ export const fetchPivotResources = async <T extends Resource>(
       ];
     }),
   );
-  const entries = responses.flat() as [
-    ResourcePivotRelation<T>,
-    ResourceDataType<ResourcePivotRelation<T>>[],
-  ][];
+  const entries = responses.flat();
   return typedFromEntries<ResourcePivotRelationData<T>>(entries);
 };

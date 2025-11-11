@@ -2,7 +2,7 @@ import { Counter } from "@/components/counter";
 import { ReturnButton } from "@/components/return-button";
 import { getResourceFilterDefinitions } from "@/lib/filter-definitions";
 import {
-  fetchResources,
+  fetchPaginatedResources,
   parseFilterSearchParameters,
   parseSortParameter,
 } from "@/lib/helpers";
@@ -44,7 +44,7 @@ export async function AbstractResourceList<
     filters: parseFilterSearchParameters(searchParameters, filterDefinitions),
   };
 
-  const firstPageData = await fetchResources(
+  const firstPageData = await fetchPaginatedResources(
     resource,
     1,
     sortFilters,

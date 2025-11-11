@@ -5,7 +5,11 @@ import { useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { Button } from "@/components/ui/button";
-import { fetchResources, getKey, isOrderableResource } from "@/lib/helpers";
+import {
+  fetchPaginatedResources,
+  getKey,
+  isOrderableResource,
+} from "@/lib/helpers";
 import type { GetResourcesResponsePaginated } from "@/types/api";
 import type {
   EditableResource,
@@ -39,7 +43,12 @@ export function InfiniteScroller<T extends EditableResource>({
         filterDefinitions,
       ],
       queryFn: async ({ pageParam }) =>
-        fetchResources(resource, pageParam, sortFilters, filterDefinitions),
+        fetchPaginatedResources(
+          resource,
+          pageParam,
+          sortFilters,
+          filterDefinitions,
+        ),
       initialPageParam: 1,
       getPreviousPageParam: ({ meta }) =>
         meta.currentPage > meta.firstPage ? meta.currentPage - 1 : undefined,

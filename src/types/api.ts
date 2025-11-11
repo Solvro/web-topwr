@@ -106,6 +106,10 @@ export interface GetResourcesResponse<T extends Resource> {
   data: ResourceDataType<T>[];
 }
 
+export interface GetResourcesWithRelationsResponse<T extends Resource> {
+  data: ResourceDataWithRelations<T>[];
+}
+
 export interface GetResourcesResponsePaginated<T extends Resource> {
   data: ResourceDataType<T>[];
   meta: PaginationMetadata;

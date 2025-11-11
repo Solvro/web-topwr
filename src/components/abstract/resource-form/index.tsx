@@ -4,8 +4,8 @@ import { ApiImage } from "@/components/api-image/server";
 import { RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { fetchPivotResources } from "@/lib/abstract-resource-form";
-import { fetchQuery } from "@/lib/fetch-utils";
 import {
+  fetchResources,
   getResourceArrayInputResources,
   getResourceMetadata,
   getResourceRelationDefinitions,
@@ -13,7 +13,6 @@ import {
   typedEntries,
   typedFromEntries,
 } from "@/lib/helpers";
-import type { GetResourcesResponse } from "@/types/api";
 import type { ArrayResources, ResourceDefaultValues } from "@/types/app";
 import type {
   ExistingImages,
@@ -38,10 +37,7 @@ async function fetchRelatedResources<T extends Resource>(
   ).map(async ([_field, inputOptions]) => [
     [
       inputOptions.itemsResource as ArrayResources<T>,
-      await fetchQuery<GetResourcesResponse<typeof inputOptions.itemsResource>>(
-        "",
-        { resource: inputOptions.itemsResource },
-      ).then(({ data }) => data),
+      await fetchResources(inputOptions.itemsResource),
     ] as LabelledRelationData<T>,
   ]);
   const relationDefinitionResourcePromises = typedEntries(
@@ -52,10 +48,7 @@ async function fetchRelatedResources<T extends Resource>(
       : [
           [
             relation,
-            await fetchQuery<GetResourcesResponse<typeof relation>>("", {
-              resource: relation,
-              includeRelations: true,
-            }).then(({ data }) => data),
+            await fetchResources(relation, true),
           ] as LabelledRelationData<T>,
         ],
   );
