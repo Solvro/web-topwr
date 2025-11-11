@@ -49,7 +49,7 @@ export function DashboardButton({
   return (
     <Button
       className={cn(
-        "h-16 w-full justify-start space-x-2 rounded-xl sm:h-20",
+        "h-16 w-full justify-start gap-4 rounded-xl sm:h-20",
         className,
       )}
       variant={variant}

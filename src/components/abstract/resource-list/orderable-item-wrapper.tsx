@@ -152,7 +152,7 @@ export function OrderableItemWrapper<T extends OrderableResource>({
         if (event.active.id !== event.over?.id) {
           updateItemOrder(event.active.id, event.over?.id);
         }
-        document.body.style.cursor = "";
+        document.body.style.cursor = "auto";
         setActiveId(null);
       }}
     >

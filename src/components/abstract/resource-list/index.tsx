@@ -64,14 +64,14 @@ export async function AbstractResourceList<
           label="Liczba zastosowanych filtrów"
         />
       </header>
-      <section className="w-full grow basis-0 overflow-y-auto pr-2">
+      <div className="grow basis-0 overflow-y-auto pr-2">
         <InfiniteScroller
           resource={resource}
           initialData={firstPageData}
           filterDefinitions={filterDefinitions}
           sortFilters={sortFilters}
         />
-      </section>
+      </div>
       <footer className="mt-2 flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
         <CreateButton resource={resource} />
         {parentResource == null ? (
