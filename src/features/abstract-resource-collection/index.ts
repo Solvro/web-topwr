@@ -6,3 +6,5 @@ export * from "./data/sort-filter-label-declension-cases";
 
 export * from "./lib/get-resource-filter-definitions";
 export * from "./lib/serialize-sort-filters";
+
+export * from "./types";

@@ -11,7 +11,7 @@ import {
 import type {
   FilteredField,
   SortFiltersFormValuesNarrowed,
-} from "@/features/abstract-resource-collection/types";
+} from "@/features/abstract-resource-collection";
 import { declineNoun } from "@/lib/polish";
 import type { ResourceSchemaKey } from "@/types/forms";
 
