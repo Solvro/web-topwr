@@ -7,9 +7,9 @@ import type { ArfSheetContextType } from "../types/internal";
 
 /**
  * This hook is for accessing the `showSheet` function from within any `ArfSheetProvider` instances.
- * For example, the `ARFSheet` wraps its ARF instance in `ArfSheetProvider`, so the ARF can use this hook
+ * For example, the `ArfSheet` wraps its ARF instance in `ArfSheetProvider`, so the ARF can use this hook
  * in order to close the sheet on submission.
- * It can also be used to provide sheet state to other `ARFSheet` components, outside of the one baked into ARF itself.
+ * It can also be used to provide sheet state to other `ArfSheet` components, outside of the one baked into ARF itself.
  */
 export const useArfSheet = <T extends Resource>(
   resource: T,

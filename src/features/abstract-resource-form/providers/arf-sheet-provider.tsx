@@ -4,7 +4,7 @@ import type { ComponentProps } from "react";
 import type { Resource } from "@/config/enums";
 
 import { renderAbstractResourceForm } from "../actions/render-abstract-resource-form";
-import { AbstractResourceFormSheet } from "../components/arf-sheet";
+import { ArfSheet } from "../components/arf-sheet";
 import { ArfSheetContext } from "../context/arf-sheet-context";
 import type { ArfSheetContextType, ArfSheetData } from "../types/internal";
 
@@ -37,11 +37,7 @@ export function ArfSheetProvider({
     <ArfSheetContext.Provider value={context}>
       <div {...props}>
         {children}
-        <AbstractResourceFormSheet
-          resource={resource}
-          sheet={sheet}
-          setSheet={setSheet}
-        />
+        <ArfSheet resource={resource} sheet={sheet} setSheet={setSheet} />
       </div>
     </ArfSheetContext.Provider>
   );

@@ -8,7 +8,7 @@ import type { Resource } from "@/config/enums";
 import type { ArfSheetData } from "../types/internal";
 import { ArfSheetContent } from "./arf-sheet-content";
 
-export function AbstractResourceFormSheet<T extends Resource>({
+export function ArfSheet<T extends Resource>({
   resource,
   sheet,
   setSheet,

@@ -1,3 +1,7 @@
+/**
+ * This module contains types only used **internally** within the ARF feature,
+ * not to be re-exported or imported outside of its root directory.
+ */
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 
 import type { Resource } from "@/config/enums";

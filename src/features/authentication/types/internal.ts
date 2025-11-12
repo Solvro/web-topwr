@@ -1,3 +1,7 @@
+/**
+ * This module contains types only used **internally** within the auth feature,
+ * not to be re-exported or imported outside of its root directory.
+ */
 import type {
   RequestCookie as NextRequestCookie,
   ResponseCookie as NextResponseCookie,
