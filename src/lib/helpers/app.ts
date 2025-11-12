@@ -1,6 +1,6 @@
 import type { z } from "zod";
 
-import { DeclensionCase } from "@/config/enums";
+import { GrammaticalCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resource-metadata";
 import { declineNoun } from "@/lib/polish";
@@ -116,7 +116,7 @@ export function getManagingResourceLabel(
   { firstWordOnly = true, plural = true }: ResourceLabelOptions = {},
 ): string {
   const declined = declineNoun(resource, {
-    case: DeclensionCase.Instrumental,
+    case: GrammaticalCase.Instrumental,
     plural,
   });
   const firstWord = firstWordOnly ? declined.split(" ")[0] : declined;

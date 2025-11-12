@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DeclensionCase } from "@/config/enums";
+import { GrammaticalCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useArfRelationMutation } from "@/hooks/use-arf-relation-mutation";
 import { useRouter } from "@/hooks/use-router";
@@ -123,7 +123,7 @@ export function PivotData<T extends Resource, L extends ResourceRelation<T>>({
       <SelectContent>
         <SelectClear
           value={selectValue}
-          label={`Usuń ${declineNoun(resourceRelation, { case: DeclensionCase.Accusative })}`}
+          label={`Usuń ${declineNoun(resourceRelation, { case: GrammaticalCase.Accusative })}`}
         />
         {isRelationPivotDefinition(pivotData) ? (
           pivotResources[

@@ -4,7 +4,7 @@ import type { Route } from "next";
 
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
-import { DeclensionCase } from "@/config/enums";
+import { GrammaticalCase } from "@/config/enums";
 import { getManagingResourceLabel, toTitleCase } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import { cn } from "@/lib/utils";
@@ -39,7 +39,7 @@ export function DashboardButton({
             ? getManagingResourceLabel(resource)
             : (labelOverride ??
               declineNoun(resource, {
-                case: DeclensionCase.Nominative,
+                case: GrammaticalCase.Nominative,
                 plural: true,
               })),
         ];
