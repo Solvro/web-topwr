@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
-import { DeclensionCase } from "@/config/enums";
+import { GrammaticalCase } from "@/config/enums";
 import { declineNoun } from "@/lib/polish";
 import type { CreatableResource, ResourceFormValues } from "@/types/app";
 
@@ -16,7 +16,7 @@ export function CreateButton<T extends CreatableResource>({
   prefillAttributes?: Partial<Record<keyof ResourceFormValues<T>, string>>;
 }) {
   const resourceAccusative = declineNoun(resource, {
-    case: DeclensionCase.Accusative,
+    case: GrammaticalCase.Accusative,
   });
   const searchParameters = new URLSearchParams(
     prefillAttributes as Record<string, string>,

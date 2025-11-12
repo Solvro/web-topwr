@@ -1,15 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import { DeclensionCase, GrammaticalGender, Resource } from "@/config/enums";
+import { GrammaticalCase, GrammaticalGender, Resource } from "@/config/enums";
 import { NOUN_PHRASE_TRANSFORMATIONS } from "@/config/polish";
 import type { DeclinableNounPhrase } from "@/types/polish";
 
+import { typedEntries } from "./helpers";
 import { declineNoun } from "./polish";
 
 describe("Polish language utilities", () => {
   it("should decline 'organizacja studencka' correctly in genitive case", () => {
     const result = declineNoun(Resource.StudentOrganizations, {
-      case: DeclensionCase.Genitive,
+      case: GrammaticalCase.Genitive,
     });
     expect(result).toBe("organizacji studenckiej");
   });
@@ -17,7 +18,7 @@ describe("Polish language utilities", () => {
   it("should decline 'artykuł' with determiner 'ten' correctly in nominative case", () => {
     expect(
       declineNoun(Resource.GuideArticles, {
-        case: DeclensionCase.Nominative,
+        case: GrammaticalCase.Nominative,
         prependDeterminer: "this",
       }),
     ).toBe("ten artykuł");
@@ -26,7 +27,7 @@ describe("Polish language utilities", () => {
   it("should decline 'organizacja studencka' with determiner 'nowy' correctly in dative case", () => {
     expect(
       declineNoun(Resource.StudentOrganizations, {
-        case: DeclensionCase.Dative,
+        case: GrammaticalCase.Dative,
         prependDeterminer: "new",
       }),
     ).toBe("nowej organizacji studenckiej");
@@ -35,7 +36,7 @@ describe("Polish language utilities", () => {
   it("should decline 'baner' with determiner 'istniejący' correctly in genitive case", () => {
     expect(
       declineNoun(Resource.Banners, {
-        case: DeclensionCase.Genitive,
+        case: GrammaticalCase.Genitive,
         prependDeterminer: "existing",
       }),
     ).toBe("istniejącego baneru");
@@ -73,7 +74,7 @@ describe("Polish language utilities", () => {
 
   it("should decline 'organizacje studenckie' correctly in instrumental case with plural", () => {
     const result = declineNoun(Resource.StudentOrganizations, {
-      case: DeclensionCase.Instrumental,
+      case: GrammaticalCase.Instrumental,
       plural: true,
     });
     expect(result).toBe("organizacjami studenckimi");
@@ -84,9 +85,8 @@ describe("Polish language utilities", () => {
     const { base, transform } = NOUN_PHRASE_TRANSFORMATIONS[compoundNoun];
     const baseDeclensions = declineNoun(base);
     const { gender, ...compoundDeclensions } = declineNoun(compoundNoun);
-    for (const [key, declinedForm] of Object.entries(compoundDeclensions)) {
-      const declensionCase = key as DeclensionCase;
-      const baseTransformation = transform(baseDeclensions[declensionCase]);
+    for (const [case_, declinedForm] of typedEntries(compoundDeclensions)) {
+      const baseTransformation = transform(baseDeclensions[case_]);
       expect(declinedForm).toBe(baseTransformation);
     }
   });
@@ -94,19 +94,19 @@ describe("Polish language utilities", () => {
   it("should handle singular animate masculine nouns correctly in accusative case", () => {
     expect(
       declineNoun(Resource.GuideAuthors, {
-        case: DeclensionCase.Accusative,
+        case: GrammaticalCase.Accusative,
         prependDeterminer: "this",
       }),
     ).toBe("tego autora");
     expect(
       declineNoun(Resource.GuideAuthors, {
-        case: DeclensionCase.Accusative,
+        case: GrammaticalCase.Accusative,
         prependDeterminer: "new",
       }),
     ).toBe("nowego autora");
     expect(
       declineNoun(Resource.GuideAuthors, {
-        case: DeclensionCase.Accusative,
+        case: GrammaticalCase.Accusative,
         prependDeterminer: "existing",
       }),
     ).toBe("istniejącego autora");
@@ -115,19 +115,19 @@ describe("Polish language utilities", () => {
   it("should handle singular inanimate masculine nouns correctly in accusative case", () => {
     expect(
       declineNoun(Resource.StudentOrganizationTags, {
-        case: DeclensionCase.Accusative,
+        case: GrammaticalCase.Accusative,
         prependDeterminer: "this",
       }),
     ).toBe("ten tag");
     expect(
       declineNoun(Resource.StudentOrganizationTags, {
-        case: DeclensionCase.Accusative,
+        case: GrammaticalCase.Accusative,
         prependDeterminer: "new",
       }),
     ).toBe("nowy tag");
     expect(
       declineNoun(Resource.StudentOrganizationTags, {
-        case: DeclensionCase.Accusative,
+        case: GrammaticalCase.Accusative,
         prependDeterminer: "existing",
       }),
     ).toBe("istniejący tag");
@@ -136,42 +136,42 @@ describe("Polish language utilities", () => {
   it("should handle plural masculine nouns correctly in accusative case", () => {
     expect(
       declineNoun(Resource.GuideAuthors, {
-        case: DeclensionCase.Accusative,
+        case: GrammaticalCase.Accusative,
         plural: true,
         prependDeterminer: "this",
       }),
     ).toBe("tych autorów");
     expect(
       declineNoun(Resource.GuideAuthors, {
-        case: DeclensionCase.Accusative,
+        case: GrammaticalCase.Accusative,
         plural: true,
         prependDeterminer: "new",
       }),
     ).toBe("nowych autorów");
     expect(
       declineNoun(Resource.GuideAuthors, {
-        case: DeclensionCase.Accusative,
+        case: GrammaticalCase.Accusative,
         plural: true,
         prependDeterminer: "existing",
       }),
     ).toBe("istniejących autorów");
     expect(
       declineNoun(Resource.StudentOrganizationTags, {
-        case: DeclensionCase.Accusative,
+        case: GrammaticalCase.Accusative,
         plural: true,
         prependDeterminer: "this",
       }),
     ).toBe("te tagi");
     expect(
       declineNoun(Resource.StudentOrganizationTags, {
-        case: DeclensionCase.Accusative,
+        case: GrammaticalCase.Accusative,
         plural: true,
         prependDeterminer: "new",
       }),
     ).toBe("nowe tagi");
     expect(
       declineNoun(Resource.StudentOrganizationTags, {
-        case: DeclensionCase.Accusative,
+        case: GrammaticalCase.Accusative,
         plural: true,
         prependDeterminer: "existing",
       }),

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Resource } from "@/config/enums";
 import { getRoundedDate } from "@/lib/helpers";
+import { declineNumeric } from "@/lib/polish";
 import type { CalendarEvent } from "@/types/calendar";
 
 import { CreateButton } from "../abstract/create-button";
@@ -61,7 +62,7 @@ export function AllEventsModal({
           <DialogDescription>
             {events.length === 0
               ? "Brak wydarzeń zaplanowanych na ten dzień"
-              : "Wszystkie wydarzenia zaplanowane na ten dzień"}
+              : `W tym dniu zaplanowano ${declineNumeric(events.length, "wydarzenie", "wydarzenia", "wydarzeń")}.`}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4">

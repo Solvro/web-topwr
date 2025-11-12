@@ -6,8 +6,8 @@ import type { DeclinableNoun } from "@/types/polish";
 
 import {
   ApplicationError,
-  DeclensionCase,
   FilterType,
+  GrammaticalCase,
   SortDirection,
 } from "./enums";
 
@@ -60,7 +60,7 @@ export const IMPLICIT_SORTABLE_FIELDS = [
 ] satisfies DeclinableNoun[];
 
 export const SORT_FILTER_LABEL_DECLENSION_CASES = {
-  sortBy: DeclensionCase.Genitive,
+  sortBy: GrammaticalCase.Genitive,
 };
 
 export const SORT_FILTER_DEFAULT_VALUES = {

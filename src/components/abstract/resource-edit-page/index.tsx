@@ -1,6 +1,6 @@
 import { ErrorMessage } from "@/components/error-message";
 import { Badge } from "@/components/ui/badge";
-import { ApplicationError, DeclensionCase } from "@/config/enums";
+import { ApplicationError, GrammaticalCase } from "@/config/enums";
 import { getResourceMetadata, sanitizeId } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { RoutableResource } from "@/types/app";
@@ -46,7 +46,7 @@ export async function AbstractResourceEditPage({
       errorMessage={
         <>
           Nie istnieje{" "}
-          {declineNoun(resource, { case: DeclensionCase.Nominative })} z
+          {declineNoun(resource, { case: GrammaticalCase.Nominative })} z
           identyfikatorem <Badge>{sanitizedId}</Badge>.
         </>
       }

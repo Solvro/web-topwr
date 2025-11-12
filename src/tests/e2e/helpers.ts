@@ -7,7 +7,7 @@ import {
   SORT_FILTER_DEFAULT_VALUES,
   SORT_FILTER_LABEL_DECLENSION_CASES,
 } from "@/config/constants";
-import { DeclensionCase } from "@/config/enums";
+import { GrammaticalCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
 import { getResourceFilterDefinitions } from "@/lib/filter-definitions";
@@ -125,7 +125,7 @@ export async function returnFromAbstractResourceForm(
   await page
     .getByRole("link", {
       name: new RegExp(
-        `wróć do ${declineNoun(resource, { case: DeclensionCase.Genitive, plural: true })}`,
+        `wróć do ${declineNoun(resource, { case: GrammaticalCase.Genitive, plural: true })}`,
         "i",
       ),
     })

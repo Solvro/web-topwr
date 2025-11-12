@@ -2,7 +2,7 @@ import { BellPlus, BellRing } from "lucide-react";
 
 import { AbstractResourceGroup } from "@/components/abstract/resource-group";
 import { DashboardButton } from "@/components/dashboard-button";
-import { DeclensionCase, Resource } from "@/config/enums";
+import { GrammaticalCase, Resource } from "@/config/enums";
 import { declineNoun } from "@/lib/polish";
 
 export default function NotificationsPage() {
@@ -18,7 +18,7 @@ export default function NotificationsPage() {
         resource={Resource.Notifications}
         variant="outline"
         icon={BellRing}
-        label={`Wyślij ${declineNoun(Resource.Notifications, { case: DeclensionCase.Nominative })}`}
+        label={`Wyślij ${declineNoun(Resource.Notifications, { case: GrammaticalCase.Nominative })}`}
         href={`/${Resource.Notifications}/create`}
       />
     </AbstractResourceGroup>

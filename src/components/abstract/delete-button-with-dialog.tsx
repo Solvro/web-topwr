@@ -18,7 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { DeclensionCase } from "@/config/enums";
+import { GrammaticalCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { useRouter } from "@/hooks/use-router";
@@ -98,7 +98,7 @@ export function DeleteButtonWithDialog({
             {
               itemName == null
                 ? declineNoun(resource, {
-                    case: DeclensionCase.Accusative,
+                    case: GrammaticalCase.Accusative,
                     prependDeterminer: "this",
                   }) // e.g. tę organizację studencką
                 : `${declensions.accusative} ${quoteText(itemName)}` // e.g. organizację studencką „KN Solvro”

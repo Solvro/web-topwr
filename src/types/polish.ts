@@ -1,5 +1,5 @@
 import type {
-  DeclensionCase,
+  GrammaticalCase,
   GrammaticalGender,
   Resource,
 } from "@/config/enums";
@@ -11,7 +11,7 @@ import type {
 
 import type { ResourceDataType } from "./app";
 
-export type Declensions = Record<DeclensionCase, string>;
+export type Declensions = Record<GrammaticalCase, string>;
 export type DeclinableSimpleNoun = keyof typeof SIMPLE_NOUN_DECLENSIONS;
 export type DeclinableNounPhrase = keyof typeof NOUN_PHRASE_TRANSFORMATIONS;
 export type DeclinableNoun = DeclinableSimpleNoun | DeclinableNounPhrase;

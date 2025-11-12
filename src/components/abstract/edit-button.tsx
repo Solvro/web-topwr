@@ -2,7 +2,7 @@ import { SquarePen } from "lucide-react";
 
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
-import { DeclensionCase } from "@/config/enums";
+import { GrammaticalCase } from "@/config/enums";
 import { sanitizeId } from "@/lib/helpers/transformations";
 import { declineNoun } from "@/lib/polish";
 import type { EditableResource, Id } from "@/types/app";
@@ -15,7 +15,7 @@ export function EditButton({
   id: Id;
 }) {
   const resourceAccusative = declineNoun(resource, {
-    case: DeclensionCase.Accusative,
+    case: GrammaticalCase.Accusative,
   });
   return (
     <Button

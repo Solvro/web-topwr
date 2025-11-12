@@ -38,7 +38,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { conjugateNumeric } from "@/lib/polish";
+import { declineNumeric } from "@/lib/polish";
 import { cn } from "@/lib/utils";
 import type { OptionalPromise } from "@/types/helpers";
 
@@ -1252,7 +1252,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                       <span>
                         (Wybierz wszystkie
                         {getAllOptions().length > 20
-                          ? ` – ${conjugateNumeric(
+                          ? ` – ${declineNumeric(
                               getAllOptions().length,
                               "opcja",
                               "opcje",

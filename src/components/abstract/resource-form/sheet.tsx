@@ -14,7 +14,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { DeclensionCase } from "@/config/enums";
+import { GrammaticalCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { ArfRelationContext } from "@/hooks/use-arf-relation";
 import type { ArfRelationContextType } from "@/hooks/use-arf-relation";
@@ -45,14 +45,14 @@ function AbstractResourceFormSheetContent<T extends Resource>({
           `Utwórz ${relationDeclensions.accusative}`,
           `Stwórz ${declineNoun(content.childResource, {
             prependDeterminer: "new",
-            case: DeclensionCase.Accusative,
+            case: GrammaticalCase.Accusative,
           })} dla ${resourceDeclensions.genitive}.`,
         ]
       : [
           `Edycja ${relationDeclensions.genitive}`,
           `Zmień dane ${declineNoun(content.childResource, {
             prependDeterminer: "existing",
-            case: DeclensionCase.Genitive,
+            case: GrammaticalCase.Genitive,
           })} ${resourceDeclensions.genitive}.`,
         ];
 
