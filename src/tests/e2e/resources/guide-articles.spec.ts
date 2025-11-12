@@ -12,11 +12,9 @@ import type { MessageResponse, ModifyResourceResponse } from "@/types/api";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
 import type { NonNullableValues } from "@/types/helpers";
 
-import {
-  expectAbstractResourceFormSuccess,
-  returnFromAbstractResourceForm,
-  setAbstractResourceListFilters,
-} from "../helpers";
+import { expectArfSuccess } from "../helpers/expect-arf-success";
+import { returnFromArf } from "../helpers/return-from-arf";
+import { setArlSortFilters } from "../helpers/set-arl-filters";
 
 const MOCK_IMAGE_PATH = "src/tests/e2e/assets/test-image.jpg";
 
@@ -125,7 +123,7 @@ async function navigateToArticles(page: Page) {
 
 /** Sets the abstract resource list filters such that the only displayed article is the provided one. */
 async function filterSpecificArticle(page: Page, article: MockGuideArticle) {
-  await setAbstractResourceListFilters(page, resource, {
+  await setArlSortFilters(page, resource, {
     filters: [
       {
         field: "shortDesc",
@@ -191,11 +189,11 @@ test.describe("Guide Articles CRUD", () => {
         const button = page.getByRole("button", { name: /utwórz/i });
         await expect(button).toBeEnabled();
         await button.click();
-        await expectAbstractResourceFormSuccess(page);
+        await expectArfSuccess(page);
       });
 
       await test.step("Ensure creation is persisted", async () => {
-        await returnFromAbstractResourceForm(page, resource);
+        await returnFromArf(page, resource);
         await filterSpecificArticle(page, testArticle);
         await expect(page.getByText(testArticle.title)).toBeVisible();
         await expect(page.getByText(testArticle.shortDesc)).toBeVisible();
@@ -244,7 +242,7 @@ test.describe("Guide Articles CRUD", () => {
         await titleInput.fill(newTitle);
         await expect(submitButton).toBeEnabled();
         await submitButton.click();
-        await expectAbstractResourceFormSuccess(page);
+        await expectArfSuccess(page);
         await page.reload();
         await expect(titleInput).toHaveValue(newTitle);
       });
@@ -255,7 +253,7 @@ test.describe("Guide Articles CRUD", () => {
       } satisfies ResourceDataType<ResourceType>;
 
       await test.step("Ensure update is persisted", async () => {
-        await returnFromAbstractResourceForm(page, resource);
+        await returnFromArf(page, resource);
         await filterSpecificArticle(page, newArticle);
         await expect(page.getByText(newArticle.title)).toBeVisible();
         await expect(page.getByText(newArticle.shortDesc)).toBeVisible();

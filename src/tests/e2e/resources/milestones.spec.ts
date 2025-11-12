@@ -3,7 +3,7 @@ import type { Locator, Page } from "@playwright/test";
 
 import { Resource } from "@/config/enums";
 
-import { setAbstractResourceListFilters } from "../helpers";
+import { setArlSortFilters } from "../helpers/set-arl-filters";
 
 const ROLES = [
   "Flutter Techlead",
@@ -39,7 +39,7 @@ const getContributorsInput = (page: Page | Locator) =>
   page.getByText("Kontrybutorzy");
 
 const filterFirstVersion = async (page: Page) =>
-  setAbstractResourceListFilters(page, resource, {
+  setArlSortFilters(page, resource, {
     filters: [
       {
         field: "name",

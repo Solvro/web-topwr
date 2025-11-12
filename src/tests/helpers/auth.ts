@@ -9,7 +9,7 @@ import type {
 } from "@/types/api";
 import type { LoginFormValues } from "@/types/forms";
 
-import { getTestUserCredentials } from "../e2e/helpers";
+import { getTestUserCredentials } from "../e2e/helpers/get-test-user-credentials";
 import { server } from "../mocks/server";
 
 function bypassMockServer(endpoint: string) {

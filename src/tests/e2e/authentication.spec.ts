@@ -1,6 +1,7 @@
 import test, { expect } from "@playwright/test";
 
-import { getTestUserCredentials, login } from "./helpers";
+import { getTestUserCredentials } from "./helpers/get-test-user-credentials";
+import { login } from "./helpers/login";
 
 test.use({ storageState: { cookies: [], origins: [] } });
 const credentials = getTestUserCredentials();

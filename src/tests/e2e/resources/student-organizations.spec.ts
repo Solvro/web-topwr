@@ -17,12 +17,10 @@ import type { MessageResponse, ModifyResourceResponse } from "@/types/api";
 import type { Id, ResourceDataType, ResourceFormValues } from "@/types/app";
 import type { NonNullableValues } from "@/types/helpers";
 
-import {
-  expectAbstractResourceFormSuccess,
-  returnFromAbstractResourceForm,
-  selectOptionByLabel,
-  setAbstractResourceListFilters,
-} from "../helpers";
+import { expectArfSuccess } from "../helpers/expect-arf-success";
+import { returnFromArf } from "../helpers/return-from-arf";
+import { selectOptionByLabel } from "../helpers/select-option-by-label";
+import { setArlSortFilters } from "../helpers/set-arl-filters";
 
 const resource = Resource.StudentOrganizations;
 type ResourceType = typeof resource;
@@ -121,7 +119,7 @@ async function filterSpecificOrganization(
   page: Page,
   organization: MockStudentOrganization,
 ) {
-  await setAbstractResourceListFilters(page, resource, {
+  await setArlSortFilters(page, resource, {
     filters: [
       {
         field: "description",
@@ -196,11 +194,11 @@ test.describe("Student Organizations CRUD", () => {
         const button = page.getByRole("button", { name: /utwórz/i });
         await expect(button).toBeEnabled();
         await button.click();
-        await expectAbstractResourceFormSuccess(page);
+        await expectArfSuccess(page);
       });
 
       await test.step("Ensure creation is persisted", async () => {
-        await returnFromAbstractResourceForm(page, resource);
+        await returnFromArf(page, resource);
         await filterSpecificOrganization(page, testOrganization);
         await expect(page.getByText(testOrganization.name)).toBeVisible();
         await expect(
@@ -252,7 +250,7 @@ test.describe("Student Organizations CRUD", () => {
         await nameInput.fill(newName);
         await expect(submitButton).toBeEnabled();
         await submitButton.click();
-        await expectAbstractResourceFormSuccess(page);
+        await expectArfSuccess(page);
         await page.reload();
         await expect(nameInput).toHaveValue(newName);
       });
@@ -263,7 +261,7 @@ test.describe("Student Organizations CRUD", () => {
       } satisfies ResourceDataType<ResourceType>;
 
       await test.step("Ensure update is persisted", async () => {
-        await returnFromAbstractResourceForm(page, resource);
+        await returnFromArf(page, resource);
         await filterSpecificOrganization(page, newOrganization);
         await expect(page.getByText(newOrganization.name)).toBeVisible();
         await expect(
