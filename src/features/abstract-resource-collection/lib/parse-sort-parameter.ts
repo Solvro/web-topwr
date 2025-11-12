@@ -1,10 +1,10 @@
-import { isValidSortDirection } from "@/features/abstract-resource-collection/lib/is-valid-sort-direction";
 import { isDeclinableNoun, isEmptyValue } from "@/lib/helpers/typescript";
 import type { DeclinableNoun } from "@/types/polish";
 
 import { IMPLICIT_SORTABLE_FIELDS } from "../data/implicit-sortable-fields";
 import type { SortDirection } from "../data/sort-direction";
 import { SORT_DIRECTION_SEPARATOR } from "../data/sort-direction-separator";
+import { isValidSortDirection } from "../lib/is-valid-sort-direction";
 
 /** Parses a string like +field or -field into distinct, URI-encodable values. */
 export const parseSortParameter = (

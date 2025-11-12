@@ -10,8 +10,10 @@ import {
   SORT_FILTER_DEFAULT_VALUES,
   SORT_FILTER_LABEL_DECLENSION_CASES,
 } from "@/features/abstract-resource-collection";
-import { getResourceFilterDefinitions } from "@/features/abstract-resource-collection/lib/get-resource-filter-definitions";
-import { serializeSortFilters } from "@/features/abstract-resource-collection/lib/serialize-sort-filters";
+import {
+  getResourceFilterDefinitions,
+  serializeSortFilters,
+} from "@/features/abstract-resource-collection";
 import type {
   FilteredField,
   SortFiltersFormValuesNarrowed,

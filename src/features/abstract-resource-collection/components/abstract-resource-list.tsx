@@ -2,7 +2,6 @@ import { BackToHomeButton } from "@/components/abstract/back-to-home-button";
 import { CreateButton } from "@/components/abstract/create-button";
 import { Counter } from "@/components/counter";
 import { ReturnButton } from "@/components/return-button";
-import { getResourceFilterDefinitions } from "@/features/abstract-resource-collection/lib/get-resource-filter-definitions";
 import type {
   CreatableResource,
   EditableResource,
@@ -13,6 +12,7 @@ import type { ResourceDeclinableField } from "@/types/polish";
 
 import { deserializeSortFilters } from "../lib/deserialize-sort-filters";
 import { fetchPaginatedResources } from "../lib/fetch-paginated-resources";
+import { getResourceFilterDefinitions } from "../lib/get-resource-filter-definitions";
 import { parseSortParameter } from "../lib/parse-sort-parameter";
 import type { SortFiltersFormValuesNarrowed } from "../types/internal";
 import { InfiniteScroller } from "./infinite-scroller";
