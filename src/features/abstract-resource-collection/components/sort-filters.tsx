@@ -22,10 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { declineNoun } from "@/features/polish";
+import type { DeclinableNoun } from "@/features/polish/types";
 import { useRouter } from "@/hooks/use-router";
 import { typedEntries } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
-import type { DeclinableNoun } from "@/types/polish";
 
 import { IMPLICIT_SORTABLE_FIELDS } from "../data/implicit-sortable-fields";
 import { SORT_DIRECTION_NAMES } from "../data/sort-direction-names";

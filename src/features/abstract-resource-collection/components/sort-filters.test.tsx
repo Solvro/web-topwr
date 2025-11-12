@@ -3,9 +3,9 @@ import userEvent from "@testing-library/user-event";
 import assert from "node:assert/strict";
 import { describe, expect, it } from "vitest";
 
+import { declineNoun } from "@/features/polish";
+import type { DeclinableNoun } from "@/features/polish/types";
 import { isEmptyValue } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
-import type { DeclinableNoun } from "@/types/polish";
 
 import { IMPLICIT_SORTABLE_FIELDS } from "../data/implicit-sortable-fields";
 import { SORT_DIRECTION_NAMES } from "../data/sort-direction-names";

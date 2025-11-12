@@ -13,8 +13,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Resource } from "@/config/enums";
+import { declineNumeric } from "@/features/polish";
 import { getRoundedDate } from "@/lib/helpers";
-import { declineNumeric } from "@/lib/polish";
 import type { CalendarEvent } from "@/types/calendar";
 
 import { CreateButton } from "../abstract/create-button";

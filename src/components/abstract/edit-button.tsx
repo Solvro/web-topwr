@@ -2,9 +2,8 @@ import { SquarePen } from "lucide-react";
 
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
-import { GrammaticalCase } from "@/config/enums";
+import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { sanitizeId } from "@/lib/helpers/transformations";
-import { declineNoun } from "@/lib/polish";
 import type { EditableResource, Id } from "@/types/app";
 
 export function EditButton({

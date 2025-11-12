@@ -1,4 +1,5 @@
-import { isDeclinableNoun, isEmptyValue } from "@/lib/helpers/typescript";
+import { isDeclinableNoun } from "@/features/polish";
+import { isEmptyValue } from "@/lib/helpers/typescript";
 
 import { SORT_DIRECTION_SEPARATOR } from "../constants";
 import type { SortFiltersFormValues } from "../types/internal";

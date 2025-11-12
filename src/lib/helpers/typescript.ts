@@ -1,9 +1,4 @@
-import {
-  NOUN_PHRASE_TRANSFORMATIONS,
-  SIMPLE_NOUN_DECLENSIONS,
-} from "@/config/polish";
 import type { ValueOf } from "@/types/helpers";
-import type { DeclinableNoun } from "@/types/polish";
 
 type EnumerableObject = Record<string, unknown> | unknown[];
 
@@ -26,7 +21,3 @@ export const isEmptyValue = (value: unknown): value is "" | null | undefined =>
 
 export const isUnsetEnumField = (value: unknown): boolean =>
   isEmptyValue(value) || Number(value) < 0;
-
-export const isDeclinableNoun = (value: unknown): value is DeclinableNoun =>
-  typeof value === "string" &&
-  (value in SIMPLE_NOUN_DECLENSIONS || value in NOUN_PHRASE_TRANSFORMATIONS);

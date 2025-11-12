@@ -12,8 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { GrammaticalCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { useRouter } from "@/hooks/use-router";
 import {
   getResourceMetadata,
@@ -22,7 +22,6 @@ import {
   isUnsetEnumField,
   tryParseNumber,
 } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
 import type {
   Id,
   ResourceDataType,

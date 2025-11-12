@@ -10,10 +10,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { GrammaticalCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { getResourcePk, tryParseNumber } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
 
 import { ArfRelationContext } from "../context/arf-relation-context";
 import type {

@@ -1,13 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { GrammaticalCase, GrammaticalGender, Resource } from "@/config/enums";
-import { NOUN_PHRASE_TRANSFORMATIONS } from "@/config/polish";
-import type { DeclinableNounPhrase } from "@/types/polish";
+import { Resource } from "@/config/enums";
+import { typedEntries } from "@/lib/helpers";
 
-import { typedEntries } from "./helpers";
-import { declineNoun } from "./polish";
+import { NOUN_PHRASE_TRANSFORMATIONS } from "../data/noun-phrase-transformations";
+import { GrammaticalCase, GrammaticalGender } from "../enums";
+import type { DeclinableNounPhrase } from "../types/internal";
+import { declineNoun } from "./decline-noun";
 
-describe("Polish language utilities", () => {
+describe("declineNoun function", () => {
   it("should decline 'organizacja studencka' correctly in genitive case", () => {
     const result = declineNoun(Resource.StudentOrganizations, {
       case: GrammaticalCase.Genitive,

@@ -1,8 +1,7 @@
 import type { Page } from "@playwright/test";
 
-import { GrammaticalCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
-import { declineNoun } from "@/lib/polish";
+import { GrammaticalCase, declineNoun } from "@/features/polish";
 
 export async function returnFromArf(page: Page, resource: Resource) {
   await page

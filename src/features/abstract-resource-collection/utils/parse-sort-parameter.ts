@@ -1,5 +1,6 @@
-import { isDeclinableNoun, isEmptyValue } from "@/lib/helpers/typescript";
-import type { DeclinableNoun } from "@/types/polish";
+import { isDeclinableNoun } from "@/features/polish";
+import type { DeclinableNoun } from "@/features/polish/types";
+import { isEmptyValue } from "@/lib/helpers/typescript";
 
 import { SORT_DIRECTION_SEPARATOR } from "../constants";
 import { IMPLICIT_SORTABLE_FIELDS } from "../data/implicit-sortable-fields";

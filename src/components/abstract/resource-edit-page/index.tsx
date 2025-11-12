@@ -1,8 +1,8 @@
 import { ErrorMessage } from "@/components/error-message";
 import { Badge } from "@/components/ui/badge";
-import { ApplicationError, GrammaticalCase } from "@/config/enums";
+import { ApplicationError } from "@/config/enums";
+import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { getResourceMetadata, sanitizeId } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
 import type { RoutableResource } from "@/types/app";
 import type { ResourceEditPageProps } from "@/types/components";
 

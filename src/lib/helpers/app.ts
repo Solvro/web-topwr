@@ -1,9 +1,8 @@
 import type { z } from "zod";
 
-import { GrammaticalCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resource-metadata";
-import { declineNoun } from "@/lib/polish";
+import { GrammaticalCase, declineNoun } from "@/features/polish";
 import type {
   Id,
   OrderableResource,

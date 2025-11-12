@@ -10,6 +10,7 @@ import type { SetOptionSelected } from "@/components/ui/multi-select";
 import { SelectItem } from "@/components/ui/select";
 import { RelationType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { declineNoun } from "@/features/polish";
 import {
   getResourceMetadata,
   getResourcePk,
@@ -17,7 +18,6 @@ import {
   sanitizeId,
   toTitleCase,
 } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
 import type {
   Id,
   RelationDefinition,

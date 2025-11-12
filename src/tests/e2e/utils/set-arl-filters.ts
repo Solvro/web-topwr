@@ -12,7 +12,7 @@ import type {
   FilteredField,
   SortFiltersFormValuesNarrowed,
 } from "@/features/abstract-resource-collection/types";
-import { declineNoun } from "@/lib/polish";
+import { declineNoun } from "@/features/polish";
 import type { ResourceSchemaKey } from "@/types/forms";
 
 import { selectOptionByLabel } from "./select-option-by-label";

@@ -5,12 +5,12 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import type { Resource } from "@/config/enums";
 import { OrganizationStatus } from "@/config/enums";
+import { declineNoun } from "@/features/polish";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { useRouter } from "@/hooks/use-router";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import { getKey, sanitizeId } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
 import type { ModifyResourceResponse } from "@/types/api";
 
 // TODO: make this more generic to support other resources with property toggles

@@ -3,8 +3,8 @@
 import { usePathname } from "next/navigation";
 
 import type { Resource } from "@/config/enums";
+import { declineNoun } from "@/features/polish";
 import { getManagingResourceLabel } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
 import type { ResourceLabelOptions } from "@/types/components";
 
 function getTitle(

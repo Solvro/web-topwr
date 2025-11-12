@@ -2,8 +2,7 @@ import { Plus } from "lucide-react";
 
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
-import { GrammaticalCase } from "@/config/enums";
-import { declineNoun } from "@/lib/polish";
+import { GrammaticalCase, declineNoun } from "@/features/polish";
 import type { CreatableResource, ResourceFormValues } from "@/types/app";
 
 export function CreateButton<T extends CreatableResource>({

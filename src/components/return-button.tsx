@@ -4,8 +4,7 @@ import type { Route } from "next";
 
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
-import { GrammaticalCase } from "@/config/enums";
-import { declineNoun } from "@/lib/polish";
+import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { cn } from "@/lib/utils";
 import type { RoutableResource } from "@/types/app";
 

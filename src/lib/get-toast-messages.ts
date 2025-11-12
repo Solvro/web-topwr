@@ -1,10 +1,10 @@
 import { Resource } from "@/config/enums";
 import type { AuthState } from "@/features/authentication/types";
-import type { Declensions } from "@/types/polish";
+import type { Declensions } from "@/features/polish/types";
 
+import { declineNoun } from "../features/polish";
 import { getErrorMessage } from "./error-handling";
 import { toTitleCase } from "./helpers";
-import { declineNoun } from "./polish";
 
 const getDefaultToastMessages = (declensions: Declensions) => ({
   read: {

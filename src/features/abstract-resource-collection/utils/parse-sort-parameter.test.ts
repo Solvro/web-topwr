@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { DeclinableNoun } from "@/types/polish";
+import type { DeclinableNoun } from "@/features/polish/types";
 
 import { SortDirection } from "../enums";
 import { parseSortParameter } from "./parse-sort-parameter";

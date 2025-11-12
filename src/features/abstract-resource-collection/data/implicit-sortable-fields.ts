@@ -1,4 +1,4 @@
-import type { DeclinableNoun } from "@/types/polish";
+import type { DeclinableNoun } from "@/features/polish/types";
 
 export const IMPLICIT_SORTABLE_FIELDS = [
   "createdAt",

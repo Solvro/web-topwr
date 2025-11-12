@@ -1,8 +1,3 @@
-export interface Pluralized<T extends Record<string, unknown>> {
-  singular: T;
-  plural: { [K in keyof T]: T[K] };
-}
-
 export type Defined<T> = Exclude<T, undefined>;
 
 export type ValueOf<T> = T[keyof T];

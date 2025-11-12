@@ -18,14 +18,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { GrammaticalCase } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { useRouter } from "@/hooks/use-router";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import { getKey, quoteText, sanitizeId } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
 import type { MessageResponse } from "@/types/api";
 import type { Id } from "@/types/app";
 import type { OptionalPromise } from "@/types/helpers";

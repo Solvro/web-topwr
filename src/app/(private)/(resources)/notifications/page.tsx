@@ -2,8 +2,8 @@ import { BellPlus, BellRing } from "lucide-react";
 
 import { AbstractResourceGroup } from "@/components/abstract/resource-group";
 import { DashboardButton } from "@/components/dashboard-button";
-import { GrammaticalCase, Resource } from "@/config/enums";
-import { declineNoun } from "@/lib/polish";
+import { Resource } from "@/config/enums";
+import { GrammaticalCase, declineNoun } from "@/features/polish";
 
 export default function NotificationsPage() {
   return (

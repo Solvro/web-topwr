@@ -2,13 +2,13 @@ import { BackToHomeButton } from "@/components/abstract/back-to-home-button";
 import { CreateButton } from "@/components/abstract/create-button";
 import { Counter } from "@/components/counter";
 import { ReturnButton } from "@/components/return-button";
+import type { ResourceDeclinableField } from "@/features/polish/types";
 import type {
   CreatableResource,
   EditableResource,
   RoutableResource,
 } from "@/types/app";
 import type { SearchParameters } from "@/types/components";
-import type { ResourceDeclinableField } from "@/types/polish";
 
 import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
 import type { SortFiltersFormValuesNarrowed } from "../types/internal";

@@ -1,15 +1,10 @@
-import type {
-  GrammaticalCase,
-  GrammaticalGender,
-  Resource,
-} from "@/config/enums";
-import type {
-  DETERMINER_DECLENSIONS,
-  NOUN_PHRASE_TRANSFORMATIONS,
-  SIMPLE_NOUN_DECLENSIONS,
-} from "@/config/polish";
+import type { Resource } from "@/config/enums";
+import type { ResourceDataType } from "@/types/app";
 
-import type { ResourceDataType } from "./app";
+import type { DETERMINER_DECLENSIONS } from "../data/determiner-declensions";
+import type { NOUN_PHRASE_TRANSFORMATIONS } from "../data/noun-phrase-transformations";
+import type { SIMPLE_NOUN_DECLENSIONS } from "../data/simple-noun-declensions";
+import type { GrammaticalCase, GrammaticalGender } from "../enums";
 
 export type Declensions = Record<GrammaticalCase, string>;
 export type DeclinableSimpleNoun = keyof typeof SIMPLE_NOUN_DECLENSIONS;
@@ -22,4 +17,14 @@ export type Determiner = keyof typeof DETERMINER_DECLENSIONS;
 export interface DeclensionData {
   /** Determines whether you use "ten", "ta" or "to" as a determiner for this noun. */
   gender: GrammaticalGender;
+}
+
+export interface DeclensionOptions {
+  prependDeterminer?: Determiner | null;
+  plural?: boolean;
+}
+
+export interface Pluralized<T extends Record<string, unknown>> {
+  singular: T;
+  plural: { [K in keyof T]: T[K] };
 }

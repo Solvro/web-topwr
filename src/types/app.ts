@@ -6,13 +6,13 @@ import type { RelationType, Resource } from "@/config/enums";
 import type { RESOURCE_METADATA } from "@/config/resource-metadata";
 import type { RESOURCE_SCHEMAS } from "@/schemas";
 
+import type { DeclinableNoun } from "../features/polish/types";
 import type { DatedResource } from "./api";
 import type {
   AbstractResourceFormInputs,
   ResourceSchemaKey,
   SelectInputOptions,
 } from "./forms";
-import type { DeclinableNoun } from "./polish";
 
 // Data types
 export type Id = string | number;
