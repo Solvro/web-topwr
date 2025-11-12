@@ -4,6 +4,7 @@ import Link from "next/link";
 import ResizeObserver from "resize-observer-polyfill";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
+import "./helpers/env";
 import {
   MOCK_INTERSECTION_OBSERVER,
   MOCK_NOT_FOUND,

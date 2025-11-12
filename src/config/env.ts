@@ -7,10 +7,6 @@ const UrlBaseSchema = z
   .refine((value) => !value.endsWith("/"), {
     message: "URL must not end with a slash (/)",
   });
-if (process.env.NODE_ENV === "test") {
-  const { default: nextEnv } = await import("@next/env");
-  nextEnv.loadEnvConfig(process.cwd());
-}
 
 export const env = createEnv({
   server: {

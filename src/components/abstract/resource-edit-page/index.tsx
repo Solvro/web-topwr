@@ -28,7 +28,10 @@ export async function AbstractResourceEditPage({
   }
   const { id } = await params;
   if (id == null) {
-    console.error("Missing id parameter for non-singleton resource edit page");
+    console.error(
+      "Missing id parameter for non-singleton resource edit page:",
+      resource,
+    );
     return (
       <ErrorMessage
         type={ApplicationError.ServerError}

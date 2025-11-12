@@ -1,4 +1,6 @@
-import { Bouncer } from "@/features/authentication";
+import "server-only";
+
+import { Bouncer } from "@/features/authentication/server";
 import type { ResourceLayoutProps } from "@/types/components";
 
 import { AbstractResourceLayoutInternal } from "./internal";
