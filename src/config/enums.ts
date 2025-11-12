@@ -96,7 +96,7 @@ export enum GrammaticalGender {
 export enum GrammaticalCase {
   /** Mianownik – kto? co? */
   Nominative = "nominative",
-  /** Dopełniacz - kogo? czego? */
+  /** Dopełniacz – kogo? czego? */
   Genitive = "genitive",
   /** Celownik – komu? czemu? */
   Dative = "dative",
