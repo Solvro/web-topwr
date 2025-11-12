@@ -2,8 +2,8 @@
 
 import type { ComponentProps } from "react";
 
+import { SelectClear } from "@/components/inputs/select-clear";
 import { SelectOptions } from "@/components/inputs/select-options";
-import { SelectClear } from "@/components/select-clear";
 import type { SetOptionSelected } from "@/components/ui/multi-select";
 import {
   Select,

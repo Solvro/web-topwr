@@ -8,8 +8,8 @@ import type { z } from "zod";
 
 import { ApiImage } from "@/components/api-image/client";
 import { ImagePreview } from "@/components/api-image/image-preview";
+import { Spinner } from "@/components/core/spinner";
 import { InputSlot } from "@/components/inputs/input-slot";
-import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";

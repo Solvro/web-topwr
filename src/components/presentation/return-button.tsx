@@ -2,7 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Route } from "next";
 
-import { Link } from "@/components/link";
+import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { cn } from "@/lib/utils";

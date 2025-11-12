@@ -7,8 +7,8 @@ import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 
-import { DeleteButtonWithDialog } from "@/components/abstract/delete-button-with-dialog";
-import { ReturnButton } from "@/components/return-button";
+import { DeleteButtonWithDialog } from "@/components/presentation/delete-button-with-dialog";
+import { ReturnButton } from "@/components/presentation/return-button";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import type { Resource } from "@/config/enums";

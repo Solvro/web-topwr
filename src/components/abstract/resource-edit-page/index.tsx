@@ -1,4 +1,4 @@
-import { ErrorMessage } from "@/components/error-message";
+import { ErrorMessage } from "@/components/presentation/error-message";
 import { Badge } from "@/components/ui/badge";
 import { ApplicationError } from "@/config/enums";
 import { GrammaticalCase, declineNoun } from "@/features/polish";

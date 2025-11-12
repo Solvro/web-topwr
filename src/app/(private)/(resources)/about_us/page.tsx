@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 
 import { AbstractResourceGroup } from "@/components/abstract/resource-group";
-import { DashboardButton } from "@/components/dashboard-button";
+import { DashboardButton } from "@/components/presentation/dashboard-button";
 import { Resource } from "@/config/enums";
 import { getManagingResourceLabel } from "@/lib/helpers";
 import type { ResourcePageProps } from "@/types/components";

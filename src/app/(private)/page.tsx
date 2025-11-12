@@ -10,7 +10,7 @@ import {
   University,
 } from "lucide-react";
 
-import { DashboardButton } from "@/components/dashboard-button";
+import { DashboardButton } from "@/components/presentation/dashboard-button";
 import { Resource } from "@/config/enums";
 import { getUserDisplayName } from "@/features/authentication";
 import { getAuthStateServer } from "@/features/authentication/server";

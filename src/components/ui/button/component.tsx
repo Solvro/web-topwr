@@ -2,7 +2,7 @@ import { Slot } from "@radix-ui/react-slot";
 import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 
-import { Spinner } from "@/components/spinner";
+import { Spinner } from "@/components/core/spinner";
 import { cn } from "@/lib/utils";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "../tooltip";

@@ -1,6 +1,6 @@
 import { UserRound } from "lucide-react";
 
-import { Link } from "@/components/link";
+import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,9 +12,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { AuthState, User } from "@/features/authentication/types";
 
+import { ThemeToggle } from "../core/theme-toggle";
 import { Logo } from "./logo";
 import { LogoutButton } from "./logout-button";
-import { ThemeToggle } from "./theme-toggle";
 
 function UserProfileMenu({ user }: { user: User }) {
   return (

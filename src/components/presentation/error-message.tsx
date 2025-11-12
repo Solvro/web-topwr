@@ -1,13 +1,13 @@
 import type { ReactNode } from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { APPLICATION_ERROR_MESSAGES } from "@/config/constants";
 import { ApplicationError } from "@/config/enums";
 import type { RoutableResource } from "@/types/app";
 import type { LayoutProps } from "@/types/components";
 
-import { BackToHomeButton } from "./abstract/back-to-home-button";
+import { BackToHomeButton } from "./back-to-home-button";
 import { ReturnButton } from "./return-button";
-import { Badge } from "./ui/badge";
 import { UserInfo } from "./user-info";
 
 function ErrorContextInfo({ children }: LayoutProps) {

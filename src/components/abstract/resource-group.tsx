@@ -1,6 +1,6 @@
 import type { LayoutProps } from "@/types/components";
 
-import { BackToHomeButton } from "./back-to-home-button";
+import { BackToHomeButton } from "../presentation/back-to-home-button";
 
 export function AbstractResourceGroup({ children }: LayoutProps) {
   return (

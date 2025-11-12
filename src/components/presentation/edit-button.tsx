@@ -1,6 +1,6 @@
 import { SquarePen } from "lucide-react";
 
-import { Link } from "@/components/link";
+import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { sanitizeId } from "@/lib/helpers/transformations";

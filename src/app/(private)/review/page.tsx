@@ -1,4 +1,4 @@
-import { ErrorMessage } from "@/components/error-message";
+import { ErrorMessage } from "@/components/presentation/error-message";
 import { ApplicationError } from "@/config/enums";
 
 export default function ReviewPage() {

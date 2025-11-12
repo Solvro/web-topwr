@@ -1,4 +1,4 @@
-import { ErrorMessage } from "@/components/error-message";
+import { ErrorMessage } from "@/components/presentation/error-message";
 import { ApplicationError, Resource } from "@/config/enums";
 import type { ResourceCreatePageProps } from "@/types/components";
 

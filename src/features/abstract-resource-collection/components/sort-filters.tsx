@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { BrushCleaning, Check, Plus, Trash } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 
-import { Counter } from "@/components/counter";
-import { SelectClear } from "@/components/select-clear";
+import { Counter } from "@/components/core/counter";
+import { SelectClear } from "@/components/inputs/select-clear";
 import { Button } from "@/components/ui/button";
 import {
   Form,

@@ -17,9 +17,9 @@ import { declineNumeric } from "@/features/polish";
 import { getRoundedDate } from "@/lib/helpers";
 import type { CalendarEvent } from "@/types/calendar";
 
-import { CreateButton } from "../abstract/create-button";
-import { DeleteButtonWithDialog } from "../abstract/delete-button-with-dialog";
-import { EditButton } from "../abstract/edit-button";
+import { CreateButton } from "../presentation/create-button";
+import { DeleteButtonWithDialog } from "../presentation/delete-button-with-dialog";
+import { EditButton } from "../presentation/edit-button";
 
 const formatTime = (event: CalendarEvent, timeType: "startTime" | "endTime") =>
   formatDate(

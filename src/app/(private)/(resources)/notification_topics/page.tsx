@@ -1,5 +1,5 @@
-import { CreateButton } from "@/components/abstract/create-button";
-import { ErrorMessage } from "@/components/error-message";
+import { CreateButton } from "@/components/presentation/create-button";
+import { ErrorMessage } from "@/components/presentation/error-message";
 import { ApplicationError, Resource } from "@/config/enums";
 import type { ResourcePageProps } from "@/types/components";
 

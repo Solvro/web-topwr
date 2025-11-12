@@ -1,7 +1,7 @@
 import "server-only";
 
-import { ContentWrapper } from "@/components/content-wrapper";
-import { Navbar } from "@/components/navbar";
+import { MainContent } from "@/components/main-content";
+import { Navbar } from "@/components/presentation/navbar";
 import type { LayoutProps } from "@/types/components";
 
 import { getAuthStateServer } from "../utils/get-auth-state.server";
@@ -13,9 +13,9 @@ export async function PrivateLayout({ children }: LayoutProps) {
   return (
     <>
       <Navbar authState={authState} />
-      <ContentWrapper>
+      <MainContent>
         <Bouncer route="/">{children}</Bouncer>
-      </ContentWrapper>
+      </MainContent>
     </>
   );
 }

@@ -1,5 +1,5 @@
-import { BackToHomeButton } from "@/components/abstract/back-to-home-button";
 import { Calendar } from "@/components/calendar";
+import { BackToHomeButton } from "@/components/presentation/back-to-home-button";
 import { Resource } from "@/config/enums";
 import type { ResourcePageProps } from "@/types/components";
 

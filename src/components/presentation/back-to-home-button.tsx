@@ -2,7 +2,7 @@ import { ChevronsLeft } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-import { ReturnButton } from "../return-button";
+import { ReturnButton } from "./return-button";
 
 export function BackToHomeButton({
   className,

@@ -1,7 +1,7 @@
-import { BackToHomeButton } from "@/components/abstract/back-to-home-button";
-import { CreateButton } from "@/components/abstract/create-button";
-import { Counter } from "@/components/counter";
-import { ReturnButton } from "@/components/return-button";
+import { Counter } from "@/components/core/counter";
+import { BackToHomeButton } from "@/components/presentation/back-to-home-button";
+import { CreateButton } from "@/components/presentation/create-button";
+import { ReturnButton } from "@/components/presentation/return-button";
 import type { ResourceDeclinableField } from "@/features/polish/types";
 import type {
   CreatableResource,

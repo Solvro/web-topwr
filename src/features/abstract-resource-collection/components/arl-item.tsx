@@ -1,13 +1,13 @@
 import type { ComponentType, Ref } from "react";
 
-import { EditButton } from "@/components/abstract/edit-button";
-import { ToggleOrganizationStatusButton } from "@/components/abstract/toggle-status-button";
+import { EditButton } from "@/components/presentation/edit-button";
 import { Badge } from "@/components/ui/badge";
 import { Resource } from "@/config/enums";
 import { getResourceMetadata } from "@/lib/helpers";
 import type { EditableResource, ListItem, ResourceDataType } from "@/types/app";
 
 import { ArlItemDragHandle } from "./arl-item-drag-handle";
+import { ToggleOrganizationStatusButton } from "./toggle-status-button";
 
 interface ItemProps<T extends EditableResource> {
   ref?: Ref<HTMLLIElement>;

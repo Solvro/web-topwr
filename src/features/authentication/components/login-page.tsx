@@ -1,8 +1,8 @@
 import Image from "next/image";
 
 import SolvroLogo from "@/assets/logo-solvro.png";
-import { Link } from "@/components/link";
-import { Logo } from "@/components/logo";
+import { Link } from "@/components/core/link";
+import { Logo } from "@/components/presentation/logo";
 import { SOLVRO_WEBPAGE_URL } from "@/config/constants";
 
 import { LoginForm } from "./login-form";

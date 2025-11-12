@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import "server-only";
 
-import { ContentWrapper } from "@/components/content-wrapper";
-import { Navbar } from "@/components/navbar";
+import { MainContent } from "@/components/main-content";
+import { Navbar } from "@/components/presentation/navbar";
 import type { LayoutProps } from "@/types/components";
 
 import { getAuthStateServer } from "../utils/get-auth-state.server";
@@ -18,7 +18,7 @@ export async function PublicLayout({ children }: LayoutProps) {
   return (
     <>
       <Navbar authState={null} />
-      <ContentWrapper>{children}</ContentWrapper>
+      <MainContent>{children}</MainContent>
     </>
   );
 }
