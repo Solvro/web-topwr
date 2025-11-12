@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
 
-import { Resource } from "@/config/enums";
+import { Resource } from "@/features/resources";
 
 import { setArlSortFilters } from "../utils/set-arl-filters";
 

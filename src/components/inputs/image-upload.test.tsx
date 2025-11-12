@@ -2,7 +2,7 @@ import userEvent from "@testing-library/user-event";
 import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
-import type { Resource } from "@/config/enums";
+import type { Resource } from "@/features/resources";
 import { getVersionedApiBase } from "@/lib/helpers";
 import { MOCK_FILES, MOCK_IMAGE_FILE } from "@/tests/shared";
 import {

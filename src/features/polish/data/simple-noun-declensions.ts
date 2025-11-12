@@ -1,4 +1,4 @@
-import { Resource } from "@/config/enums";
+import { Resource } from "@/features/resources";
 import { quoteText } from "@/lib/helpers/transformations";
 import type { RecordIntersection } from "@/types/helpers";
 

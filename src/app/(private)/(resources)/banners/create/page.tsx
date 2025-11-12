@@ -1,5 +1,5 @@
-import { Resource } from "@/config/enums";
 import { AbstractResourceForm } from "@/features/abstract-resource-form";
+import { Resource } from "@/features/resources";
 import type { ResourceCreatePageProps } from "@/types/components";
 
 export default function CreateBannerPage(props: ResourceCreatePageProps) {

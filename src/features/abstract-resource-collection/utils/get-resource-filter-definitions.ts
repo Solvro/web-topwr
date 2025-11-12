@@ -1,10 +1,6 @@
-import type { Resource } from "@/config/enums";
-import {
-  getResourceMetadata,
-  typedEntries,
-  typedFromEntries,
-} from "@/lib/helpers";
-import { RESOURCE_SCHEMAS } from "@/schemas";
+import { RESOURCE_SCHEMAS, getResourceMetadata } from "@/features/resources";
+import type { Resource } from "@/features/resources";
+import { typedEntries, typedFromEntries } from "@/lib/helpers";
 import type {
   FormInputBase,
   ResourceSchemaKey,

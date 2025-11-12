@@ -7,13 +7,12 @@ import { toast } from "sonner";
 
 import { fetchMutation } from "@/lib/fetch-utils";
 import type { LogInResponse, MessageResponse } from "@/types/api";
-import type { LoginFormValues } from "@/types/forms";
 
 import { getCurrentUser } from "../api/get-current-user";
 import { AUTH_STATE_COOKIE_NAME } from "../constants";
 import { AuthStateSchema } from "../schemas/auth-state-schema";
 import { authStateAtom } from "../stores/auth-state-atom";
-import type { AuthState, User } from "../types/internal";
+import type { AuthState, LoginFormValues, User } from "../types/internal";
 import { getCookieOptions } from "../utils/get-cookie-options";
 import { getUserDisplayName } from "../utils/get-user-display-name";
 import { parseAuthCookie } from "../utils/parse-auth-cookie";

@@ -5,8 +5,8 @@ import assert from "node:assert/strict";
 import { describe, expect, it } from "vitest";
 
 import { FORM_ERROR_MESSAGES } from "@/config/constants";
-import { Resource } from "@/config/enums";
 import { AbstractResourceForm } from "@/features/abstract-resource-form";
+import { Resource } from "@/features/resources";
 import { MOCK_GUIDE_ARTICLE, MOCK_IMAGE_FILE } from "@/tests/shared";
 import { getToaster, renderWithProviders } from "@/tests/unit";
 

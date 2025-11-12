@@ -1,11 +1,10 @@
-import type { Resource } from "@/config/enums";
 import { getAuthStateNode } from "@/features/authentication/node";
+import type { Resource } from "@/features/resources";
 import {
   getRecursiveRelations,
   getResourceMetadata,
-  getVersionedApiBase,
-  removeLeadingSlash,
-} from "@/lib/helpers";
+} from "@/features/resources";
+import { getVersionedApiBase, removeLeadingSlash } from "@/lib/helpers";
 import type { ErrorResponse, SuccessResponse } from "@/types/api";
 
 interface BaseRequestOptions<T extends Resource>

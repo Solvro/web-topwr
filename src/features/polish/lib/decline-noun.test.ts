@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { Resource } from "@/config/enums";
+import { Resource } from "@/features/resources";
 import { typedEntries } from "@/lib/helpers";
 
 import { NOUN_PHRASE_TRANSFORMATIONS } from "../data/noun-phrase-transformations";

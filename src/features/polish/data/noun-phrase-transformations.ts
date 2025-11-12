@@ -1,4 +1,4 @@
-import { Resource } from "@/config/enums";
+import { Resource } from "@/features/resources";
 
 import type { DeclinableSimpleNoun } from "../types/internal";
 

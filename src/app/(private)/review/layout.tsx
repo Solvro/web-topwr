@@ -1,4 +1,4 @@
-import { AbstractResourceLayout } from "@/components/abstract/resource-layout";
+import { AbstractResourceLayout } from "@/features/resources";
 import type { LayoutProps } from "@/types/components";
 
 export default function ReviewLayout({ children }: LayoutProps) {

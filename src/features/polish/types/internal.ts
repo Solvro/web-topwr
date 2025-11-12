@@ -1,5 +1,5 @@
-import type { Resource } from "@/config/enums";
-import type { ResourceDataType } from "@/types/app";
+import type { Resource } from "@/features/resources";
+import type { ResourceDataType } from "@/features/resources/types";
 
 import type { DETERMINER_DECLENSIONS } from "../data/determiner-declensions";
 import type { NOUN_PHRASE_TRANSFORMATIONS } from "../data/noun-phrase-transformations";

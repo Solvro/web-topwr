@@ -1,7 +1,8 @@
 import type { z } from "zod";
 
-import type { Resource } from "@/config/enums";
 import type { DeclinableNoun } from "@/features/polish/types";
+import type { Resource } from "@/features/resources";
+import type { Id } from "@/features/resources/types";
 import type {
   FormInputBase,
   ResourceSchemaKey,
@@ -32,3 +33,9 @@ export type FilterDefinitions<T extends Resource = Resource> = Record<
         }
     )
 >;
+
+export interface ListItem {
+  id: Id;
+  name?: string;
+  shortDescription?: string | null;
+}

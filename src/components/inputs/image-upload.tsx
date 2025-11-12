@@ -13,13 +13,13 @@ import { InputSlot } from "@/components/inputs/input-slot";
 import { Button } from "@/components/ui/button";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { Resource } from "@/config/enums";
 import { ImageType } from "@/config/enums";
 import { declineNoun } from "@/features/polish";
+import type { Resource } from "@/features/resources";
+import type { ResourceFormValues } from "@/features/resources/types";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import { uploadFile } from "@/lib/helpers";
-import type { ResourceFormValues } from "@/types/app";
 import type { LayoutProps } from "@/types/components";
 import type { ResourceSchemaKey } from "@/types/forms";
 

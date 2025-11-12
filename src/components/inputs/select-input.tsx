@@ -14,9 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Resource } from "@/config/enums";
+import type { Resource } from "@/features/resources";
+import type { ResourceFormValues } from "@/features/resources/types";
 import { isUnsetEnumField, tryParseNumber } from "@/lib/helpers";
-import type { ResourceFormValues } from "@/types/app";
 
 export function SelectInput<T extends Resource>({
   label,

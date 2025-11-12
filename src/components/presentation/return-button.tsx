@@ -5,8 +5,8 @@ import type { Route } from "next";
 import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
+import type { RoutableResource } from "@/features/resources/types";
 import { cn } from "@/lib/utils";
-import type { RoutableResource } from "@/types/app";
 
 export function ReturnButton({
   returnLabel = "Powrót do",

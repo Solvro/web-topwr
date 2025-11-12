@@ -1,17 +1,15 @@
 import type { ArrayPath, Path } from "react-hook-form";
 import type { z } from "zod";
 
-import type { ImageType, Resource } from "@/config/enums";
-import type { LoginSchema } from "@/schemas";
-
+import type { ImageType } from "@/config/enums";
+import type { Resource } from "@/features/resources";
 import type {
-  AppZodObject,
   RelationDefinitions,
   ResourceFormValues,
   ResourceSchema,
-} from "./app";
+} from "@/features/resources/types";
 
-export type LoginFormValues = z.infer<typeof LoginSchema>;
+export type AppZodObject = z.ZodObject<z.ZodRawShape>;
 
 /**
  * Extracts the base Zod type by unwrapping Nullable, Default, and Optional wrappers.

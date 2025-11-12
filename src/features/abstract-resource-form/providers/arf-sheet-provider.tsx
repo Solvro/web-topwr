@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ComponentProps } from "react";
 
-import type { Resource } from "@/config/enums";
+import type { Resource } from "@/features/resources";
 
 import { renderAbstractResourceForm } from "../actions/render-abstract-resource-form";
 import { ArfSheet } from "../components/arf-sheet";

@@ -11,9 +11,12 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { MultiSelect } from "@/components/ui/multi-select";
-import type { Resource } from "@/config/enums";
-import { getResourceMetadata } from "@/lib/helpers";
-import type { ArrayResources, ResourceFormValues } from "@/types/app";
+import type { Resource } from "@/features/resources";
+import { getResourceMetadata } from "@/features/resources";
+import type {
+  ArrayResources,
+  ResourceFormValues,
+} from "@/features/resources/types";
 import type { ResourceRelations } from "@/types/components";
 import type {
   ArrayInputField,

@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CALENDAR_MAX_EVENTS_PER_DAY } from "@/config/constants";
-import type { Resource } from "@/config/enums";
+import type { Resource } from "@/features/resources";
 import type { CalendarEvent, DateObject } from "@/types/calendar";
 
 import { AllEventsModal } from "./all-events-modal";

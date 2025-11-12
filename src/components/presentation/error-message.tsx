@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { APPLICATION_ERROR_MESSAGES } from "@/config/constants";
 import { ApplicationError } from "@/config/enums";
-import type { RoutableResource } from "@/types/app";
+import type { RoutableResource } from "@/features/resources/types";
 import type { LayoutProps } from "@/types/components";
 
 import { BackToHomeButton } from "./back-to-home-button";

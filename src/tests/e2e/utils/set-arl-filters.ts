@@ -1,6 +1,5 @@
 import type { Page } from "@playwright/test";
 
-import type { Resource } from "@/config/enums";
 import {
   SORT_DIRECTION_NAMES,
   SORT_FILTER_DEFAULT_VALUES,
@@ -13,6 +12,7 @@ import type {
   SortFiltersFormValuesNarrowed,
 } from "@/features/abstract-resource-collection/types";
 import { declineNoun } from "@/features/polish";
+import type { Resource } from "@/features/resources";
 import type { ResourceSchemaKey } from "@/types/forms";
 
 import { selectOptionByLabel } from "./select-option-by-label";

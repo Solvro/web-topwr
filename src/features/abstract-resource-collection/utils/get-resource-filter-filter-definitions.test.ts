@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { Resource } from "@/config/enums";
+import { Resource } from "@/features/resources";
 
 import { FilterType } from "../enums";
 import type { FilterDefinitions } from "../types/internal";

@@ -1,4 +1,4 @@
-import type { Id } from "@/types/app";
+import type { Id } from "@/features/resources/types";
 
 export const removeTrailingSlash = (path: string): string =>
   path.replace(/\/+$/, "");

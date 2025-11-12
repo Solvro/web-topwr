@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 import { DEFAULT_COLOR } from "@/config/constants";
-import { Resource } from "@/config/enums";
 import { AbstractResourceForm } from "@/features/abstract-resource-form";
-import { getResourceMetadata, typedEntries } from "@/lib/helpers";
+import { Resource, getResourceMetadata } from "@/features/resources";
+import type { ResourceFormValues } from "@/features/resources/types";
+import { typedEntries } from "@/lib/helpers";
 import { expectInputValue, renderWithProviders } from "@/tests/unit";
-import type { ResourceFormValues } from "@/types/app";
 import type { FormInputBase } from "@/types/forms";
 
 const DEFAULT_BANNER: ResourceFormValues<Resource.Banners> = {

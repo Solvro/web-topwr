@@ -1,11 +1,17 @@
 import type { ComponentType, Ref } from "react";
 
-import { EditButton } from "@/components/presentation/edit-button";
 import { Badge } from "@/components/ui/badge";
-import { Resource } from "@/config/enums";
-import { getResourceMetadata } from "@/lib/helpers";
-import type { EditableResource, ListItem, ResourceDataType } from "@/types/app";
+import {
+  EditButton,
+  Resource,
+  getResourceMetadata,
+} from "@/features/resources";
+import type {
+  EditableResource,
+  ResourceDataType,
+} from "@/features/resources/types";
 
+import type { ListItem } from "../types/internal";
 import { ArlItemDragHandle } from "./arl-item-drag-handle";
 import { ToggleOrganizationStatusButton } from "./toggle-status-button";
 

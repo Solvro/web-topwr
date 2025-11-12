@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
-import { Resource } from "@/config/enums";
+import { Resource } from "@/features/resources";
 import { getLoadingIndicator, renderWithProviders } from "@/tests/unit";
 
 import { fetchPaginatedResources } from "../api/fetch-paginated-resources";

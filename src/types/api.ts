@@ -1,7 +1,9 @@
-import type { Resource } from "@/config/enums";
 import type { User } from "@/features/authentication/types";
-
-import type { ResourceDataType, ResourceDataWithRelations } from "./app";
+import type { Resource } from "@/features/resources";
+import type {
+  ResourceDataType,
+  ResourceDataWithRelations,
+} from "@/features/resources/types";
 
 // Types Source: backend-topwr
 export interface MessageResponse {

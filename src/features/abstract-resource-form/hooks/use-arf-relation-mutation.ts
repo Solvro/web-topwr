@@ -1,18 +1,21 @@
 import { toast } from "sonner";
 
-import { RelationType } from "@/config/enums";
-import type { Resource } from "@/config/enums";
+import {
+  RelationType,
+  getResourceQueryName,
+  getResourceRelationDefinitions,
+} from "@/features/resources";
+import type { Resource } from "@/features/resources";
+import type {
+  Id,
+  ResourceRelation,
+  XToManyResource,
+} from "@/features/resources/types";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { fetchMutation } from "@/lib/fetch-utils";
 import { getToastMessages } from "@/lib/get-toast-messages";
-import {
-  camelToSnakeCase,
-  getResourceQueryName,
-  getResourceRelationDefinitions,
-  sanitizeId,
-} from "@/lib/helpers";
+import { camelToSnakeCase, sanitizeId } from "@/lib/helpers";
 import type { ModifyResourceResponse } from "@/types/api";
-import type { Id, ResourceRelation, XToManyResource } from "@/types/app";
 
 import { useArfRelation } from "./use-arf-relation";
 

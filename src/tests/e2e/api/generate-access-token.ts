@@ -1,6 +1,6 @@
+import type { LoginFormValues } from "@/features/authentication/types";
 import { fetchMutation } from "@/lib/fetch-utils";
 import type { LogInResponse } from "@/types/api";
-import type { LoginFormValues } from "@/types/forms";
 
 import { getTestUserCredentials } from "../utils/get-test-user-credentials";
 

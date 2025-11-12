@@ -1,5 +1,4 @@
-import type { Resource } from "@/config/enums";
-import { fetchResources, typedFromEntries } from "@/lib/helpers";
+import type { Resource } from "@/features/resources";
 import type {
   RelationDefinition,
   RelationDefinitions,
@@ -7,7 +6,8 @@ import type {
   ResourcePivotRelation,
   ResourcePivotRelationData,
   ResourceRelation,
-} from "@/types/app";
+} from "@/features/resources/types";
+import { fetchResources, typedFromEntries } from "@/lib/helpers";
 
 import { isPivotRelationDefinition } from "../utils/is-pivot-relation-definition";
 import { isRelationPivotDefinition } from "../utils/is-relation-pivot-definition";

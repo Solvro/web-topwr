@@ -4,8 +4,12 @@
  */
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 
-import type { Resource } from "@/config/enums";
-import type { Id, ResourceDataType, ResourceRelation } from "@/types/app";
+import type { Resource } from "@/features/resources";
+import type {
+  Id,
+  ResourceDataType,
+  ResourceRelation,
+} from "@/features/resources/types";
 import type { ResourceRelations } from "@/types/components";
 import type { ValueOf } from "@/types/helpers";
 

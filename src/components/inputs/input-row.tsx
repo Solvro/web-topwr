@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import type { Resource } from "@/config/enums";
+import type { Resource } from "@/features/resources";
 import { typedEntries } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
 import type { LayoutProps } from "@/types/components";

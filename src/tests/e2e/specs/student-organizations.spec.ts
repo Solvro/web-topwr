@@ -9,11 +9,15 @@ import {
   OrganizationType,
   Resource,
   UniversityBranch,
-} from "@/config/enums";
+  getResourceMetadata,
+} from "@/features/resources";
+import type {
+  Id,
+  ResourceDataType,
+  ResourceFormValues,
+} from "@/features/resources/types";
 import { FetchError, fetchMutation } from "@/lib/fetch-utils";
-import { getResourceMetadata } from "@/lib/helpers";
 import type { MessageResponse, ModifyResourceResponse } from "@/types/api";
-import type { Id, ResourceDataType, ResourceFormValues } from "@/types/app";
 import type { NonNullableValues } from "@/types/helpers";
 
 import { deleteAccessToken } from "../api/delete-access-token";

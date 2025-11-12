@@ -10,6 +10,7 @@ import type { z } from "zod";
 
 import type { ROUTE_PERMISSIONS } from "../data/route-permissions";
 import type { AuthStateSchema } from "../schemas/auth-state-schema";
+import type { LoginSchema } from "../schemas/login-schema";
 import type { UserSchema } from "../schemas/user-schema";
 
 export type RequestCookie = NextRequestCookie;
@@ -19,5 +20,6 @@ export type CookieOptions = Partial<ResponseCookie> & Cookies.CookieAttributes;
 
 export type RoutePermission = keyof typeof ROUTE_PERMISSIONS;
 
-export type User = z.infer<typeof UserSchema>;
 export type AuthState = z.infer<typeof AuthStateSchema>;
+export type LoginFormValues = z.infer<typeof LoginSchema>;
+export type User = z.infer<typeof UserSchema>;

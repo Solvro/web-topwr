@@ -8,16 +8,14 @@ import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import type { SetOptionSelected } from "@/components/ui/multi-select";
 import { SelectItem } from "@/components/ui/select";
-import { RelationType } from "@/config/enums";
-import type { Resource } from "@/config/enums";
 import { declineNoun } from "@/features/polish";
 import {
+  RelationType,
   getResourceMetadata,
   getResourcePk,
   getResourceQueryName,
-  sanitizeId,
-  toTitleCase,
-} from "@/lib/helpers";
+} from "@/features/resources";
+import type { Resource } from "@/features/resources";
 import type {
   Id,
   RelationDefinition,
@@ -27,7 +25,8 @@ import type {
   ResourcePivotRelationData,
   ResourceRelation,
   XToManyResource,
-} from "@/types/app";
+} from "@/features/resources/types";
+import { sanitizeId, toTitleCase } from "@/lib/helpers";
 import type { ResourceFormProps, ResourceRelations } from "@/types/components";
 
 import { useArfRelation } from "../hooks/use-arf-relation";

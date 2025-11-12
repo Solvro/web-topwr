@@ -21,17 +21,17 @@ import { CSS } from "@dnd-kit/utilities";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
-import { fetchMutation } from "@/lib/fetch-utils";
-import { getToastMessages } from "@/lib/get-toast-messages";
-import { sanitizeId } from "@/lib/helpers";
-import type { ModifyResourceResponse } from "@/types/api";
 import type {
   EditableResource,
   Id,
   OrderableResource,
   ResourceDataType,
-} from "@/types/app";
+} from "@/features/resources/types";
+import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
+import { fetchMutation } from "@/lib/fetch-utils";
+import { getToastMessages } from "@/lib/get-toast-messages";
+import { sanitizeId } from "@/lib/helpers";
+import type { ModifyResourceResponse } from "@/types/api";
 
 import { AbstractResourceListItems, ArlItem } from "./arl-item";
 

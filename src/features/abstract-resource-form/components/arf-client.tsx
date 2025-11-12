@@ -7,21 +7,17 @@ import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 
-import { DeleteButtonWithDialog } from "@/components/presentation/delete-button-with-dialog";
 import { ReturnButton } from "@/components/presentation/return-button";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import type { Resource } from "@/config/enums";
 import { declineNoun } from "@/features/polish";
-import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
-import { useRouter } from "@/hooks/use-router";
-import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
-import { fetchMutation } from "@/lib/fetch-utils";
-import { getToastMessages } from "@/lib/get-toast-messages";
-import { getResourceMetadata, getResourcePk, sanitizeId } from "@/lib/helpers";
-import { cn } from "@/lib/utils";
-import { RESOURCE_SCHEMAS } from "@/schemas";
-import type { ModifyResourceResponse } from "@/types/api";
+import type { Resource } from "@/features/resources";
+import {
+  DeleteButtonWithDialog,
+  RESOURCE_SCHEMAS,
+  getResourceMetadata,
+  getResourcePk,
+} from "@/features/resources";
 import type {
   EditableResource,
   Id,
@@ -29,7 +25,15 @@ import type {
   ResourceFormValues,
   ResourcePivotRelationData,
   RoutableResource,
-} from "@/types/app";
+} from "@/features/resources/types";
+import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
+import { useRouter } from "@/hooks/use-router";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
+import { fetchMutation } from "@/lib/fetch-utils";
+import { getToastMessages } from "@/lib/get-toast-messages";
+import { sanitizeId } from "@/lib/helpers";
+import { cn } from "@/lib/utils";
+import type { ModifyResourceResponse } from "@/types/api";
 import type {
   ExistingImages,
   ResourceFormProps,

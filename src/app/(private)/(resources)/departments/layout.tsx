@@ -1,5 +1,5 @@
-import { AbstractResourceLayout } from "@/components/abstract/resource-layout";
-import { Resource } from "@/config/enums";
+import { Resource } from "@/features/resources";
+import { AbstractResourceLayout } from "@/features/resources/server";
 import type { LayoutProps } from "@/types/components";
 
 export default function DepartmentsLayout(props: LayoutProps) {

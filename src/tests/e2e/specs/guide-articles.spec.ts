@@ -3,12 +3,15 @@ import { expect, test } from "@playwright/test";
 import type { Locator, Page, Response } from "@playwright/test";
 
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
-import { Resource } from "@/config/enums";
+import { Resource, getResourceMetadata } from "@/features/resources";
+import type {
+  ResourceDataType,
+  ResourceFormValues,
+} from "@/features/resources/types";
 import { FetchError, fetchMutation } from "@/lib/fetch-utils";
-import { getResourceMetadata, sanitizeId, uploadFile } from "@/lib/helpers";
+import { sanitizeId, uploadFile } from "@/lib/helpers";
 import { MOCK_IMAGE_FILE, MOCK_IMAGE_KEY } from "@/tests/shared";
 import type { MessageResponse, ModifyResourceResponse } from "@/types/api";
-import type { ResourceDataType, ResourceFormValues } from "@/types/app";
 import type { NonNullableValues } from "@/types/helpers";
 
 import { deleteAccessToken } from "../api/delete-access-token";

@@ -1,11 +1,11 @@
-import { RelationType } from "@/config/enums";
-import type { Resource } from "@/config/enums";
+import { RelationType } from "@/features/resources";
+import type { Resource } from "@/features/resources";
 import type {
   PivotDataDefinition,
   PivotRelationDefinition,
   RelationDefinition,
   ResourceRelation,
-} from "@/types/app";
+} from "@/features/resources/types";
 
 export const isPivotRelationDefinition = <
   T extends Resource,

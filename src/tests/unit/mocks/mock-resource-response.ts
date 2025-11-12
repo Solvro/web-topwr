@@ -2,9 +2,12 @@ import { faker } from "@faker-js/faker";
 import { HttpResponse } from "msw";
 import type { JsonBodyType, StrictRequest } from "msw";
 
-import type { Resource } from "@/config/enums";
+import type { Resource } from "@/features/resources";
+import type {
+  ResourceDataType,
+  ResourceFormValues,
+} from "@/features/resources/types";
 import type { DatedResource } from "@/types/api";
-import type { ResourceDataType, ResourceFormValues } from "@/types/app";
 
 export async function mockResourceResponse<T extends Resource>(
   request: StrictRequest<ResourceFormValues<T>>,

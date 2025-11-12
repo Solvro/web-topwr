@@ -6,10 +6,12 @@ import {
   UsersRound,
 } from "lucide-react";
 
-import { AbstractResourceGroup } from "@/components/abstract/resource-group";
 import { DashboardButton } from "@/components/presentation/dashboard-button";
-import { Resource } from "@/config/enums";
-import { getManagingResourceLabel } from "@/lib/helpers";
+import {
+  AbstractResourceGroup,
+  Resource,
+  getManagingResourceLabel,
+} from "@/features/resources";
 import type { ResourcePageProps } from "@/types/components";
 
 export default function AboutUsPage(_props: ResourcePageProps) {

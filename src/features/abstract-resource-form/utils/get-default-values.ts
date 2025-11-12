@@ -1,7 +1,9 @@
-import { RelationType } from "@/config/enums";
-import type { Resource } from "@/config/enums";
-import { getResourceRelationDefinitions } from "@/lib/helpers";
-import type { ResourceDefaultValues } from "@/types/app";
+import {
+  RelationType,
+  getResourceRelationDefinitions,
+} from "@/features/resources";
+import type { Resource } from "@/features/resources";
+import type { ResourceDefaultValues } from "@/features/resources/types";
 
 import type { ArfRelationContextType } from "../types/internal";
 

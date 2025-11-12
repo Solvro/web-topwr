@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
 import { WEEKDAYS } from "@/config/constants";
-import type { Resource } from "@/config/enums";
+import type { Resource } from "@/features/resources";
 import { fetchQuery } from "@/lib/fetch-utils";
 import { getMonthByNumberAndYear } from "@/lib/helpers";
 import type { ApiCalendarEvent } from "@/types/api";

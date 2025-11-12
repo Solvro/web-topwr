@@ -1,5 +1,5 @@
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
-import type { Resource } from "@/config/enums";
+import type { Resource } from "@/features/resources";
 import { fetchQuery } from "@/lib/fetch-utils";
 import type {
   GetResourcesResponse,

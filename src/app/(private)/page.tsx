@@ -11,9 +11,9 @@ import {
 } from "lucide-react";
 
 import { DashboardButton } from "@/components/presentation/dashboard-button";
-import { Resource } from "@/config/enums";
 import { getUserDisplayName } from "@/features/authentication";
 import { getAuthStateServer } from "@/features/authentication/server";
+import { Resource } from "@/features/resources";
 
 export default async function Home() {
   const authState = await getAuthStateServer();

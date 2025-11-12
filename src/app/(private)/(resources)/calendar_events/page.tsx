@@ -1,6 +1,6 @@
 import { Calendar } from "@/components/calendar";
 import { BackToHomeButton } from "@/components/presentation/back-to-home-button";
-import { Resource } from "@/config/enums";
+import { Resource } from "@/features/resources";
 import type { ResourcePageProps } from "@/types/components";
 
 export default function CalendarEventsPage(props: ResourcePageProps) {

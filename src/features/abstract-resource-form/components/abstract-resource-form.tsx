@@ -1,13 +1,10 @@
 import { get } from "react-hook-form";
 
 import { ApiImage } from "@/components/api-image/server";
-import type { Resource } from "@/config/enums";
-import {
-  getResourceMetadata,
-  tryParseNumber,
-  typedEntries,
-} from "@/lib/helpers";
-import type { ResourceDefaultValues } from "@/types/app";
+import { getResourceMetadata } from "@/features/resources";
+import type { Resource } from "@/features/resources";
+import type { ResourceDefaultValues } from "@/features/resources/types";
+import { tryParseNumber, typedEntries } from "@/lib/helpers";
 import type {
   ExistingImages,
   ResourceCreatePageProps,

@@ -3,7 +3,7 @@
 import type { Dispatch, SetStateAction } from "react";
 
 import { Sheet } from "@/components/ui/sheet";
-import type { Resource } from "@/config/enums";
+import type { Resource } from "@/features/resources";
 
 import type { ArfSheetData } from "../types/internal";
 import { ArfSheetContent } from "./arf-sheet-content";

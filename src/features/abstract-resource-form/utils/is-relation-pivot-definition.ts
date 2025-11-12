@@ -1,7 +1,7 @@
 import type {
   PivotDataDefinition,
   RelationPivotDataDefinition,
-} from "@/types/app";
+} from "@/features/resources/types";
 
 export const isRelationPivotDefinition = (
   definition: PivotDataDefinition,

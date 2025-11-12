@@ -1,15 +1,15 @@
 import type { ReactNode } from "react";
 import type { z } from "zod";
 
-import type { Resource } from "@/config/enums";
 import type { RoutePermission } from "@/features/authentication/types";
-
+import type { Resource } from "@/features/resources";
 import type {
   RelatedResource,
   ResourceDataType,
   ResourceDataWithRelations,
   RoutableResource,
-} from "./app";
+} from "@/features/resources/types";
+
 import type { ResourceSchemaKey } from "./forms";
 
 export type LayoutProps = Readonly<{

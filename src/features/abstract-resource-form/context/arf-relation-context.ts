@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-import type { Resource } from "@/config/enums";
+import type { Resource } from "@/features/resources";
 
 import type { ArfRelationContextType } from "../types/internal";
 

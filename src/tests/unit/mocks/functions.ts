@@ -1,8 +1,11 @@
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { vi } from "vitest";
 
-import type { Resource } from "@/config/enums";
-import type { ResourceDataType, ResourceFormValues } from "@/types/app";
+import type { Resource } from "@/features/resources";
+import type {
+  ResourceDataType,
+  ResourceFormValues,
+} from "@/features/resources/types";
 
 export const MOCK_USE_ROUTER: AppRouterInstance = {
   back: vi.fn(),

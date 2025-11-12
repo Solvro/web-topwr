@@ -1,13 +1,11 @@
-import { RelationType } from "@/config/enums";
-import type { Resource } from "@/config/enums";
 import {
-  fetchResources,
+  RelationType,
   getResourceArrayInputResources,
   getResourceRelationDefinitions,
-  typedEntries,
-  typedFromEntries,
-} from "@/lib/helpers";
-import type { ArrayResources } from "@/types/app";
+} from "@/features/resources";
+import type { Resource } from "@/features/resources";
+import type { ArrayResources } from "@/features/resources/types";
+import { fetchResources, typedEntries, typedFromEntries } from "@/lib/helpers";
 import type { ResourceRelations } from "@/types/components";
 
 import type { RelationDataTuple } from "../types/internal";

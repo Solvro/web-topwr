@@ -1,5 +1,6 @@
 import { ErrorMessage } from "@/components/presentation/error-message";
-import { ApplicationError, Resource } from "@/config/enums";
+import { ApplicationError } from "@/config/enums";
+import { Resource } from "@/features/resources";
 import type { ResourceCreatePageProps } from "@/types/components";
 
 export default function CreateNotificationPage(_: ResourceCreatePageProps) {

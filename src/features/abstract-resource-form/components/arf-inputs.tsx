@@ -21,16 +21,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { MinimalTiptapEditor } from "@/components/ui/minimal-tiptap";
 import { Textarea } from "@/components/ui/textarea";
-import type { Resource } from "@/config/enums";
-import { getResourceMetadata } from "@/lib/helpers";
-import { cn } from "@/lib/utils";
+import type { Resource } from "@/features/resources";
+import { getResourceMetadata } from "@/features/resources";
 import type {
   RelationDefinition,
   ResourceDefaultValues,
   ResourceFormValues,
   ResourcePivotRelationData,
   ResourceRelation,
-} from "@/types/app";
+} from "@/features/resources/types";
+import { cn } from "@/lib/utils";
 import type { ExistingImages, ResourceRelations } from "@/types/components";
 
 import { useArfRelation } from "../hooks/use-arf-relation";

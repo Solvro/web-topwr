@@ -1,7 +1,7 @@
 import type { Route } from "next";
 
-import { Resource } from "@/config/enums";
-import type { RoutableResource } from "@/types/app";
+import { Resource } from "@/features/resources";
+import type { RoutableResource } from "@/features/resources/types";
 import type { RecordIntersection } from "@/types/helpers";
 
 export const ROUTE_PERMISSIONS = {

@@ -2,7 +2,7 @@
 
 import { useContext } from "react";
 
-import type { Resource } from "@/config/enums";
+import type { Resource } from "@/features/resources";
 
 import { ArfRelationContext } from "../context/arf-relation-context";
 import type { ArfRelationContextType } from "../types/internal";

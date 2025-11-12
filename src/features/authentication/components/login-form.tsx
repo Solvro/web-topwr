@@ -19,10 +19,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
-import { LoginSchema } from "@/schemas";
-import type { LoginFormValues } from "@/types/forms";
 
 import { useAuthentication } from "../hooks/use-authentication";
+import { LoginSchema } from "../schemas/login-schema";
+import type { LoginFormValues } from "../types/internal";
 
 export function LoginForm() {
   const router = useRouter();

@@ -12,23 +12,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Resource } from "@/config/enums";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
-import { useRouter } from "@/hooks/use-router";
 import {
   getResourceMetadata,
   getResourceRelationDefinitions,
-  isEmptyValue,
-  isUnsetEnumField,
-  tryParseNumber,
-} from "@/lib/helpers";
+} from "@/features/resources";
+import type { Resource } from "@/features/resources";
 import type {
   Id,
   ResourceDataType,
   ResourcePivotRelation,
   ResourcePivotRelationData,
   ResourceRelation,
-} from "@/types/app";
+} from "@/features/resources/types";
+import { useRouter } from "@/hooks/use-router";
+import { isEmptyValue, isUnsetEnumField, tryParseNumber } from "@/lib/helpers";
 
 import { useArfRelationMutation } from "../hooks/use-arf-relation-mutation";
 import { isPivotRelationDefinition } from "../utils/is-pivot-relation-definition";

@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import type { Resource } from "@/config/enums";
+import type { Resource } from "@/features/resources";
 
 import { ArfSheetContext } from "../context/arf-sheet-context";
 import type { ArfSheetContextType } from "../types/internal";

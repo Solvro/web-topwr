@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
 
-import type { Resource } from "@/config/enums";
 import type { AuthState, User } from "@/features/authentication/types";
+import type { Resource } from "@/features/resources";
+import type { ResourceFormValues } from "@/features/resources/types";
 import type { FileEntry } from "@/types/api";
-import type { ResourceFormValues } from "@/types/app";
 
 import { generateFileEntry } from "./generate-file-entry";
 import { mockDatedResource } from "./mock-dated-resource";

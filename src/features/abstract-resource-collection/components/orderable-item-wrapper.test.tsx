@@ -4,11 +4,10 @@ import { act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { Resource } from "@/config/enums";
-import { RESOURCE_METADATA } from "@/config/resource-metadata";
+import { RESOURCE_METADATA, Resource } from "@/features/resources";
+import type { ResourceDataType } from "@/features/resources/types";
 import { mockDatedResource } from "@/tests/shared";
 import { renderWithProviders } from "@/tests/unit";
-import type { ResourceDataType } from "@/types/app";
 
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
 

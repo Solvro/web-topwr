@@ -1,8 +1,14 @@
-import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
+import type { Resource } from "@/features/resources";
+import type {
+  Id,
+  ResourceDataType,
+  ResourceDataWithRelations,
+} from "@/features/resources/types";
 import { fetchMutation, fetchQuery } from "@/lib/fetch-utils";
 import type { GetResourcesWithRelationsResponse } from "@/types/api";
-import type { ResourceDataType, ResourceDataWithRelations } from "@/types/app";
+
+import { sanitizeId } from "./transformations";
 
 /**
  * Determines the fetch configuration to use based on the provided arguments.
@@ -75,3 +81,15 @@ export async function fetchResources<
 
 export const getVersionedApiBase = (version = 1) =>
   `${env.NEXT_PUBLIC_API_URL}/api/v${String(version)}`;
+
+/** Generates the key for Tanstack query or mutation operations. */
+export const getKey = {
+  query: {
+    resourceList: (resource: Resource) => `${resource}-list-page`,
+    pivotData: (resource: Resource) => `${resource}-pivot-data`,
+  },
+  mutation: {
+    deleteResource: (resource: Resource, id: Id) =>
+      `delete__${resource}__${sanitizeId(id)}`,
+  },
+};

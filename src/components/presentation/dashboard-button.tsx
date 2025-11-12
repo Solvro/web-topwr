@@ -5,9 +5,10 @@ import type { Route } from "next";
 import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
-import { getManagingResourceLabel, toTitleCase } from "@/lib/helpers";
+import { getManagingResourceLabel } from "@/features/resources";
+import type { RoutableResource } from "@/features/resources/types";
+import { toTitleCase } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
-import type { RoutableResource } from "@/types/app";
 
 export function DashboardButton({
   icon: Icon,

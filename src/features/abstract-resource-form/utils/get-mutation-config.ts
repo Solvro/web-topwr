@@ -1,21 +1,20 @@
 import { FilePlus2, Save } from "lucide-react";
 import { get } from "react-hook-form";
 
-import { RelationType } from "@/config/enums";
-import type { Resource } from "@/config/enums";
 import {
-  camelToSnakeCase,
+  RelationType,
   getResourceMetadata,
   getResourcePk,
   getResourceQueryName,
   getResourceRelationDefinitions,
-  sanitizeId,
-} from "@/lib/helpers";
+} from "@/features/resources";
+import type { Resource } from "@/features/resources";
 import type {
   ResourceDataType,
   ResourceDefaultValues,
   XToManyResource,
-} from "@/types/app";
+} from "@/features/resources/types";
+import { camelToSnakeCase, sanitizeId } from "@/lib/helpers";
 
 import type { ArfRelationContextType } from "../types/internal";
 import { isExistingItem } from "./is-existing-item";

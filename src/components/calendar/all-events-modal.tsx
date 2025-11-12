@@ -12,14 +12,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Resource } from "@/config/enums";
 import { declineNumeric } from "@/features/polish";
+import { Resource } from "@/features/resources";
+import {
+  CreateButton,
+  DeleteButtonWithDialog,
+  EditButton,
+} from "@/features/resources";
 import { getRoundedDate } from "@/lib/helpers";
 import type { CalendarEvent } from "@/types/calendar";
-
-import { CreateButton } from "../presentation/create-button";
-import { DeleteButtonWithDialog } from "../presentation/delete-button-with-dialog";
-import { EditButton } from "../presentation/edit-button";
 
 const formatTime = (event: CalendarEvent, timeType: "startTime" | "endTime") =>
   formatDate(

@@ -3,9 +3,9 @@ import { Archive, ArchiveRestore } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import type { Resource } from "@/config/enums";
-import { OrganizationStatus } from "@/config/enums";
 import { declineNoun } from "@/features/polish";
+import type { Resource } from "@/features/resources";
+import { OrganizationStatus } from "@/features/resources";
 import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { useRouter } from "@/hooks/use-router";
 import { fetchMutation } from "@/lib/fetch-utils";
