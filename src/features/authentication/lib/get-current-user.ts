@@ -1,7 +1,7 @@
 import { fetchQuery } from "@/lib/fetch-utils";
 import type { GetUserResponse } from "@/types/api";
 
-import type { User } from "../types";
+import type { User } from "../types/internal";
 
 /** Fetches the details of the currently logged in user from the API. */
 export async function getCurrentUser(

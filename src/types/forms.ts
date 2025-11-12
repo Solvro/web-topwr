@@ -2,11 +2,7 @@ import type { ArrayPath, Path } from "react-hook-form";
 import type { z } from "zod";
 
 import type { ImageType, Resource } from "@/config/enums";
-import type {
-  FilteredFieldSchema,
-  LoginSchema,
-  SortFiltersSchema,
-} from "@/schemas";
+import type { LoginSchema } from "@/schemas";
 
 import type {
   AppZodObject,
@@ -14,14 +10,8 @@ import type {
   ResourceFormValues,
   ResourceSchema,
 } from "./app";
-import type { DeclinableNoun } from "./polish";
 
 export type LoginFormValues = z.infer<typeof LoginSchema>;
-export type FilteredField = z.infer<typeof FilteredFieldSchema>;
-export type SortFiltersFormValues = z.infer<typeof SortFiltersSchema>;
-export type SortFiltersFormValuesNarrowed = SortFiltersFormValues & {
-  sortBy: DeclinableNoun | null | undefined;
-};
 
 /**
  * Extracts the base Zod type by unwrapping Nullable, Default, and Optional wrappers.

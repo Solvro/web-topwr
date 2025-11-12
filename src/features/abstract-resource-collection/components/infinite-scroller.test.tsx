@@ -4,12 +4,12 @@ import { describe, expect, it } from "vitest";
 
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import { Resource } from "@/config/enums";
-import { fetchPaginatedResources } from "@/lib/helpers";
 import {
   getLoadingIndicator,
   renderWithProviders,
 } from "@/tests/helpers/react";
 
+import { fetchPaginatedResources } from "../lib/fetch-paginated-resources";
 import { InfiniteScroller } from "./infinite-scroller";
 
 const resource = Resource.StudentOrganizations;

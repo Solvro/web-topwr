@@ -6,7 +6,7 @@ import { GripHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ListItem } from "@/types/app";
 
-export function DragHandle({ item }: { item: ListItem }) {
+export function ArlItemDragHandle({ item }: { item: ListItem }) {
   const { attributes, listeners, isDragging } = useSortable({
     id: item.id,
   });

@@ -2,22 +2,22 @@ import { expect } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import assert from "node:assert/strict";
 
+import { GrammaticalCase } from "@/config/enums";
+import type { Resource } from "@/config/enums";
+import { env } from "@/config/env";
 import {
   SORT_DIRECTION_NAMES,
   SORT_FILTER_DEFAULT_VALUES,
   SORT_FILTER_LABEL_DECLENSION_CASES,
-} from "@/config/constants";
-import { GrammaticalCase } from "@/config/enums";
-import type { Resource } from "@/config/enums";
-import { env } from "@/config/env";
-import { getResourceFilterDefinitions } from "@/lib/filter-definitions";
-import { getSearchParametersFromSortFilters } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
+} from "@/features/abstract-resource-collection";
+import { getResourceFilterDefinitions } from "@/features/abstract-resource-collection/lib/get-resource-filter-definitions";
+import { serializeSortFilters } from "@/features/abstract-resource-collection/lib/serialize-sort-filters";
 import type {
   FilteredField,
-  ResourceSchemaKey,
   SortFiltersFormValuesNarrowed,
-} from "@/types/forms";
+} from "@/features/abstract-resource-collection/types";
+import { declineNoun } from "@/lib/polish";
+import type { ResourceSchemaKey } from "@/types/forms";
 
 interface Credentials {
   email: string;
@@ -106,7 +106,7 @@ export async function setAbstractResourceListFilters<T extends Resource>(
   }
   await page.getByRole("button", { name: /zatwierdź/i }).click();
   await page.waitForURL(
-    `/*?${getSearchParametersFromSortFilters({ sortBy, sortDirection, filters })}`,
+    `/*?${serializeSortFilters({ sortBy, sortDirection, filters })}`,
   );
 }
 

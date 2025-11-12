@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { FilterType, Resource } from "@/config/enums";
-import type { FilterDefinitions } from "@/types/components";
+import { Resource } from "@/config/enums";
 
-import { getResourceFilterDefinitions } from "./filter-definitions";
+import { FilterType } from "../data/filter-type";
+import type { FilterDefinitions } from "../types/internal";
+import { getResourceFilterDefinitions } from "./get-resource-filter-definitions";
 
 const expectFieldTypes = (
   filterDefinitions: FilterDefinitions,

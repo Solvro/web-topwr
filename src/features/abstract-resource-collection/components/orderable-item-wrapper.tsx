@@ -33,7 +33,7 @@ import type {
   ResourceDataType,
 } from "@/types/app";
 
-import { AbstractResourceListItem, AbstractResourceListItems } from "./item";
+import { AbstractResourceListItems, ArlItem } from "./arl-item";
 
 /**
  * Given the indices of an item's old and new position, calculate its new sort value using the average of its neighbours' sort values.
@@ -167,11 +167,7 @@ export function OrderableItemWrapper<T extends OrderableResource>({
       <DragOverlay>
         {activeId == null ? null : (
           <div className="opacity-80 drop-shadow-xl">
-            <AbstractResourceListItem
-              item={getActiveItem()}
-              resource={resource}
-              orderable
-            />
+            <ArlItem item={getActiveItem()} resource={resource} orderable />
           </div>
         )}
       </DragOverlay>
@@ -195,12 +191,7 @@ function SortableItem<T extends EditableResource>({
 
   return (
     <div style={style}>
-      <AbstractResourceListItem
-        ref={setNodeRef}
-        item={item}
-        resource={resource}
-        orderable
-      />
+      <ArlItem ref={setNodeRef} item={item} resource={resource} orderable />
     </div>
   );
 }

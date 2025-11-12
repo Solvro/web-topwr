@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { z } from "zod";
 
-import type { FilterType, Resource } from "@/config/enums";
+import type { Resource } from "@/config/enums";
 import type { RoutePermission } from "@/features/authentication/types";
 
 import type {
@@ -10,25 +10,7 @@ import type {
   ResourceDataWithRelations,
   RoutableResource,
 } from "./app";
-import type {
-  FormInputBase,
-  ResourceSchemaKey,
-  SelectInputOptions,
-} from "./forms";
-
-/** The definitions of all filterable fields for a given resource. */
-export type FilterDefinitions<T extends Resource = Resource> = Record<
-  [T] extends [Resource] ? string : ResourceSchemaKey<T>,
-  FormInputBase &
-    (
-      | (SelectInputOptions & {
-          type: FilterType.Select;
-        })
-      | {
-          type: FilterType.Text | FilterType.Checkbox;
-        }
-    )
->;
+import type { ResourceSchemaKey } from "./forms";
 
 export type LayoutProps = Readonly<{
   children: ReactNode;

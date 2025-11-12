@@ -1,17 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { ClassValue } from "clsx";
 import { BrushCleaning, Check, Plus, Trash } from "lucide-react";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import type { Control } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 
 import { Counter } from "@/components/counter";
-import { PendingInput } from "@/components/inputs/pending-input";
-import { SelectOptions } from "@/components/inputs/select-options";
 import { SelectClear } from "@/components/select-clear";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -20,7 +15,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -28,130 +22,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  IMPLICIT_SORTABLE_FIELDS,
-  SORT_DIRECTION_NAMES,
-  SORT_FILTER_DEFAULT_VALUES,
-  SORT_FILTER_LABEL_DECLENSION_CASES,
-  SORT_FILTER_PLACEHOLDER,
-} from "@/config/constants";
-import { FilterType } from "@/config/enums";
 import { useRouter } from "@/hooks/use-router";
-import {
-  getSearchParametersFromSortFilters,
-  isEmptyValue,
-  tryParseNumber,
-  typedEntries,
-} from "@/lib/helpers";
+import { typedEntries } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import { cn } from "@/lib/utils";
-import { SortFiltersSchema } from "@/schemas";
-import type { FilterDefinitions, LayoutProps } from "@/types/components";
+import type { DeclinableNoun } from "@/types/polish";
+
+import { FilterType } from "../data/filter-type";
+import { IMPLICIT_SORTABLE_FIELDS } from "../data/implicit-sortable-fields";
+import { SORT_DIRECTION_NAMES } from "../data/sort-direction-names";
+import { SORT_FILTER_DEFAULT_VALUES } from "../data/sort-filter-default-values";
+import { SORT_FILTER_LABEL_DECLENSION_CASES } from "../data/sort-filter-label-declension-cases";
+import { SORT_FILTER_PLACEHOLDER } from "../data/sort-filter-placeholder";
+import { serializeSortFilters } from "../lib/serialize-sort-filters";
+import { SortFiltersSchema } from "../schemas/sort-filters-schema";
 import type {
+  FilterDefinitions,
   SortFiltersFormValues,
   SortFiltersFormValuesNarrowed,
-} from "@/types/forms";
-import type { DeclinableNoun } from "@/types/polish";
+} from "../types/internal";
+import { FieldGroup } from "./field-group";
+import { FilterValueField } from "./sort-filter-value-field";
 
 // TODO: remove this rule from @solvro/config
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-
-function FieldGroup({
-  children,
-  className,
-}: LayoutProps & {
-  className?: ClassValue;
-}) {
-  return (
-    <div
-      className={cn(
-        "col-span-full grid grid-cols-subgrid gap-[inherit]",
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
-}
-
-function FilterValueField({
-  control,
-  index,
-  filterDefinitions,
-}: {
-  control: Control<SortFiltersFormValues>;
-  index: number;
-  filterDefinitions: FilterDefinitions;
-}) {
-  const fieldName = useWatch({
-    name: `filters.${index}.field`,
-    control,
-  });
-
-  const filterDefinition = filterDefinitions[fieldName];
-  const label = `Wartość pola #${index + 1}`;
-
-  return (
-    <FormField
-      control={control}
-      name={`filters.${index}.value`}
-      render={({ field }) =>
-        isEmptyValue(fieldName) ? (
-          <PendingInput
-            label={label}
-            message="Wybierz najpierw pole"
-            className="size-full"
-          />
-        ) : (
-          <FormItem className="flex-1">
-            <FormLabel>{label}</FormLabel>
-            {filterDefinition.type === FilterType.Select ? (
-              <Select
-                value={field.value}
-                onValueChange={(value) => {
-                  field.onChange(tryParseNumber(value));
-                }}
-              >
-                <FormControl>
-                  <SelectTrigger className="mb-0 w-full">
-                    <SelectValue placeholder="Wybierz wartość" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectOptions input={filterDefinition} />
-                </SelectContent>
-              </Select>
-            ) : filterDefinition.type === FilterType.Checkbox ? (
-              <div className="flex h-full items-center gap-2">
-                <FormControl>
-                  <Checkbox
-                    className="mb-0"
-                    checked={field.value === "true"}
-                    onCheckedChange={(checked) => {
-                      field.onChange(String(checked === true));
-                    }}
-                  />
-                </FormControl>
-                <FormLabel>{filterDefinition.label}</FormLabel>
-              </div>
-            ) : (
-              <FormControl>
-                <Input
-                  value={field.value}
-                  onChange={(event_) => {
-                    field.onChange(event_.target.value);
-                  }}
-                  placeholder="Wpisz szukaną wartość"
-                />
-              </FormControl>
-            )}
-            <FormMessage />
-          </FormItem>
-        )
-      }
-    />
-  );
-}
 
 export function SortFilters({
   sortableFields = [],
@@ -180,7 +73,7 @@ export function SortFilters({
   ]);
 
   function handleSubmit(values: SortFiltersFormValues) {
-    const newParameters = getSearchParametersFromSortFilters(values);
+    const newParameters = serializeSortFilters(values);
     onChangeFilters?.();
     router.push(`?${newParameters.toString()}`);
     form.reset(values);

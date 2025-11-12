@@ -1,13 +1,13 @@
 import type { ComponentType, Ref } from "react";
 
+import { EditButton } from "@/components/abstract/edit-button";
 import { ToggleOrganizationStatusButton } from "@/components/abstract/toggle-status-button";
 import { Badge } from "@/components/ui/badge";
 import { Resource } from "@/config/enums";
 import { getResourceMetadata } from "@/lib/helpers";
 import type { EditableResource, ListItem, ResourceDataType } from "@/types/app";
 
-import { EditButton } from "../edit-button";
-import { DragHandle } from "./drag-handle";
+import { ArlItemDragHandle } from "./arl-item-drag-handle";
 
 interface ItemProps<T extends EditableResource> {
   ref?: Ref<HTMLLIElement>;
@@ -16,14 +16,13 @@ interface ItemProps<T extends EditableResource> {
   orderable?: boolean;
 }
 
+/** TODO: pass custom delete functionality as a prop, which would eliminate this helper */
 const isStudentOrganizationProps = (
   props: ItemProps<EditableResource>,
 ): props is ItemProps<Resource.StudentOrganizations> =>
   props.resource === Resource.StudentOrganizations;
 
-export function AbstractResourceListItem<T extends EditableResource>(
-  props: ItemProps<T>,
-) {
+export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
   const { ref, item, resource, orderable = false } = props;
 
   const metadata = getResourceMetadata(resource);
@@ -40,7 +39,7 @@ export function AbstractResourceListItem<T extends EditableResource>(
       <article className="grid grid-cols-[1fr_auto] items-center gap-x-1 md:grid-cols-[1fr_2fr_auto] md:gap-x-4">
         <header className="flex items-center gap-4">
           <div className="flex items-center gap-1 sm:gap-2">
-            {orderable ? <DragHandle item={listItem} /> : null}
+            {orderable ? <ArlItemDragHandle item={listItem} /> : null}
             <Badge>{listItem.id}</Badge>
           </div>
           <h2 className="w-full font-medium text-balance md:text-center">
@@ -74,7 +73,7 @@ export function AbstractResourceListItems<T extends EditableResource>({
   items,
   resource,
   orderable = false,
-  ItemComponent = AbstractResourceListItem,
+  ItemComponent = ArlItem,
 }: {
   items: ResourceDataType<T>[];
   resource: T;

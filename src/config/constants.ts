@@ -1,15 +1,4 @@
-import type {
-  FormInputName,
-  SortFiltersFormValuesNarrowed,
-} from "@/types/forms";
-import type { DeclinableNoun } from "@/types/polish";
-
-import {
-  ApplicationError,
-  FilterType,
-  GrammaticalCase,
-  SortDirection,
-} from "./enums";
+import { ApplicationError } from "./enums";
 
 export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
@@ -44,44 +33,6 @@ export const FORM_ERROR_MESSAGES = {
   INVALID_TOPIC_NAME:
     "Niepoprawna nazwa. Dozwolone są tylko litery, cyfry oraz znaki - _ . ~ %",
 };
-
-// #region Sort filter constants
-
-export const SORT_DIRECTION_NAMES = {
-  asc: "rosnącej",
-  desc: "malejącej",
-} satisfies Record<SortDirection, string>;
-
-export const IMPLICIT_SORTABLE_FIELDS = [
-  "createdAt",
-  "updatedAt",
-] satisfies DeclinableNoun[];
-
-export const SORT_FILTER_LABEL_DECLENSION_CASES = {
-  sortBy: GrammaticalCase.Genitive,
-};
-
-export const SORT_FILTER_DEFAULT_VALUES = {
-  sortBy: null,
-  sortDirection: SortDirection.Ascending,
-  filters: [],
-} satisfies SortFiltersFormValuesNarrowed;
-
-export const UNFILTERABLE_INPUT_TYPES = new Set<FormInputName>(["imageInputs"]);
-
-export const SORT_FILTER_PLACEHOLDER = "Wybierz pole";
-
-/** The delimiter used to separate sort direction and sort by field. */
-export const SORT_DIRECTION_SEPARATOR = ".";
-
-export const FILTER_TYPE_MAPPINGS: Partial<Record<FormInputName, FilterType>> =
-  {
-    selectInputs: FilterType.Select,
-    checkboxInputs: FilterType.Checkbox,
-    relationInputs: FilterType.Relation,
-  };
-
-// #endregion
 
 export const WEEKDAYS = ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"];
 

@@ -16,7 +16,7 @@ import { getUserDisplayName } from "../lib/get-user-display-name";
 import { parseAuthCookie } from "../lib/parse-auth-cookie";
 import { AuthStateSchema } from "../schemas/auth-state-schema";
 import { authStateAtom } from "../stores/auth-state-atom";
-import type { AuthState, User } from "../types";
+import type { AuthState, User } from "../types/internal";
 
 interface AuthContextLoggedIn {
   isAuthenticated: true;

@@ -133,18 +133,6 @@ export enum ApplicationError {
   NotImplemented = 501,
 }
 
-export enum SortDirection {
-  Ascending = "asc",
-  Descending = "desc",
-}
-
-export enum FilterType {
-  Text = "text",
-  Select = "select",
-  Checkbox = "checkbox",
-  Relation = "relation",
-}
-
 export enum ImageType {
   Logo = "logo",
   Banner = "banner",

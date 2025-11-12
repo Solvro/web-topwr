@@ -3,19 +3,18 @@ import userEvent from "@testing-library/user-event";
 import assert from "node:assert/strict";
 import { describe, expect, it } from "vitest";
 
-import {
-  IMPLICIT_SORTABLE_FIELDS,
-  SORT_DIRECTION_NAMES,
-  SORT_FILTER_DEFAULT_VALUES,
-  SORT_FILTER_LABEL_DECLENSION_CASES,
-  SORT_FILTER_PLACEHOLDER,
-} from "@/config/constants";
-import { FilterType, SortDirection } from "@/config/enums";
 import { isEmptyValue } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
-import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 import type { DeclinableNoun } from "@/types/polish";
 
+import { FilterType } from "../data/filter-type";
+import { IMPLICIT_SORTABLE_FIELDS } from "../data/implicit-sortable-fields";
+import { SortDirection } from "../data/sort-direction";
+import { SORT_DIRECTION_NAMES } from "../data/sort-direction-names";
+import { SORT_FILTER_DEFAULT_VALUES } from "../data/sort-filter-default-values";
+import { SORT_FILTER_LABEL_DECLENSION_CASES } from "../data/sort-filter-label-declension-cases";
+import { SORT_FILTER_PLACEHOLDER } from "../data/sort-filter-placeholder";
+import type { SortFiltersFormValuesNarrowed } from "../types/internal";
 import { SortFilters } from "./sort-filters";
 
 const MOCK_SORTABLE_FIELDS = ["description"] satisfies DeclinableNoun[];

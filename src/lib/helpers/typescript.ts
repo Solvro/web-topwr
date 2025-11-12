@@ -1,4 +1,3 @@
-import { SortDirection } from "@/config/enums";
 import {
   NOUN_PHRASE_TRANSFORMATIONS,
   SIMPLE_NOUN_DECLENSIONS,
@@ -27,9 +26,6 @@ export const isEmptyValue = (value: unknown): value is "" | null | undefined =>
 
 export const isUnsetEnumField = (value: unknown): boolean =>
   isEmptyValue(value) || Number(value) < 0;
-
-export const isValidSortDirection = (value: unknown): value is SortDirection =>
-  value === SortDirection.Ascending || value === SortDirection.Descending;
 
 export const isDeclinableNoun = (value: unknown): value is DeclinableNoun =>
   typeof value === "string" &&

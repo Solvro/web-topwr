@@ -1,11 +1,10 @@
-import {
-  FILTER_TYPE_MAPPINGS,
-  UNFILTERABLE_INPUT_TYPES,
-} from "@/config/constants";
-import { FilterType } from "@/config/enums";
 import type { Resource } from "@/config/enums";
+import {
+  getResourceMetadata,
+  typedEntries,
+  typedFromEntries,
+} from "@/lib/helpers";
 import { RESOURCE_SCHEMAS } from "@/schemas";
-import type { FilterDefinitions } from "@/types/components";
 import type {
   FormInputBase,
   ResourceSchemaKey,
@@ -13,7 +12,10 @@ import type {
 } from "@/types/forms";
 import type { ValueOf } from "@/types/helpers";
 
-import { getResourceMetadata, typedEntries, typedFromEntries } from "./helpers";
+import { FilterType } from "../data/filter-type";
+import { FILTER_TYPE_MAPPINGS } from "../data/filter-type-mappings";
+import { UNFILTERABLE_INPUT_TYPES } from "../data/unfilterable-input-types";
+import type { FilterDefinitions } from "../types/internal";
 
 /** Obtains the filter definitions for a specific resource. */
 export const getResourceFilterDefinitions = async <T extends Resource>(

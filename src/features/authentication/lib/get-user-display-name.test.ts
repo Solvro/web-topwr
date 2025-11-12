@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockDatedResource } from "@/tests/helpers/mocks";
 
-import type { User } from "../types";
+import type { User } from "../types/internal";
 import { getUserDisplayName } from "./get-user-display-name";
 
 describe("getUserDisplayName function", () => {

@@ -1,5 +1,5 @@
 import { AuthStateSchema } from "../schemas/auth-state-schema";
-import type { AuthState } from "../types";
+import type { AuthState } from "../types/internal";
 
 /**
  * Attempts to read and parse the auth state from cookies.

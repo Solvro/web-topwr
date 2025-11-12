@@ -1,24 +1,22 @@
+import { BackToHomeButton } from "@/components/abstract/back-to-home-button";
+import { CreateButton } from "@/components/abstract/create-button";
 import { Counter } from "@/components/counter";
 import { ReturnButton } from "@/components/return-button";
-import { getResourceFilterDefinitions } from "@/lib/filter-definitions";
-import {
-  fetchPaginatedResources,
-  parseFilterSearchParameters,
-  parseSortParameter,
-} from "@/lib/helpers";
+import { getResourceFilterDefinitions } from "@/features/abstract-resource-collection/lib/get-resource-filter-definitions";
 import type {
   CreatableResource,
   EditableResource,
   RoutableResource,
 } from "@/types/app";
 import type { SearchParameters } from "@/types/components";
-import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 import type { ResourceDeclinableField } from "@/types/polish";
 
-import { BackToHomeButton } from "../back-to-home-button";
-import { CreateButton } from "../create-button";
+import { deserializeSortFilters } from "../lib/deserialize-sort-filters";
+import { fetchPaginatedResources } from "../lib/fetch-paginated-resources";
+import { parseSortParameter } from "../lib/parse-sort-parameter";
+import type { SortFiltersFormValuesNarrowed } from "../types/internal";
 import { InfiniteScroller } from "./infinite-scroller";
-import { SortFiltersPopover } from "./sort-filters/sort-filters-popover";
+import { SortFiltersPopover } from "./sort-filters-popover";
 
 export async function AbstractResourceList<
   T extends CreatableResource & EditableResource,
@@ -41,7 +39,7 @@ export async function AbstractResourceList<
   });
   const sortFilters: Partial<SortFiltersFormValuesNarrowed> = {
     ...parseSortParameter(searchParameters.sort, sortableFields),
-    filters: parseFilterSearchParameters(searchParameters, filterDefinitions),
+    filters: deserializeSortFilters(searchParameters, filterDefinitions),
   };
 
   const firstPageData = await fetchPaginatedResources(

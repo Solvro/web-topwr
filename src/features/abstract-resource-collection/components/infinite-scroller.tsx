@@ -5,21 +5,20 @@ import { useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { Button } from "@/components/ui/button";
-import {
-  fetchPaginatedResources,
-  getKey,
-  isOrderableResource,
-} from "@/lib/helpers";
+import { getKey, isOrderableResource } from "@/lib/helpers";
 import type { GetResourcesResponsePaginated } from "@/types/api";
 import type {
   EditableResource,
   OrderableResource,
   ResourceDataType,
 } from "@/types/app";
-import type { FilterDefinitions } from "@/types/components";
-import type { SortFiltersFormValuesNarrowed } from "@/types/forms";
 
-import { AbstractResourceListItems } from "./item";
+import { fetchPaginatedResources } from "../lib/fetch-paginated-resources";
+import type {
+  FilterDefinitions,
+  SortFiltersFormValuesNarrowed,
+} from "../types/internal";
+import { AbstractResourceListItems } from "./arl-item";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
 
 export function InfiniteScroller<T extends EditableResource>({

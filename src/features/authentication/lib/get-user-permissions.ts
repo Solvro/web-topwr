@@ -1,4 +1,4 @@
-import type { User } from "../types";
+import type { User } from "../types/internal";
 
 export function getUserPermissions(user: User | null): string[] {
   if (user == null) {
