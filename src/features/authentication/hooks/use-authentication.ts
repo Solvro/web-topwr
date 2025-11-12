@@ -1,3 +1,5 @@
+"use client";
+
 import { useAtom } from "jotai";
 import Cookies from "js-cookie";
 import { useEffect } from "react";
@@ -49,7 +51,7 @@ const parseAuthState = (
       };
 
 /** React hook for client-side authentication-related operations. */
-export function useAuth(): AuthContext {
+export function useAuthentication(): AuthContext {
   const [authState, setAuthState] = useAtom(authStateAtom);
 
   useEffect(() => {

@@ -1,11 +1,14 @@
 "use client";
 
-import { getUserDisplayName, useAuth } from "@/features/authentication";
+import {
+  getUserDisplayName,
+  useAuthentication,
+} from "@/features/authentication";
 
 import { Badge } from "./ui/badge";
 
 export function UserInfo() {
-  const auth = useAuth();
+  const auth = useAuthentication();
 
   if (!auth.isAuthenticated) {
     return null;

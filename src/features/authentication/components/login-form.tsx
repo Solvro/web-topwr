@@ -22,11 +22,11 @@ import { getToastMessages } from "@/lib/get-toast-messages";
 import { LoginSchema } from "@/schemas";
 import type { LoginFormValues } from "@/types/forms";
 
-import { useAuth } from "../hooks/use-authentication";
+import { useAuthentication } from "../hooks/use-authentication";
 
 export function LoginForm() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login } = useAuthentication();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(LoginSchema),
