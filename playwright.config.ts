@@ -1,6 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
-import { AUTH_STORAGE_STATE_PATH } from "./src/tests/e2e/constants";
+import { AUTH_STORAGE_STATE_PATH } from "@/tests/e2e/constants";
+
+import "./src/tests/helpers/env";
 
 /**
  * See https://playwright.dev/docs/test-configuration.

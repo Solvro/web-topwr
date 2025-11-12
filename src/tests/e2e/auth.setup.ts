@@ -1,5 +1,3 @@
-import "../helpers/env";
-
 import { expect, test as setup } from "@playwright/test";
 import path from "node:path";
 

@@ -1,5 +1,3 @@
-import "../helpers/env";
-
 import test, { expect } from "@playwright/test";
 
 import { getTestUserCredentials } from "./helpers/get-test-user-credentials";

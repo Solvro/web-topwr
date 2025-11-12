@@ -4,9 +4,6 @@
  * both server and client contexts, and are safe to import in tests.
  */
 
-export * from "./components/login-form";
-export * from "./components/login-page";
-
 export * from "./data/auth-state-cookie-name";
 
 export * from "./hooks/use-authentication";
