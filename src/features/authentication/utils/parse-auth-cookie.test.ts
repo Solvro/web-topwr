@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { parseAuthCookie } from "@/features/authentication";
 import { MOCK_AUTH_STATE, MOCK_USER } from "@/tests/shared";
+
+import { parseAuthCookie } from "./parse-auth-cookie";
 
 const INVALID_AUTH_STATES = [
   123,
@@ -22,7 +23,7 @@ const INVALID_AUTH_STATES = [
   },
 ];
 
-describe("Cookies module", () => {
+describe("parseAuthCookie function", () => {
   it("should return auth state for valid cookie", () => {
     const cookie = JSON.stringify(MOCK_AUTH_STATE.valid);
     const result = parseAuthCookie(cookie);
