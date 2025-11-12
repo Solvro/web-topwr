@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { ErrorMessage } from "@/components/error-message";
 import { ApplicationError } from "@/config/enums";
-import { AbstractResourceForm } from "@/features/abstract-resource-form/index";
+import { AbstractResourceForm } from "@/features/abstract-resource-form";
 import { fetchQuery } from "@/lib/fetch-utils";
 import type { GetResourceWithRelationsResponse } from "@/types/api";
 import type { RoutableResource } from "@/types/app";

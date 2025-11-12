@@ -3,7 +3,7 @@ import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
 import { Resource } from "@/config/enums";
-import { AbstractResourceForm } from "@/features/abstract-resource-form/index";
+import { AbstractResourceForm } from "@/features/abstract-resource-form";
 import { fetchQuery, getResourceApiBase } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import { mockDatedResource } from "@/tests/helpers/mocks";

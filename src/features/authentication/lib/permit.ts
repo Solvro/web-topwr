@@ -5,7 +5,7 @@ import "server-only";
 import type { RoutePermission } from "../types/internal";
 import { getAuthStateServer } from "./get-auth-state.server";
 import { getRoutePermissions } from "./get-route-permissions";
-import { getUserPermissions } from "./get-user-permissionts";
+import { getUserPermissions } from "./get-user-permissions";
 
 /* Determines whether or not the user is permitted to access the given route segment. */
 export const permit = cache(async (route: RoutePermission) => {

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { DEFAULT_COLOR } from "@/config/constants";
 import { Resource } from "@/config/enums";
-import { AbstractResourceForm } from "@/features/abstract-resource-form/index";
+import { AbstractResourceForm } from "@/features/abstract-resource-form";
 import { getResourceMetadata, typedEntries } from "@/lib/helpers";
 import { expectInputValue, renderWithProviders } from "@/tests/helpers/react";
 import type { ResourceFormValues } from "@/types/app";

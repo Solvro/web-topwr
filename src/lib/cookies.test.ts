@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { parseAuthCookie } from "@/features/authentication";
 import { MOCK_AUTH_STATE, MOCK_USER } from "@/tests/mocks/constants";
-
-import { parseAuthCookie } from "../features/authentication/lib/parse-auth-cookie";
 
 const INVALID_AUTH_STATES = [
   123,

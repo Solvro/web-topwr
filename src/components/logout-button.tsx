@@ -3,7 +3,7 @@
 import { LogOut } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/features/authentication/hooks/use-authentication";
+import { useAuth } from "@/features/authentication";
 import { useRouter } from "@/hooks/use-router";
 
 export function LogoutButton() {
