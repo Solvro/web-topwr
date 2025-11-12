@@ -7,8 +7,8 @@ import { verifyUserCookie } from "./verify-user-cookie";
 
 /**
  * Obtains the auth state directly from the request cookies. Only works in React server components.
- * @see {@link ../hooks/use-authentication.ts} for the React client hook version.
- * @see {@link ./get-auth-state.node.ts} for the non-component version.
+ * @see {@link useAuth} for the React client hook version.
+ * @see {@link getAuthStateNode} for the non-component version.
  */
 export const getAuthStateServer = cache(async () => {
   const allCookies = await cookies();
