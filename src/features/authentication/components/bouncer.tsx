@@ -1,3 +1,5 @@
+import "server-only";
+
 import { ErrorMessage } from "@/components/error-message";
 import { ApplicationError } from "@/config/enums";
 import type { LayoutProps, RouteOrResource } from "@/types/components";

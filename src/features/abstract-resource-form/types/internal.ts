@@ -1,10 +1,11 @@
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 
 import type { Resource } from "@/config/enums";
-import type { renderAbstractResourceForm } from "@/features/abstract-resource-form";
 import type { Id, ResourceDataType, ResourceRelation } from "@/types/app";
 import type { ResourceRelations } from "@/types/components";
 import type { ValueOf } from "@/types/helpers";
+
+import type { renderAbstractResourceForm } from "../actions/render-abstract-resource-form";
 
 export type RelationDataTuple<T extends Resource> = [
   keyof ResourceRelations<T>,

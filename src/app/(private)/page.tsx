@@ -12,10 +12,8 @@ import {
 
 import { DashboardButton } from "@/components/dashboard-button";
 import { Resource } from "@/config/enums";
-import {
-  getAuthStateServer,
-  getUserDisplayName,
-} from "@/features/authentication";
+import { getUserDisplayName } from "@/features/authentication";
+import { getAuthStateServer } from "@/features/authentication/server";
 
 export default async function Home() {
   const authState = await getAuthStateServer();

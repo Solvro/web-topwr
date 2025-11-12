@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import "server-only";
 
 import { ContentWrapper } from "@/components/content-wrapper";
 import { Navbar } from "@/components/navbar";

@@ -1,1 +1,1 @@
-export { PrivateLayout as default } from "@/features/authentication";
+export { PrivateLayout as default } from "@/features/authentication/server";

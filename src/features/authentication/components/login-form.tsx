@@ -17,11 +17,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/features/authentication";
 import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import { LoginSchema } from "@/schemas";
 import type { LoginFormValues } from "@/types/forms";
+
+import { useAuth } from "../hooks/use-authentication";
 
 export function LoginForm() {
   const router = useRouter();

@@ -4,7 +4,8 @@ import SolvroLogo from "@/assets/logo-solvro.png";
 import { Link } from "@/components/link";
 import { Logo } from "@/components/logo";
 import { SOLVRO_WEBPAGE_URL } from "@/config/constants";
-import { LoginForm } from "@/features/authentication";
+
+import { LoginForm } from "./login-form";
 
 export function LoginPage() {
   return (
