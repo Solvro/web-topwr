@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { AuthState, User } from "@/types/api";
+import type { AuthState, User } from "@/features/authentication/types";
 
 import { Logo } from "./logo";
 import { LogoutButton } from "./logout-button";

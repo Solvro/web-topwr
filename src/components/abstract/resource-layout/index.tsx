@@ -1,4 +1,4 @@
-import { Bouncer } from "@/components/bouncer";
+import { Bouncer } from "@/features/authentication";
 import type { ResourceLayoutProps } from "@/types/components";
 
 import { AbstractResourceLayoutInternal } from "./internal";

@@ -1,5 +1,5 @@
 import { Resource } from "@/config/enums";
-import type { AuthState } from "@/types/api";
+import type { AuthState } from "@/features/authentication/types";
 import type { Declensions } from "@/types/polish";
 
 import { getErrorMessage } from "./error-handling";

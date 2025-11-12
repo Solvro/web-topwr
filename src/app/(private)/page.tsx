@@ -12,11 +12,13 @@ import {
 
 import { DashboardButton } from "@/components/dashboard-button";
 import { Resource } from "@/config/enums";
-import { getAuthState } from "@/lib/data-access";
-import { getUserDisplayName } from "@/lib/helpers";
+import {
+  getAuthStateServer,
+  getUserDisplayName,
+} from "@/features/authentication";
 
 export default async function Home() {
-  const authState = await getAuthState();
+  const authState = await getAuthStateServer();
   const user = authState?.user;
 
   if (user == null) {

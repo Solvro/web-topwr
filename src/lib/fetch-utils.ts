@@ -1,11 +1,11 @@
 import type { Resource } from "@/config/enums";
+import { getAuthStateNode } from "@/features/authentication";
 import {
   getRecursiveRelations,
   getResourceMetadata,
   getVersionedApiBase,
   removeLeadingSlash,
 } from "@/lib/helpers";
-import { getAuthState } from "@/stores/auth";
 import type { ErrorResponse, SuccessResponse } from "@/types/api";
 
 interface BaseRequestOptions<T extends Resource>
@@ -83,7 +83,7 @@ async function handleResponse<T>(response: Response): Promise<NonNullable<T>> {
   return responseBody;
 }
 
-const getAccessToken = () => getAuthState()?.accessToken;
+const getAccessToken = () => getAuthStateNode()?.accessToken;
 
 const getResourceApiVersion = (resource: Resource | undefined): number =>
   resource == null ? 1 : (getResourceMetadata(resource).apiVersion ?? 1);

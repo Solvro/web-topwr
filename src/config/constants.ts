@@ -15,8 +15,6 @@ export const SOLVRO_WEBPAGE_URL = "https://solvro.pwr.edu.pl/pl/";
 
 export const LIST_RESULTS_PER_PAGE = 10;
 
-export const AUTH_STATE_COOKIE_NAME = "topwr_auth";
-
 export const APPLICATION_ERROR_MESSAGES: Record<ApplicationError, string> = {
   [ApplicationError.Unauthorized]: "Ta strona wymaga zalogowania",
   [ApplicationError.Forbidden]: "Nie masz uprawnień do przeglądania tej strony",

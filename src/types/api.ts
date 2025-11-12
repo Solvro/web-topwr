@@ -1,7 +1,5 @@
-import type { z } from "zod";
-
 import type { Resource } from "@/config/enums";
-import type { AuthStateSchema, UserSchema } from "@/schemas";
+import type { User } from "@/features/authentication/types";
 
 import type { ResourceDataType, ResourceDataWithRelations } from "./app";
 
@@ -55,9 +53,6 @@ export interface DatedResource {
   createdAt: string;
   updatedAt: string;
 }
-
-export type User = z.infer<typeof UserSchema>;
-export type AuthState = z.infer<typeof AuthStateSchema>;
 
 /** As returned from GET /auth/me */
 export type GetUserResponse = User; // separating the types in case response signature changes (e.g. { user: { ... } })

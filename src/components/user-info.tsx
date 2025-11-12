@@ -1,7 +1,6 @@
 "use client";
 
-import { useAuth } from "@/hooks/use-auth";
-import { getUserDisplayName } from "@/lib/helpers";
+import { getUserDisplayName, useAuth } from "@/features/authentication";
 
 import { Badge } from "./ui/badge";
 

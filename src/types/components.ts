@@ -2,14 +2,12 @@ import type { ReactNode } from "react";
 import type { z } from "zod";
 
 import type { FilterType, Resource } from "@/config/enums";
-import type { ROUTE_PERMISSIONS } from "@/config/route-permissions";
+import type { RoutePermission } from "@/features/authentication/types";
 
 import type {
-  Id,
   RelatedResource,
   ResourceDataType,
   ResourceDataWithRelations,
-  ResourceRelation,
   RoutableResource,
 } from "./app";
 import type {
@@ -71,26 +69,6 @@ export type ResourceCreatePageProps = Readonly<{
   searchParams?: Promise<SearchParameters>;
 }>;
 
-export interface ResourceFormSheetDataContent<T extends Resource> {
-  childResource: ResourceRelation<T>;
-  parentResourceData: ResourceDataType<T>;
-  form: ReactNode;
-  item: {
-    id: Id;
-    name: string | undefined;
-  } | null;
-}
-
-export type ResourceFormSheetData<T extends Resource> =
-  | {
-      visible: true;
-      content: ResourceFormSheetDataContent<T>;
-    }
-  | {
-      visible: false;
-      content?: ResourceFormSheetDataContent<T>;
-    };
-
 export type ExistingImages<T extends Resource> = Partial<
   Record<ResourceSchemaKey<T, z.ZodString>, ReactNode>
 >;
@@ -99,5 +77,3 @@ export type ResourceRelations<T extends Resource> = {
     | ResourceDataType<L>[]
     | ResourceDataWithRelations<L>[];
 };
-
-export type RoutePermission = keyof typeof ROUTE_PERMISSIONS;
