@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { Resource } from "@/config/enums";
 
-import { FilterType } from "../data/filter-type";
+import { FilterType } from "../enums";
 import type { FilterDefinitions } from "../types/internal";
 import { getResourceFilterDefinitions } from "./get-resource-filter-definitions";
 

@@ -1,6 +1,6 @@
 import type { FormInputName } from "@/types/forms";
 
-import { FilterType } from "./filter-type";
+import { FilterType } from "../enums";
 
 export const FILTER_TYPE_MAPPINGS: Partial<Record<FormInputName, FilterType>> =
   {

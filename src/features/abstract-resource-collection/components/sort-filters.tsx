@@ -27,19 +27,19 @@ import { typedEntries } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { DeclinableNoun } from "@/types/polish";
 
-import { FilterType } from "../data/filter-type";
 import { IMPLICIT_SORTABLE_FIELDS } from "../data/implicit-sortable-fields";
 import { SORT_DIRECTION_NAMES } from "../data/sort-direction-names";
 import { SORT_FILTER_DEFAULT_VALUES } from "../data/sort-filter-default-values";
 import { SORT_FILTER_LABEL_DECLENSION_CASES } from "../data/sort-filter-label-declension-cases";
 import { SORT_FILTER_PLACEHOLDER } from "../data/sort-filter-placeholder";
-import { serializeSortFilters } from "../lib/serialize-sort-filters";
+import { FilterType } from "../enums";
 import { SortFiltersSchema } from "../schemas/sort-filters-schema";
 import type {
   FilterDefinitions,
   SortFiltersFormValues,
   SortFiltersFormValuesNarrowed,
 } from "../types/internal";
+import { serializeSortFilters } from "../utils/serialize-sort-filters";
 import { FieldGroup } from "./field-group";
 import { FilterValueField } from "./sort-filter-value-field";
 

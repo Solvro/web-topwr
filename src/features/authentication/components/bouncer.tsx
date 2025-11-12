@@ -4,7 +4,7 @@ import { ErrorMessage } from "@/components/error-message";
 import { ApplicationError } from "@/config/enums";
 import type { LayoutProps, RouteOrResource } from "@/types/components";
 
-import { permit } from "../lib/permit";
+import { permit } from "../utils/permit";
 
 /**
  * Ensures the currently logged in user has permission to access the specified route or resource.

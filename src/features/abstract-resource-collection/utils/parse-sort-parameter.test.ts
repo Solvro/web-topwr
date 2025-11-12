@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { DeclinableNoun } from "@/types/polish";
 
-import { SortDirection } from "../data/sort-direction";
+import { SortDirection } from "../enums";
 import { parseSortParameter } from "./parse-sort-parameter";
 
 describe("parseSortParameter function", () => {

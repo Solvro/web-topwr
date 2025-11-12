@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { SortDirection } from "../data/sort-direction";
+import { SortDirection } from "../enums";
 import type { SortFiltersFormValuesNarrowed } from "../types/internal";
 import { serializeSortFilters } from "./serialize-sort-filters";
 

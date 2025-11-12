@@ -12,12 +12,13 @@ import {
 } from "@/config/enums";
 import { FetchError, fetchMutation } from "@/lib/fetch-utils";
 import { getResourceMetadata } from "@/lib/helpers";
-import { deleteAccessToken, generateAccessToken } from "@/tests/helpers/auth";
 import type { MessageResponse, ModifyResourceResponse } from "@/types/api";
 import type { Id, ResourceDataType, ResourceFormValues } from "@/types/app";
 import type { NonNullableValues } from "@/types/helpers";
 
+import { deleteAccessToken } from "../helpers/delete-access-token";
 import { expectArfSuccess } from "../helpers/expect-arf-success";
+import { generateAccessToken } from "../helpers/generate-access-token";
 import { returnFromArf } from "../helpers/return-from-arf";
 import { selectOptionByLabel } from "../helpers/select-option-by-label";
 import { setArlSortFilters } from "../helpers/set-arl-filters";

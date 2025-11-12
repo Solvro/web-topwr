@@ -12,9 +12,9 @@ import type {
 } from "@/types/forms";
 import type { ValueOf } from "@/types/helpers";
 
-import { FilterType } from "../data/filter-type";
+import { UNFILTERABLE_INPUT_TYPES } from "../constants";
 import { FILTER_TYPE_MAPPINGS } from "../data/filter-type-mappings";
-import { UNFILTERABLE_INPUT_TYPES } from "../data/unfilterable-input-types";
+import { FilterType } from "../enums";
 import type { FilterDefinitions } from "../types/internal";
 
 /** Obtains the filter definitions for a specific resource. */

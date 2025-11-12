@@ -1,6 +1,6 @@
 import { isEmptyValue } from "@/lib/helpers/typescript";
 
-import { FilterType } from "../data/filter-type";
+import { FilterType } from "../enums";
 import type { FilterDefinitions, FilteredField } from "../types/internal";
 
 /** Converts the client-side search parameters to backend-compatible filters. */

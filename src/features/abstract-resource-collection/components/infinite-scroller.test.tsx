@@ -9,7 +9,7 @@ import {
   renderWithProviders,
 } from "@/tests/helpers/react";
 
-import { fetchPaginatedResources } from "../lib/fetch-paginated-resources";
+import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
 import { InfiniteScroller } from "./infinite-scroller";
 
 const resource = Resource.StudentOrganizations;

@@ -14,8 +14,8 @@ import type {
   ResourceFormProps,
 } from "@/types/components";
 
-import { fetchPivotResources } from "../lib/fetch-pivot-resources";
-import { fetchRelatedResources } from "../lib/fetch-related-resources";
+import { fetchPivotResources } from "../api/fetch-pivot-resources";
+import { fetchRelatedResources } from "../api/fetch-related-resources";
 import { ArfClient } from "./arf-client";
 
 export async function AbstractResourceForm<T extends Resource>({

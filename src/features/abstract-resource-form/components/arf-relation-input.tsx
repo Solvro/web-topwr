@@ -33,8 +33,8 @@ import type { ResourceFormProps, ResourceRelations } from "@/types/components";
 import { useArfRelation } from "../hooks/use-arf-relation";
 import { useArfRelationMutation } from "../hooks/use-arf-relation-mutation";
 import { useArfSheet } from "../hooks/use-arf-sheet";
-import { getMutationConfig } from "../lib/get-mutation-config";
-import { isExistingItem } from "../lib/is-existing-item";
+import { getMutationConfig } from "../utils/get-mutation-config";
+import { isExistingItem } from "../utils/is-existing-item";
 import { ArfPivotData } from "./arf-pivot-data";
 
 export function ArfRelationInput<

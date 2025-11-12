@@ -37,10 +37,10 @@ import type {
 } from "@/types/components";
 
 import { useArfRelation } from "../hooks/use-arf-relation";
-import { getDefaultValues } from "../lib/get-default-values";
-import { getMutationConfig } from "../lib/get-mutation-config";
-import { isExistingItem } from "../lib/is-existing-item";
 import { ArfSheetProvider } from "../providers/arf-sheet-provider";
+import { getDefaultValues } from "../utils/get-default-values";
+import { getMutationConfig } from "../utils/get-mutation-config";
+import { isExistingItem } from "../utils/is-existing-item";
 import { ArfInputs } from "./arf-inputs";
 
 export function ArfClient<T extends Resource>({

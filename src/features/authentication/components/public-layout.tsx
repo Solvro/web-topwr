@@ -5,7 +5,7 @@ import { ContentWrapper } from "@/components/content-wrapper";
 import { Navbar } from "@/components/navbar";
 import type { LayoutProps } from "@/types/components";
 
-import { getAuthStateServer } from "../lib/get-auth-state.server";
+import { getAuthStateServer } from "../utils/get-auth-state.server";
 
 export async function PublicLayout({ children }: LayoutProps) {
   const authState = await getAuthStateServer();

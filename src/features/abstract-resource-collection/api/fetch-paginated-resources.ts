@@ -6,13 +6,13 @@ import type {
   GetResourcesResponsePaginated,
 } from "@/types/api";
 
-import { SortDirection } from "../data/sort-direction";
 import { SORT_FILTER_DEFAULT_VALUES } from "../data/sort-filter-default-values";
+import { SortDirection } from "../enums";
 import type {
   FilterDefinitions,
   SortFiltersFormValuesNarrowed,
 } from "../types/internal";
-import { sanitizeFilteredFields } from "./sanitize-filtered-fields";
+import { sanitizeFilteredFields } from "../utils/sanitize-filtered-fields";
 
 export async function fetchPaginatedResources<
   T extends Resource,

@@ -9,8 +9,8 @@ import type {
   ResourceRelation,
 } from "@/types/app";
 
-import { isPivotRelationDefinition } from "./is-pivot-relation-definition";
-import { isRelationPivotDefinition } from "./is-relation-pivot-definition";
+import { isPivotRelationDefinition } from "../utils/is-pivot-relation-definition";
+import { isRelationPivotDefinition } from "../utils/is-relation-pivot-definition";
 
 export const fetchPivotResources = async <T extends Resource>(
   relationInputs: RelationDefinitions<T> | undefined,

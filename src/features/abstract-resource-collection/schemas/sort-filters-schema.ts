@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { SortDirection } from "../data/sort-direction";
+import { SortDirection } from "../enums";
 import { FilteredFieldSchema } from "./filtered-field-schema";
 
 export const SortFiltersSchema = z.object({

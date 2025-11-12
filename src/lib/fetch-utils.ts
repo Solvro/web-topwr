@@ -1,5 +1,5 @@
 import type { Resource } from "@/config/enums";
-import { getAuthStateNode } from "@/features/authentication";
+import { getAuthStateNode } from "@/features/authentication/node";
 import {
   getRecursiveRelations,
   getResourceMetadata,

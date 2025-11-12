@@ -8,7 +8,7 @@ import type {
 } from "@/types/forms";
 import type { DeclinableNoun } from "@/types/polish";
 
-import type { FilterType } from "../data/filter-type";
+import type { FilterType } from "../enums";
 import type { FilteredFieldSchema } from "../schemas/filtered-field-schema";
 import type { SortFiltersSchema } from "../schemas/sort-filters-schema";
 

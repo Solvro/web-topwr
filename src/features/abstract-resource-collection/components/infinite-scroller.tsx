@@ -13,7 +13,7 @@ import type {
   ResourceDataType,
 } from "@/types/app";
 
-import { fetchPaginatedResources } from "../lib/fetch-paginated-resources";
+import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
 import type {
   FilterDefinitions,
   SortFiltersFormValuesNarrowed,

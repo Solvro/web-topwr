@@ -7,13 +7,12 @@ import { isEmptyValue } from "@/lib/helpers";
 import { declineNoun } from "@/lib/polish";
 import type { DeclinableNoun } from "@/types/polish";
 
-import { FilterType } from "../data/filter-type";
 import { IMPLICIT_SORTABLE_FIELDS } from "../data/implicit-sortable-fields";
-import { SortDirection } from "../data/sort-direction";
 import { SORT_DIRECTION_NAMES } from "../data/sort-direction-names";
 import { SORT_FILTER_DEFAULT_VALUES } from "../data/sort-filter-default-values";
 import { SORT_FILTER_LABEL_DECLENSION_CASES } from "../data/sort-filter-label-declension-cases";
 import { SORT_FILTER_PLACEHOLDER } from "../data/sort-filter-placeholder";
+import { FilterType, SortDirection } from "../enums";
 import type { SortFiltersFormValuesNarrowed } from "../types/internal";
 import { SortFilters } from "./sort-filters";
 

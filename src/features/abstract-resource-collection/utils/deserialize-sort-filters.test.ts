@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { FilterType } from "../data/filter-type";
+import { FilterType } from "../enums";
 import type { FilterDefinitions } from "../types/internal";
 import { deserializeSortFilters } from "./deserialize-sort-filters";
 

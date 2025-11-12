@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { isEmptyValue, tryParseNumber } from "@/lib/helpers";
 
-import { FilterType } from "../data/filter-type";
+import { FilterType } from "../enums";
 import type {
   FilterDefinitions,
   SortFiltersFormValues,

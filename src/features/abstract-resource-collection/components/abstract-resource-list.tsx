@@ -10,11 +10,11 @@ import type {
 import type { SearchParameters } from "@/types/components";
 import type { ResourceDeclinableField } from "@/types/polish";
 
-import { deserializeSortFilters } from "../lib/deserialize-sort-filters";
-import { fetchPaginatedResources } from "../lib/fetch-paginated-resources";
-import { getResourceFilterDefinitions } from "../lib/get-resource-filter-definitions";
-import { parseSortParameter } from "../lib/parse-sort-parameter";
+import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
 import type { SortFiltersFormValuesNarrowed } from "../types/internal";
+import { deserializeSortFilters } from "../utils/deserialize-sort-filters";
+import { getResourceFilterDefinitions } from "../utils/get-resource-filter-definitions";
+import { parseSortParameter } from "../utils/parse-sort-parameter";
 import { InfiniteScroller } from "./infinite-scroller";
 import { SortFiltersPopover } from "./sort-filters-popover";
 

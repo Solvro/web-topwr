@@ -2,8 +2,8 @@ import { cookies } from "next/headers";
 import { cache } from "react";
 import "server-only";
 
-import { AUTH_STATE_COOKIE_NAME } from "../data/auth-state-cookie-name";
-import { verifyUserCookie } from "./verify-user-cookie";
+import { verifyUserCookie } from "../api/verify-user-cookie";
+import { AUTH_STATE_COOKIE_NAME } from "../constants";
 
 /**
  * Obtains the auth state directly from the request cookies. Only works in React server components.

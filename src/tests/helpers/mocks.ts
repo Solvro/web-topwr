@@ -1,11 +1,14 @@
 import { faker } from "@faker-js/faker";
-import { HttpResponse } from "msw";
+import { HttpResponse, http, passthrough } from "msw";
 import type { JsonBodyType, StrictRequest } from "msw";
 
 import type { Resource } from "@/config/enums";
 import { env } from "@/config/env";
+import { getVersionedApiBase } from "@/lib/helpers";
 import type { DatedResource, FileEntry } from "@/types/api";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
+
+import { server } from "../mocks/server";
 
 export const mockDatedResource = (): DatedResource => ({
   createdAt: faker.date.past().toISOString(),
@@ -37,4 +40,10 @@ export async function mockResourceResponse<T extends Resource>(
   };
   const responseBody = { ...body, ...metadata } as ResourceDataType<T>;
   return HttpResponse.json(responseBody, { status: 201 });
+}
+
+export function bypassMockServer(endpoint: string) {
+  server.use(
+    http.post(`${getVersionedApiBase()}/${endpoint}`, () => passthrough()),
+  );
 }

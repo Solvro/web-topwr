@@ -1,6 +1,6 @@
 import type { AuthState, RequestCookie, User } from "../types/internal";
+import { parseAuthCookie } from "../utils/parse-auth-cookie";
 import { getCurrentUser } from "./get-current-user";
-import { parseAuthCookie } from "./parse-auth-cookie";
 
 export async function verifyUserCookie(
   cookie: RequestCookie | undefined,

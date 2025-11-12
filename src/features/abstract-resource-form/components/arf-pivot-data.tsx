@@ -32,8 +32,8 @@ import type {
 } from "@/types/app";
 
 import { useArfRelationMutation } from "../hooks/use-arf-relation-mutation";
-import { isPivotRelationDefinition } from "../lib/is-pivot-relation-definition";
-import { isRelationPivotDefinition } from "../lib/is-relation-pivot-definition";
+import { isPivotRelationDefinition } from "../utils/is-pivot-relation-definition";
+import { isRelationPivotDefinition } from "../utils/is-relation-pivot-definition";
 
 export function ArfPivotData<
   T extends Resource,

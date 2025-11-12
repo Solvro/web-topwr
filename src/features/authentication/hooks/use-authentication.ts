@@ -9,14 +9,14 @@ import { fetchMutation } from "@/lib/fetch-utils";
 import type { LogInResponse, MessageResponse } from "@/types/api";
 import type { LoginFormValues } from "@/types/forms";
 
-import { AUTH_STATE_COOKIE_NAME } from "../data/auth-state-cookie-name";
-import { getCookieOptions } from "../lib/get-cookie-options";
-import { getCurrentUser } from "../lib/get-current-user";
-import { getUserDisplayName } from "../lib/get-user-display-name";
-import { parseAuthCookie } from "../lib/parse-auth-cookie";
+import { getCurrentUser } from "../api/get-current-user";
+import { AUTH_STATE_COOKIE_NAME } from "../constants";
 import { AuthStateSchema } from "../schemas/auth-state-schema";
 import { authStateAtom } from "../stores/auth-state-atom";
 import type { AuthState, User } from "../types/internal";
+import { getCookieOptions } from "../utils/get-cookie-options";
+import { getUserDisplayName } from "../utils/get-user-display-name";
+import { parseAuthCookie } from "../utils/parse-auth-cookie";
 
 interface AuthContextLoggedIn {
   isAuthenticated: true;
