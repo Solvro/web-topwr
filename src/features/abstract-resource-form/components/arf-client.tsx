@@ -43,7 +43,7 @@ import { isExistingItem } from "../lib/is-existing-item";
 import { ArfSheetProvider } from "../providers/arf-sheet-provider";
 import { ArfInputs } from "./arf-inputs";
 
-export function AbstractResourceFormClient<T extends Resource>({
+export function ArfClient<T extends Resource>({
   resource,
   defaultValues,
   existingImages,

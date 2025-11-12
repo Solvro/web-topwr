@@ -34,7 +34,7 @@ import type {
 import type { ExistingImages, ResourceRelations } from "@/types/components";
 
 import { useArfRelation } from "../hooks/use-arf-relation";
-import { RelationInput } from "./relation-input";
+import { ArfRelationInput } from "./arf-relation-input";
 
 export function ArfInputs<T extends Resource>({
   resource,
@@ -308,7 +308,7 @@ export function ArfInputs<T extends Resource>({
                       typeof resourceRelation
                     >;
                   return (
-                    <RelationInput
+                    <ArfRelationInput
                       key={`${resource}-multiselect-${resourceRelation}`}
                       resource={resource}
                       resourceRelation={resourceRelation}

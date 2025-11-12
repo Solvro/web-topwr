@@ -35,9 +35,9 @@ import { useArfRelationMutation } from "../hooks/use-arf-relation-mutation";
 import { useArfSheet } from "../hooks/use-arf-sheet";
 import { getMutationConfig } from "../lib/get-mutation-config";
 import { isExistingItem } from "../lib/is-existing-item";
-import { PivotData } from "./pivot-data";
+import { ArfPivotData } from "./arf-pivot-data";
 
-export function RelationInput<
+export function ArfRelationInput<
   T extends Resource,
   L extends ResourceRelation<T>,
 >({
@@ -168,7 +168,7 @@ export function RelationInput<
             label,
             value,
             action: (setOptionSelected: SetOptionSelected) => (
-              <PivotData
+              <ArfPivotData
                 resource={resource}
                 endpoint={endpoint}
                 resourceRelation={resourceRelation}

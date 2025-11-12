@@ -16,7 +16,7 @@ import type {
 
 import { fetchPivotResources } from "../lib/fetch-pivot-resources";
 import { fetchRelatedResources } from "../lib/fetch-related-resources";
-import { AbstractResourceFormClient } from "./abstract-resource-form-client";
+import { ArfClient } from "./arf-client";
 
 export async function AbstractResourceForm<T extends Resource>({
   resource,
@@ -68,7 +68,7 @@ export async function AbstractResourceForm<T extends Resource>({
   );
 
   return (
-    <AbstractResourceFormClient
+    <ArfClient
       resource={resource}
       defaultValues={defaultValues}
       existingImages={existingImages}
