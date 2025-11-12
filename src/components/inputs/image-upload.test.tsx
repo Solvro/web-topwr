@@ -4,13 +4,13 @@ import { describe, expect, it } from "vitest";
 
 import type { Resource } from "@/config/enums";
 import { getVersionedApiBase } from "@/lib/helpers";
+import { MOCK_FILES, MOCK_IMAGE_FILE } from "@/tests/shared";
 import {
   InputComponentWrapper,
   getToaster,
   renderWithProviders,
-} from "@/tests/helpers/react";
-import { MOCK_FILES, MOCK_IMAGE_FILE } from "@/tests/mocks/constants";
-import { server } from "@/tests/mocks/server";
+  server,
+} from "@/tests/unit";
 
 import { ImageUpload } from "./image-upload";
 

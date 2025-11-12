@@ -6,8 +6,8 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { Resource } from "@/config/enums";
 import { RESOURCE_METADATA } from "@/config/resource-metadata";
-import { mockDatedResource } from "@/tests/helpers/mocks";
-import { renderWithProviders } from "@/tests/helpers/react";
+import { mockDatedResource } from "@/tests/shared";
+import { renderWithProviders } from "@/tests/unit";
 import type { ResourceDataType } from "@/types/app";
 
 import { OrderableItemWrapper } from "./orderable-item-wrapper";

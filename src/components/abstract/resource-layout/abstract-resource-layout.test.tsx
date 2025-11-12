@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { Resource } from "@/config/enums";
-import { MOCK_USE_PATHNAME } from "@/tests/mocks/functions";
+import { MOCK_USE_PATHNAME } from "@/tests/unit";
 
 import { AbstractResourceLayoutInternal } from "./internal";
 

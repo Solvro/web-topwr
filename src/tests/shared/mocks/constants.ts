@@ -1,12 +1,12 @@
 import { faker } from "@faker-js/faker";
-import { HttpResponse } from "msw";
 
 import type { Resource } from "@/config/enums";
 import type { AuthState, User } from "@/features/authentication/types";
 import type { FileEntry } from "@/types/api";
 import type { ResourceFormValues } from "@/types/app";
 
-import { generateFileEntry, mockDatedResource } from "../helpers/mocks";
+import { generateFileEntry } from "./generate-file-entry";
+import { mockDatedResource } from "./mock-dated-resource";
 
 interface Mocked<T> {
   valid: T;
@@ -36,23 +36,6 @@ export const MOCK_AUTH_STATE = {
     refreshTokenExpiresAt: faker.number.int(),
   },
 } satisfies Mocked<AuthState>;
-
-export const MOCK_RESPONSE = {
-  validationFailure: () =>
-    HttpResponse.json(
-      {
-        error: { message: "Validation failure", code: "E_VALIDATION_ERROR" },
-      },
-      { status: 422 },
-    ),
-  unexpectedError: () =>
-    HttpResponse.json(
-      {
-        error: { message: "Unexpected error", code: "E_UNEXPECTED_ERROR" },
-      },
-      { status: 400 },
-    ),
-};
 
 const MOCK_FILE_COUNT = 3;
 

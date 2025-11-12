@@ -4,7 +4,9 @@ import Link from "next/link";
 import ResizeObserver from "resize-observer-polyfill";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
-import "./helpers/env";
+import "../shared/utils/env";
+import { MockImage } from "./components/image";
+import { server } from "./config/server";
 import {
   MOCK_INTERSECTION_OBSERVER,
   MOCK_NOT_FOUND,
@@ -12,8 +14,6 @@ import {
   MOCK_USE_ROUTER,
   MOCK_USE_SEARCH_PARAMS,
 } from "./mocks/functions";
-import { MockImage } from "./mocks/image";
-import { server } from "./mocks/server";
 
 beforeAll(() => {
   server.listen({ onUnhandledRequest: "bypass" });

@@ -4,10 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import { Resource } from "@/config/enums";
-import {
-  getLoadingIndicator,
-  renderWithProviders,
-} from "@/tests/helpers/react";
+import { getLoadingIndicator, renderWithProviders } from "@/tests/unit";
 
 import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
 import { InfiniteScroller } from "./infinite-scroller";

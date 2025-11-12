@@ -2,8 +2,8 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
-import { InputComponentWrapper } from "@/tests/helpers/react";
-import { MOCK_PASSWORD } from "@/tests/mocks/constants";
+import { MOCK_PASSWORD } from "@/tests/shared";
+import { InputComponentWrapper } from "@/tests/unit";
 
 import { PasswordInput } from "./password-input";
 

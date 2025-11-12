@@ -3,7 +3,7 @@ import type { Locator, Page } from "@playwright/test";
 
 import { Resource } from "@/config/enums";
 
-import { setArlSortFilters } from "../helpers/set-arl-filters";
+import { setArlSortFilters } from "../utils/set-arl-filters";
 
 const ROLES = [
   "Flutter Techlead",

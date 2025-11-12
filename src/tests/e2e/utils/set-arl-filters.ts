@@ -7,7 +7,7 @@ import {
   SORT_FILTER_LABEL_DECLENSION_CASES,
   getResourceFilterDefinitions,
   serializeSortFilters,
-} from "@/features/abstract-resource-collection";
+} from "@/features/abstract-resource-collection/node";
 import type {
   FilteredField,
   SortFiltersFormValuesNarrowed,

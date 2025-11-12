@@ -4,11 +4,8 @@ import { describe, expect, it } from "vitest";
 
 import { ImageType } from "@/config/enums";
 import { env } from "@/config/env";
-import {
-  getLoadingIndicator,
-  renderWithProviders,
-} from "@/tests/helpers/react";
-import { MOCK_FILES } from "@/tests/mocks/constants";
+import { MOCK_FILES } from "@/tests/shared";
+import { getLoadingIndicator, renderWithProviders } from "@/tests/unit";
 
 import { ApiImage } from "./client";
 

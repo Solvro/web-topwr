@@ -6,17 +6,17 @@ import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import { Resource } from "@/config/enums";
 import { FetchError, fetchMutation } from "@/lib/fetch-utils";
 import { getResourceMetadata, sanitizeId, uploadFile } from "@/lib/helpers";
-import { MOCK_IMAGE_FILE, MOCK_IMAGE_KEY } from "@/tests/mocks/constants";
+import { MOCK_IMAGE_FILE, MOCK_IMAGE_KEY } from "@/tests/shared";
 import type { MessageResponse, ModifyResourceResponse } from "@/types/api";
 import type { ResourceDataType, ResourceFormValues } from "@/types/app";
 import type { NonNullableValues } from "@/types/helpers";
 
+import { deleteAccessToken } from "../api/delete-access-token";
+import { generateAccessToken } from "../api/generate-access-token";
 import { MOCK_IMAGE_PATH } from "../constants";
-import { deleteAccessToken } from "../helpers/delete-access-token";
-import { expectArfSuccess } from "../helpers/expect-arf-success";
-import { generateAccessToken } from "../helpers/generate-access-token";
-import { returnFromArf } from "../helpers/return-from-arf";
-import { setArlSortFilters } from "../helpers/set-arl-filters";
+import { expectArfSuccess } from "../utils/expect-arf-success";
+import { returnFromArf } from "../utils/return-from-arf";
+import { setArlSortFilters } from "../utils/set-arl-filters";
 
 const resource = Resource.GuideArticles;
 type ResourceType = typeof resource;

@@ -6,9 +6,8 @@ import { Resource } from "@/config/enums";
 import { AbstractResourceForm } from "@/features/abstract-resource-form";
 import { fetchQuery, getResourceApiBase } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
-import { mockDatedResource } from "@/tests/helpers/mocks";
-import { renderWithProviders } from "@/tests/helpers/react";
-import { server } from "@/tests/mocks/server";
+import { mockDatedResource } from "@/tests/shared";
+import { renderWithProviders, server } from "@/tests/unit";
 import type { GetResourceWithRelationsResponse } from "@/types/api";
 import type { ResourceDataType } from "@/types/app";
 

@@ -3,10 +3,9 @@
 import { QueryClient } from "@tanstack/react-query";
 import type { Store } from "jotai/vanilla/store";
 
+import { InternalProviders } from "@/components/providers/internal-providers";
 import { Toaster } from "@/components/ui/sonner";
 import type { LayoutProps } from "@/types/components";
-
-import { InternalProviders } from "./internal-providers";
 
 const queryClient = new QueryClient({
   defaultOptions: {

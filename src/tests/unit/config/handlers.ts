@@ -11,15 +11,15 @@ import type {
 } from "@/types/api";
 import type { ResourceFormValues } from "@/types/app";
 
-import { mockResourceResponse } from "../helpers/mocks";
 import {
   MOCK_AUTH_STATE,
   MOCK_FILES,
   MOCK_IMAGE_KEY,
   MOCK_PASSWORD,
-  MOCK_RESPONSE,
   MOCK_USER,
-} from "./constants";
+} from "../../shared/mocks/constants";
+import { MOCK_RESPONSE } from "../mocks/constants";
+import { mockResourceResponse } from "../mocks/mock-resource-response";
 
 const API_URL = getVersionedApiBase();
 const EVENT_CALENDAR_URL = `${API_URL}/${getResourceMetadata(Resource.CalendarEvents).apiPath}`;

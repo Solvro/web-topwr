@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { pl } from "date-fns/locale";
 import { describe, expect, it } from "vitest";
 
-import { InputComponentWrapper } from "@/tests/helpers/react";
+import { InputComponentWrapper } from "@/tests/unit";
 
 import { DatePicker } from "./date-picker";
 

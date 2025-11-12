@@ -2,8 +2,8 @@ import { expect, test as setup } from "@playwright/test";
 import path from "node:path";
 
 import { AUTH_STORAGE_STATE_PATH } from "./constants";
-import { getTestUserCredentials } from "./helpers/get-test-user-credentials";
-import { login } from "./helpers/login";
+import { getTestUserCredentials } from "./utils/get-test-user-credentials";
+import { login } from "./utils/login";
 
 const credentials = getTestUserCredentials();
 const authFilePath = path.join(

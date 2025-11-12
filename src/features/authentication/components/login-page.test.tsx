@@ -5,9 +5,8 @@ import { describe, expect, it } from "vitest";
 import { API_ERROR_MESSAGES } from "@/config/constants";
 import { getErrorMessage } from "@/lib/error-handling";
 import { getVersionedApiBase } from "@/lib/helpers";
-import { getToaster, renderWithProviders } from "@/tests/helpers/react";
-import { MOCK_PASSWORD, MOCK_USER } from "@/tests/mocks/constants";
-import { server } from "@/tests/mocks/server";
+import { MOCK_PASSWORD, MOCK_USER } from "@/tests/shared";
+import { getToaster, renderWithProviders, server } from "@/tests/unit";
 import type { GetUserResponse } from "@/types/api";
 
 import { LoginPage } from "./login-page";

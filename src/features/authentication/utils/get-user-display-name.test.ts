@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { describe, expect, it } from "vitest";
 
-import { mockDatedResource } from "@/tests/helpers/mocks";
+import { mockDatedResource } from "@/tests/shared";
 
 import type { User } from "../types/internal";
 import { getUserDisplayName } from "./get-user-display-name";
