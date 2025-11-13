@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { NumericIdSchema, RequiredStringSchema } from "@/schemas/helpers";
+import { NumericIdSchema, RequiredStringSchema } from "@/schemas";
 
 export const VersionsSchema = z.object({
   name: RequiredStringSchema,

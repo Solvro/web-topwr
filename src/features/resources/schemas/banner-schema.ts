@@ -4,7 +4,7 @@ import {
   ColorValueSchema,
   IsoTimestampSchema,
   RequiredStringSchema,
-} from "@/schemas/helpers";
+} from "@/schemas";
 
 export const BannerSchema = z.object({
   title: RequiredStringSchema,

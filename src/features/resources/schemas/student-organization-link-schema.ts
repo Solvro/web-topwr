@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { NumericIdSchema, RequiredStringSchema } from "@/schemas/helpers";
+import { NumericIdSchema, RequiredStringSchema } from "@/schemas";
 
 import { LinkType } from "../enums";
 

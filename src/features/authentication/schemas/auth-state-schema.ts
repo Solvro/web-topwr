@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { UnixTimestampSchema } from "@/schemas/helpers";
+import { UnixTimestampSchema } from "@/schemas";
 
 import { UserSchema } from "./user-schema";
 

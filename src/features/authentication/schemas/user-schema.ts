@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { IsoTimestampSchema, NumericIdSchema } from "@/schemas/helpers";
+import { IsoTimestampSchema, NumericIdSchema } from "@/schemas";
 
 export const UserSchema = z
   .object({

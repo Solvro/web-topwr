@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { FORM_ERROR_MESSAGES } from "@/data/form-error-messages";
-import { ColorValueSchema, RequiredStringSchema } from "@/schemas/helpers";
+import { ColorValueSchema, RequiredStringSchema } from "@/schemas";
 
 import { UniversityBranch } from "../enums";
 
