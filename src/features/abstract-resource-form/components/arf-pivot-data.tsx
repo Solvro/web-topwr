@@ -19,10 +19,10 @@ import {
 } from "@/features/resources";
 import type { Resource } from "@/features/resources";
 import type {
-  Id,
   ResourceDataType,
   ResourcePivotRelation,
   ResourcePivotRelationData,
+  ResourcePk,
   ResourceRelation,
 } from "@/features/resources/types";
 import { useRouter } from "@/hooks/use-router";
@@ -72,16 +72,15 @@ export function ArfPivotData<
   const pivotDataValue =
     queriedRelationData == null
       ? null
-      : (queriedRelationData as unknown as { meta: Record<string, Id> }).meta[
-          `pivot_${relationDefinition.pivotData.field}`
-        ];
+      : (queriedRelationData as unknown as { meta: Record<string, ResourcePk> })
+          .meta[`pivot_${relationDefinition.pivotData.field}`];
 
   const selectValue = isUnsetEnumField(pivotDataValue)
     ? ""
     : String(pivotDataValue);
 
   /** Passes the correct arguments to `mutateRelation`. */
-  const mutateDirectly = async (pivotValueId: Id | null) =>
+  const mutateDirectly = async (pivotValueId: ResourcePk | null) =>
     mutateRelation({
       id: optionValue,
       deleted: pivotValueId == null,
@@ -91,7 +90,7 @@ export function ArfPivotData<
     });
 
   /** Performs the mutation and updates the client-side state. */
-  const mutate = async (pivotValueId: Id | null) => {
+  const mutate = async (pivotValueId: ResourcePk | null) => {
     const relationAdded = !isEmptyValue(pivotValueId);
 
     if (relationAdded && !isUnsetEnumField(pivotDataValue)) {

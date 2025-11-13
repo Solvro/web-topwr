@@ -25,9 +25,9 @@ import { fetchMutation, useMutationWrapper } from "@/features/backend";
 import type { ModifyResourceResponse } from "@/features/backend/types";
 import type {
   EditableResource,
-  Id,
   OrderableResource,
   ResourceDataType,
+  ResourcePk,
 } from "@/features/resources/types";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import { sanitizeId } from "@/utils";
@@ -74,7 +74,7 @@ export function OrderableItemWrapper<T extends OrderableResource>({
 
   const { mutateAsync } = useMutationWrapper<
     unknown,
-    { id: Id; order: number }
+    { id: ResourcePk; order: number }
   >(
     `update__${resource}__order`,
     async ({ id, order }) => {

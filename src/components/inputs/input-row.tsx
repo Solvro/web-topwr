@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import type { Resource } from "@/features/resources";
 import { cn } from "@/lib/utils";
-import type { LayoutProps } from "@/types/components";
+import type { WrapperProps } from "@/types/components";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 import type { ValueOf } from "@/types/helpers";
 import { typedEntries } from "@/utils";
@@ -12,7 +12,7 @@ type SynchronousReactNode = Exclude<ReactNode, Promise<ReactNode>>;
 export function InputRow({
   children,
   className,
-}: LayoutProps & {
+}: WrapperProps & {
   className?: string;
 }) {
   return (

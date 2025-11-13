@@ -12,7 +12,7 @@ import type {
 
 import type { ResourceSchemaKey } from "./forms";
 
-export type LayoutProps = Readonly<{
+export type WrapperProps = Readonly<{
   children: ReactNode;
 }>;
 
@@ -37,7 +37,7 @@ export type RouteOrResource =
   | { route?: never; resource: RoutableResource };
 
 export type ResourceLayoutProps = Readonly<
-  LayoutProps & {
+  WrapperProps & {
     labelOptions?: ResourceLabelOptions;
     header?: ReactNode;
   } & RouteOrResource

@@ -5,7 +5,7 @@ import type { Store } from "jotai/vanilla/store";
 
 import { InternalProviders } from "@/components/providers/internal-providers";
 import { Toaster } from "@/components/ui/sonner";
-import type { LayoutProps } from "@/types/components";
+import type { WrapperProps } from "@/types/components";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,7 +23,7 @@ export function TestProviders({
   children,
   store,
   renderToaster,
-}: LayoutProps & {
+}: WrapperProps & {
   store: Store;
   renderToaster: boolean;
 }) {

@@ -1,10 +1,10 @@
 import { cn } from "@/lib/utils";
-import type { LayoutProps } from "@/types/components";
+import type { WrapperProps } from "@/types/components";
 
 export function FieldGroup({
   children,
   className,
-}: LayoutProps & {
+}: WrapperProps & {
   className?: string;
 }) {
   return (

@@ -1,7 +1,7 @@
-import type { Id } from "@/features/resources/types";
+import type { ResourcePk } from "@/features/resources/types";
 
 export interface ListItem {
-  id: Id;
+  id: ResourcePk;
   name?: string;
   shortDescription?: string | null;
 }

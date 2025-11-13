@@ -6,8 +6,8 @@ import type { Dispatch, ReactNode, SetStateAction } from "react";
 
 import type { Resource } from "@/features/resources";
 import type {
-  Id,
   ResourceDataType,
+  ResourcePk,
   ResourceRelation,
 } from "@/features/resources/types";
 import type { ResourceRelations } from "@/types/components";
@@ -22,7 +22,7 @@ export type RelationDataTuple<T extends Resource> = [
 
 export interface ArfRelationContextType<T extends Resource> {
   parentResource: T;
-  parentResourceId: Id;
+  parentResourceId: ResourcePk;
   childResource: ResourceRelation<T>;
   closeSheet: () => void;
 }
@@ -32,7 +32,7 @@ export interface ArfSheetDataContent<T extends Resource> {
   parentResourceData: ResourceDataType<T>;
   form: ReactNode;
   item: {
-    id: Id;
+    id: ResourcePk;
     name: string | undefined;
   } | null;
 }

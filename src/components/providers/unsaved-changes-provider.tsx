@@ -17,11 +17,11 @@ import {
 } from "@/components/ui/dialog";
 import { env } from "@/config/env";
 import { UnsavedChangesContext } from "@/hooks/use-unsaved-changes";
-import type { LayoutProps } from "@/types/components";
+import type { WrapperProps } from "@/types/components";
 
 const DEFAULT_CONFIRM_NAVIGATION_ROUTE: Route = "/";
 
-export function UnsavedChangesProvider({ children }: LayoutProps) {
+export function UnsavedChangesProvider({ children }: WrapperProps) {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [confirmNavigationTo, setConfirmNavigationTo] = useState<Route | null>(
     null,

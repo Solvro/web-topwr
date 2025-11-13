@@ -14,7 +14,7 @@ import type { RESOURCE_SCHEMAS } from "../data/resource-schemas";
 import type { Resource } from "../enums";
 import type { ResourceDataWithRelations } from "./relations";
 
-export type Id = string | number;
+export type ResourcePk = string | number;
 
 export type RoutableResource = {
   [R in Resource]: `/${R}` extends Route ? R : never;
@@ -41,7 +41,7 @@ type PossiblyOrderable<T extends Resource, U> = T extends OrderableResource
   ? U & { order: number }
   : U;
 type UnorderableResourceDataType<T extends Resource> = DatedResource &
-  ResourceFormValues<T> & { id: Id };
+  ResourceFormValues<T> & { id: ResourcePk };
 export type ResourceDataType<T extends Resource> = PossiblyOrderable<
   T,
   UnorderableResourceDataType<T>

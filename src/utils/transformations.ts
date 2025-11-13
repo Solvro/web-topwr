@@ -1,5 +1,5 @@
 /** Generic pure functions which transform data from one format into another. */
-import type { Id } from "@/features/resources/types";
+import type { ResourcePk } from "@/features/resources/types";
 
 export const removeTrailingSlash = (path: string): string =>
   path.replace(/\/+$/, "");
@@ -31,7 +31,7 @@ export const encodeQueryParameters = (
 // TODO: narrow this down to just resource IDs (e.g. using a regex)
 // keep in mind this cannot be just integers because resources like
 // student_organization_tags use the tag (alphanumeric string) as the primary key
-export const sanitizeId = (id: Id): string =>
+export const sanitizeId = (id: ResourcePk): string =>
   encodeURIComponent(String(id).trim());
 
 export const toTitleCase = (text: string): string =>

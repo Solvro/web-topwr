@@ -17,9 +17,9 @@ import {
   getResourceMetadata,
 } from "@/features/resources/node";
 import type {
-  Id,
   ResourceDataType,
   ResourceFormValues,
+  ResourcePk,
 } from "@/features/resources/types";
 import type { NonNullableValues } from "@/types/helpers";
 
@@ -95,7 +95,7 @@ async function createTestOrganization(
  * @param id The id of the organization to delete.
  * @param strict Causes an error to be raised if the request returns a non-200 response. Defaults to false.
  */
-async function deleteTestOrganization(id?: Id, strict = false) {
+async function deleteTestOrganization(id?: ResourcePk, strict = false) {
   try {
     await fetchMutation<MessageResponse>(String(id), {
       resource,

@@ -22,7 +22,7 @@ import { fetchMutation, getKey, useMutationWrapper } from "@/features/backend";
 import type { MessageResponse } from "@/features/backend/types";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
-import type { Id } from "@/features/resources/types";
+import type { ResourcePk } from "@/features/resources/types";
 import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import type { OptionalPromise } from "@/types/helpers";
@@ -37,7 +37,7 @@ export function DeleteButtonWithDialog({
   ...props
 }: {
   resource: Resource;
-  id: Id;
+  id: ResourcePk;
   itemName?: string;
   showLabel?: boolean;
   onDeleteSuccess?: () => OptionalPromise<boolean>;

@@ -17,12 +17,12 @@ import {
 } from "@/features/resources";
 import type { Resource } from "@/features/resources";
 import type {
-  Id,
   RelationDefinition,
   ResourceDataType,
   ResourceDefaultValues,
   ResourceFormValues,
   ResourcePivotRelationData,
+  ResourcePk,
   ResourceRelation,
   XToManyResource,
 } from "@/features/resources/types";
@@ -125,7 +125,7 @@ export function ArfRelationInput<
   }
   const queriedRelations = unsafeQueriedRelations ?? [];
   const selectedValues = queriedRelations.flatMap((item) => {
-    const value = get(item, primaryKeyField, null) as Id | null;
+    const value = get(item, primaryKeyField, null) as ResourcePk | null;
     return value == null ? [] : String(value);
   });
   const relationDataOptions =

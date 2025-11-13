@@ -9,7 +9,7 @@ import {
 } from "@/features/resources";
 import type { Resource } from "@/features/resources";
 import type {
-  Id,
+  ResourcePk,
   ResourceRelation,
   XToManyResource,
 } from "@/features/resources/types";
@@ -20,7 +20,7 @@ import { useArfRelation } from "./use-arf-relation";
 
 interface MutateRelationOptions {
   deleted: boolean;
-  id: Id;
+  id: ResourcePk;
   body: unknown;
 }
 

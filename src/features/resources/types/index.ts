@@ -2,7 +2,7 @@ export type {
   ArrayResources,
   CreatableResource,
   EditableResource,
-  Id,
+  ResourcePk,
   OrderableResource,
   ResourceDataType,
   ResourceDefaultValues,

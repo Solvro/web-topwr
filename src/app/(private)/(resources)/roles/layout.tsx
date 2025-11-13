@@ -1,7 +1,7 @@
 import { Resource } from "@/features/resources";
 import { AbstractResourceLayout } from "@/features/resources/server";
-import type { LayoutProps } from "@/types/components";
+import type { WrapperProps } from "@/types/components";
 
-export default function RolesLayout(props: LayoutProps) {
+export default function RolesLayout(props: WrapperProps) {
   return <AbstractResourceLayout resource={Resource.Roles} {...props} />;
 }

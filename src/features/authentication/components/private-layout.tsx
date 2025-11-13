@@ -2,12 +2,12 @@ import "server-only";
 
 import { MainContent } from "@/components/main-content";
 import { Navbar } from "@/components/presentation/navbar";
-import type { LayoutProps } from "@/types/components";
+import type { WrapperProps } from "@/types/components";
 
 import { getAuthStateServer } from "../utils/get-auth-state.server";
 import { Bouncer } from "./bouncer";
 
-export async function PrivateLayout({ children }: LayoutProps) {
+export async function PrivateLayout({ children }: WrapperProps) {
   const authState = await getAuthStateServer();
 
   return (

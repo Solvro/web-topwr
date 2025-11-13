@@ -4,13 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { ApplicationError } from "@/config/enums";
 import { APPLICATION_ERROR_MESSAGES } from "@/data/application-error-messages";
 import type { RoutableResource } from "@/features/resources/types";
-import type { LayoutProps } from "@/types/components";
+import type { WrapperProps } from "@/types/components";
 
 import { BackToHomeButton } from "./back-to-home-button";
 import { ReturnButton } from "./return-button";
 import { UserInfo } from "./user-info";
 
-function ErrorContextInfo({ children }: LayoutProps) {
+function ErrorContextInfo({ children }: WrapperProps) {
   return (
     <div className="text-muted-foreground order-3 text-center">{children}</div>
   );

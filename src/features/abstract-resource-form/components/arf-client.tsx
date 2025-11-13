@@ -22,10 +22,10 @@ import {
 } from "@/features/resources";
 import type {
   EditableResource,
-  Id,
   ResourceDefaultValues,
   ResourceFormValues,
   ResourcePivotRelationData,
+  ResourcePk,
   RoutableResource,
 } from "@/features/resources/types";
 import { useRouter } from "@/hooks/use-router";
@@ -174,7 +174,7 @@ export function ArfClient<T extends Resource>({
             {isEditing ? (
               <DeleteButtonWithDialog
                 resource={resource}
-                id={get(defaultValues, getResourcePk(resource)) as Id}
+                id={get(defaultValues, getResourcePk(resource)) as ResourcePk}
                 showLabel
                 size="default"
                 {...(isEmbedded

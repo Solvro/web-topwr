@@ -2,7 +2,7 @@ import "server-only";
 
 import { ErrorMessage } from "@/components/presentation/error-message";
 import { ApplicationError } from "@/config/enums";
-import type { LayoutProps, RouteOrResource } from "@/types/components";
+import type { RouteOrResource, WrapperProps } from "@/types/components";
 
 import { permit } from "../utils/permit";
 
@@ -14,7 +14,7 @@ export async function Bouncer({
   children,
   route,
   resource,
-}: LayoutProps & RouteOrResource) {
+}: WrapperProps & RouteOrResource) {
   const routePermission = route ?? `/${resource}`;
   const hasPermission = await permit(routePermission);
 
