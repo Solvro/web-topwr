@@ -3,9 +3,9 @@ import type { ReactNode } from "react";
 import { ErrorMessage } from "@/components/presentation/error-message";
 import { ApplicationError } from "@/config/enums";
 import { AbstractResourceForm } from "@/features/abstract-resource-form";
+import { fetchQuery } from "@/features/backend";
+import type { GetResourceWithRelationsResponse } from "@/features/backend/types";
 import type { RoutableResource } from "@/features/resources/types";
-import { fetchQuery } from "@/lib/fetch-utils";
-import type { GetResourceWithRelationsResponse } from "@/types/api";
 
 export async function AbstractResourceEditPageInternal({
   resource,

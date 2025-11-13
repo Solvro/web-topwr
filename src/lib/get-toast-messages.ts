@@ -1,9 +1,9 @@
 import type { AuthState } from "@/features/authentication/types";
+import { getErrorMessage } from "@/features/backend";
+import { declineNoun } from "@/features/polish";
 import type { Declensions } from "@/features/polish/types";
 import { Resource } from "@/features/resources";
 
-import { declineNoun } from "../features/polish";
-import { getErrorMessage } from "./error-handling";
 import { toTitleCase } from "./helpers";
 
 const getDefaultToastMessages = (declensions: Declensions) => ({

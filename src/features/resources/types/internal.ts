@@ -3,7 +3,7 @@ import type { Route } from "next";
 import type { z } from "zod";
 
 import type { ListItem } from "@/features/abstract-resource-collection/types";
-import type { DatedResource } from "@/types/api";
+import type { DatedResource } from "@/features/backend/types";
 import type {
   AbstractResourceFormInputs,
   ResourceSchemaKey,

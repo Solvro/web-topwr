@@ -1,3 +1,4 @@
+import { fetchResources } from "@/features/backend";
 import {
   RelationType,
   getResourceArrayInputResources,
@@ -5,7 +6,7 @@ import {
 } from "@/features/resources";
 import type { Resource } from "@/features/resources";
 import type { ArrayResources } from "@/features/resources/types";
-import { fetchResources, typedEntries, typedFromEntries } from "@/lib/helpers";
+import { typedEntries, typedFromEntries } from "@/lib/helpers";
 import type { ResourceRelations } from "@/types/components";
 
 import type { RelationDataTuple } from "../types/internal";

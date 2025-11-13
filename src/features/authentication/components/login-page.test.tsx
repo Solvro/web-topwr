@@ -2,12 +2,14 @@ import { userEvent } from "@testing-library/user-event";
 import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
-import { API_ERROR_MESSAGES } from "@/config/constants";
-import { getErrorMessage } from "@/lib/error-handling";
-import { getVersionedApiBase } from "@/lib/helpers";
+import {
+  API_ERROR_MESSAGES,
+  getErrorMessage,
+  getVersionedApiBase,
+} from "@/features/backend";
+import type { GetUserResponse } from "@/features/backend/types";
 import { MOCK_PASSWORD, MOCK_USER } from "@/tests/shared";
 import { getToaster, renderWithProviders, server } from "@/tests/unit";
-import type { GetUserResponse } from "@/types/api";
 
 import { LoginPage } from "./login-page";
 

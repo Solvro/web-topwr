@@ -3,13 +3,13 @@ import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
 import { AbstractResourceForm } from "@/features/abstract-resource-form";
+import { fetchQuery, getResourceApiBase } from "@/features/backend";
+import type { GetResourceWithRelationsResponse } from "@/features/backend/types";
 import { Resource } from "@/features/resources";
 import type { ResourceDataType } from "@/features/resources/types";
-import { fetchQuery, getResourceApiBase } from "@/lib/fetch-utils";
 import { sanitizeId } from "@/lib/helpers";
 import { mockDatedResource } from "@/tests/shared";
 import { renderWithProviders, server } from "@/tests/unit";
-import type { GetResourceWithRelationsResponse } from "@/types/api";
 
 const resource = Resource.Banners;
 

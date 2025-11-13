@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import type { DatedResource } from "@/types/api";
+import type { DatedResource } from "@/features/backend/types";
 
 export const mockDatedResource = (): DatedResource => ({
   createdAt: faker.date.past().toISOString(),

@@ -13,11 +13,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { declineNumeric } from "@/features/polish";
-import { Resource } from "@/features/resources";
 import {
   CreateButton,
   DeleteButtonWithDialog,
   EditButton,
+  Resource,
 } from "@/features/resources";
 import { getRoundedDate } from "@/lib/helpers";
 import type { CalendarEvent } from "@/types/calendar";

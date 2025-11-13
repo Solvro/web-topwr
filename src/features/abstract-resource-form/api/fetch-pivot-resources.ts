@@ -1,3 +1,4 @@
+import { fetchResources } from "@/features/backend";
 import type { Resource } from "@/features/resources";
 import type {
   RelationDefinition,
@@ -7,7 +8,7 @@ import type {
   ResourcePivotRelationData,
   ResourceRelation,
 } from "@/features/resources/types";
-import { fetchResources, typedFromEntries } from "@/lib/helpers";
+import { typedFromEntries } from "@/lib/helpers";
 
 import { isPivotRelationDefinition } from "../utils/is-pivot-relation-definition";
 import { isRelationPivotDefinition } from "../utils/is-relation-pivot-definition";

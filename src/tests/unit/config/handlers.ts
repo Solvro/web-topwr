@@ -1,9 +1,15 @@
 import type { PathParams, RequestHandler } from "msw";
 import { HttpResponse, http } from "msw";
 
+import { getVersionedApiBase } from "@/features/backend";
+import type {
+  ApiCalendarEvent,
+  ErrorResponse,
+  GetUserResponse,
+  LogInResponse,
+} from "@/features/backend/types";
 import { Resource, getResourceMetadata } from "@/features/resources";
 import type { ResourceFormValues } from "@/features/resources/types";
-import { getVersionedApiBase } from "@/lib/helpers";
 import {
   MOCK_AUTH_STATE,
   MOCK_FILES,
@@ -11,12 +17,6 @@ import {
   MOCK_PASSWORD,
   MOCK_USER,
 } from "@/tests/shared";
-import type {
-  ApiCalendarEvent,
-  ErrorResponse,
-  GetUserResponse,
-  LogInResponse,
-} from "@/types/api";
 
 import { MOCK_RESPONSE } from "../mocks/constants";
 import { mockResourceResponse } from "../mocks/mock-resource-response";

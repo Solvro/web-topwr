@@ -3,15 +3,14 @@ import { Archive, ArchiveRestore } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { fetchMutation, getKey, useMutationWrapper } from "@/features/backend";
+import type { ModifyResourceResponse } from "@/features/backend/types";
 import { declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
 import { OrganizationStatus } from "@/features/resources";
-import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { useRouter } from "@/hooks/use-router";
-import { fetchMutation } from "@/lib/fetch-utils";
 import { getToastMessages } from "@/lib/get-toast-messages";
-import { getKey, sanitizeId } from "@/lib/helpers";
-import type { ModifyResourceResponse } from "@/types/api";
+import { sanitizeId } from "@/lib/helpers";
 
 // TODO: make this more generic to support other resources with property toggles
 export function ToggleOrganizationStatusButton({

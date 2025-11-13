@@ -1,11 +1,10 @@
 "use client";
 
 import { Spinner } from "@/components/core/spinner";
-import { useQueryWrapper } from "@/hooks/use-query-wrapper";
+import { fetchFileEntry, useQueryWrapper } from "@/features/backend";
 
 import { ApiImageInternal } from ".";
 import type { ApiImageProps } from ".";
-import { fetchFileEntry } from "./fetch-file-entry";
 
 export function ApiImage({ imageKey, ...props }: ApiImageProps) {
   const { data, isSuccess, isPending } = useQueryWrapper(

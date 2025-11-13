@@ -1,5 +1,5 @@
-import { fetchQuery } from "@/lib/fetch-utils";
-import type { GetUserResponse } from "@/types/api";
+import { fetchQuery } from "@/features/backend";
+import type { GetUserResponse } from "@/features/backend/types";
 
 import type { User } from "../types/internal";
 

@@ -1,6 +1,6 @@
 import { http, passthrough } from "msw";
 
-import { getVersionedApiBase } from "@/lib/helpers";
+import { getVersionedApiBase } from "@/features/backend";
 import { server } from "@/tests/unit";
 
 export function bypassMockServer(endpoint: string) {

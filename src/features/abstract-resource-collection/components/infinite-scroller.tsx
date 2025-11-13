@@ -5,14 +5,14 @@ import { useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { Button } from "@/components/ui/button";
+import { getKey } from "@/features/backend";
+import type { GetResourcesResponsePaginated } from "@/features/backend/types";
 import { isOrderableResource } from "@/features/resources";
 import type {
   EditableResource,
   OrderableResource,
   ResourceDataType,
 } from "@/features/resources/types";
-import { getKey } from "@/lib/helpers";
-import type { GetResourcesResponsePaginated } from "@/types/api";
 
 import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
 import type {

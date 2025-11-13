@@ -1,4 +1,4 @@
-import type { ApiCalendarEvent } from "./api";
+import type { ApiCalendarEvent } from "../features/backend/types";
 
 export interface DateObject {
   year: number;

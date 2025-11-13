@@ -2,10 +2,10 @@ import Image from "next/image";
 import type { CSSProperties, ComponentProps } from "react";
 
 import { ImageType } from "@/config/enums";
+import type { FileEntry } from "@/features/backend/types";
 import type { Resource } from "@/features/resources";
 import type { ResourceFormValues } from "@/features/resources/types";
 import { cn } from "@/lib/utils";
-import type { FileEntry } from "@/types/api";
 
 interface ApiImagePropsBase extends Omit<ComponentProps<typeof Image>, "src"> {
   resourceData?: ResourceFormValues<Resource>;

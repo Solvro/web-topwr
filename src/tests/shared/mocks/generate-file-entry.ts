@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 
 import { env } from "@/config/env";
-import type { FileEntry } from "@/types/api";
+import type { FileEntry } from "@/features/backend/types";
 
 import { mockDatedResource } from "./mock-dated-resource";
 

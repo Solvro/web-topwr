@@ -44,7 +44,7 @@ vi.mock("@solvro/next-view-transitions", () => ({
 }));
 
 vi.mock("next/image", () => ({ default: MockImage }));
-vi.mock("@/lib/error-handling", { spy: true });
+vi.mock("@/features/backend", { spy: true });
 vi.mock("js-cookie");
 
 globalThis.ResizeObserver = ResizeObserver as typeof globalThis.ResizeObserver;

@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
 
 import type { AuthState, User } from "@/features/authentication/types";
+import type { FileEntry } from "@/features/backend/types";
 import type { Resource } from "@/features/resources";
 import type { ResourceFormValues } from "@/features/resources/types";
-import type { FileEntry } from "@/types/api";
 
 import { generateFileEntry } from "./generate-file-entry";
 import { mockDatedResource } from "./mock-dated-resource";

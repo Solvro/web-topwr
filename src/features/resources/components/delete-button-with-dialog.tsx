@@ -18,15 +18,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { fetchMutation, getKey, useMutationWrapper } from "@/features/backend";
+import type { MessageResponse } from "@/features/backend/types";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
 import type { Id } from "@/features/resources/types";
-import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
 import { useRouter } from "@/hooks/use-router";
-import { fetchMutation } from "@/lib/fetch-utils";
 import { getToastMessages } from "@/lib/get-toast-messages";
-import { getKey, quoteText, sanitizeId } from "@/lib/helpers";
-import type { MessageResponse } from "@/types/api";
+import { quoteText, sanitizeId } from "@/lib/helpers";
 import type { OptionalPromise } from "@/types/helpers";
 
 export function DeleteButtonWithDialog({

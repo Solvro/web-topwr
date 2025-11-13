@@ -1,5 +1,7 @@
 import { toast } from "sonner";
 
+import { fetchMutation, useMutationWrapper } from "@/features/backend";
+import type { ModifyResourceResponse } from "@/features/backend/types";
 import {
   RelationType,
   getResourceQueryName,
@@ -11,11 +13,8 @@ import type {
   ResourceRelation,
   XToManyResource,
 } from "@/features/resources/types";
-import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
-import { fetchMutation } from "@/lib/fetch-utils";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import { camelToSnakeCase, sanitizeId } from "@/lib/helpers";
-import type { ModifyResourceResponse } from "@/types/api";
 
 import { useArfRelation } from "./use-arf-relation";
 

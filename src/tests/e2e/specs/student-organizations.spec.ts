@@ -3,6 +3,11 @@ import { expect, test } from "@playwright/test";
 import type { Locator, Page, Response } from "@playwright/test";
 
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
+import { FetchError, fetchMutation } from "@/features/backend";
+import type {
+  MessageResponse,
+  ModifyResourceResponse,
+} from "@/features/backend/types";
 import {
   OrganizationSource,
   OrganizationStatus,
@@ -16,8 +21,6 @@ import type {
   ResourceDataType,
   ResourceFormValues,
 } from "@/features/resources/types";
-import { FetchError, fetchMutation } from "@/lib/fetch-utils";
-import type { MessageResponse, ModifyResourceResponse } from "@/types/api";
 import type { NonNullableValues } from "@/types/helpers";
 
 import { deleteAccessToken } from "../api/delete-access-token";

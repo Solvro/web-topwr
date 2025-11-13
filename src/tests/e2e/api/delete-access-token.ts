@@ -1,5 +1,8 @@
-import { fetchMutation } from "@/lib/fetch-utils";
-import type { MessageResponse, SuccessResponse } from "@/types/api";
+import { fetchMutation } from "@/features/backend";
+import type {
+  MessageResponse,
+  SuccessResponse,
+} from "@/features/backend/types";
 
 export async function deleteAccessToken(
   accessToken: string,

@@ -5,8 +5,8 @@ import Cookies from "js-cookie";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-import { fetchMutation } from "@/lib/fetch-utils";
-import type { LogInResponse, MessageResponse } from "@/types/api";
+import { fetchMutation } from "@/features/backend";
+import type { LogInResponse, MessageResponse } from "@/features/backend/types";
 
 import { getCurrentUser } from "../api/get-current-user";
 import { AUTH_STATE_COOKIE_NAME } from "../constants";
