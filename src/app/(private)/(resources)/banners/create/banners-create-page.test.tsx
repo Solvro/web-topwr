@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_COLOR } from "@/config/constants";
+import { DEFAULT_INPUT_COLOR } from "@/config/constants";
 import { AbstractResourceForm } from "@/features/abstract-resource-form";
 import { Resource, getResourceMetadata } from "@/features/resources";
 import type { ResourceFormValues } from "@/features/resources/types";
@@ -10,9 +10,9 @@ import type { FormInputBase } from "@/types/forms";
 
 const DEFAULT_BANNER: ResourceFormValues<Resource.Banners> = {
   ...getResourceMetadata(Resource.Banners).form.defaultValues,
-  textColor: DEFAULT_COLOR,
-  titleColor: DEFAULT_COLOR,
-  backgroundColor: DEFAULT_COLOR,
+  textColor: DEFAULT_INPUT_COLOR,
+  titleColor: DEFAULT_INPUT_COLOR,
+  backgroundColor: DEFAULT_INPUT_COLOR,
 };
 
 async function renderCreatePage() {

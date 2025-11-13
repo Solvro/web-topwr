@@ -1,7 +1,9 @@
 import { z } from "zod";
 
-import { FORM_ERROR_MESSAGES, TOPIC_NAME_REGEX } from "@/config/constants";
+import { FORM_ERROR_MESSAGES } from "@/data/form-error-messages";
 import { RequiredStringSchema } from "@/schemas/helpers";
+
+import { TOPIC_NAME_REGEX } from "../constants";
 
 export const NotificationTopicSchema = z.object({
   topicName: RequiredStringSchema.regex(TOPIC_NAME_REGEX, {

@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import { expect, test } from "@playwright/test";
 import type { Locator, Page, Response } from "@playwright/test";
 
-import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
+import { LIST_RESULTS_PER_PAGE } from "@/features/abstract-resource-collection/node";
 import { FetchError, fetchMutation } from "@/features/backend";
 import type {
   MessageResponse,

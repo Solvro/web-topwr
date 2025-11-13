@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { FORM_ERROR_MESSAGES } from "@/config/constants";
+import { FORM_ERROR_MESSAGES } from "@/data/form-error-messages";
 import { NumericIdSchema, RequiredStringSchema } from "@/schemas/helpers";
 
 import {

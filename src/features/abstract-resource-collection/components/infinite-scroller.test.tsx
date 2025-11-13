@@ -2,11 +2,11 @@ import { waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
-import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import { Resource } from "@/features/resources";
 import { getLoadingIndicator, renderWithProviders } from "@/tests/unit";
 
 import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
+import { LIST_RESULTS_PER_PAGE } from "../constants";
 import { InfiniteScroller } from "./infinite-scroller";
 
 const resource = Resource.StudentOrganizations;

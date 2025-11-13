@@ -20,7 +20,7 @@ import {
   ColorPickerOutput,
   ColorPickerSelection,
 } from "@/components/ui/shadcn-io/color-picker";
-import { DEFAULT_COLOR } from "@/config/constants";
+import { DEFAULT_INPUT_COLOR } from "@/config/constants";
 import { cn } from "@/lib/utils";
 
 import { InputSlot } from "./input-slot";
@@ -42,7 +42,7 @@ export function ColorInput({
         <Input
           type="color"
           className="hidden"
-          value={value ?? DEFAULT_COLOR}
+          value={value ?? DEFAULT_INPUT_COLOR}
           readOnly
         />
       </FormControl>

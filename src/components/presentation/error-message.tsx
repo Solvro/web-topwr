@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import { APPLICATION_ERROR_MESSAGES } from "@/config/constants";
 import { ApplicationError } from "@/config/enums";
+import { APPLICATION_ERROR_MESSAGES } from "@/data/application-error-messages";
 import type { RoutableResource } from "@/features/resources/types";
 import type { LayoutProps } from "@/types/components";
 

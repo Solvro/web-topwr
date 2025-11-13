@@ -1,4 +1,3 @@
-import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
 import { fetchQuery } from "@/features/backend";
 import type {
   GetResourcesResponse,
@@ -6,6 +5,7 @@ import type {
 } from "@/features/backend/types";
 import type { Resource } from "@/features/resources";
 
+import { LIST_RESULTS_PER_PAGE } from "../constants";
 import { SORT_FILTER_DEFAULT_VALUES } from "../data/sort-filter-default-values";
 import { SortDirection } from "../enums";
 import type {
