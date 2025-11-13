@@ -18,7 +18,7 @@ import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
 import type {
   FilterDefinitions,
   SortFiltersFormValuesNarrowed,
-} from "../types/internal";
+} from "../types/sort-filters";
 import { AbstractResourceListItems } from "./arl-item";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
 

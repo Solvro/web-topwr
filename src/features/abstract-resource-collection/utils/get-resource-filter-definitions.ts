@@ -3,18 +3,18 @@ import {
   RESOURCE_SCHEMAS,
   getResourceMetadata,
 } from "@/features/resources/node";
-import { typedEntries, typedFromEntries } from "@/lib/helpers";
 import type {
   FormInputBase,
   ResourceSchemaKey,
   SelectInputOptions,
 } from "@/types/forms";
 import type { ValueOf } from "@/types/helpers";
+import { typedEntries, typedFromEntries } from "@/utils";
 
 import { UNFILTERABLE_INPUT_TYPES } from "../constants";
 import { FILTER_TYPE_MAPPINGS } from "../data/filter-type-mappings";
 import { FilterType } from "../enums";
-import type { FilterDefinitions } from "../types/internal";
+import type { FilterDefinitions } from "../types/sort-filters";
 
 /** Obtains the filter definitions for a specific resource. */
 export const getResourceFilterDefinitions = async <T extends Resource>(

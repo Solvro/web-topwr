@@ -19,8 +19,9 @@ import {
   EditButton,
   Resource,
 } from "@/features/resources";
-import { getRoundedDate } from "@/lib/helpers";
-import type { CalendarEvent } from "@/types/calendar";
+import { getRoundedDate } from "@/utils";
+
+import type { CalendarEvent } from "../types/calendar";
 
 const formatTime = (event: CalendarEvent, timeType: "startTime" | "endTime") =>
   formatDate(
@@ -29,7 +30,7 @@ const formatTime = (event: CalendarEvent, timeType: "startTime" | "endTime") =>
     { locale: pl },
   );
 
-export function AllEventsModal({
+export function CalendarModal({
   events,
   day,
   month,

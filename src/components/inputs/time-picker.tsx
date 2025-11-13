@@ -7,7 +7,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { isEmptyValue } from "@/lib/helpers";
+import { isEmptyValue } from "@/utils";
 
 import { InputSlot } from "./input-slot";
 

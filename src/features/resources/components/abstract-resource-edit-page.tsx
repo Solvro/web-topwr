@@ -4,8 +4,8 @@ import { ApplicationError } from "@/config/enums";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { getResourceMetadata } from "@/features/resources";
 import type { RoutableResource } from "@/features/resources/types";
-import { sanitizeId } from "@/lib/helpers";
 import type { ResourceEditPageProps } from "@/types/components";
+import { sanitizeId } from "@/utils";
 
 import { AbstractResourceEditPageInternal } from "./abstract-resource-edit-page-internal";
 

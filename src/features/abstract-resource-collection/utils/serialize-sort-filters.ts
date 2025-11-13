@@ -1,8 +1,8 @@
 import { isDeclinableNoun } from "@/features/polish";
-import { isEmptyValue } from "@/lib/helpers/typescript";
+import { isEmptyValue } from "@/utils";
 
 import { SORT_DIRECTION_SEPARATOR } from "../constants";
-import type { SortFiltersFormValues } from "../types/internal";
+import type { SortFiltersFormValues } from "../types/sort-filters";
 
 /** Converts the sort filter values into search parameters. */
 export const serializeSortFilters = (values: SortFiltersFormValues) => {

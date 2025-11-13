@@ -25,7 +25,7 @@ import {
 import { declineNoun } from "@/features/polish";
 import type { DeclinableNoun } from "@/features/polish/types";
 import { useRouter } from "@/hooks/use-router";
-import { typedEntries } from "@/lib/helpers";
+import { typedEntries } from "@/utils";
 
 import { IMPLICIT_SORTABLE_FIELDS } from "../data/implicit-sortable-fields";
 import { SORT_DIRECTION_NAMES } from "../data/sort-direction-names";
@@ -38,7 +38,7 @@ import type {
   FilterDefinitions,
   SortFiltersFormValues,
   SortFiltersFormValuesNarrowed,
-} from "../types/internal";
+} from "../types/sort-filters";
 import { serializeSortFilters } from "../utils/serialize-sort-filters";
 import { FieldGroup } from "./field-group";
 import { FilterValueField } from "./sort-filter-value-field";

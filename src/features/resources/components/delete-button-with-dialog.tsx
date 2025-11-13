@@ -25,8 +25,8 @@ import type { Resource } from "@/features/resources";
 import type { Id } from "@/features/resources/types";
 import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
-import { quoteText, sanitizeId } from "@/lib/helpers";
 import type { OptionalPromise } from "@/types/helpers";
+import { quoteText, sanitizeId } from "@/utils";
 
 export function DeleteButtonWithDialog({
   resource,

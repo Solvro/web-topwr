@@ -1,5 +1,5 @@
-import { Calendar } from "@/components/calendar";
 import { BackToHomeButton } from "@/components/presentation/back-to-home-button";
+import { Calendar } from "@/features/abstract-resource-collection";
 import { Resource } from "@/features/resources";
 import type { ResourcePageProps } from "@/types/components";
 

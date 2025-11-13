@@ -1,5 +1,5 @@
 import type { Resource } from "@/features/resources";
-import { removeLeadingSlash } from "@/lib/helpers";
+import { removeLeadingSlash } from "@/utils";
 
 import type { FetchRequestOptions } from "../types/internal";
 import { getAccessToken } from "../utils/get-access-token";

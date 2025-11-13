@@ -1,3 +1,4 @@
+/** Generic pure functions which transform data from one format into another. */
 import type { Id } from "@/features/resources/types";
 
 export const removeTrailingSlash = (path: string): string =>

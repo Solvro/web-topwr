@@ -4,12 +4,12 @@ import { ApiImage } from "@/components/api-image/server";
 import { getResourceMetadata } from "@/features/resources";
 import type { Resource } from "@/features/resources";
 import type { ResourceDefaultValues } from "@/features/resources/types";
-import { tryParseNumber, typedEntries } from "@/lib/helpers";
 import type {
   ExistingImages,
   ResourceCreatePageProps,
   ResourceFormProps,
 } from "@/types/components";
+import { tryParseNumber, typedEntries } from "@/utils";
 
 import { fetchPivotResources } from "../api/fetch-pivot-resources";
 import { fetchRelatedResources } from "../api/fetch-related-resources";

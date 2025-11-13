@@ -14,7 +14,7 @@ import type {
   XToManyResource,
 } from "@/features/resources/types";
 import { getToastMessages } from "@/lib/get-toast-messages";
-import { camelToSnakeCase, sanitizeId } from "@/lib/helpers";
+import { camelToSnakeCase, sanitizeId } from "@/utils";
 
 import { useArfRelation } from "./use-arf-relation";
 

@@ -26,7 +26,7 @@ import type {
   ResourceRelation,
 } from "@/features/resources/types";
 import { useRouter } from "@/hooks/use-router";
-import { isEmptyValue, isUnsetEnumField, tryParseNumber } from "@/lib/helpers";
+import { isEmptyValue, isUnsetEnumField, tryParseNumber } from "@/utils";
 
 import { useArfRelationMutation } from "../hooks/use-arf-relation-mutation";
 import { isPivotRelationDefinition } from "../utils/is-pivot-relation-definition";

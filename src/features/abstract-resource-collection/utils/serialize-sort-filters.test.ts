@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { SortDirection } from "../enums";
-import type { SortFiltersFormValuesNarrowed } from "../types/internal";
+import type { SortFiltersFormValuesNarrowed } from "../types/sort-filters";
 import { serializeSortFilters } from "./serialize-sort-filters";
 
 describe("serializeSortFilters function", () => {

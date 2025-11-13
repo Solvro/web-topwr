@@ -20,13 +20,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { isEmptyValue, tryParseNumber } from "@/lib/helpers";
+import { isEmptyValue, tryParseNumber } from "@/utils";
 
 import { FilterType } from "../enums";
 import type {
   FilterDefinitions,
   SortFiltersFormValues,
-} from "../types/internal";
+} from "../types/sort-filters";
 
 // TODO: remove this rule from @solvro/config
 /* eslint-disable @typescript-eslint/restrict-template-expressions */

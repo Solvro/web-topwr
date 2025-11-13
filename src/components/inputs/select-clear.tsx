@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { SelectItem, SelectSeparator } from "@/components/ui/select";
-import { isEmptyValue } from "@/lib/helpers";
+import { isEmptyValue } from "@/utils";
 
 export function SelectClear({
   value,

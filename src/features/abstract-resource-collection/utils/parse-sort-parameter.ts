@@ -1,6 +1,6 @@
 import { isDeclinableNoun } from "@/features/polish";
 import type { DeclinableNoun } from "@/features/polish/types";
-import { isEmptyValue } from "@/lib/helpers/typescript";
+import { isEmptyValue } from "@/utils";
 
 import { SORT_DIRECTION_SEPARATOR } from "../constants";
 import { IMPLICIT_SORTABLE_FIELDS } from "../data/implicit-sortable-fields";

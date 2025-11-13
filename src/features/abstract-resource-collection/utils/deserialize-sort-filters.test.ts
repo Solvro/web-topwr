@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { FilterType } from "../enums";
-import type { FilterDefinitions } from "../types/internal";
+import type { FilterDefinitions } from "../types/sort-filters";
 import { deserializeSortFilters } from "./deserialize-sort-filters";
 
 describe("deserializeSortFilters function", () => {

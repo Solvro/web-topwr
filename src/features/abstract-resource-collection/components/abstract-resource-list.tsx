@@ -11,7 +11,7 @@ import type {
 import type { SearchParameters } from "@/types/components";
 
 import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
-import type { SortFiltersFormValuesNarrowed } from "../types/internal";
+import type { SortFiltersFormValuesNarrowed } from "../types/sort-filters";
 import { deserializeSortFilters } from "../utils/deserialize-sort-filters";
 import { getResourceFilterDefinitions } from "../utils/get-resource-filter-definitions";
 import { parseSortParameter } from "../utils/parse-sort-parameter";

@@ -1,4 +1,4 @@
-import { typedKeys } from "@/lib/helpers";
+import { typedKeys } from "@/utils";
 
 import type { Resource } from "../enums";
 import { getResourceMetadata } from "./get-resource-metadata";

@@ -14,7 +14,7 @@ import type {
   ResourceDefaultValues,
   XToManyResource,
 } from "@/features/resources/types";
-import { camelToSnakeCase, sanitizeId } from "@/lib/helpers";
+import { camelToSnakeCase, sanitizeId } from "@/utils";
 
 import type { ArfRelationContextType } from "../types/internal";
 import { isExistingItem } from "./is-existing-item";

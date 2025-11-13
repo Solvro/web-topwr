@@ -8,7 +8,7 @@ import type {
   ResourcePivotRelationData,
   ResourceRelation,
 } from "@/features/resources/types";
-import { typedFromEntries } from "@/lib/helpers";
+import { typedFromEntries } from "@/utils";
 
 import { isPivotRelationDefinition } from "../utils/is-pivot-relation-definition";
 import { isRelationPivotDefinition } from "../utils/is-relation-pivot-definition";

@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 
 import type { Resource } from "@/features/resources";
-import { typedEntries } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
 import type { LayoutProps } from "@/types/components";
 import type { AbstractResourceFormInputs } from "@/types/forms";
 import type { ValueOf } from "@/types/helpers";
+import { typedEntries } from "@/utils";
 
 type SynchronousReactNode = Exclude<ReactNode, Promise<ReactNode>>;
 

@@ -1,6 +1,7 @@
+export type { ListItem } from "./internal";
+
 export type {
   FilteredField,
   FilterDefinitions,
   SortFiltersFormValuesNarrowed,
-  ListItem,
-} from "./internal";
+} from "./sort-filters";

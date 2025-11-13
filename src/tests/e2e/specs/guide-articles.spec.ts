@@ -13,9 +13,9 @@ import type {
   ResourceDataType,
   ResourceFormValues,
 } from "@/features/resources/types";
-import { sanitizeId } from "@/lib/helpers";
 import { MOCK_IMAGE_FILE, MOCK_IMAGE_KEY } from "@/tests/shared";
 import type { NonNullableValues } from "@/types/helpers";
+import { sanitizeId } from "@/utils";
 
 import { deleteAccessToken } from "../api/delete-access-token";
 import { generateAccessToken } from "../api/generate-access-token";

@@ -7,9 +7,9 @@ import { fetchQuery, getResourceApiBase } from "@/features/backend";
 import type { GetResourceWithRelationsResponse } from "@/features/backend/types";
 import { Resource } from "@/features/resources";
 import type { ResourceDataType } from "@/features/resources/types";
-import { sanitizeId } from "@/lib/helpers";
 import { mockDatedResource } from "@/tests/shared";
 import { renderWithProviders, server } from "@/tests/unit";
+import { sanitizeId } from "@/utils";
 
 const resource = Resource.Banners;
 

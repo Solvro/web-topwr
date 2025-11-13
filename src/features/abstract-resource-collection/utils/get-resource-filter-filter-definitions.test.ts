@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { Resource } from "@/features/resources";
 
 import { FilterType } from "../enums";
-import type { FilterDefinitions } from "../types/internal";
+import type { FilterDefinitions } from "../types/sort-filters";
 import { getResourceFilterDefinitions } from "./get-resource-filter-definitions";
 
 const expectFieldTypes = (

@@ -13,7 +13,7 @@ import {
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
 import { getResourcePk } from "@/features/resources";
-import { tryParseNumber } from "@/lib/helpers";
+import { tryParseNumber } from "@/utils";
 
 import { ArfRelationContext } from "../context/arf-relation-context";
 import type {

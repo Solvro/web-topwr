@@ -1,7 +1,7 @@
 import { SendHorizonal } from "lucide-react";
 
 import { ImageType } from "@/config/enums";
-import { getRoundedDate } from "@/lib/helpers/calendar";
+import { getRoundedDate } from "@/utils";
 
 import {
   ChangeType,

@@ -11,7 +11,7 @@ import { SortDirection } from "../enums";
 import type {
   FilterDefinitions,
   SortFiltersFormValuesNarrowed,
-} from "../types/internal";
+} from "../types/sort-filters";
 import { sanitizeFilteredFields } from "../utils/sanitize-filtered-fields";
 
 export async function fetchPaginatedResources<

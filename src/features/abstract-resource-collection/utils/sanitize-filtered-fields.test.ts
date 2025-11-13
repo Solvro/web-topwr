@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { FilterType } from "../enums";
-import type { FilterDefinitions, FilteredField } from "../types/internal";
+import type { FilterDefinitions, FilteredField } from "../types/sort-filters";
 import { sanitizeFilteredFields } from "./sanitize-filtered-fields";
 
 describe("sanitizeFilteredFields function", () => {

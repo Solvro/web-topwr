@@ -1,6 +1,6 @@
 import { Resource } from "@/features/resources/node";
-import { quoteText } from "@/lib/helpers/transformations";
 import type { RecordIntersection } from "@/types/helpers";
+import { quoteText } from "@/utils";
 
 import { GrammaticalGender } from "../enums";
 import type {

@@ -30,7 +30,7 @@ import type {
   ResourceDataType,
 } from "@/features/resources/types";
 import { getToastMessages } from "@/lib/get-toast-messages";
-import { sanitizeId } from "@/lib/helpers";
+import { sanitizeId } from "@/utils";
 
 import { AbstractResourceListItems, ArlItem } from "./arl-item";
 

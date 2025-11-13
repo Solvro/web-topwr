@@ -1,7 +1,7 @@
-import { isEmptyValue } from "@/lib/helpers/typescript";
+import { isEmptyValue } from "@/utils";
 
 import { FilterType } from "../enums";
-import type { FilterDefinitions, FilteredField } from "../types/internal";
+import type { FilterDefinitions, FilteredField } from "../types/sort-filters";
 
 /** Converts the client-side search parameters to backend-compatible filters. */
 export const sanitizeFilteredFields = (

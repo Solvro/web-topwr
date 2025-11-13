@@ -1,4 +1,4 @@
-import { typedEntries } from "@/lib/helpers/typescript";
+import { typedEntries } from "@/utils";
 
 import { DETERMINER_DECLENSIONS } from "../data/determiner-declensions";
 import { NOUN_PHRASE_TRANSFORMATIONS } from "../data/noun-phrase-transformations";

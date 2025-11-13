@@ -1,6 +1,6 @@
 import type { Resource } from "@/features/resources";
 import type { Id } from "@/features/resources/types";
-import { sanitizeId } from "@/lib/helpers/transformations";
+import { sanitizeId } from "@/utils";
 
 /** Generates the key for Tanstack query or mutation operations. */
 export const getKey = {

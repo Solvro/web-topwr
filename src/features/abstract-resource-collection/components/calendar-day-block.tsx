@@ -1,12 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CALENDAR_MAX_EVENTS_PER_DAY } from "@/config/constants";
 import type { Resource } from "@/features/resources";
-import type { CalendarEvent, DateObject } from "@/types/calendar";
 
-import { AllEventsModal } from "./all-events-modal";
+import { CALENDAR_MAX_EVENTS_PER_DAY } from "../constants";
+import type { CalendarEvent, DateObject } from "../types/calendar";
+import { CalendarModal } from "./calendar-modal";
 
-export function DayBlock({
+export function CalendarDayBlock({
   day,
   today,
   clickable,
@@ -28,7 +28,7 @@ export function DayBlock({
     today.year === currentDate.getFullYear();
 
   return (
-    <AllEventsModal
+    <CalendarModal
       resource={resource}
       clickable={clickable}
       events={events}
@@ -78,6 +78,6 @@ export function DayBlock({
           </Badge>
         )}
       </Button>
-    </AllEventsModal>
+    </CalendarModal>
   );
 }

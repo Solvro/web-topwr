@@ -31,13 +31,13 @@ import type {
 import { useRouter } from "@/hooks/use-router";
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { getToastMessages } from "@/lib/get-toast-messages";
-import { sanitizeId } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
 import type {
   ExistingImages,
   ResourceFormProps,
   ResourceRelations,
 } from "@/types/components";
+import { sanitizeId } from "@/utils";
 
 import { useArfRelation } from "../hooks/use-arf-relation";
 import { ArfSheetProvider } from "../providers/arf-sheet-provider";

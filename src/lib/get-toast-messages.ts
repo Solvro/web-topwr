@@ -4,7 +4,7 @@ import { declineNoun } from "@/features/polish";
 import type { Declensions } from "@/features/polish/types";
 import { Resource } from "@/features/resources";
 
-import { toTitleCase } from "./helpers";
+import { toTitleCase } from "../utils";
 
 const getDefaultToastMessages = (declensions: Declensions) => ({
   read: {

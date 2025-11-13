@@ -3,15 +3,15 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
-import { WEEKDAYS } from "@/config/constants";
 import { fetchQuery } from "@/features/backend";
 import type { ApiCalendarEvent } from "@/features/backend/types";
 import type { Resource } from "@/features/resources";
-import { getMonthByNumberAndYear } from "@/lib/helpers";
-import type { CalendarEvent } from "@/types/calendar";
 import type { ResourcePageProps } from "@/types/components";
 
-import { DayBlock } from "./day-block";
+import { WEEKDAY_ABBREVIATIONS } from "../constants";
+import type { CalendarEvent } from "../types/calendar";
+import { getMonthObject } from "../utils/get-month-object";
+import { CalendarDayBlock } from "./calendar-day-block";
 
 export async function Calendar({
   clickable = false,
@@ -40,10 +40,7 @@ export async function Calendar({
     (month == null ? currentDate : parse(month, "MM", currentDate)).getMonth() +
     1;
 
-  const currentDisplayedMonth = getMonthByNumberAndYear(
-    displayedMonth,
-    displayedYear,
-  );
+  const currentDisplayedMonth = getMonthObject(displayedMonth, displayedYear);
 
   const firstDayOfMonth = new Date(displayedYear, displayedMonth - 1, 1);
   const startDayOfWeek = (firstDayOfMonth.getDay() + 6) % 7;
@@ -97,7 +94,7 @@ export async function Calendar({
         </Button>
       </div>
       <div className="col-span-full mt-4 grid grid-cols-subgrid gap-1">
-        {WEEKDAYS.map((day) => (
+        {WEEKDAY_ABBREVIATIONS.map((day) => (
           <div
             key={day}
             className="text-center text-xs font-semibold uppercase sm:text-sm"
@@ -117,7 +114,7 @@ export async function Calendar({
           day: cell.day,
         };
         return (
-          <DayBlock
+          <CalendarDayBlock
             key={cell.id}
             day={cell.day}
             today={displayedDateObject}

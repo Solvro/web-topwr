@@ -1,3 +1,4 @@
+/** TypeScript wrappers over JavaScript APIs. */
 import type { ValueOf } from "@/types/helpers";
 
 type EnumerableObject = Record<string, unknown> | unknown[];
@@ -14,10 +15,3 @@ export const typedEntries = <T extends EnumerableObject>(
 export const typedFromEntries = <T extends EnumerableObject>(
   entries: [keyof T, ValueOf<T>][],
 ): T => Object.fromEntries(entries) as T;
-
-/** Checks if a value is empty (null, undefined, or whitespace). */
-export const isEmptyValue = (value: unknown): value is "" | null | undefined =>
-  value == null || (typeof value === "string" && value.trim() === "");
-
-export const isUnsetEnumField = (value: unknown): boolean =>
-  isEmptyValue(value) || Number(value) < 0;

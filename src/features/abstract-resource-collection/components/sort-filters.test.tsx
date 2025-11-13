@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import { declineNoun } from "@/features/polish";
 import type { DeclinableNoun } from "@/features/polish/types";
-import { isEmptyValue } from "@/lib/helpers";
+import { isEmptyValue } from "@/utils";
 
 import { IMPLICIT_SORTABLE_FIELDS } from "../data/implicit-sortable-fields";
 import { SORT_DIRECTION_NAMES } from "../data/sort-direction-names";
@@ -13,7 +13,7 @@ import { SORT_FILTER_DEFAULT_VALUES } from "../data/sort-filter-default-values";
 import { SORT_FILTER_LABEL_DECLENSION_CASES } from "../data/sort-filter-label-declension-cases";
 import { SORT_FILTER_PLACEHOLDER } from "../data/sort-filter-placeholder";
 import { FilterType, SortDirection } from "../enums";
-import type { SortFiltersFormValuesNarrowed } from "../types/internal";
+import type { SortFiltersFormValuesNarrowed } from "../types/sort-filters";
 import { SortFilters } from "./sort-filters";
 
 const MOCK_SORTABLE_FIELDS = ["description"] satisfies DeclinableNoun[];

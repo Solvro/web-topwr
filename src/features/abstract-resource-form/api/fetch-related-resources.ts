@@ -6,8 +6,8 @@ import {
 } from "@/features/resources";
 import type { Resource } from "@/features/resources";
 import type { ArrayResources } from "@/features/resources/types";
-import { typedEntries, typedFromEntries } from "@/lib/helpers";
 import type { ResourceRelations } from "@/types/components";
+import { typedEntries, typedFromEntries } from "@/utils";
 
 import type { RelationDataTuple } from "../types/internal";
 

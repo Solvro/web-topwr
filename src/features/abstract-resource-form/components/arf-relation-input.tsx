@@ -26,8 +26,8 @@ import type {
   ResourceRelation,
   XToManyResource,
 } from "@/features/resources/types";
-import { sanitizeId, toTitleCase } from "@/lib/helpers";
 import type { ResourceFormProps, ResourceRelations } from "@/types/components";
+import { sanitizeId, toTitleCase } from "@/utils";
 
 import { useArfRelation } from "../hooks/use-arf-relation";
 import { useArfRelationMutation } from "../hooks/use-arf-relation-mutation";
