@@ -1,7 +1,7 @@
 import type { PathParams, RequestHandler } from "msw";
 import { HttpResponse, http } from "msw";
 
-import { getVersionedApiBase } from "@/features/backend";
+import { getVersionedApiBase } from "@/features/backend/node";
 import type {
   ApiCalendarEvent,
   ErrorResponse,

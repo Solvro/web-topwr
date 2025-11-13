@@ -1,5 +1,5 @@
 import type { LoginFormValues } from "@/features/authentication/types";
-import { fetchMutation } from "@/features/backend";
+import { fetchMutation } from "@/features/backend/node";
 import type { LogInResponse } from "@/features/backend/types";
 
 import { getTestUserCredentials } from "../utils/get-test-user-credentials";

@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -10,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-export function ImagePreview({
+export function ImagePreviewModal({
   isOpen,
   setIsOpen,
   image,

@@ -7,7 +7,7 @@ import { env } from "@/config/env";
 import { MOCK_FILES } from "@/tests/shared";
 import { getLoadingIndicator, renderWithProviders } from "@/tests/unit";
 
-import { ApiImage } from "./client";
+import { ApiImage } from "./api-image.client";
 
 const MOCK_IMAGES = MOCK_FILES.map((file) => ({
   ...file,

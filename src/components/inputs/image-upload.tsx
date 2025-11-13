@@ -6,15 +6,13 @@ import type { ReactNode } from "react";
 import { toast } from "sonner";
 import type { z } from "zod";
 
-import { ApiImage } from "@/components/api-image/client";
-import { ImagePreview } from "@/components/api-image/image-preview";
 import { Spinner } from "@/components/core/spinner";
 import { InputSlot } from "@/components/inputs/input-slot";
 import { Button } from "@/components/ui/button";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ImageType } from "@/config/enums";
-import { uploadFile, useMutationWrapper } from "@/features/backend";
+import { ApiImage, uploadFile, useMutationWrapper } from "@/features/backend";
 import { declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
 import type {
@@ -23,6 +21,8 @@ import type {
 } from "@/features/resources/types";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import type { WrapperProps } from "@/types/components";
+
+import { ImagePreviewModal } from "../presentation/image-preview-modal";
 
 function InputBox({ children }: WrapperProps) {
   return (
@@ -139,7 +139,7 @@ export function ImageUpload<T extends Resource>({
       ) : (
         <FormControl>{input}</FormControl>
       )}
-      <ImagePreview
+      <ImagePreviewModal
         isOpen={isPreviewOpen}
         setIsOpen={setIsPreviewOpen}
         image={

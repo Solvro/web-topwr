@@ -1,4 +1,4 @@
-import { fetchMutation } from "@/features/backend";
+import { fetchMutation } from "@/features/backend/node";
 import type {
   MessageResponse,
   SuccessResponse,

@@ -1,20 +1,13 @@
 import Image from "next/image";
-import type { CSSProperties, ComponentProps } from "react";
+import type { CSSProperties } from "react";
 
 import { ImageType } from "@/config/enums";
-import type { FileEntry } from "@/features/backend/types";
 import type { Resource } from "@/features/resources";
 import type { ResourceFormValues } from "@/features/resources/types";
 import { cn } from "@/lib/utils";
 
-interface ApiImagePropsBase extends Omit<ComponentProps<typeof Image>, "src"> {
-  resourceData?: ResourceFormValues<Resource>;
-  type: ImageType;
-}
-
-export interface ApiImageProps extends ApiImagePropsBase {
-  imageKey: string;
-}
+import type { FileEntry } from "../types";
+import type { ApiImagePropsBase } from "../types/internal";
 
 const getBackgroundColor = (
   resourceData?: ResourceFormValues<Resource>,

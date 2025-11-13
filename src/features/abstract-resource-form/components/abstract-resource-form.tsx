@@ -1,6 +1,6 @@
 import { get } from "react-hook-form";
 
-import { ApiImage } from "@/components/api-image/server";
+import { ApiImage } from "@/features/backend/server";
 import { getResourceMetadata } from "@/features/resources";
 import type { Resource } from "@/features/resources";
 import type { ResourceDefaultValues } from "@/features/resources/types";
