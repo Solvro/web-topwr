@@ -17,10 +17,12 @@ import { ImageType } from "@/config/enums";
 import { uploadFile, useMutationWrapper } from "@/features/backend";
 import { declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
-import type { ResourceFormValues } from "@/features/resources/types";
+import type {
+  ResourceFormValues,
+  ResourceSchemaKey,
+} from "@/features/resources/types";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import type { WrapperProps } from "@/types/components";
-import type { ResourceSchemaKey } from "@/types/forms";
 
 function InputBox({ children }: WrapperProps) {
   return (

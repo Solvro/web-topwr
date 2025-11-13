@@ -2,11 +2,11 @@ import { ErrorMessage } from "@/components/presentation/error-message";
 import { Badge } from "@/components/ui/badge";
 import { ApplicationError } from "@/config/enums";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
-import { getResourceMetadata } from "@/features/resources";
-import type { RoutableResource } from "@/features/resources/types";
 import type { ResourceEditPageProps } from "@/types/components";
 import { sanitizeId } from "@/utils";
 
+import type { RoutableResource } from "../types";
+import { getResourceMetadata } from "../utils/get-resource-metadata";
 import { AbstractResourceEditPageInternal } from "./abstract-resource-edit-page-internal";
 
 export async function AbstractResourceEditPage({

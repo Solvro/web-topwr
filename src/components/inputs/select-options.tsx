@@ -1,5 +1,5 @@
 import { SelectItem } from "@/components/ui/select";
-import type { SelectInputOptions } from "@/types/forms";
+import type { SelectInputOptions } from "@/features/abstract-resource-form/types";
 
 export function SelectOptions({ input }: { input: SelectInputOptions }) {
   return Object.values(input.optionEnum).map((option) => (

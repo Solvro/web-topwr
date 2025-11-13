@@ -1,4 +1,4 @@
-import type { AppZodObject } from "@/types/forms";
+import type { AppSchema } from "@/types/schemas";
 
 import { Resource } from "../enums";
 import { AboutUsLinkSchema } from "../schemas/about-us-link-schema";
@@ -49,4 +49,4 @@ export const RESOURCE_SCHEMAS = {
   [Resource.StudentOrganizationTags]: StudentOrganizationTagSchema,
   [Resource.Versions]: VersionsSchema,
   [Resource.VersionScreenshots]: VersionScreenshotsSchema,
-} satisfies Record<Resource, AppZodObject>;
+} satisfies Record<Resource, AppSchema>;

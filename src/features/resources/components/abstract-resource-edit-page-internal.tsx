@@ -5,7 +5,8 @@ import { ApplicationError } from "@/config/enums";
 import { AbstractResourceForm } from "@/features/abstract-resource-form";
 import { fetchQuery } from "@/features/backend";
 import type { GetResourceWithRelationsResponse } from "@/features/backend/types";
-import type { RoutableResource } from "@/features/resources/types";
+
+import type { RoutableResource } from "../types";
 
 export async function AbstractResourceEditPageInternal({
   resource,

@@ -1,12 +1,12 @@
 import type { z } from "zod";
 
-import type { DeclinableNoun } from "@/features/polish/types";
-import type { Resource } from "@/features/resources";
 import type {
   FormInputBase,
-  ResourceSchemaKey,
   SelectInputOptions,
-} from "@/types/forms";
+} from "@/features/abstract-resource-form/types";
+import type { DeclinableNoun } from "@/features/polish/types";
+import type { Resource } from "@/features/resources";
+import type { ResourceSchemaKey } from "@/features/resources/types";
 
 import type { FilterType } from "../enums";
 import type { FilteredFieldSchema } from "../schemas/filtered-field-schema";

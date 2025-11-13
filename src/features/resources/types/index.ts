@@ -8,6 +8,7 @@ export type {
   ResourceDefaultValues,
   ResourceFormValues,
   ResourceSchema,
+  ResourceSchemaKey,
   RoutableResource,
 } from "./internal";
 

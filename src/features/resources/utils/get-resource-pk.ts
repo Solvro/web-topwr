@@ -1,8 +1,7 @@
 import type { z } from "zod";
 
-import type { ResourceSchemaKey } from "@/types/forms";
-
 import type { Resource } from "../enums";
+import type { ResourceSchemaKey } from "../types/internal";
 import { getResourceMetadata } from "./get-resource-metadata";
 
 /** Gets the field value of the resource's primary key (usually literal `"id"`). */

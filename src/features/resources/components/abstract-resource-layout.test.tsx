@@ -2,9 +2,9 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { Resource } from "@/features/resources";
 import { MOCK_USE_PATHNAME } from "@/tests/unit";
 
+import { Resource } from "../enums";
 import { AbstractResourceLayoutInternal } from "./abstract-resource-layout-internal";
 
 describe("Abstract Resource Layout", () => {

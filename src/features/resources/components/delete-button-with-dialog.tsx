@@ -21,12 +21,13 @@ import {
 import { fetchMutation, getKey, useMutationWrapper } from "@/features/backend";
 import type { MessageResponse } from "@/features/backend/types";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
-import type { Resource } from "@/features/resources";
-import type { ResourcePk } from "@/features/resources/types";
 import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import type { OptionalPromise } from "@/types/helpers";
 import { quoteText, sanitizeId } from "@/utils";
+
+import type { Resource } from "../enums";
+import type { ResourcePk } from "../types/internal";
 
 export function DeleteButtonWithDialog({
   resource,

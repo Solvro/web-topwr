@@ -1,13 +1,13 @@
+import type {
+  FormInputBase,
+  SelectInputOptions,
+} from "@/features/abstract-resource-form/types";
 import type { Resource } from "@/features/resources";
 import {
   RESOURCE_SCHEMAS,
   getResourceMetadata,
 } from "@/features/resources/node";
-import type {
-  FormInputBase,
-  ResourceSchemaKey,
-  SelectInputOptions,
-} from "@/types/forms";
+import type { ResourceSchemaKey } from "@/features/resources/types";
 import type { ValueOf } from "@/types/helpers";
 import { typedEntries, typedFromEntries } from "@/utils";
 

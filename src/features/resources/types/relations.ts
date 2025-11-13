@@ -1,13 +1,14 @@
 import type { z } from "zod";
 
+import type { SelectInputOptions } from "@/features/abstract-resource-form/types";
 import type { DeclinableNoun } from "@/features/polish/types";
-import type { ResourceSchemaKey, SelectInputOptions } from "@/types/forms";
 
 import type { RESOURCE_METADATA } from "../data/resource-metadata";
 import type { RelationType, Resource } from "../enums";
 import type {
   ArrayResources,
   ResourceDataType,
+  ResourceSchemaKey,
   SpecificResourceMetadata,
 } from "./internal";
 

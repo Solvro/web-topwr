@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 
+import type { AbstractResourceFormInputs } from "@/features/abstract-resource-form/types";
 import type { Resource } from "@/features/resources";
 import { cn } from "@/lib/utils";
 import type { WrapperProps } from "@/types/components";
-import type { AbstractResourceFormInputs } from "@/types/forms";
 import type { ValueOf } from "@/types/helpers";
 import { typedEntries } from "@/utils";
 

@@ -1,4 +1,4 @@
-import type { FormInputName } from "@/types/forms";
+import type { FormInputName } from "@/features/abstract-resource-form/types";
 
 export const UNFILTERABLE_INPUT_TYPES = new Set<FormInputName>(["imageInputs"]);
 

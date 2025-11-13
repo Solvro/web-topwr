@@ -3,10 +3,8 @@ import { Plus } from "lucide-react";
 import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
-import type {
-  CreatableResource,
-  ResourceFormValues,
-} from "@/features/resources/types";
+
+import type { CreatableResource, ResourceFormValues } from "../types/internal";
 
 export function CreateButton<T extends CreatableResource>({
   className,

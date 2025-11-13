@@ -11,6 +11,11 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { MultiSelect } from "@/components/ui/multi-select";
+import type {
+  ArrayInputField,
+  ArrayInputOptions,
+  FormInputBase,
+} from "@/features/abstract-resource-form/types";
 import type { Resource } from "@/features/resources";
 import { getResourceMetadata } from "@/features/resources";
 import type {
@@ -18,11 +23,6 @@ import type {
   ResourceFormValues,
 } from "@/features/resources/types";
 import type { ResourceRelations } from "@/types/components";
-import type {
-  ArrayInputField,
-  ArrayInputOptions,
-  FormInputBase,
-} from "@/types/forms";
 
 export function ArrayInput<T extends Resource>({
   name,

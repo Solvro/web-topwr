@@ -3,9 +3,9 @@
 import { usePathname } from "next/navigation";
 
 import { declineNoun } from "@/features/polish";
-import type { Resource } from "@/features/resources";
 import type { ResourceLabelOptions } from "@/types/components";
 
+import type { Resource } from "../enums";
 import { getManagingResourceLabel } from "../utils/get-managing-resource-label";
 
 function getTitle(

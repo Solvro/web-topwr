@@ -3,11 +3,9 @@ import type { Route } from "next";
 import type { z } from "zod";
 
 import type { ListItem } from "@/features/abstract-resource-collection/types";
+import type { AbstractResourceFormInputs } from "@/features/abstract-resource-form/types";
 import type { DatedResource } from "@/features/backend/types";
-import type {
-  AbstractResourceFormInputs,
-  ResourceSchemaKey,
-} from "@/types/forms";
+import type { TypedSchemaKey } from "@/types/schemas";
 
 import type { RESOURCE_METADATA } from "../data/resource-metadata";
 import type { RESOURCE_SCHEMAS } from "../data/resource-schemas";
@@ -46,6 +44,17 @@ export type ResourceDataType<T extends Resource> = PossiblyOrderable<
   T,
   UnorderableResourceDataType<T>
 >;
+
+/**
+ * Extracts all paths to the form values of T, such that the type of the value at that path extends Y.
+ * @param T - Resource to extract schema paths from
+ * @param Y - Zod type to filter paths by (defaults to ZodTypeAny)
+ * @example type BooleanPaths = ResourceSchemaKey<Resource.StudentOrganizations, z.ZodBoolean> // yields 'isStrategic' | 'coverPreview' as those are the only boolean fields defined in the schema
+ */
+export type ResourceSchemaKey<
+  T extends Resource,
+  Y extends z.ZodTypeAny = z.ZodTypeAny,
+> = TypedSchemaKey<ResourceSchema<T>, Y>;
 
 /** For a given resource `T`, this type returns the union of all resources which it uses in its array input fields. */
 export type ArrayResources<T extends Resource> = {

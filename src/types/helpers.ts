@@ -1,5 +1,3 @@
-export type Defined<T> = Exclude<T, undefined>;
-
 export type ValueOf<T> = T[keyof T];
 
 /**

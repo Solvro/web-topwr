@@ -1,4 +1,7 @@
-import type { ArrayInputField, ArrayInputOptions } from "@/types/forms";
+import type {
+  ArrayInputField,
+  ArrayInputOptions,
+} from "@/features/abstract-resource-form/types";
 
 import type { Resource } from "../enums";
 import { getResourceMetadata } from "./get-resource-metadata";

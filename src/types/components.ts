@@ -7,10 +7,9 @@ import type {
   RelatedResource,
   ResourceDataType,
   ResourceDataWithRelations,
+  ResourceSchemaKey,
   RoutableResource,
 } from "@/features/resources/types";
-
-import type { ResourceSchemaKey } from "./forms";
 
 export type WrapperProps = Readonly<{
   children: ReactNode;

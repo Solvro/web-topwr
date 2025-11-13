@@ -13,7 +13,7 @@ import type {
 } from "@/features/abstract-resource-collection/types";
 import { declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
-import type { ResourceSchemaKey } from "@/types/forms";
+import type { ResourceSchemaKey } from "@/features/resources/types";
 
 import { selectOptionByLabel } from "./select-option-by-label";
 
