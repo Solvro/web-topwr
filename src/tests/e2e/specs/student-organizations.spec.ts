@@ -10,7 +10,7 @@ import {
   Resource,
   UniversityBranch,
   getResourceMetadata,
-} from "@/features/resources";
+} from "@/features/resources/node";
 import type {
   Id,
   ResourceDataType,

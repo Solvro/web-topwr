@@ -1,5 +1,8 @@
-import { RESOURCE_SCHEMAS, getResourceMetadata } from "@/features/resources";
 import type { Resource } from "@/features/resources";
+import {
+  RESOURCE_SCHEMAS,
+  getResourceMetadata,
+} from "@/features/resources/node";
 import { typedEntries, typedFromEntries } from "@/lib/helpers";
 import type {
   FormInputBase,

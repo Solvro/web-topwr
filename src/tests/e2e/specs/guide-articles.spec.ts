@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import type { Locator, Page, Response } from "@playwright/test";
 
 import { LIST_RESULTS_PER_PAGE } from "@/config/constants";
-import { Resource, getResourceMetadata } from "@/features/resources";
+import { Resource, getResourceMetadata } from "@/features/resources/node";
 import type {
   ResourceDataType,
   ResourceFormValues,

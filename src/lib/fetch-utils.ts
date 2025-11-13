@@ -3,7 +3,7 @@ import type { Resource } from "@/features/resources";
 import {
   getRecursiveRelations,
   getResourceMetadata,
-} from "@/features/resources";
+} from "@/features/resources/node";
 import { getVersionedApiBase, removeLeadingSlash } from "@/lib/helpers";
 import type { ErrorResponse, SuccessResponse } from "@/types/api";
 
