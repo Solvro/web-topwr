@@ -1,4 +1,3 @@
-/** This file contains interfaces of responses returned by the API. */
 import type { User } from "@/features/authentication/types";
 import type { Resource } from "@/features/resources";
 import type {
