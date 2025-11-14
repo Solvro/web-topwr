@@ -1,4 +1,5 @@
 import { SendHorizonal } from "lucide-react";
+import { lazy } from "react";
 
 import { ImageType } from "@/config/enums";
 import { getRoundedDate } from "@/utils";
@@ -16,7 +17,14 @@ import {
   UniversityBranch,
 } from "../enums";
 import type { ResourceMetadata } from "../types/internal";
-import { getNotificationSubmitConfirmation } from "../utils/get-notification-submit-confirmation";
+
+// lazy import needed due to circular dependency
+const NotificationConfirmationMessage = lazy(
+  async () =>
+    await import("../components/notification-confirmation-message").then(
+      (module_) => ({ default: module_.NotificationConfirmationMessage }),
+    ),
+);
 
 const SELECT_OPTION_LABELS = {
   STUDENT_ORGANIZATIONS: {
@@ -550,7 +558,10 @@ export const RESOURCE_METADATA = {
         create: {
           submitLabel: "Wyślij",
           submitIcon: SendHorizonal,
-          confirmationMessage: getNotificationSubmitConfirmation,
+          confirmationMessage: {
+            title: "Czy na pewno chcesz wysłać to powiadomienie?",
+            description: NotificationConfirmationMessage,
+          },
         },
       },
     },

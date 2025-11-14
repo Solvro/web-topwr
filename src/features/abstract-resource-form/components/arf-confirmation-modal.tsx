@@ -39,7 +39,7 @@ export function ArfConfirmationModal<T extends Resource>({
   if (confirmationMessage == null) {
     return <Button type="submit" {...props} />;
   }
-  const { title, description } = confirmationMessage(getFormValues());
+  const Description = confirmationMessage.description;
   return (
     <AlertDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
       <Button
@@ -54,8 +54,12 @@ export function ArfConfirmationModal<T extends Resource>({
       />
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription asChild>{description}</AlertDialogDescription>
+          <AlertDialogTitle>{confirmationMessage.title}</AlertDialogTitle>
+          <AlertDialogDescription asChild>
+            <div className="flex flex-col gap-2">
+              <Description item={getFormValues()} />
+            </div>
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Anuluj</AlertDialogCancel>

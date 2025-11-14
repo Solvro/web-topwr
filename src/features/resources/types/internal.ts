@@ -66,12 +66,14 @@ export type ArrayResources<T extends Resource> = {
     : never;
 }[T];
 
-export type SubmitFormConfirmationMessage<R extends Resource> = (
-  resource: ResourceFormValues<R>,
-) => {
+export interface ConfirmationMessageProps<R extends Resource> {
+  item: ResourceFormValues<R>;
+}
+
+export interface SubmitFormConfirmationMessage<R extends Resource> {
   title: ReactNode;
-  description: ReactNode;
-};
+  description: (props: ConfirmationMessageProps<R>) => ReactNode;
+}
 
 type SubmitFormConfiguration<R extends Resource> = Readonly<{
   submitLabel: string;
