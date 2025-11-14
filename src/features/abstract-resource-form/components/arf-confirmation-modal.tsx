@@ -67,7 +67,6 @@ export function ArfConfirmationModal<T extends Resource>({
             <Button
               onClick={async () => {
                 await onSubmit();
-                setIsModalOpen(false);
               }}
               {...props}
             />
