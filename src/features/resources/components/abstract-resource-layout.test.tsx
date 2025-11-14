@@ -18,7 +18,7 @@ describe("Abstract Resource Layout", () => {
   }
 
   it("renders the correct title based on pathname", () => {
-    renderLayout("/student_organizations");
+    renderLayout(`/${Resource.StudentOrganizations}`);
     expect(screen.getByText("Zarządzanie organizacjami")).toBeInTheDocument();
   });
 
