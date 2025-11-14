@@ -534,11 +534,10 @@ export const RESOURCE_METADATA = {
           "notification.body": { label: "Treść powiadomienia" },
         },
         arrayInputs: {
-          // TODO: uncomment this when GET /firebase/topics is made consistent with other list endpoints
-          // topics: {
-          //   label: "Kategorie",
-          //   itemsResource: Resource.NotificationTopics,
-          // },
+          topics: {
+            label: "Kategorie",
+            itemsResource: Resource.NotificationTopics,
+          },
         },
       },
       defaultValues: {
@@ -557,7 +556,9 @@ export const RESOURCE_METADATA = {
     },
   },
   [Resource.NotificationTopics]: {
-    apiPath: "firebase/topic",
+    apiPath: "firebase/topics",
+    pk: "topicName",
+    deletable: false,
     itemMapper: (item) => ({
       name: item.topicName,
       shortDescription: item.description,

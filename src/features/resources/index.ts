@@ -7,6 +7,7 @@ export * from "./components/edit-button";
 export * from "./node";
 
 export * from "./utils/is-orderable-resource";
+export * from "./utils/get-field-value";
 export * from "./utils/get-managing-resource-label";
 export * from "./utils/get-resource-array-input-resources";
 export * from "./utils/get-resource-pk";

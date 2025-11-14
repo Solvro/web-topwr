@@ -32,7 +32,8 @@ import type {
 import { getToastMessages } from "@/lib/get-toast-messages";
 import { sanitizeId } from "@/utils";
 
-import { AbstractResourceListItems, ArlItem } from "./arl-item";
+import { ArlItem } from "./arl-item";
+import { ArlItems } from "./arl-items";
 
 /**
  * Given the indices of an item's old and new position, calculate its new sort value using the average of its neighbours' sort values.
@@ -156,7 +157,7 @@ export function OrderableItemWrapper<T extends OrderableResource>({
       }}
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
-        <AbstractResourceListItems
+        <ArlItems
           items={items}
           resource={resource}
           orderable

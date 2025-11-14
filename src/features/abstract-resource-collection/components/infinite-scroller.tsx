@@ -19,7 +19,7 @@ import type {
   FilterDefinitions,
   SortFiltersFormValuesNarrowed,
 } from "../types/sort-filters";
-import { AbstractResourceListItems } from "./arl-item";
+import { ArlItems } from "./arl-items";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
 
 export function InfiniteScroller<T extends EditableResource>({
@@ -76,7 +76,7 @@ export function InfiniteScroller<T extends EditableResource>({
           data={flatData as ResourceDataType<OrderableResource>[]}
         />
       ) : (
-        <AbstractResourceListItems items={flatData} resource={resource} />
+        <ArlItems items={flatData} resource={resource} />
       )}
       <Button
         ref={ref}

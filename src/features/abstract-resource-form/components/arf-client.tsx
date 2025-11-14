@@ -171,7 +171,7 @@ export function ArfClient<T extends Resource>({
             >
               {submitLabel} {declensions.accusative} <SubmitIconComponent />
             </Button>
-            {isEditing ? (
+            {isEditing && metadata.deletable !== false ? (
               <DeleteButtonWithDialog
                 resource={resource}
                 id={get(defaultValues, getResourcePk(resource)) as ResourcePk}
