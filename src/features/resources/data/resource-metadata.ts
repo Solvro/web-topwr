@@ -530,6 +530,7 @@ export const RESOURCE_METADATA = {
   },
   [Resource.Notifications]: {
     apiPath: "firebase/broadcast",
+    isSingleton: true,
     itemMapper: (item) => ({
       name: item.notification.title,
       shortDescription: item.notification.body,

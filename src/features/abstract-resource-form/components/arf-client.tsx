@@ -100,6 +100,9 @@ export function ArfClient<T extends Resource>({
     ...mutationOptions
   } = getMutationConfig(resource, defaultValues, relationContext);
 
+  const metadata = getResourceMetadata(resource);
+  const declensions = declineNoun(resource);
+
   const { mutateAsync, isPending } = useMutationWrapper<
     ModifyResourceResponse<T>,
     ResourceFormValues<T>
@@ -114,8 +117,10 @@ export function ArfClient<T extends Resource>({
     form.reset(wasCreated ? undefined : response.data);
     if (relationContext == null && wasCreated) {
       router.push(
-        // assume that creatable resources in non-embedded forms are editable
-        `/${resource as EditableResource}/edit/${sanitizeId(response.data.id)}`,
+        // assume that creatable resources in non-embedded forms are routable/editable
+        metadata.isSingleton === true
+          ? `/${resource as RoutableResource}`
+          : `/${resource as EditableResource}/edit/${sanitizeId(response.data.id)}`,
       );
     } else {
       if (wasCreated && relationContext != null) {
@@ -131,8 +136,6 @@ export function ArfClient<T extends Resource>({
     return response;
   });
 
-  const declensions = declineNoun(resource);
-  const metadata = getResourceMetadata(resource);
   const onSubmit = form.handleSubmit((values) =>
     toast.promise(
       mutateAsync(values),
