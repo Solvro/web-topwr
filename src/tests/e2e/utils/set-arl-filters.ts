@@ -67,6 +67,6 @@ export async function setArlSortFilters<T extends Resource>(
   }
   await page.getByRole("button", { name: /zatwierdź/i }).click();
   await page.waitForURL(
-    `/*?${serializeSortFilters({ sortBy, sortDirection, filters })}`,
+    `/${resource}?${serializeSortFilters({ sortBy, sortDirection, filters })}`,
   );
 }
