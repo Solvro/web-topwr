@@ -13,7 +13,7 @@ export enum Resource {
   GuideAuthors = "guide_authors",
   GuideQuestions = "guide_questions",
   Notifications = "notifications",
-  NotificationTopics = "notification_topics",
+  NotificationTopics = "notifications/topics",
   Roles = "roles",
   StudentOrganizations = "student_organizations",
   StudentOrganizationLinks = "student_organization_links",
