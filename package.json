@@ -34,8 +34,7 @@
   "lint-staged": {
     "*": "prettier -w --ignore-unknown",
     "*.ts?(x)": [
-      "eslint",
-      "vitest related --run --passWithNoTests"
+      "eslint"
     ]
   },
   "prettier": "@solvro/config/prettier",

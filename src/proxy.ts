@@ -1,8 +1,10 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { AUTH_STATE_COOKIE_NAME } from "@/config/constants";
-import { parseAuthCookie } from "@/lib/cookies";
+import {
+  AUTH_STATE_COOKIE_NAME,
+  parseAuthCookie,
+} from "@/features/authentication";
 
 /** Removes the auth cookie if it is malformed. */
 function verifyUserCookie(request: NextRequest, response: NextResponse) {

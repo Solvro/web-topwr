@@ -10,13 +10,13 @@ import {
   University,
 } from "lucide-react";
 
-import { DashboardButton } from "@/components/dashboard-button";
-import { Resource } from "@/config/enums";
-import { getAuthState } from "@/lib/data-access";
-import { getUserDisplayName } from "@/lib/helpers";
+import { DashboardButton } from "@/components/presentation/dashboard-button";
+import { getUserDisplayName } from "@/features/authentication";
+import { getAuthStateServer } from "@/features/authentication/server";
+import { Resource } from "@/features/resources";
 
 export default async function Home() {
-  const authState = await getAuthState();
+  const authState = await getAuthStateServer();
   const user = authState?.user;
 
   if (user == null) {

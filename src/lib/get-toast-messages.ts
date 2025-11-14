@@ -1,10 +1,10 @@
-import { Resource } from "@/config/enums";
-import type { AuthState } from "@/types/api";
-import type { Declensions } from "@/types/polish";
+import type { AuthState } from "@/features/authentication/types";
+import { getErrorMessage } from "@/features/backend";
+import { declineNoun } from "@/features/polish";
+import type { Declensions } from "@/features/polish/types";
+import { Resource } from "@/features/resources";
 
-import { getErrorMessage } from "./error-handling";
-import { toTitleCase } from "./helpers";
-import { declineNoun } from "./polish";
+import { toTitleCase } from "../utils";
 
 const getDefaultToastMessages = (declensions: Declensions) => ({
   read: {

@@ -7,7 +7,7 @@ import { RootProviders } from "@/components/providers/root-providers";
 import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/config/env";
 import { cn } from "@/lib/utils";
-import type { LayoutProps } from "@/types/components";
+import type { WrapperProps } from "@/types/components";
 
 import "./globals.css";
 
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps) {
+export default function RootLayout({ children }: WrapperProps) {
   return (
     <html lang="pl" className="overflow-hidden" suppressHydrationWarning>
       <RootProviders>

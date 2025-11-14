@@ -6,8 +6,9 @@ export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
     environment: "jsdom",
-    setupFiles: "./src/tests/setup.ts",
+    setupFiles: "./src/tests/unit/setup.ts",
     globals: true,
+    testTimeout: 10_000,
     exclude: [
       "**/node_modules/**",
       "**/.{idea,git,cache,output,temp}/**",

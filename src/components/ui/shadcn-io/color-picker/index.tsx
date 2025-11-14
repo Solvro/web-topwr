@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DEFAULT_COLOR } from "@/config/constants";
+import { DEFAULT_INPUT_COLOR } from "@/config/constants";
 import { cn } from "@/lib/utils";
 
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -76,7 +76,7 @@ export type ColorPickerProps = Omit<
 
 export function ColorPicker({
   value,
-  defaultValue = DEFAULT_COLOR,
+  defaultValue = DEFAULT_INPUT_COLOR,
   onChange,
   className,
   ...props

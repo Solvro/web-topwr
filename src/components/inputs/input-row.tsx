@@ -1,18 +1,18 @@
 import type { ReactNode } from "react";
 
-import type { Resource } from "@/config/enums";
-import { typedEntries } from "@/lib/helpers";
+import type { AbstractResourceFormInputs } from "@/features/abstract-resource-form/types";
+import type { Resource } from "@/features/resources";
 import { cn } from "@/lib/utils";
-import type { LayoutProps } from "@/types/components";
-import type { AbstractResourceFormInputs } from "@/types/forms";
+import type { WrapperProps } from "@/types/components";
 import type { ValueOf } from "@/types/helpers";
+import { typedEntries } from "@/utils";
 
 type SynchronousReactNode = Exclude<ReactNode, Promise<ReactNode>>;
 
 export function InputRow({
   children,
   className,
-}: LayoutProps & {
+}: WrapperProps & {
   className?: string;
 }) {
   return (

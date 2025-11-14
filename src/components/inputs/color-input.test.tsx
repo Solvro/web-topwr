@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import Color from "color";
 import { describe, expect, it } from "vitest";
 
-import { InputComponentWrapper } from "@/tests/helpers/react";
+import { InputComponentWrapper } from "@/tests/unit";
 
 import { ColorInput } from "./color-input";
 

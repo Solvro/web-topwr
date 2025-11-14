@@ -38,7 +38,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { declineNumeric } from "@/lib/polish";
+import { declineNumeric } from "@/features/polish";
 import { cn } from "@/lib/utils";
 import type { OptionalPromise } from "@/types/helpers";
 

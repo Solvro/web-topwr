@@ -6,24 +6,25 @@ import type { ReactNode } from "react";
 import { toast } from "sonner";
 import type { z } from "zod";
 
-import { ApiImage } from "@/components/api-image/client";
-import { ImagePreview } from "@/components/api-image/image-preview";
+import { Spinner } from "@/components/core/spinner";
 import { InputSlot } from "@/components/inputs/input-slot";
-import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { Resource } from "@/config/enums";
 import { ImageType } from "@/config/enums";
-import { useMutationWrapper } from "@/hooks/use-mutation-wrapper";
+import { ApiImage, uploadFile, useMutationWrapper } from "@/features/backend";
+import { declineNoun } from "@/features/polish";
+import type { Resource } from "@/features/resources";
+import type {
+  ResourceFormValues,
+  ResourceSchemaKey,
+} from "@/features/resources/types";
 import { getToastMessages } from "@/lib/get-toast-messages";
-import { uploadFile } from "@/lib/helpers";
-import { declineNoun } from "@/lib/polish";
-import type { ResourceFormValues } from "@/types/app";
-import type { LayoutProps } from "@/types/components";
-import type { ResourceSchemaKey } from "@/types/forms";
+import type { WrapperProps } from "@/types/components";
 
-function InputBox({ children }: LayoutProps) {
+import { ImagePreviewModal } from "../presentation/image-preview-modal";
+
+function InputBox({ children }: WrapperProps) {
   return (
     <InputSlot
       renderAs="div"
@@ -138,7 +139,7 @@ export function ImageUpload<T extends Resource>({
       ) : (
         <FormControl>{input}</FormControl>
       )}
-      <ImagePreview
+      <ImagePreviewModal
         isOpen={isPreviewOpen}
         setIsOpen={setIsPreviewOpen}
         image={

@@ -5,7 +5,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import { Provider as StoreProvider } from "jotai";
 import type { Store } from "jotai/vanilla/store";
 
-import type { LayoutProps } from "@/types/components";
+import type { WrapperProps } from "@/types/components";
 
 import { UnsavedChangesProvider } from "./unsaved-changes-provider";
 
@@ -13,7 +13,7 @@ export function InternalProviders({
   children,
   jotaiStore,
   queryClient,
-}: LayoutProps & {
+}: WrapperProps & {
   jotaiStore: Store;
   queryClient: QueryClient;
 }) {
