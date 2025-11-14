@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import type { Route } from "next";
+import type { ReactNode } from "react";
 import type { z } from "zod";
 
 import type { ListItem } from "@/features/abstract-resource-collection/types";
@@ -65,9 +66,19 @@ export type ArrayResources<T extends Resource> = {
     : never;
 }[T];
 
-type SubmitFormConfiguration = Readonly<{
+export interface ConfirmationMessageProps<R extends Resource> {
+  item: ResourceFormValues<R>;
+}
+
+export interface SubmitFormConfirmationMessage<R extends Resource> {
+  title: ReactNode;
+  description: (props: ConfirmationMessageProps<R>) => ReactNode;
+}
+
+type SubmitFormConfiguration<R extends Resource> = Readonly<{
   submitLabel: string;
   submitIcon: LucideIcon;
+  confirmationMessage?: SubmitFormConfirmationMessage<R>;
 }>;
 
 export type ResourceMetadata<R extends Resource> = Readonly<{
@@ -79,10 +90,17 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
   apiPath: string;
   /** The API version to be used when fetching this resource. Defaults to 1. */
   apiVersion?: number;
-  /** Whether the resource is a singleton (i.e., only one instance exists). */
+  /**
+   * Whether the resource is a singleton (i.e., only one instance exists).
+   * This means there is no `id` parameter in the *edit* route and there is no *create* route.
+   * This can also be set to `true` for virtual resources, in which case
+   * submission of a creation form will result in redirection to the index (collection) page.
+   */
   isSingleton?: boolean;
   /** Whether the resource is orderable within the Abstract Resource List. */
   orderable?: boolean;
+  /** Whether the resource can be deleted by the user. Defaults to true. */
+  deletable?: boolean;
   /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */
   itemMapper: (item: UnorderableResourceDataType<R>) => Omit<ListItem, "id">; // use the UnorderableResourceDataType here to avoid circular type reference
   form: {
@@ -92,8 +110,8 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
     defaultValues: ResourceFormValues<R>;
     /** Submit button label and icon overrides. */
     submitConfiguration?: {
-      edit?: SubmitFormConfiguration;
-      create?: SubmitFormConfiguration;
+      edit?: SubmitFormConfiguration<R>;
+      create?: SubmitFormConfiguration<R>;
     };
   };
 }>;

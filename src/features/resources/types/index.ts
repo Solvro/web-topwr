@@ -10,6 +10,7 @@ export type {
   ResourceSchema,
   ResourceSchemaKey,
   RoutableResource,
+  SubmitFormConfirmationMessage,
 } from "./internal";
 
 export type {

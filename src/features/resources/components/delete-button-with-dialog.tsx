@@ -6,18 +6,19 @@ import { Shredder, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import type { buttonVariants } from "@/components/ui/button/variants";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { fetchMutation, getKey, useMutationWrapper } from "@/features/backend";
 import type { MessageResponse } from "@/features/backend/types";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
@@ -43,7 +44,7 @@ export function DeleteButtonWithDialog({
   showLabel?: boolean;
   onDeleteSuccess?: () => OptionalPromise<boolean>;
 } & VariantProps<typeof buttonVariants>) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
   const router = useRouter();
 
   const queryClient = useQueryClient();
@@ -55,7 +56,7 @@ export function DeleteButtonWithDialog({
       resource,
       method: "DELETE",
     });
-    setIsDialogOpen(false);
+    setIsAlertDialogOpen(false);
     await queryClient.invalidateQueries({
       queryKey: [getKey.query.resourceList(resource)],
       exact: false,
@@ -77,8 +78,8 @@ export function DeleteButtonWithDialog({
   const label = `Usuń ${declensions.accusative}`;
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogTrigger asChild>
+    <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
+      <AlertDialogTrigger asChild>
         <Button
           variant="destructive-ghost"
           size="sm"
@@ -89,10 +90,10 @@ export function DeleteButtonWithDialog({
           {showLabel ? label : null}
           <Trash2 />
         </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="text-balance">
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className="text-balance">
             Czy na pewno chcesz usunąć{" "}
             {
               itemName == null
@@ -103,24 +104,28 @@ export function DeleteButtonWithDialog({
                 : `${declensions.accusative} ${quoteText(itemName)}` // e.g. organizację studencką „KN Solvro”
             }
             ?
-          </DialogTitle>
-          <DialogDescription>Ta operacja jest nieodwracalna.</DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <DialogClose asChild>
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            Ta operacja jest nieodwracalna.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel asChild>
             <Button variant="secondary">Anuluj</Button>
-          </DialogClose>
-          <Button
-            variant="destructive"
-            onClick={handleDelete}
-            loading={isPending}
-            disabled={isSuccess}
-          >
-            <Shredder />
-            Usuń
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          </AlertDialogCancel>
+          <AlertDialogAction asChild>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              loading={isPending}
+              disabled={isSuccess}
+            >
+              <Shredder />
+              Usuń
+            </Button>
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

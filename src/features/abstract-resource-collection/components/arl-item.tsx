@@ -1,21 +1,24 @@
-import type { ComponentType, Ref } from "react";
+import type { Ref } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import {
   EditButton,
   Resource,
+  getFieldValue,
   getResourceMetadata,
+  getResourcePk,
 } from "@/features/resources";
 import type {
   EditableResource,
   ResourceDataType,
+  ResourcePk,
 } from "@/features/resources/types";
 
 import type { ListItem } from "../types/internal";
 import { ArlItemDragHandle } from "./arl-item-drag-handle";
 import { ToggleOrganizationStatusButton } from "./toggle-status-button";
 
-interface ItemProps<T extends EditableResource> {
+export interface ItemProps<T extends EditableResource> {
   ref?: Ref<HTMLLIElement>;
   item: ResourceDataType<T>;
   resource: T;
@@ -32,10 +35,9 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
   const { ref, item, resource, orderable = false } = props;
 
   const metadata = getResourceMetadata(resource);
-  const listItem: ListItem = {
-    id: item.id,
-    ...metadata.itemMapper(item),
-  };
+  const pkField = getResourcePk(resource);
+  const id = getFieldValue(item, pkField) as ResourcePk;
+  const listItem: ListItem = { id, ...metadata.itemMapper(item) };
 
   return (
     <li
@@ -72,30 +74,5 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
         </footer>
       </article>
     </li>
-  );
-}
-
-export function AbstractResourceListItems<T extends EditableResource>({
-  items,
-  resource,
-  orderable = false,
-  ItemComponent = ArlItem,
-}: {
-  items: ResourceDataType<T>[];
-  resource: T;
-  orderable?: boolean;
-  ItemComponent?: ComponentType<ItemProps<T>>;
-}) {
-  return (
-    <ul className="flex flex-col gap-4">
-      {items.map((item) => (
-        <ItemComponent
-          key={String(item.id)}
-          item={item}
-          resource={resource}
-          orderable={orderable}
-        />
-      ))}
-    </ul>
   );
 }

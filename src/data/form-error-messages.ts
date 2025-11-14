@@ -9,4 +9,5 @@ export const FORM_ERROR_MESSAGES = {
     "Niepoprawny kod wydziału. Musi zawierać tylko duże litery i zaczynać się od 'W'.",
   INVALID_TOPIC_NAME:
     "Niepoprawna nazwa. Dozwolone są tylko litery, cyfry oraz znaki - _ . ~ %",
+  SELECTION_REQUIRED: "Należy wybrać przynajmniej jedną opcję",
 };

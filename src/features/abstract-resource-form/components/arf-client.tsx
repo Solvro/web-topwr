@@ -8,7 +8,6 @@ import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
 
 import { ReturnButton } from "@/components/presentation/return-button";
-import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { fetchMutation, useMutationWrapper } from "@/features/backend";
 import type { ModifyResourceResponse } from "@/features/backend/types";
@@ -44,6 +43,7 @@ import { ArfSheetProvider } from "../providers/arf-sheet-provider";
 import { getDefaultValues } from "../utils/get-default-values";
 import { getMutationConfig } from "../utils/get-mutation-config";
 import { isExistingItem } from "../utils/is-existing-item";
+import { ArfConfirmationModal } from "./arf-confirmation-modal";
 import { ArfInputs } from "./arf-inputs";
 
 export function ArfClient<T extends Resource>({
@@ -96,8 +96,12 @@ export function ArfClient<T extends Resource>({
     endpoint,
     submitLabel,
     submitIcon: SubmitIconComponent,
+    confirmationMessage,
     ...mutationOptions
   } = getMutationConfig(resource, defaultValues, relationContext);
+
+  const metadata = getResourceMetadata(resource);
+  const declensions = declineNoun(resource);
 
   const { mutateAsync, isPending } = useMutationWrapper<
     ModifyResourceResponse<T>,
@@ -113,8 +117,10 @@ export function ArfClient<T extends Resource>({
     form.reset(wasCreated ? undefined : response.data);
     if (relationContext == null && wasCreated) {
       router.push(
-        // assume that creatable resources in non-embedded forms are editable
-        `/${resource as EditableResource}/edit/${sanitizeId(response.data.id)}`,
+        // assume that creatable resources in non-embedded forms are routable/editable
+        metadata.isSingleton === true
+          ? `/${resource as RoutableResource}`
+          : `/${resource as EditableResource}/edit/${sanitizeId(response.data.id)}`,
       );
     } else {
       if (wasCreated && relationContext != null) {
@@ -130,8 +136,12 @@ export function ArfClient<T extends Resource>({
     return response;
   });
 
-  const declensions = declineNoun(resource);
-  const metadata = getResourceMetadata(resource);
+  const onSubmit = form.handleSubmit((values) =>
+    toast.promise(
+      mutateAsync(values),
+      getToastMessages.resource(resource).modify,
+    ),
+  );
 
   return (
     <ArfSheetProvider
@@ -139,15 +149,7 @@ export function ArfClient<T extends Resource>({
       className={cn("mx-auto flex h-full flex-col", className)}
     >
       <Form {...form}>
-        <form
-          className="flex grow flex-col gap-4"
-          onSubmit={form.handleSubmit((values) =>
-            toast.promise(
-              mutateAsync(values),
-              getToastMessages.resource(resource).modify,
-            ),
-          )}
-        >
+        <form className="flex grow flex-col gap-4" onSubmit={onSubmit}>
           <ArfInputs
             resource={resource}
             control={form.control}
@@ -164,14 +166,17 @@ export function ArfClient<T extends Resource>({
                 : "lg:flex-row-reverse",
             )}
           >
-            <Button
-              type="submit"
+            <ArfConfirmationModal
               loading={isPending}
               disabled={!form.formState.isDirty}
+              getFormValues={form.getValues}
+              onSubmit={onSubmit}
+              triggerValidation={form.trigger}
+              confirmationMessage={confirmationMessage}
             >
               {submitLabel} {declensions.accusative} <SubmitIconComponent />
-            </Button>
-            {isEditing ? (
+            </ArfConfirmationModal>
+            {isEditing && metadata.deletable !== false ? (
               <DeleteButtonWithDialog
                 resource={resource}
                 id={get(defaultValues, getResourcePk(resource)) as ResourcePk}

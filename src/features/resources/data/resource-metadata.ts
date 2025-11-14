@@ -1,4 +1,5 @@
 import { SendHorizonal } from "lucide-react";
+import { lazy } from "react";
 
 import { ImageType } from "@/config/enums";
 import { getRoundedDate } from "@/utils";
@@ -16,6 +17,14 @@ import {
   UniversityBranch,
 } from "../enums";
 import type { ResourceMetadata } from "../types/internal";
+
+// lazy import needed due to circular dependency
+const NotificationConfirmationMessage = lazy(
+  async () =>
+    await import("../components/notification-confirmation-message").then(
+      (module_) => ({ default: module_.NotificationConfirmationMessage }),
+    ),
+);
 
 const SELECT_OPTION_LABELS = {
   STUDENT_ORGANIZATIONS: {
@@ -403,7 +412,6 @@ export const RESOURCE_METADATA = {
           },
           [Resource.GuideAuthors]: {
             type: RelationType.ManyToMany,
-            // TODO: support other roles
             pivotData: {
               field: "role",
               optionEnum: GuideAuthorRole,
@@ -508,7 +516,6 @@ export const RESOURCE_METADATA = {
         relationInputs: {
           [Resource.Contributors]: {
             type: RelationType.ManyToMany,
-            // TODO: support other roles
             pivotData: {
               field: "role_id",
               relatedResource: Resource.Roles,
@@ -523,6 +530,7 @@ export const RESOURCE_METADATA = {
   },
   [Resource.Notifications]: {
     apiPath: "firebase/broadcast",
+    isSingleton: true,
     itemMapper: (item) => ({
       name: item.notification.title,
       shortDescription: item.notification.body,
@@ -534,11 +542,10 @@ export const RESOURCE_METADATA = {
           "notification.body": { label: "Treść powiadomienia" },
         },
         arrayInputs: {
-          // TODO: uncomment this when GET /firebase/topics is made consistent with other list endpoints
-          // topics: {
-          //   label: "Kategorie",
-          //   itemsResource: Resource.NotificationTopics,
-          // },
+          topics: {
+            label: "Kategorie",
+            itemsResource: Resource.NotificationTopics,
+          },
         },
       },
       defaultValues: {
@@ -552,12 +559,18 @@ export const RESOURCE_METADATA = {
         create: {
           submitLabel: "Wyślij",
           submitIcon: SendHorizonal,
+          confirmationMessage: {
+            title: "Czy na pewno chcesz wysłać to powiadomienie?",
+            description: NotificationConfirmationMessage,
+          },
         },
       },
     },
   },
   [Resource.NotificationTopics]: {
-    apiPath: "firebase/topic",
+    apiPath: "firebase/topics",
+    pk: "topicName",
+    deletable: false,
     itemMapper: (item) => ({
       name: item.topicName,
       shortDescription: item.description,
