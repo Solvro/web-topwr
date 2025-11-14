@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import type { Route } from "next";
+import type { ReactNode } from "react";
 import type { z } from "zod";
 
 import type { ListItem } from "@/features/abstract-resource-collection/types";
@@ -65,9 +66,17 @@ export type ArrayResources<T extends Resource> = {
     : never;
 }[T];
 
-type SubmitFormConfiguration = Readonly<{
+export type SubmitFormConfirmationMessage<R extends Resource> = (
+  resource: ResourceFormValues<R>,
+) => {
+  title: ReactNode;
+  description: ReactNode;
+};
+
+type SubmitFormConfiguration<R extends Resource> = Readonly<{
   submitLabel: string;
   submitIcon: LucideIcon;
+  confirmationMessage?: SubmitFormConfirmationMessage<R>;
 }>;
 
 export type ResourceMetadata<R extends Resource> = Readonly<{
@@ -94,8 +103,8 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
     defaultValues: ResourceFormValues<R>;
     /** Submit button label and icon overrides. */
     submitConfiguration?: {
-      edit?: SubmitFormConfiguration;
-      create?: SubmitFormConfiguration;
+      edit?: SubmitFormConfiguration<R>;
+      create?: SubmitFormConfiguration<R>;
     };
   };
 }>;

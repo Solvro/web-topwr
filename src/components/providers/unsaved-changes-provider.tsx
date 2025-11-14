@@ -5,16 +5,17 @@ import { CircleX } from "lucide-react";
 import type { Route } from "next";
 import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { env } from "@/config/env";
 import { UnsavedChangesContext } from "@/hooks/use-unsaved-changes";
 import type { WrapperProps } from "@/types/components";
@@ -55,7 +56,7 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
         },
       }}
     >
-      <Dialog
+      <AlertDialog
         open={confirmNavigationTo != null}
         onOpenChange={(open) => {
           setConfirmNavigationTo(
@@ -63,19 +64,19 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
           );
         }}
       >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Niezapisane zmiany</DialogTitle>
-            <DialogDescription>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Niezapisane zmiany</AlertDialogTitle>
+            <AlertDialogDescription>
               Masz niezapisane zmiany. Czy na pewno chcesz opuścić tę stronę?
               Wszelkie niezapisane zmiany będą utracone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <DialogClose asChild>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel asChild>
               <Button variant="secondary">Anuluj</Button>
-            </DialogClose>
-            <DialogClose asChild>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
               <Button variant="destructive" asChild>
                 <Link
                   href={confirmNavigationTo ?? DEFAULT_CONFIRM_NAVIGATION_ROUTE}
@@ -83,10 +84,10 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
                   Kontynuuj <CircleX />
                 </Link>
               </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       {children}
     </UnsavedChangesContext.Provider>
   );

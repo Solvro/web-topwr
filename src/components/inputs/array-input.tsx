@@ -9,6 +9,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { MultiSelect } from "@/components/ui/multi-select";
 import type {
@@ -95,6 +96,7 @@ export function ArrayInput<T extends Resource>({
               placeholder={`Wybierz ${label.toLowerCase()}`}
             />
           </FormControl>
+          <FormMessage />
         </FormItem>
       )}
     />

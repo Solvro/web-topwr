@@ -16,6 +16,7 @@ import {
   UniversityBranch,
 } from "../enums";
 import type { ResourceMetadata } from "../types/internal";
+import { getNotificationSubmitConfirmation } from "../utils/get-notification-submit-confirmation";
 
 const SELECT_OPTION_LABELS = {
   STUDENT_ORGANIZATIONS: {
@@ -403,7 +404,6 @@ export const RESOURCE_METADATA = {
           },
           [Resource.GuideAuthors]: {
             type: RelationType.ManyToMany,
-            // TODO: support other roles
             pivotData: {
               field: "role",
               optionEnum: GuideAuthorRole,
@@ -508,7 +508,6 @@ export const RESOURCE_METADATA = {
         relationInputs: {
           [Resource.Contributors]: {
             type: RelationType.ManyToMany,
-            // TODO: support other roles
             pivotData: {
               field: "role_id",
               relatedResource: Resource.Roles,
@@ -551,6 +550,7 @@ export const RESOURCE_METADATA = {
         create: {
           submitLabel: "Wyślij",
           submitIcon: SendHorizonal,
+          confirmationMessage: getNotificationSubmitConfirmation,
         },
       },
     },

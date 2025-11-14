@@ -260,21 +260,7 @@ export function ArfInputs<T extends Resource>({
               />
             )}
           />
-          <Inputs
-            container
-            inputs={arrayInputs}
-            mapper={([name, { label, ...options }]) => (
-              <ArrayInput
-                key={name}
-                control={control}
-                name={name}
-                label={label}
-                inputOptions={options}
-                relatedResources={relatedResources}
-              />
-            )}
-          />
-          {selectInputs == null && relationInputs == null ? null : (
+          {(selectInputs ?? arrayInputs ?? relationInputs) == null ? null : (
             <div
               className={cn("grid grid-cols-1 items-start gap-4", {
                 "lg:grid-cols-2": !isEmbedded,
@@ -289,6 +275,19 @@ export function ArfInputs<T extends Resource>({
                     name={name}
                     label={input.label}
                     options={<SelectOptions input={input} />}
+                  />
+                )}
+              />
+              <Inputs
+                inputs={arrayInputs}
+                mapper={([name, { label, ...options }]) => (
+                  <ArrayInput
+                    key={name}
+                    control={control}
+                    name={name}
+                    label={label}
+                    inputOptions={options}
+                    relatedResources={relatedResources}
                   />
                 )}
               />
