@@ -6,11 +6,10 @@ This document describes the project's file structure, which is based on the [bul
 
 ```txt
 web-topwr/
-├── public/                 # Static assets (not imported in code)
 ├── docs/                   # Project documentation
 ├── LICENSES/               # Third-party license files
-├── src/                    # Source code
-└── README.md               # Project overview
+├── public/                 # Static assets (not imported in code)
+└── src/                    # Source code
 ```
 
 ## Source Directory (`src/`)
@@ -87,17 +86,11 @@ Organized by component type and usage:
 
 ```txt
 components/
-├── core/                   # Core reusable components
-│   ├── counter.tsx
-│   ├── link.tsx
-│   ├── spinner.tsx
-│   └── theme-toggle.tsx
-├── inputs/                 # Form input components
-├── presentation/           # Presentation/display components
+├── core/                   # Basic reusable components
+├── inputs/                 # Reusable form input components
+├── presentation/           # ToPWR-specific interface elements
 ├── providers/              # Global React context providers
-├── ui/                     # shadcn/ui components (auto-generated)
-├── analytics.tsx           # Analytics component
-└── main-content.tsx        # Main content wrapper
+└── ui/                     # shadcn/ui components (auto-generated)
 ```
 
 ### Features Directory (`src/features/`)
@@ -106,34 +99,18 @@ Feature-based architecture with domain-driven organization:
 
 ```txt
 features/
-├── abstract-resource-collection/   # Resource list/collection logic
-│   ├── components/                 # Collection-specific components
-│   ├── node.ts                     # Node.js/server exports
-│   ├── types/                      # Collection type definitions
-│   └── index.ts                    # Public API
-├── abstract-resource-form/         # Resource form logic
-│   ├── components/                 # Form-specific components
-│   ├── types/                      # Form type definitions
-│   └── index.ts                    # Public API
-├── authentication/                 # Auth feature
-│   ├── components/                 # Auth UI components
-│   ├── server.ts                   # Server-side auth utilities
-│   ├── types/                      # Auth types
-│   └── index.ts                    # Public API
-├── backend/                        # Backend API integration
-│   ├── types/                      # API response types
-│   └── index.ts                    # API client functions
-├── polish/                         # Polish language utilities
-│   └── index.ts                    # Declension and formatting
-└── resources/                      # Resource metadata and types
-    ├── components/                 # Resource-specific UI
-    ├── data/                       # Resource metadata
-    ├── schemas/                    # Resource validation schemas
-    ├── types/                      # Resource type definitions
-    ├── utils/                      # Resource utilities
-    ├── server.ts                   # Server-side exports
-    ├── node.ts                     # Node.js exports
-    └── index.ts                    # Public API
+└── <feature-name>/
+    ├── api/                # Feature-specific functions which access the API
+    ├── components/         # Feature-specific React components
+    ├── data/               # Feature-specific JSON-like data
+    ├── schemas/            # Feature-specific Zod schemas
+    ├── types/              # Feature-specific types
+    ├── utils/              # Feature-specific utilities
+    ├── constants.ts        # Feature-specific constant values
+    ├── enums.ts            # Feature-specific enums
+    ├── index.ts            # Client exports
+    ├── server.ts           # Server exports
+    └── node.ts             # Node.js exports
 ```
 
 The conventions on feature folders is explained more in-depth in [CONVENTIONS.md](CONVENTIONS.md#feature-based-architecture)
@@ -144,31 +121,17 @@ The conventions on feature folders is explained more in-depth in [CONVENTIONS.md
 config/
 ├── constants.ts            # App-wide constants
 ├── enums.ts                # Shared enumerations
-└── env.ts                  # Environment variable validation
+└── env.ts                  # Type-safe environment variable exports
 ```
 
 ### Data Directory (`src/data/`)
 
-```txt
-data/
-├── application-error-messages.ts   # UI error messages
-└── form-error-messages.ts          # Form validation messages
-```
+This folder contains app-wide static data structures, such as arrays or JSON-like objects that represent non-changing data used throughout the app.
 
 ### Schemas Directory (`src/schemas/`)
 
-Shared validation schemas:
-
-```txt
-schemas/
-├── color-value-schema.ts   # HEX color validation
-├── iso-timestamp-schema.ts # ISO date validation
-├── numeric-id-schema.ts    # Numeric ID validation
-├── positive-integer-schema.ts  # Positive int validation
-├── required-string-schema.ts   # Required string validation
-├── unix-timestamp-schema.ts    # Unix timestamp validation
-└── index.ts                # Re-exports
-```
+This folder contains generic schemas that don't identify any specific resources but rather can be composed to create more concrete schemas.
+Schemas meant to be consumed in other parts of the codebase should be re-exported and imported via `src/schemas/index.ts`.
 
 ### Types Directory (`src/types/`)
 
@@ -197,24 +160,24 @@ utils/
 
 ```txt
 tests/
-├── e2e/                    # End-to-end tests
-│   ├── api/                # API test helpers
+├── e2e/                    # End-to-end Playwright tests
+│   ├── api/                # Functions which access the API
 │   ├── specs/              # Test specifications
 │   ├── utils/              # E2E utilities
 │   ├── types.ts            # Test types
 │   ├── constants.ts        # Test constants
-│   └── auth.setup.ts       # Auth setup
-├── shared/                 # Shared test utilities
+│   └── auth.setup.ts       # Automatic login setup
+├── shared/                 # Utilities shared between both unit and e2e tests
 │   ├── mocks/              # Mock data and functions
-│   └── utils/              # Shared test utils
+│   └── utils/              # Shared test utilities
 └── unit/                   # Unit tests
-    ├── components/         # Test components
-    ├── config/             # Test configuration
-    ├── mocks/              # Unit test mocks
-    ├── providers/          # Test providers
+    ├── components/         # Helper React components used in the testing of app components
+    ├── config/             # Mock server configuration
+    ├── mocks/              # Unit test mock constants and generators
+    ├── providers/          # Test React provider components
     ├── utils/              # Unit test utilities
     ├── setup.ts            # Vitest setup
-    └── index.ts            # Test exports
+    └── index.ts            # Unit test re-exports
 ```
 
 ## Key Patterns

@@ -25,6 +25,12 @@ export default solvro(
               message:
                 "Do not import from deep inside a feature. Only import from the feature root or its top-level files.",
             },
+            {
+              // Same thing for tests
+              group: ["@/tests/*/*/*"],
+              message:
+                "Do not import from deep inside the tests folder. Import only directly from @/tests/unit or @/tests/e2e, or one of their top-level files.",
+            },
             /** Disallow imports including '/ui/', except those starting with @/components. */
             {
               regex: "(?<!^@/components)/ui/",

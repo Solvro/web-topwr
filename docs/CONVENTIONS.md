@@ -1,45 +1,21 @@
 # Project Conventions
 
-This document outlines the coding conventions, architectural patterns, and best practices established in this project.
+This document outlines the coding conventions, architectural patterns, and best practices established in the ToPWR Admin Panel project.
+For situations not covered in this document, the standard [Solvro web development documentation](https://docs.solvro.pl/sections/frontend/) applies.
 
 ## Table of Contents
 
-- [Import Conventions](#import-conventions)
-- [File Naming](#file-naming)
 - [Feature-Based Architecture](#feature-based-architecture)
 - [Component Organization](#component-organization)
 - [Type Definitions](#type-definitions)
-- [Testing Conventions](#testing-conventions)
 - [Route Structure](#route-structure)
-- [Error Handling](#error-handling)
 - [Environment Variables](#environment-variables)
 
 ---
 
-## Import Conventions
+## Feature-Based Architecture
 
-### Absolute Imports
-
-**Always use absolute imports with the `@/` alias** instead of relative imports.
-
-```typescript
-// ✅ Good
-import { Button } from "@/components/ui/button";
-import { Resource } from "@/features/resources";
-
-// ❌ Bad
-import { Button } from "../../components/ui/button";
-import { Resource } from "../../../features/resources";
-```
-
-**Exception**: One level up is allowed, if not importing from a [global file or directory](FILE_STRUCTURE.md#global-files-and-directories):
-
-```typescript
-// ✅ Acceptable
-import { helper } from "../utils/helper";
-```
-
-### Feature Import Restrictions
+### Import Restrictions
 
 **Do not import deeply from features**. Only import from the feature root or its top-level files.
 
@@ -53,32 +29,13 @@ import { getAuthStateServer } from "@/features/authentication/server";
 import { getResourceMetadata } from "@/features/resources/node";
 
 // ❌ Bad - Deep imports into feature internals
-import { ResourceMetadata } from "@/features/resources/types/metadata";
+import type { ResourceMetadata } from "@/features/resources/types/metadata";
 import { FormInputs } from "@/features/abstract-resource-form/components/inputs";
 ```
 
 Features are free to define internal types, utilities and structures, and will only re-export the code they consider "public-facing", that is suitable to be imported from outside of the feature, in one of the feature top-level files.
 
-### UI Component Imports
-
-**Always use absolute imports for shadcn/ui components** to ensure files are relocation-proof.
-
-```typescript
-// ✅ Good
-import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
-
-// ❌ Bad - Relative imports for UI components
-import { Button } from "../ui/button";
-```
-
----
-
-## File Naming
-
-### General Rules
-
-- **Use kebab-case** for all file and directory names: `user-profile.tsx`, `abstract-resource-form/`
+On the other hand, the code within a specific feature should always use _relative imports_ when importing code inside of that same feature. This is to visually separate the local code in the imports list, as well as to reduce unnecessary usage of the barrel files.
 
 ### Feature Entry Points
 
@@ -109,29 +66,9 @@ The most common points of issue are:
 - `next/image` - This component is mocked in vitest, but Playwright cannot resolve Next.js's `<Image>` component when running spec files. Ensure you are not importing from a barrel file which exposes a component that directly or indirectly uses `next/image`.
 - `server-only` - Files or components marked as server-only will fail to be imported in both Vitest and Playwright. If a test file imports from a feature exposing server-only code, it's best to separate the non-React files in a barrel called `node.ts` which will then be used by test files.
 
----
-
-## Feature-Based Architecture
-
 ### Feature Structure
 
-Each feature is a self-contained module with its own components, types, and utilities:
-
-```txt
-features/
-  <feature-name>/
-    api/                # Feature-specific functions which access the API
-    components/         # Feature-specific React components
-    data/               # Feature-specific JSON-like data
-    schemas/            # Feature-specific Zod schemas
-    types/              # Feature-specific types
-    utils/              # Feature-specific utilities
-    constants.ts        # Feature-specific constant values
-    enums.ts            # Feature-specific enums
-    index.ts            # Client exports
-    server.ts           # Server exports
-    node.ts             # Node.js exports
-```
+Each feature is a self-contained module with its own components, types, and utilities. The specific directory layout is listed in [FILE_STRUCTURE.md](FILE_STRUCTURE.md#features-directory-srcfeatures).
 
 > [!Note]
 > Features need not include all of these files and directories, but only those which will actually be used.
@@ -186,15 +123,17 @@ For complex components with multiple files:
 
 ```txt
 component-name/
-  index.tsx           # Main component export
-  client.tsx          # Client component logic
-  server.tsx          # Server component logic
-  component-name.test.tsx
+  index.tsx                 # Main component export or shared code
+  client.tsx                # Component variant for client-side use
+  server.tsx                # Component variant for server-side use
+  component-name.test.tsx   # Component unit tests
 ```
 
 ### Component Prop Types
 
 Define prop types inline if they are only used once. Separate them into a type or interface only if used elsewhere.
+
+TODO: remove the `@/types/components.ts` file in favour of localizing component prop interfaces.
 
 ---
 
@@ -204,12 +143,6 @@ Define prop types inline if they are only used once. Separate them into a type o
 
 - **Shared types**: `src/types/` (components.ts, helpers.ts, schemas.ts)
 - **Feature types**: `src/features/<feature>/types/`
-
-### Type Naming Conventions
-
-- **Interfaces**: PascalCase, descriptive names: `UserProfile`, `ResourceMetadata`
-- **Type aliases**: PascalCase: `ResourceFormValues`, `SearchParameters`
-- **Generics**: Single uppercase letter or rarely PascalCase: `T`, `R`
 
 ### Type Exports
 
@@ -223,103 +156,15 @@ export type { ResourceMetadata, ResourceFormValues } from "./types";
 
 ---
 
-## Testing Conventions
-
-### Test Organization
-
-- **Unit tests**: `src/tests/unit/` + co-located `*.test.tsx` files
-- **E2E tests**: `src/tests/e2e/specs/`
-- **Shared utilities**: `src/tests/shared/`
-
-### Unit Test Setup
-
-- **Test framework**: Vitest
-- **Setup file**: `src/tests/unit/setup.ts`
-- **Timeout**: 10,000ms
-- **Environment**: jsdom
-
-### E2E Test Setup
-
-- **Test framework**: Playwright
-- **Test location**: `src/tests/e2e/specs/`
-- **Auth setup**: `src/tests/e2e/auth.setup.ts`
-- **Test helpers**: `src/tests/e2e/utils/`
-
-### Test File Naming
-
-```txt
-component-name.test.tsx       # Unit test
-resource-name.spec.ts         # E2E test
-```
-
-### Test Utilities
-
-Reusable test utilities are organized:
-
-```txt
-tests/
-  shared/                # Used by both unit and e2e
-    mocks/
-    utils/
-  unit/                  # Unit test specific
-    utils/
-    providers/
-  e2e/                   # E2E specific
-    utils/
-    api/
-```
-
-### Mock Service Worker (MSW)
-
-MSW is used for mocking API requests in unit tests:
-
-```typescript
-// tests/unit/config/handlers.ts
-export const handlers = [
-  http.post(`${API_URL}/resource`, async ({ request }) => {
-    const body = await request.json();
-    return HttpResponse.json({ ...body, id: "mock-id" });
-  }),
-];
-```
-
----
-
 ## Route Structure
-
-### Next.js App Router
-
-Routes use the App Router with route groups:
-
-```txt
-app/
-  (private)/          # Protected routes
-    (resources)/      # Resource management
-  (public)/           # Public routes
-```
-
-### Resource Routes
-
-Each resource follows a consistent pattern:
-
-```txt
-<resource_name>/
-  page.tsx           # List view
-  layout.tsx         # Layout wrapper
-  create/
-    page.tsx         # Create form
-  edit/
-    [id]/
-      page.tsx       # Edit form
-```
 
 ### Layout Hierarchy
 
 ```txt
-app/layout.tsx                    # Root layout
-  ├─ (private)/layout.tsx         # Private layout (auth required)
+app/layout.tsx                              # Root layout
+  ├─ (private)/layout.tsx                   # Private layout (auth required)
   │   └─ (resources)/<resource>/layout.tsx  # Resource layout
-  └─ (public)/layout.tsx          # Public layout (guest only)
+  └─ (public)/layout.tsx                    # Public layout (no auth)
 ```
 
 ### Route Permissions
@@ -339,55 +184,7 @@ export default async function PrivateLayout({ children }: WrapperProps) {
 }
 ```
 
----
-
-## Error Handling
-
-### Error Messages
-
-Centralized error messages in `src/data/`:
-
-```typescript
-// data/form-error-messages.ts
-export const FORM_ERROR_MESSAGES = {
-  REQUIRED: "To pole jest wymagane",
-  INVALID_EMAIL: "Nieprawidłowy adres email",
-  // ...
-} as const;
-
-// data/application-error-messages.ts
-export const APPLICATION_ERROR_MESSAGES = {
-  [ApplicationError.NotFound]: "Nie znaleziono strony",
-  // ...
-} as const;
-```
-
-### Error Boundaries
-
-Each route group has error boundaries:
-
-```txt
-(private)/
-  error.tsx           # Client error boundary
-  forbidden.tsx       # 403 page
-```
-
-### API Error Handling
-
-API errors are handled in the `backend` feature:
-
-```typescript
-// features/backend/index.ts
-export class FetchError extends Error {
-  constructor(
-    message: string,
-    public statusCode: number,
-    public response?: unknown,
-  ) {
-    super(message);
-  }
-}
-```
+Make sure to wrap any protected content using `Bouncer` as it ensures the currently logged in user has the appropriate permissions before rendering its children.
 
 ---
 
@@ -417,6 +214,9 @@ import { env } from "@/config/env";
 const apiUrl = env.NEXT_PUBLIC_API_URL;
 ```
 
+> [!Caution]
+> Do not use `process.env` for accessing environment variables directly as they are neither typed nor ensured to be present by the configuration.
+
 ### Naming Convention
 
 - **Public variables**: `NEXT_PUBLIC_*` (accessible in browser)
@@ -430,16 +230,6 @@ const apiUrl = env.NEXT_PUBLIC_API_URL;
 
 - **App-wide constants**: `src/config/constants.ts`
 - **Feature-specific constants**: `src/features/<feature>/constants.ts`
-
-### Naming
-
-Constants use CONSTANT_CASE:
-
-```typescript
-export const DEFAULT_INPUT_COLOR = "#ffffff";
-export const AUTH_STATE_COOKIE_NAME = "authState";
-export const LIST_RESULTS_PER_PAGE = 10;
-```
 
 ---
 
