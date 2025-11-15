@@ -1,3 +1,5 @@
+import { logger, parseError } from "@/features/logging";
+
 import type { AuthState, RequestCookie, User } from "../types/internal";
 import { parseAuthCookie } from "../utils/parse-auth-cookie";
 import { getCurrentUser } from "./get-current-user";
@@ -16,7 +18,7 @@ export async function verifyUserCookie(
   try {
     user = await getCurrentUser(authState.accessToken);
   } catch (error) {
-    console.warn("Invalid token in cookie:", error);
+    logger.warn(parseError(error), "Invalid token in cookie");
     return null;
   }
   return { ...authState, user };

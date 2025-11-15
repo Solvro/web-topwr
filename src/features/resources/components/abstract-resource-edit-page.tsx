@@ -1,6 +1,7 @@
 import { ErrorMessage } from "@/components/presentation/error-message";
 import { Badge } from "@/components/ui/badge";
 import { ApplicationError } from "@/config/enums";
+import { logger } from "@/features/logging";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import type { ResourceEditPageProps } from "@/types/components";
 import { sanitizeId } from "@/utils";
@@ -29,9 +30,9 @@ export async function AbstractResourceEditPage({
   }
   const { id } = await params;
   if (id == null) {
-    console.error(
-      "Missing id parameter for non-singleton resource edit page:",
-      resource,
+    logger.error(
+      { resource },
+      "Missing id parameter for non-singleton resource edit page",
     );
     return (
       <ErrorMessage
