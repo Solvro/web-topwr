@@ -24,18 +24,21 @@ export async function handleResponse<T>(
   ) {
     const errorReport = responseBody as ErrorResponse | null;
     const { message, ...error } = errorReport?.error ?? {
-      message: "<no error report provided>",
+      message: "<missing-error-report>",
     };
+    const code = errorReport?.error.code ?? String(response.status);
+    const errorMessage = `Request failed with code ${code}: ${message}`;
     logger.error(
-      { url: request.url, method: request.method, ...error },
-      `Request failed with ${message}`,
+      {
+        url: request.url,
+        method: request.method,
+        reportMessage: message,
+        ...error,
+      },
+      errorMessage,
     );
 
-    throw new FetchError(
-      `HTTP ${String(response.status)} (${response.statusText}): ${errorReport?.error.code ?? "<unknown code>"}`,
-      errorReport,
-      response.status,
-    );
+    throw new FetchError(errorMessage, errorReport, response.status);
   }
 
   return responseBody;
