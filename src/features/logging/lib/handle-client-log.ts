@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import "server-only";
 
-import { MAX_LOG_PAYLOAD_LENGTH } from "../constants";
+import { env } from "@/config/env";
+
 import { serverLogger } from "../lib/logger.server";
 import { LogPayloadSchemaServer } from "../schemas/log-payload-schema.server";
 import { parseError } from "../utils/parse-error";
@@ -22,7 +24,7 @@ export async function handleClientLog(request: NextRequest) {
       );
     }
     const payloadLength = JSON.stringify(logPayload.data).length;
-    if (payloadLength > MAX_LOG_PAYLOAD_LENGTH) {
+    if (payloadLength > env.MAX_LOG_PAYLOAD_LENGTH) {
       return NextResponse.json(
         {
           success: false,
