@@ -22,9 +22,9 @@ const ensureLogger = async () => {
 export const logger: Pick<Awaited<Logger>, LogLevel> = typedFromEntries(
   LOG_LEVELS.map((level) => [
     level,
-    async (...arguments_: Parameters<LogFn>) => {
+    async (...[data, ...messages]: Parameters<LogFn>) => {
       const loggerInstance = await ensureLogger();
-      loggerInstance[level](...arguments_);
+      loggerInstance[level](data, messages.join(" "));
     },
   ]),
 );

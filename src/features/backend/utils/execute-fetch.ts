@@ -1,4 +1,4 @@
-import { logger } from "@/features/logging";
+import { logger, parseError } from "@/features/logging";
 import type { Resource } from "@/features/resources";
 
 import { createRequest } from "../lib/create-request";
@@ -15,7 +15,7 @@ export const executeFetch = async <T, R extends Resource>(
   try {
     response = await fetch(request);
   } catch (error) {
-    logger.error({ error }, "Network error during fetch request");
+    logger.error(parseError(error), "Network error during fetch request");
     throw error;
   }
   return await handleResponse<T>(request, response);

@@ -1,4 +1,4 @@
-import { logger } from "@/features/logging";
+import { logger, parseError } from "@/features/logging";
 
 import { FetchError } from "../lib/fetch-error";
 import type { ErrorResponse, SuccessResponse } from "../types/api";
@@ -12,7 +12,7 @@ export async function handleResponse<T>(
   try {
     responseBody = (await response.json()) as T;
   } catch (error) {
-    logger.warn({ error }, "Could not parse the response body as JSON");
+    logger.warn(parseError(error), "Could not parse the response body as JSON");
   }
 
   const errorResponseBody = responseBody as ErrorResponse | SuccessResponse<T>;
