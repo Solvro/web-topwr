@@ -31,7 +31,7 @@ export const clientLogger = pino({
       console[consoleMethod](msg, payload);
       sendLogToServer({
         level: levelName,
-        message: msg ?? "<no message>",
+        message: msg ?? "<missing-log-message>",
         ...payload,
       });
     },

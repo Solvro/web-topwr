@@ -93,16 +93,16 @@ export function useAuthentication(): AuthContext {
     return newState;
   }
 
-  /** Logs out by deleting the refresh token. Can only be called when logged in.
-   *
-   *  @param all if set to true, will invalidate all refresh tokens, causing logout on all devices.
+  /**
+   * Logs out by deleting the refresh token. Can only be called when logged in.
+   * @param all if set to true, will invalidate all refresh tokens, causing logout on all devices.
    */
   async function logout(all = false) {
     if (authState == null) {
       throw new Error("Cannot log out when not authenticated");
     }
     const result = await fetchMutation<MessageResponse>(
-      `auth/logout?all=${all ? "true" : "false"}`,
+      `auth/logout?all=${String(all)}`,
       {
         body: { refreshToken: authState.refreshToken },
       },
@@ -111,7 +111,9 @@ export function useAuthentication(): AuthContext {
       ? "All refresh tokens marked as invalid"
       : "Invalidated the provided refresh token";
     if (result.message !== expectedMessage) {
-      throw new Error(`Logout failed: ${result.message || "<no message>"}`);
+      throw new Error(
+        `Logout failed: ${result.message || "<missing-result-message>"}`,
+      );
     }
     toast.success(
       `Wylogowano pomyślnie${all ? " ze wszystkich urządzeń" : ""}.`,
