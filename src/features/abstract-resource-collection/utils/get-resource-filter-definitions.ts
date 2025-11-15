@@ -2,6 +2,7 @@ import type {
   FormInputBase,
   SelectInputOptions,
 } from "@/features/abstract-resource-form/types";
+import { logger } from "@/features/logging";
 import type { Resource } from "@/features/resources";
 import {
   RESOURCE_SCHEMAS,
@@ -57,7 +58,7 @@ export const getResourceFilterDefinitions = async <T extends Resource>(
     const schema = RESOURCE_SCHEMAS[resource];
     for (const field in schema.shape) {
       if (!(field in simpleInputs)) {
-        console.warn("Missing label for filter field", { resource, field });
+        logger.warn({ resource, field }, "Missing label for filter field");
       }
     }
   }

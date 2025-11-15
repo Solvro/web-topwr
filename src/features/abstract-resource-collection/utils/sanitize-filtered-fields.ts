@@ -1,3 +1,4 @@
+import { logger } from "@/features/logging";
 import { isEmptyValue } from "@/utils";
 
 import { FilterType } from "../enums";
@@ -16,7 +17,7 @@ export const sanitizeFilteredFields = (
     const options = filterDefinitions[field];
     if (options == null) {
       if (process.env.NODE_ENV !== "test") {
-        console.warn("Ignoring unknown filter parameter", { field, value });
+        logger.warn({ field, value }, "Ignoring unknown filter parameter");
       }
       continue;
     }

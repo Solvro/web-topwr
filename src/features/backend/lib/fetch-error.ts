@@ -1,3 +1,5 @@
+import { logger } from "@/features/logging";
+
 import { API_ERROR_MESSAGES } from "../data/api-error-messages";
 import type { ErrorResponse } from "../types/api";
 
@@ -13,12 +15,6 @@ export class FetchError extends Error {
     super(message);
     this.errorReport = errorReport;
     this.responseStatus = responseStatus;
-
-    // Adjust the stack trace to remove this constructor
-    if (typeof this.stack === "string" && this.stack.trim() !== "") {
-      const stackLines = this.stack.split("\n");
-      this.stack = [stackLines[0], ...stackLines.slice(2)].join("\n");
-    }
   }
 
   getCodedMessage(fallback: string): string {
@@ -29,8 +25,9 @@ export class FetchError extends Error {
     if (code in API_ERROR_MESSAGES) {
       return API_ERROR_MESSAGES[code];
     }
-    console.warn(
-      `Unhandled error code: ${code}. Please add it to @/features/backend/data/api-error-messages.ts with a user-friendly error message.`,
+    logger.warn(
+      { unhandledCode: code },
+      `Unhandled error code. Please add it to @/features/backend/data/api-error-messages.ts with a user-friendly error message.`,
     );
     return fallback;
   }

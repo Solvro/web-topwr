@@ -1,6 +1,8 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
+import { LOG_LEVELS } from "@/features/logging/node";
+
 const UrlBaseSchema = z
   .string()
   .url()
@@ -31,6 +33,7 @@ export const env = createEnv({
      * Defaults to `true` in development, and `false` in production.
      */
     NEXT_PUBLIC_DISABLE_NAVIGATION_CONFIRMATION: z.boolean().default(false),
+    NEXT_PUBLIC_LOG_LEVEL: z.enum(LOG_LEVELS).default("info"),
   },
   runtimeEnv: {
     TEST_USER_EMAIL: process.env.TEST_USER_EMAIL,
@@ -39,6 +42,7 @@ export const env = createEnv({
     NEXT_PUBLIC_WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
     NEXT_PUBLIC_DISABLE_NAVIGATION_CONFIRMATION:
       process.env.NEXT_PUBLIC_DISABLE_NAVIGATION_CONFIRMATION === "true",
+    NEXT_PUBLIC_LOG_LEVEL: process.env.NEXT_PUBLIC_LOG_LEVEL,
   },
   skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
 });

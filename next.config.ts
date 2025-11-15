@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
     ],
   },
   typedRoutes: true,
+  serverExternalPackages: ["pino", "pino-pretty"],
 };
 
 export default nextConfig;

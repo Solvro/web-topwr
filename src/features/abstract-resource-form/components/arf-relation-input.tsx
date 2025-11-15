@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import type { SetOptionSelected } from "@/components/ui/multi-select";
 import { SelectItem } from "@/components/ui/select";
+import { logger } from "@/features/logging";
 import { declineNoun } from "@/features/polish";
 import {
   RelationType,
@@ -113,14 +114,14 @@ export function ArfRelationInput<
   ] as ResourceDataType<L>[] | undefined;
   if (unsafeQueriedRelations == null) {
     // TODO: ensure this never happens
-    console.error(
-      "Expected relation values to be present in defaultValues but they are missing.",
-      "This is a bug - please report to Konrad Guzek.",
+    logger.error(
       {
         resource,
         relation: resourceRelation,
         defaultValues,
       },
+      "Expected relation values to be present in defaultValues but they are missing.",
+      "This is a bug - please report to Konrad Guzek.",
     );
   }
   const queriedRelations = unsafeQueriedRelations ?? [];

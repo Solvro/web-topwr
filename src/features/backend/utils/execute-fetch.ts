@@ -1,3 +1,4 @@
+import { logger } from "@/features/logging";
 import type { Resource } from "@/features/resources";
 
 import { createRequest } from "../lib/create-request";
@@ -8,5 +9,14 @@ import { handleResponse } from "./handle-response";
 export const executeFetch = async <T, R extends Resource>(
   endpoint: string,
   options: FetchRequestOptions<R>,
-): Promise<NonNullable<T>> =>
-  handleResponse<T>(await fetch(createRequest<R>(endpoint, options)));
+): Promise<NonNullable<T>> => {
+  const request = createRequest<R>(endpoint, options);
+  let response;
+  try {
+    response = await fetch(request);
+  } catch (error) {
+    logger.error({ error }, "Network error during fetch request");
+    throw error;
+  }
+  return await handleResponse<T>(request, response);
+};

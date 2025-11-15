@@ -1,3 +1,4 @@
+import { logger } from "@/features/logging";
 import { isDeclinableNoun } from "@/features/polish";
 import type { DeclinableNoun } from "@/features/polish/types";
 import { isEmptyValue } from "@/utils";
@@ -23,7 +24,7 @@ export const parseSortParameter = (
     return null;
   }
   if (!isDeclinableNoun(sortBy)) {
-    console.warn("Undeclinable noun used as sort field", { sortBy });
+    logger.warn({ sortBy }, "Undeclinable noun used as sort field");
     return null;
   }
   if (
