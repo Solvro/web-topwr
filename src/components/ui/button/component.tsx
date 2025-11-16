@@ -3,9 +3,9 @@ import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 
 import { Spinner } from "@/components/core/spinner";
+import { TooltipWrapper } from "@/components/core/tooltip-wrapper";
 import { cn } from "@/lib/utils";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "../tooltip";
 import { buttonVariants } from "./variants";
 
 export function Button({
@@ -44,12 +44,5 @@ export function Button({
     </Comp>
   );
 
-  return tooltip == null ? (
-    content
-  ) : (
-    <Tooltip>
-      <TooltipTrigger asChild>{content}</TooltipTrigger>
-      <TooltipContent>{tooltip}</TooltipContent>
-    </Tooltip>
-  );
+  return <TooltipWrapper tooltip={tooltip}>{content}</TooltipWrapper>;
 }

@@ -8,19 +8,13 @@ import { ColorInput } from "@/components/inputs/color-input";
 import { DatePicker } from "@/components/inputs/date-picker";
 import { DateTimePicker } from "@/components/inputs/date-time-picker";
 import { ImageUpload } from "@/components/inputs/image-upload";
-import { Inputs } from "@/components/inputs/input-row";
+import { RichTextInput } from "@/components/inputs/rich-text-input";
 import { SelectInput } from "@/components/inputs/select-input";
 import { SelectOptions } from "@/components/inputs/select-options";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { MinimalTiptapEditor } from "@/components/ui/minimal-tiptap";
 import { Textarea } from "@/components/ui/textarea";
+import { declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
 import { getResourceMetadata } from "@/features/resources";
 import type {
@@ -34,9 +28,13 @@ import { cn } from "@/lib/utils";
 import type { ExistingImages, ResourceRelations } from "@/types/components";
 
 import { useArfRelation } from "../hooks/use-arf-relation";
+import { isExistingItem } from "../utils/is-existing-item";
+import { ArfInput } from "./arf-input";
+import { ArfInputSet } from "./arf-input-set";
 import { ArfRelationInput } from "./arf-relation-input";
 
-export function ArfInputs<T extends Resource>({
+/** Contains the body of the Abstract Resource Form, rendering all input fields. */
+export function ArfBody<T extends Resource>({
   resource,
   control,
   defaultValues,
@@ -55,6 +53,8 @@ export function ArfInputs<T extends Resource>({
 
   const metadata = getResourceMetadata(resource);
   const isEmbedded = relationContext != null;
+  const isEditing = isExistingItem(resource, defaultValues);
+  const declensions = declineNoun(resource);
 
   const {
     imageInputs,
@@ -78,7 +78,7 @@ export function ArfInputs<T extends Resource>({
           { "md:flex-row": !isEmbedded },
         )}
       >
-        <Inputs
+        <ArfInputSet
           container
           className="flex-col flex-nowrap"
           inputs={imageInputs}
@@ -88,21 +88,26 @@ export function ArfInputs<T extends Resource>({
               control={control}
               name={name}
               render={({ field }) => (
-                <FormItem>
+                <ArfInput
+                  declensions={declensions}
+                  isEditing={isEditing}
+                  inputDefinition={input}
+                  noControl
+                  noLabel
+                >
                   <ImageUpload
                     {...field}
                     value={(field.value ?? null) as string | null}
                     {...input}
                     existingImage={existingImages[field.name]}
                   />
-                  <FormMessage />
-                </FormItem>
+                </ArfInput>
               )}
             />
           )}
         />
         <div className="w-full space-y-4">
-          <Inputs
+          <ArfInputSet
             inputs={textInputs}
             mapper={([name, input]) => (
               <FormField
@@ -110,22 +115,22 @@ export function ArfInputs<T extends Resource>({
                 control={control}
                 name={name}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{input.label}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Wpisz tekst..."
-                        {...field}
-                        value={(field.value ?? "") as string}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <ArfInput
+                    declensions={declensions}
+                    isEditing={isEditing}
+                    inputDefinition={input}
+                  >
+                    <Input
+                      placeholder="Wpisz tekst..."
+                      {...field}
+                      value={(field.value ?? "") as string}
+                    />
+                  </ArfInput>
                 )}
               />
             )}
           />
-          <Inputs
+          <ArfInputSet
             inputs={textareaInputs}
             mapper={([name, input]) => (
               <FormField
@@ -133,22 +138,22 @@ export function ArfInputs<T extends Resource>({
                 control={control}
                 name={name}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{input.label}</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Wpisz tekst..."
-                        {...field}
-                        value={(field.value ?? "") as string}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <ArfInput
+                    declensions={declensions}
+                    isEditing={isEditing}
+                    inputDefinition={input}
+                  >
+                    <Textarea
+                      placeholder="Wpisz tekst..."
+                      {...field}
+                      value={(field.value ?? "") as string}
+                    />
+                  </ArfInput>
                 )}
               />
             )}
           />
-          <Inputs
+          <ArfInputSet
             container
             inputs={dateInputs}
             mapper={([name, input]) => (
@@ -157,19 +162,22 @@ export function ArfInputs<T extends Resource>({
                 control={control}
                 name={name}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{input.label}</FormLabel>
+                  <ArfInput
+                    declensions={declensions}
+                    isEditing={isEditing}
+                    inputDefinition={input}
+                    noControl
+                  >
                     <DatePicker
                       {...field}
                       value={field.value as string | null}
                     />
-                    <FormMessage />
-                  </FormItem>
+                  </ArfInput>
                 )}
               />
             )}
           />
-          <Inputs
+          <ArfInputSet
             inputs={dateTimeInputs}
             mapper={([name, input]) => (
               <FormField
@@ -177,21 +185,22 @@ export function ArfInputs<T extends Resource>({
                 control={control}
                 name={name}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{input.label}</FormLabel>
-                    <FormControl>
-                      <DateTimePicker
-                        value={field.value as string | null}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <ArfInput
+                    declensions={declensions}
+                    isEditing={isEditing}
+                    inputDefinition={input}
+                    noControl
+                  >
+                    <DateTimePicker
+                      value={field.value as string | null}
+                      onChange={field.onChange}
+                    />
+                  </ArfInput>
                 )}
               />
             )}
           />
-          <Inputs
+          <ArfInputSet
             inputs={richTextInputs}
             mapper={([name, input]) => (
               <FormField
@@ -199,27 +208,23 @@ export function ArfInputs<T extends Resource>({
                 control={control}
                 name={name}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{input.label}</FormLabel>
-                    <FormControl>
-                      <MinimalTiptapEditor
-                        // @ts-expect-error types not matching
-                        value={field.value ?? ""}
-                        onChange={field.onChange}
-                        editorContentClassName="p-4"
-                        placeholder="Wpisz opis..."
-                        aria-label={input.label}
-                        editable
-                        output="html"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <ArfInput
+                    declensions={declensions}
+                    isEditing={isEditing}
+                    inputDefinition={input}
+                  >
+                    <RichTextInput
+                      {...field}
+                      // @ts-expect-error types not matching
+                      value={field.value ?? ""}
+                      placeholder="Wpisz opis..."
+                    />
+                  </ArfInput>
                 )}
               />
             )}
           />
-          <Inputs
+          <ArfInputSet
             container
             inputs={colorInputs}
             mapper={([name, input]) => (
@@ -228,21 +233,21 @@ export function ArfInputs<T extends Resource>({
                 control={control}
                 name={name}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{input.label}</FormLabel>
-                    <FormControl>
-                      <ColorInput
-                        {...field}
-                        value={field.value as string | null}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <ArfInput
+                    declensions={declensions}
+                    isEditing={isEditing}
+                    inputDefinition={input}
+                  >
+                    <ColorInput
+                      {...field}
+                      value={field.value as string | null}
+                    />
+                  </ArfInput>
                 )}
               />
             )}
           />
-          <Inputs
+          <ArfInputSet
             container
             inputs={checkboxInputs}
             mapper={([name, input]) => (
@@ -251,6 +256,7 @@ export function ArfInputs<T extends Resource>({
                 control={control}
                 name={name}
                 render={({ field }) => (
+                  // TODO: allow checkbox inputs to be disabled
                   <CheckboxInput
                     value={(field.value ?? false) as boolean}
                     label={input.label}
@@ -266,9 +272,10 @@ export function ArfInputs<T extends Resource>({
                 "lg:grid-cols-2": !isEmbedded,
               })}
             >
-              <Inputs
+              <ArfInputSet
                 inputs={selectInputs}
                 mapper={([name, input]) => (
+                  // TODO: allow select inputs to be disabled
                   <SelectInput
                     key={name}
                     control={control}
@@ -278,20 +285,32 @@ export function ArfInputs<T extends Resource>({
                   />
                 )}
               />
-              <Inputs
+              <ArfInputSet
                 inputs={arrayInputs}
                 mapper={([name, { label, ...options }]) => (
-                  <ArrayInput
+                  <FormField
                     key={name}
                     control={control}
                     name={name}
-                    label={label}
-                    inputOptions={options}
-                    relatedResources={relatedResources}
-                  />
+                    render={() => (
+                      <ArfInput
+                        declensions={declensions}
+                        isEditing={isEditing}
+                        inputDefinition={{ label, ...options }}
+                      >
+                        <ArrayInput
+                          control={control}
+                          name={name}
+                          label={label}
+                          inputOptions={options}
+                          relatedResources={relatedResources}
+                        />
+                      </ArfInput>
+                    )}
+                  ></FormField>
                 )}
               />
-              <Inputs
+              <ArfInputSet
                 inputs={relationInputs}
                 mapper={([
                   untypedResourceRelation,
@@ -307,6 +326,7 @@ export function ArfInputs<T extends Resource>({
                       typeof resourceRelation
                     >;
                   return (
+                    // TODO: allow relation inputs to be disabled
                     <ArfRelationInput
                       key={`${resource}-multiselect-${resourceRelation}`}
                       resource={resource}

@@ -13,8 +13,9 @@ import { tryParseNumber, typedEntries } from "@/utils";
 
 import { fetchPivotResources } from "../api/fetch-pivot-resources";
 import { fetchRelatedResources } from "../api/fetch-related-resources";
-import { ArfClient } from "./arf-client";
+import { ArfController } from "./arf-controller";
 
+/** Server-side entry point for the Abstract Resource Form. Fetches all required data and renders the form. */
 export async function AbstractResourceForm<T extends Resource>({
   resource,
   defaultValues = getResourceMetadata(resource).form.defaultValues,
@@ -65,7 +66,7 @@ export async function AbstractResourceForm<T extends Resource>({
   );
 
   return (
-    <ArfClient
+    <ArfController
       resource={resource}
       defaultValues={defaultValues}
       existingImages={existingImages}

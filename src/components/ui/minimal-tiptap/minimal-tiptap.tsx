@@ -98,7 +98,7 @@ export function MinimalTiptapEditor({
         className,
       )}
     >
-      <Toolbar editor={editor} />
+      {props.editable ? <Toolbar editor={editor} /> : null}
       <EditorContent
         editor={editor}
         className={cn("minimal-tiptap-editor", editorContentClassName)}

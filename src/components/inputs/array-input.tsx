@@ -4,13 +4,6 @@ import { useMemo } from "react";
 import { useFieldArray } from "react-hook-form";
 import type { Control, FieldArray } from "react-hook-form";
 
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { MultiSelect } from "@/components/ui/multi-select";
 import type {
   ArrayInputField,
@@ -62,43 +55,31 @@ export function ArrayInput<T extends Resource>({
   );
 
   return (
-    <FormField
-      control={control}
-      name={name}
-      render={() => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <MultiSelect
-              animationConfig={{
-                badgeAnimation: "none",
-              }}
-              options={multiSelectOptions}
-              onOptionToggled={(value) => {
-                const itemIndex = array.fields.findIndex(
-                  ({ id, ...item }) => Object.values(item).join("") === value,
-                );
-                if (itemIndex === -1) {
-                  // This cast shouldn't be necessary but I think the types don't match due to how react-hook-form types its FieldArray
-                  // `name` is typed to be a path to a field which corresponds to an array of strings, so this cast is safe
-                  array.append(value as ArrayMember);
-                } else {
-                  array.remove(itemIndex);
-                }
-              }}
-              onValueChange={(values) => {
-                if (values.length === 0) {
-                  array.remove();
-                } else {
-                  array.replace(optionNames as ArrayMember[]);
-                }
-              }}
-              placeholder={`Wybierz ${label.toLowerCase()}`}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
+    <MultiSelect
+      animationConfig={{
+        badgeAnimation: "none",
+      }}
+      options={multiSelectOptions}
+      onOptionToggled={(value) => {
+        const itemIndex = array.fields.findIndex(
+          ({ id, ...item }) => Object.values(item).join("") === value,
+        );
+        if (itemIndex === -1) {
+          // This cast shouldn't be necessary but I think the types don't match due to how react-hook-form types its FieldArray
+          // `name` is typed to be a path to a field which corresponds to an array of strings, so this cast is safe
+          array.append(value as ArrayMember);
+        } else {
+          array.remove(itemIndex);
+        }
+      }}
+      onValueChange={(values) => {
+        if (values.length === 0) {
+          array.remove();
+        } else {
+          array.replace(optionNames as ArrayMember[]);
+        }
+      }}
+      placeholder={`Wybierz ${label.toLowerCase()}`}
     />
   );
 }

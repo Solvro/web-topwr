@@ -1,0 +1,59 @@
+import { Slot } from "@radix-ui/react-slot";
+
+import { TooltipWrapper } from "@/components/core/tooltip-wrapper";
+import {
+  FormControl,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import type { Declensions } from "@/features/polish/types";
+import type { WrapperProps } from "@/types/components";
+
+import { INPUT_COMPONENT_MESSAGES } from "../data/input-component-messages";
+import type { FormInputBase } from "../types";
+
+/**
+ * Wraps a single input component with label, tooltip, and validation message.
+ * Sets the input as disabled if the input definition marks it as immutable and the form is in editing mode.
+ */
+export function ArfInput({
+  declensions,
+  isEditing,
+  inputDefinition,
+  tooltip: tooltipOverride,
+  noControl = false,
+  noLabel = false,
+  children,
+}: WrapperProps & {
+  declensions: Declensions;
+  isEditing: boolean;
+  inputDefinition: FormInputBase;
+  tooltip?: string;
+  noControl?: boolean;
+  noLabel?: boolean;
+}) {
+  const Comp = children == null ? Input : Slot;
+
+  const isImmutableField = inputDefinition.immutable === true && isEditing;
+  const tooltip =
+    tooltipOverride ??
+    (isImmutableField
+      ? INPUT_COMPONENT_MESSAGES.immutableFieldDisabled(declensions)
+      : null);
+  const input = (
+    <Comp data-slot="input" disabled={isImmutableField}>
+      {children}
+    </Comp>
+  );
+  return (
+    <TooltipWrapper tooltip={tooltip}>
+      <FormItem>
+        {noLabel ? null : <FormLabel>{inputDefinition.label}</FormLabel>}
+        {noControl ? input : <FormControl>{input}</FormControl>}
+        <FormMessage />
+      </FormItem>
+    </TooltipWrapper>
+  );
+}
