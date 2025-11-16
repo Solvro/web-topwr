@@ -214,10 +214,11 @@ export function ArfBody<T extends Resource>({
                     inputDefinition={input}
                   >
                     <RichTextInput
-                      {...field}
                       // @ts-expect-error types not matching
                       value={field.value ?? ""}
+                      onChange={field.onChange}
                       placeholder="Wpisz opis..."
+                      aria-label={input.label}
                     />
                   </ArfInput>
                 )}
