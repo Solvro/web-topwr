@@ -4,6 +4,7 @@ import { act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
+import { fetchRelatedResources } from "@/features/abstract-resource-form";
 import { RESOURCE_METADATA, Resource } from "@/features/resources";
 import type { ResourceDataType } from "@/features/resources/types";
 import { mockDatedResource } from "@/tests/shared";
@@ -12,6 +13,7 @@ import { renderWithProviders } from "@/tests/unit";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
 
 const resource = Resource.GuideArticles;
+const relatedResources = await fetchRelatedResources(resource);
 type ResourceType = typeof resource;
 
 const generateGuideArticle = (
@@ -36,7 +38,11 @@ const MOCK_DATA: ResourceDataType<ResourceType>[] = [
 function renderOrderableList() {
   const user = userEvent.setup();
   const screen = renderWithProviders(
-    <OrderableItemWrapper resource={resource} data={MOCK_DATA} />,
+    <OrderableItemWrapper
+      resource={resource}
+      data={MOCK_DATA}
+      relatedResources={relatedResources}
+    />,
   );
   const draggableItems = screen.getAllByRole("button", {
     description: /draggable item/i,
