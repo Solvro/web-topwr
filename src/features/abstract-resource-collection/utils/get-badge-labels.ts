@@ -43,22 +43,27 @@ export function getBadgeLabels<T extends EditableResource>(
       }
       for (const relatedResource of relatedResources[relationName]) {
         if (relatedResource.id === foreignKeyValue) {
-          labels.push(
-            (relatedResource as unknown as Record<PropertyKey, unknown>)[
-              listItem.badges[badgeResource] as PropertyKey
-            ] as string,
-          );
+          const labelValue = (
+            relatedResource as unknown as Record<PropertyKey, unknown>
+          )[listItem.badges[badgeResource] as PropertyKey];
+          if (typeof labelValue === "string" && !(labelValue in labels)) {
+            labels.push(labelValue);
+          }
+          break;
         }
       }
     } else if (isManyToManyRelationDefinition(relation)) {
       const relationItems =
         item[getResourceMetadata(badgeResource).queryName as keyof typeof item];
-      for (const relationItem of [relationItems].flat()) {
-        labels.push(
-          (relationItem as Record<PropertyKey, unknown>)[
+      if (Array.isArray(relationItems)) {
+        for (const relationItem of relationItems) {
+          const labelValue = (relationItem as Record<PropertyKey, unknown>)[
             listItem.badges[badgeResource] as PropertyKey
-          ] as string,
-        );
+          ];
+          if (typeof labelValue === "string" && !(labelValue in labels)) {
+            labels.push(labelValue);
+          }
+        }
       }
     }
   }

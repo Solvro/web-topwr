@@ -4,16 +4,19 @@ import { act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { fetchRelatedResources } from "@/features/abstract-resource-form";
 import { RESOURCE_METADATA, Resource } from "@/features/resources";
 import type { ResourceDataType } from "@/features/resources/types";
 import { mockDatedResource } from "@/tests/shared";
 import { renderWithProviders } from "@/tests/unit";
+import type { ResourceRelations } from "@/types/components";
 
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
 
 const resource = Resource.GuideArticles;
-const relatedResources = await fetchRelatedResources(resource);
+const relatedResources: ResourceRelations<Resource.GuideArticles> = {
+  "guide-authors": [],
+  "guide-questions": [],
+};
 type ResourceType = typeof resource;
 
 const generateGuideArticle = (
