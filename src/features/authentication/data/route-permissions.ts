@@ -7,6 +7,7 @@ import type { RecordIntersection } from "@/types/helpers";
 export const ROUTE_PERMISSIONS = {
   "/": ["user", "admin"],
   "/review": ["user", "admin"],
+  "/interactive-map": ["user", "admin"],
   [`/${Resource.AboutUs}`]: ["user", "admin"],
   [`/${Resource.AboutUsLinks}`]: ["user", "admin"],
   [`/${Resource.AcademicSemesters}`]: ["user", "admin"],
