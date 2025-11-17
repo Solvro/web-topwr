@@ -1,13 +1,18 @@
+import type { ZodNumber, ZodString } from "zod";
+
 import {
+  getFieldValue,
   getResourceMetadata,
   getResourceRelationDefinitions,
 } from "@/features/resources";
 import type {
   EditableResource,
   ResourceDataType,
+  ResourceRelation,
+  ResourceSchemaKey,
 } from "@/features/resources/types";
 import type { ResourceRelations } from "@/types/components";
-import { typedEntries, typedKeys } from "@/utils";
+import { typedEntries } from "@/utils";
 
 import type { ListItem } from "../types";
 import { isManyToManyRelationDefinition } from "./is-many-to-many-relation-definition";
@@ -18,34 +23,35 @@ export function getBadgeLabels<T extends EditableResource>(
   listItem: ListItem,
   resource: T,
   relatedResources: ResourceRelations<T>,
-) {
+): string[] {
+  if (listItem.badges == null) {
+    return [];
+  }
+
   const labels: string[] = [];
   const relationDefinitions = getResourceRelationDefinitions(resource);
 
-  if (listItem.badges == null) {
-    return labels;
-  }
+  for (const badge of typedEntries(listItem.badges)) {
+    const [badgeResource, badgeValue] = badge;
+    const typedBadgeValue = badgeValue as ResourceSchemaKey<
+      ResourceRelation<T>,
+      ZodString | ZodNumber
+    >;
 
-  for (const badgeResource of typedKeys(listItem.badges)) {
     const matchingRelation = typedEntries(relationDefinitions).find(
       ([relationName]) => relationName === badgeResource,
     );
-    if (matchingRelation == null) {
+    if (matchingRelation == null || badgeValue == null) {
       continue;
     }
     const [relationName, relation] = matchingRelation;
 
     if (isManyToOneRelationDefinition(relation)) {
-      const foreignKey = relation.foreignKey as keyof typeof item;
-      const foreignKeyValue = item[foreignKey];
-      if (foreignKeyValue == null) {
-        continue;
-      }
+      const foreignKeyValue = getFieldValue(item, relation.foreignKey);
+
       for (const relatedResource of relatedResources[relationName]) {
         if (relatedResource.id === foreignKeyValue) {
-          const labelValue = (
-            relatedResource as unknown as Record<PropertyKey, unknown>
-          )[listItem.badges[badgeResource] as PropertyKey];
+          const labelValue = getFieldValue(relatedResource, typedBadgeValue);
           if (typeof labelValue === "string" && !(labelValue in labels)) {
             labels.push(labelValue);
           }
@@ -53,13 +59,18 @@ export function getBadgeLabels<T extends EditableResource>(
         }
       }
     } else if (isManyToManyRelationDefinition(relation)) {
-      const relationItems =
-        item[getResourceMetadata(badgeResource).queryName as keyof typeof item];
+      const queryName = getResourceMetadata(badgeResource).queryName;
+      const relationItems = getFieldValue(
+        item,
+        queryName as ResourceSchemaKey<T, ZodString>,
+      );
+
       if (Array.isArray(relationItems)) {
         for (const relationItem of relationItems) {
-          const labelValue = (relationItem as Record<PropertyKey, unknown>)[
-            listItem.badges[badgeResource] as PropertyKey
-          ];
+          const labelValue = getFieldValue(
+            relationItem as ResourceDataType<ResourceRelation<T>>,
+            typedBadgeValue,
+          );
           if (typeof labelValue === "string" && !(labelValue in labels)) {
             labels.push(labelValue);
           }
