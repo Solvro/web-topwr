@@ -105,7 +105,7 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
   /** Whether the resource can be deleted by the user. Defaults to true. */
   deletable?: boolean;
   /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */
-  itemMapper: (item: UnorderableResourceDataType<R>) => Omit<ListItem, "id">; // use the UnorderableResourceDataType here to avoid circular type reference
+  itemMapper: (item: UnorderableResourceDataType<R>) => Omit<ListItem<R>, "id">; // use the UnorderableResourceDataType here to avoid circular type reference
   form: {
     /** The inputs to be used in the form for the resource. */
     inputs: AbstractResourceFormInputs<R>;

@@ -13,8 +13,8 @@ import type {
 } from "@/features/resources/types";
 import type { ResourceRelations } from "@/types/components";
 
+import { getBadgeLabels } from "../lib/get-badge-labels";
 import type { ListItem } from "../types/internal";
-import { getBadgeLabels } from "../utils/get-badge-labels";
 import { ArlItemDragHandle } from "./arl-item-drag-handle";
 import { ToggleOrganizationStatusButton } from "./toggle-status-button";
 
@@ -39,7 +39,10 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
 
   const metadata = getResourceMetadata(resource);
   const id = getResourcePkValue(resource, item);
-  const listItem: ListItem = { id, ...metadata.itemMapper(item) };
+  const listItem: ListItem<T> = {
+    id,
+    ...metadata.itemMapper(item),
+  };
 
   return (
     <li
@@ -51,9 +54,8 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
           {orderable ? <ArlItemDragHandle item={listItem} /> : null}
           <Badge className="w-11">{listItem.id}</Badge>
         </div>
-        <div className="flex min-w-0 grow flex-col justify-center md:space-y-2">
-          <header className="flex flex-col">
-            <h2 className="font-semibold text-balance">{listItem.name}</h2>
+        <div className="flex min-w-0 grow flex-col justify-center gap-0.5">
+          <header className="flex flex-col space-y-1">
             <div className="hidden space-x-2 overflow-hidden md:block">
               {getBadgeLabels(item, listItem, resource, relatedResources).map(
                 (label) => (
@@ -66,6 +68,9 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
                 ),
               )}
             </div>
+            <h2 className="text-lg font-semibold text-balance">
+              {listItem.name}
+            </h2>
           </header>
           <p className="hidden truncate md:block">
             {listItem.shortDescription == null ||
