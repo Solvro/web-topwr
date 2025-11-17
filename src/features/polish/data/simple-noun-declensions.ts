@@ -298,6 +298,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       nominative: `wersja w sekcji ${quoteText("o nas")}`,
     },
   },
+  [Resource.MobileConfig]: {
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "inne",
+      genitive: "innych",
+      dative: "innym",
+      accusative: "inne",
+      instrumental: "innymi",
+      locative: "innych",
+      vocative: "inne",
+    },
+    plural: {
+      nominative: "inne",
+      genitive: "innych",
+      dative: "innym",
+      accusative: "inne",
+      instrumental: "innymi",
+      locative: "innych",
+      vocative: "inne",
+    },
+  },
   [Resource.Notifications]: {
     gender: GrammaticalGender.Masculine,
     singular: {
@@ -339,6 +360,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       instrumental: "rolami",
       locative: "rolach",
       vocative: "role",
+    },
+  },
+  [Resource.SksOpeningHours]: {
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "godziny otwarcia SKS",
+      genitive: "godzin otwarcia SKS",
+      dative: "godzinom otwarcia SKS",
+      accusative: "godziny otwarcia SKS",
+      instrumental: "godzinami otwarcia SKS",
+      locative: "godzinach otwarcia SKS",
+      vocative: "godziny otwarcia SKS",
+    },
+    plural: {
+      nominative: "godziny otwarcia SKS",
+      genitive: "godzin otwarcia SKS",
+      dative: "godzinom otwarcia SKS",
+      accusative: "godziny otwarcia SKS",
+      instrumental: "godzinami otwarcia SKS",
+      locative: "godzinach otwarcia SKS",
+      vocative: "godziny otwarcia SKS",
     },
   },
   [Resource.StudentOrganizations]: {

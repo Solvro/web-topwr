@@ -4,6 +4,7 @@ import {
   Building,
   Calendar,
   CalendarCog,
+  CircleEllipsis,
   CircleQuestionMark,
   Megaphone,
   Notebook,
@@ -57,6 +58,10 @@ export default async function Home() {
           <DashboardButton
             resource={Resource.AcademicSemesters}
             icon={CalendarCog}
+          />
+          <DashboardButton
+            resource={Resource.MobileConfig}
+            icon={CircleEllipsis}
           />
         </div>
       </div>

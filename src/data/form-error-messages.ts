@@ -10,4 +10,6 @@ export const FORM_ERROR_MESSAGES = {
   INVALID_TOPIC_NAME:
     "Niepoprawna nazwa. Dozwolone są tylko litery, cyfry oraz znaki - _ . ~ %",
   SELECTION_REQUIRED: "Należy wybrać przynajmniej jedną opcję",
+  VALUE_TOO_SHORT: (n: number) =>
+    `Wpisana wartość jest za krótka. Minimalna długość: ${String(n)}`,
 };

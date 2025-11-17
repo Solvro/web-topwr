@@ -19,9 +19,11 @@ import { GuideQuestionSchema } from "../schemas/guide-question-schema";
 import { HolidaySchema } from "../schemas/holiday-schema";
 import { MajorSchema } from "../schemas/major-schema";
 import { MilestonesSchema } from "../schemas/milestones-schema";
+import { MobileConfigSchema } from "../schemas/mobile-config-schema";
 import { NotificationSchema } from "../schemas/notification-schema";
 import { NotificationTopicSchema } from "../schemas/notification-topic-schema";
 import { RoleSchema } from "../schemas/role-schema";
+import { SksOpeningHoursSchema } from "../schemas/sks-opening-hours-schema";
 import { StudentOrganizationLinkSchema } from "../schemas/student-organization-link-schema";
 import { StudentOrganizationSchema } from "../schemas/student-organization-schema";
 import { StudentOrganizationTagSchema } from "../schemas/student-organization-tag-schema";
@@ -47,9 +49,11 @@ export const RESOURCE_SCHEMAS = {
   [Resource.Holidays]: HolidaySchema,
   [Resource.Majors]: MajorSchema,
   [Resource.Milestones]: MilestonesSchema,
+  [Resource.MobileConfig]: MobileConfigSchema,
   [Resource.Notifications]: NotificationSchema,
   [Resource.NotificationTopics]: NotificationTopicSchema,
   [Resource.Roles]: RoleSchema,
+  [Resource.SksOpeningHours]: SksOpeningHoursSchema,
   [Resource.StudentOrganizations]: StudentOrganizationSchema,
   [Resource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
   [Resource.StudentOrganizationTags]: StudentOrganizationTagSchema,

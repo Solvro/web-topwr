@@ -18,11 +18,13 @@ export enum Resource {
   Notifications = "notifications",
   NotificationTopics = "notifications/topics",
   Roles = "about-us/roles",
+  SksOpeningHours = "other/sks-opening-hours",
   StudentOrganizations = "student-organizations",
   StudentOrganizationLinks = "student-organization-links",
   StudentOrganizationTags = "student-organization-tags",
   Majors = "majors",
   Milestones = "about-us/versions",
+  MobileConfig = "other",
   Versions = "versions",
   VersionScreenshots = "version-screenshots",
 }

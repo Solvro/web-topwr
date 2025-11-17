@@ -629,6 +629,25 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.MobileConfig]: {
+    apiPath: "mobile_config",
+    isSingleton: true,
+    itemMapper: () => ({}),
+    form: {
+      inputs: {
+        textInputs: {
+          cmsReferenceNumber: { label: "CMS Reference Number" },
+          daySwapLookahead: { label: "daySwapLookahead" },
+          translatorReferenceNumber: { label: "translatorReferenceNumber" },
+        },
+      },
+      defaultValues: {
+        cmsReferenceNumber: "",
+        daySwapLookahead: "",
+        translatorReferenceNumber: "",
+      },
+    },
+  },
   [Resource.Notifications]: {
     apiPath: "firebase/broadcast",
     isSingleton: true,
@@ -705,6 +724,27 @@ export const RESOURCE_METADATA = {
       },
       defaultValues: {
         name: "",
+      },
+    },
+  },
+  [Resource.SksOpeningHours]: {
+    apiPath: "sks_opening_hours",
+    pk: "language",
+    itemMapper: (item) => ({
+      name: item.language,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          language: { label: "Język" },
+          canteen: { label: "Godziny otwarcia stołówki" },
+          cafe: { label: "Godziny otwarcia kawiarni" },
+        },
+      },
+      defaultValues: {
+        language: "",
+        canteen: "",
+        cafe: "",
       },
     },
   },
