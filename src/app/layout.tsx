@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { ThemeProvider } from "next-themes";
 import { Space_Grotesk } from "next/font/google";
 
@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import type { WrapperProps } from "@/types/components";
 
 import "./globals.css";
+import manifest from "./manifest.json";
 
 const space_grotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -34,6 +35,11 @@ export const metadata: Metadata = {
   twitter: {
     images: OG_IMAGE_METADATA,
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: manifest.theme_color,
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({ children }: WrapperProps) {
