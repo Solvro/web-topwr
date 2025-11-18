@@ -24,21 +24,27 @@ import { StudentOrganizationSchema } from "../schemas/student-organization-schem
 import { StudentOrganizationTagSchema } from "../schemas/student-organization-tag-schema";
 import { VersionScreenshotsSchema } from "../schemas/version-screenshots-schema";
 import { VersionsSchema } from "../schemas/versions-schema";
+import { AcademicSemesterSchema } from "../schemas/academic-semester-schema";
+import { DaySwapSchema } from "../schemas/day-swap-schema";
+import { HolidaySchema } from "../schemas/holiday-schema";
 
 export const RESOURCE_SCHEMAS = {
   [Resource.AboutUs]: AboutUsSchema,
   [Resource.AboutUsLinks]: AboutUsLinkSchema,
+  [Resource.AcademicSemesters]: AcademicSemesterSchema,
   [Resource.Banners]: BannerSchema,
   [Resource.CalendarEvents]: CalendarEventSchema,
   [Resource.Changes]: ChangesSchema,
   [Resource.ChangeScreenshots]: ChangeScreenshotsSchema,
   [Resource.Contributors]: ContributorSchema,
   [Resource.ContributorSocialLinks]: ContributorSocialLinkSchema,
+  [Resource.DaySwaps]: DaySwapSchema,
   [Resource.Departments]: DepartmentSchema,
   [Resource.DepartmentLinks]: DepartmentLinkSchema,
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.GuideAuthors]: GuideAuthorSchema,
   [Resource.GuideQuestions]: GuideQuestionSchema,
+  [Resource.Holidays]: HolidaySchema,
   [Resource.Majors]: MajorSchema,
   [Resource.Milestones]: MilestonesSchema,
   [Resource.Notifications]: NotificationSchema,

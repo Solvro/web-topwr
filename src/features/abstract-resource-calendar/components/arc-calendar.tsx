@@ -1,0 +1,114 @@
+"use client";
+
+import { parse } from "date-fns";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import type { SearchParameters } from "@/types/components";
+
+import type { MappedCalendarData } from "../types/internal";
+import { formatDateObject } from "../utils/format-date-object";
+import { getEventsForDay } from "../utils/get-events-for-day";
+import { getMonthLink } from "../utils/get-month-link";
+import { DayButton } from "./arc-day-button";
+import { getMonthByNumberAndYear } from "../utils/get-month-by-number-and-year";
+import { Link } from "@/components/core/link";
+import { WEEKDAYS } from "../constants";
+
+export function Calendar({
+  clickable = false,
+  searchParams,
+  mappedData,
+  onDayClick,
+}: {
+  clickable?: boolean;
+  searchParams: SearchParameters;
+  mappedData: MappedCalendarData;
+  onDayClick: (dayKey: string) => void;
+}) {
+  const { year, month } = searchParams;
+  const currentDate = new Date();
+  const displayedYear = (
+    year == null ? currentDate : parse(year, "yyyy", currentDate)
+  ).getFullYear();
+  const displayedMonth =
+    (month == null ? currentDate : parse(month, "MM", currentDate)).getMonth() +
+    1;
+
+  const currentDisplayedMonth = getMonthByNumberAndYear(
+    displayedMonth,
+    displayedYear,
+  );
+
+  const firstDayOfMonth = new Date(displayedYear, displayedMonth - 1, 1);
+  const startDayOfWeek = (firstDayOfMonth.getDay() + 6) % 7;
+
+  const totalCells = startDayOfWeek + currentDisplayedMonth.daysInMonth;
+  const calendarDays = Array.from({ length: totalCells }, (_, index) =>
+    index < startDayOfWeek
+      ? ({
+          type: "empty",
+          id: `empty-${displayedYear.toString()}-${displayedMonth.toString()}-${index.toString()}`,
+        } as const)
+      : ({
+          type: "day",
+          id: index - startDayOfWeek + 1,
+          day: index - startDayOfWeek + 1,
+        } as const),
+  );
+
+  return (
+    <div className="mx-auto grid h-fit w-full grid-cols-7 gap-1.5 sm:gap-2 lg:w-3/4">
+      <div className="col-span-full flex items-center justify-center gap-4 text-center text-base font-bold sm:text-lg">
+        <Button variant="ghost" size="icon" aria-label="Previous month" asChild>
+          <Link href={getMonthLink(displayedYear, displayedMonth - 1)}>
+            <ChevronLeft />
+          </Link>
+        </Button>
+        <span className="min-w-[200px]">
+          {currentDisplayedMonth.name} {displayedYear}
+        </span>
+        <Button variant="ghost" size="icon" aria-label="Next month" asChild>
+          <Link href={getMonthLink(displayedYear, displayedMonth + 1)}>
+            <ChevronRight />
+          </Link>
+        </Button>
+      </div>
+      <div className="col-span-full mt-4 grid grid-cols-subgrid gap-1">
+        {WEEKDAYS.map((day) => (
+          <div
+            key={day}
+            className="text-center text-xs font-semibold uppercase sm:text-sm"
+          >
+            {day}
+          </div>
+        ))}
+      </div>
+      {calendarDays.map((cell) => {
+        if (cell.type === "empty") {
+          return <div key={cell.id} />;
+        }
+        const displayedDateObject = {
+          year: displayedYear,
+          month: currentDisplayedMonth,
+          day: cell.day,
+        };
+        const dayEvents = getEventsForDay(displayedDateObject, mappedData);
+
+        return (
+          <DayButton
+            key={cell.id}
+            day={cell.day}
+            today={displayedDateObject}
+            clickable={clickable}
+            eventsForDay={dayEvents}
+            currentDate={currentDate}
+            onDayClick={() => {
+              onDayClick(formatDateObject(displayedDateObject));
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
