@@ -276,13 +276,24 @@ export function ArfBody<T extends Resource>({
               <ArfInputSet
                 inputs={selectInputs}
                 mapper={([name, input]) => (
-                  // TODO: allow select inputs to be disabled
-                  <SelectInput
+                  <FormField
                     key={name}
                     control={control}
                     name={name}
-                    label={input.label}
-                    options={<SelectOptions input={input} />}
+                    render={({ field }) => (
+                      <ArfInput
+                        declensions={declensions}
+                        isEditing={isEditing}
+                        inputDefinition={input}
+                      >
+                        <SelectInput
+                          {...field}
+                          key={name}
+                          label={input.label}
+                          options={<SelectOptions input={input} />}
+                        />
+                      </ArfInput>
+                    )}
                   />
                 )}
               />
@@ -308,7 +319,7 @@ export function ArfBody<T extends Resource>({
                         />
                       </ArfInput>
                     )}
-                  ></FormField>
+                  />
                 )}
               />
               <ArfInputSet
@@ -327,7 +338,6 @@ export function ArfBody<T extends Resource>({
                       typeof resourceRelation
                     >;
                   return (
-                    // TODO: allow relation inputs to be disabled
                     <ArfRelationInput
                       key={`${resource}-multiselect-${resourceRelation}`}
                       resource={resource}
