@@ -612,8 +612,11 @@ export const RESOURCE_METADATA = {
     itemMapper: (item) => ({
       name: item.name,
       badges: {
-        [Resource.Departments]: "code",
-        [Resource.StudentOrganizationTags]: "tag",
+        [Resource.Departments]: { displayField: "code", variant: "primary" },
+        [Resource.StudentOrganizationTags]: {
+          displayField: "tag",
+          variant: "default",
+        },
       },
       shortDescription: item.shortDescription,
     }),
