@@ -3,6 +3,7 @@ import {
   BookOpen,
   Building,
   Calendar,
+  CalendarCog,
   CircleQuestionMark,
   Megaphone,
   Notebook,
@@ -53,6 +54,10 @@ export default async function Home() {
             label="Sekcja o nas"
           />
           <DashboardButton resource={Resource.Notifications} icon={Bell} />
+          <DashboardButton
+            resource={Resource.AcademicSemesters}
+            icon={CalendarCog}
+          />
         </div>
       </div>
     </div>
