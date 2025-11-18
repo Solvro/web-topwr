@@ -3,11 +3,11 @@ import type { ZodNumber, ZodString } from "zod";
 import { logger } from "@/features/logging";
 import {
   RelationType,
+  Resource,
   getFieldValue,
   getResourceMetadata,
   getResourceRelationDefinitions,
 } from "@/features/resources";
-import type { Resource } from "@/features/resources";
 import type {
   EditableResource,
   RelationDefinition,
@@ -19,14 +19,17 @@ import type { ResourceRelations } from "@/types/components";
 import { typedEntries } from "@/utils";
 
 import type { ListItem } from "../types";
+import type { ItemBadge, ItemBadgeVariant } from "../types/internal";
 
 function getManyToOneRelationBadge<T extends EditableResource>(
   item: ResourceDataType<T>,
+  badgeResource: Resource,
   relationDefinition: RelationDefinition<T, Resource>,
   relationResource: ResourceRelation<T>,
   relatedResources: ResourceRelations<T>,
-  badgeResourceDisplayField: ResourceSchemaKey<Resource, ZodString | ZodNumber>,
-) {
+  displayField: ResourceSchemaKey<Resource, ZodString | ZodNumber>,
+  variant: ItemBadgeVariant,
+): ItemBadge | null {
   if (relationDefinition.foreignKey == null) {
     return null;
   }
@@ -41,13 +44,31 @@ function getManyToOneRelationBadge<T extends EditableResource>(
 
   for (const relatedResource of relatedResources[relationResource]) {
     if (relatedResource.id === foreignKeyValue) {
-      const labelValue = getFieldValue(
-        relatedResource,
-        badgeResourceDisplayField,
-      );
-      if (typeof labelValue === "string") {
-        return labelValue;
+      const labelValue = getFieldValue(relatedResource, displayField);
+
+      if (typeof labelValue !== "string") {
+        return null;
       }
+
+      if (badgeResource === Resource.Departments) {
+        const customColor1 = getFieldValue(
+          relatedResource as ResourceDataType<Resource>,
+          "gradientStart" as ResourceSchemaKey<Resource, ZodString>,
+        );
+        const customColor2 = getFieldValue(
+          relatedResource as ResourceDataType<Resource>,
+          "gradientStop" as ResourceSchemaKey<Resource, ZodString>,
+        );
+        return customColor1 && customColor2
+          ? {
+              displayField: labelValue,
+              variant,
+              customColors: { color1: customColor1, color2: customColor2 },
+            }
+          : { displayField: labelValue, variant };
+      }
+
+      return { displayField: labelValue, variant };
     }
   }
   return null;
@@ -56,9 +77,10 @@ function getManyToOneRelationBadge<T extends EditableResource>(
 function getManyToManyRelationBadge<T extends EditableResource>(
   item: ResourceDataType<T>,
   badgeResource: Resource,
-  badgeResourceDisplayField: ResourceSchemaKey<Resource, ZodString | ZodNumber>,
-): string[] {
-  const retrievedBadges: string[] = [];
+  displayField: ResourceSchemaKey<Resource, ZodString | ZodNumber>,
+  variant: ItemBadgeVariant,
+): ItemBadge[] {
+  const retrievedBadges: ItemBadge[] = [];
   const queryName = getResourceMetadata(badgeResource).queryName;
   const relationItems = getFieldValue(
     item,
@@ -69,44 +91,43 @@ function getManyToManyRelationBadge<T extends EditableResource>(
     for (const relationItem of relationItems) {
       const labelValue = getFieldValue(
         relationItem as ResourceDataType<Resource>,
-        badgeResourceDisplayField,
+        displayField,
       );
+
       if (typeof labelValue === "string") {
-        retrievedBadges.push(labelValue);
+        retrievedBadges.push({ displayField: labelValue, variant });
       }
     }
   }
   return retrievedBadges;
 }
 
-export function getBadgeLabels<T extends EditableResource>(
+export function getItemBadges<T extends EditableResource>(
   item: ResourceDataType<T>,
   listItem: ListItem<T>,
   resource: T,
   relatedResources: ResourceRelations<T>,
-): string[] {
+): ItemBadge[] {
   if (listItem.badges == null) {
     return [];
   }
 
-  const labels: string[] = [];
+  const badges: ItemBadge[] = [];
   const relationDefinitions = getResourceRelationDefinitions(resource);
 
-  for (const [badgeResource, badgeResourceDisplayField] of typedEntries(
-    listItem.badges,
-  )) {
+  for (const [badgeResource, badgeConfig] of typedEntries(listItem.badges)) {
+    if (badgeConfig == null) {
+      continue;
+    }
+
     const [relationResource, relationDefinition] =
       typedEntries(relationDefinitions).find(
         ([relationName]) => relationName === badgeResource,
       ) ?? [];
 
-    if (
-      relationResource == null ||
-      relationDefinition == null ||
-      badgeResourceDisplayField == null
-    ) {
+    if (relationResource == null || relationDefinition == null) {
       logger.warn(
-        { relationResource, relationDefinition, badgeResourceDisplayField },
+        { relationResource, relationDefinition },
         "Skipping badge retrieval due to null relation or field",
       );
       continue;
@@ -114,27 +135,35 @@ export function getBadgeLabels<T extends EditableResource>(
 
     switch (relationDefinition.type) {
       case RelationType.ManyToOne: {
-        const newLabelValue = getManyToOneRelationBadge(
+        const badge = getManyToOneRelationBadge(
           item,
+          badgeResource,
           relationDefinition,
           relationResource,
           relatedResources,
-          badgeResourceDisplayField,
+          badgeConfig.displayField,
+          badgeConfig.variant,
         );
-        if (newLabelValue != null && !labels.includes(newLabelValue)) {
-          labels.push(newLabelValue);
+
+        if (
+          badge != null &&
+          !badges.some((b) => b.displayField === badge.displayField)
+        ) {
+          badges.push(badge);
         }
         break;
       }
       case RelationType.ManyToMany: {
-        const newLabelValues = getManyToManyRelationBadge(
+        const newBadges = getManyToManyRelationBadge(
           item,
           badgeResource,
-          badgeResourceDisplayField,
+          badgeConfig.displayField,
+          badgeConfig.variant,
         );
-        for (const label of newLabelValues) {
-          if (!labels.includes(label)) {
-            labels.push(label);
+
+        for (const badge of newBadges) {
+          if (!badges.some((b) => b.displayField === badge.displayField)) {
+            badges.push(badge);
           }
         }
         break;
@@ -148,5 +177,5 @@ export function getBadgeLabels<T extends EditableResource>(
       }
     }
   }
-  return labels;
+  return badges;
 }

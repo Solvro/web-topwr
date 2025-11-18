@@ -11,10 +11,11 @@ import type {
   EditableResource,
   ResourceDataType,
 } from "@/features/resources/types";
+import { cn } from "@/lib/utils";
 import type { ResourceRelations } from "@/types/components";
 
-import { getBadgeLabels } from "../lib/get-badge-labels";
-import type { ListItem } from "../types/internal";
+import { getItemBadges } from "../lib/get-item-badges";
+import type { ItemBadge, ListItem } from "../types/internal";
 import { ArlItemDragHandle } from "./arl-item-drag-handle";
 import { ToggleOrganizationStatusButton } from "./toggle-status-button";
 
@@ -34,6 +35,27 @@ const isStudentOrganizationProps = <T extends EditableResource>(
   item: ResourceDataType<Resource.StudentOrganizations>;
 } => props.resource === Resource.StudentOrganizations;
 
+const getBadgeStyles = (badge: ItemBadge) => {
+  if (badge.customColors != null) {
+    return {
+      style: {
+        backgroundColor: `${badge.customColors.color1}1A`,
+        color: badge.customColors.color2,
+        borderColor: badge.customColors.color2,
+      },
+    };
+  }
+
+  return {
+    className: cn(
+      badge.variant === "default" &&
+        "border-muted-foreground text-muted-foreground bg-transparent",
+      badge.variant === "primary" &&
+        "border-primary text-primary bg-primary/10",
+    ),
+  };
+};
+
 export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
   const { ref, item, resource, relatedResources, orderable = false } = props;
 
@@ -49,23 +71,28 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
       ref={ref}
       className="bg-accent text-accent-foreground rounded-xl p-4 marker:content-none max-sm:text-xs"
     >
-      <article className="flex flex-row space-x-4">
+      <article className="flex flex-row gap-x-4">
         <div className="flex items-center gap-1 sm:gap-2">
           {orderable ? <ArlItemDragHandle item={listItem} /> : null}
           <Badge className="w-11">{listItem.id}</Badge>
         </div>
         <div className="flex min-w-0 grow flex-col justify-center gap-0.5">
-          <header className="flex flex-col space-y-1">
+          <header className="flex flex-col gap-y-1">
             <div className="hidden space-x-2 overflow-hidden md:block">
-              {getBadgeLabels(item, listItem, resource, relatedResources).map(
-                (label) => (
-                  <Badge
-                    key={label}
-                    className="border-muted-foreground text-muted-foreground bg-transparent py-0.5"
-                  >
-                    {label}
-                  </Badge>
-                ),
+              {getItemBadges(item, listItem, resource, relatedResources).map(
+                (badge) => {
+                  const { className, style } = getBadgeStyles(badge);
+
+                  return (
+                    <Badge
+                      key={badge.displayField}
+                      className={cn("py-0.5", className)}
+                      style={style}
+                    >
+                      {badge.displayField}
+                    </Badge>
+                  );
+                },
               )}
             </div>
             <h2 className="text-lg font-semibold text-balance">
