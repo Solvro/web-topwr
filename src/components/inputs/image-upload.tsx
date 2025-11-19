@@ -43,6 +43,7 @@ export function ImageUpload<T extends Resource>({
   type = ImageType.Logo,
   existingImage,
   resourceData,
+  disabled,
 }: {
   name: ResourceSchemaKey<T, z.ZodString>;
   value: string | null;
@@ -51,6 +52,7 @@ export function ImageUpload<T extends Resource>({
   type?: ImageType;
   existingImage?: ReactNode;
   resourceData?: ResourceFormValues<T>;
+  disabled?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -90,6 +92,7 @@ export function ImageUpload<T extends Resource>({
       ref={inputRef}
       type="file"
       accept="image/*"
+      disabled={disabled}
       onChange={(event) => {
         const file = event.target.files?.[0];
         if (file == null) {
@@ -167,6 +170,7 @@ export function ImageUpload<T extends Resource>({
                 reset();
                 setIsPreviewOpen(false);
               }}
+              disabled={disabled}
             >
               Usuń zdjęcie <Trash />
             </Button>
@@ -175,6 +179,7 @@ export function ImageUpload<T extends Resource>({
               onClick={() => {
                 openUploadDialog();
               }}
+              disabled={disabled}
             >
               Zmień zdjęcie <ImageUp />
             </Button>

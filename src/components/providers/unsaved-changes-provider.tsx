@@ -73,9 +73,7 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel asChild>
-              <Button variant="secondary">Anuluj</Button>
-            </AlertDialogCancel>
+            <AlertDialogCancel>Anuluj</AlertDialogCancel>
             <AlertDialogAction asChild>
               <Button variant="destructive" asChild>
                 <Link

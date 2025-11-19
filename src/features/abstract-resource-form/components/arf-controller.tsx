@@ -43,10 +43,12 @@ import { ArfSheetProvider } from "../providers/arf-sheet-provider";
 import { getDefaultValues } from "../utils/get-default-values";
 import { getMutationConfig } from "../utils/get-mutation-config";
 import { isExistingItem } from "../utils/is-existing-item";
+import { isFormStateDirty } from "../utils/is-form-state-dirty";
+import { ArfBody } from "./arf-body";
 import { ArfConfirmationModal } from "./arf-confirmation-modal";
-import { ArfInputs } from "./arf-inputs";
 
-export function ArfClient<T extends Resource>({
+/** Controller component for Abstract Resource Form. Sets up form context and handles submission. */
+export function ArfController<T extends Resource>({
   resource,
   defaultValues,
   existingImages,
@@ -79,9 +81,9 @@ export function ArfClient<T extends Resource>({
 
   useEffect(() => {
     const unsubscribe = subscribe({
-      formState: { isDirty: true },
-      callback: ({ isDirty }) => {
-        setHasUnsavedChanges(isDirty ?? false);
+      formState: { isDirty: true, dirtyFields: true },
+      callback: (formState) => {
+        setHasUnsavedChanges(isFormStateDirty(formState));
       },
     });
 
@@ -150,7 +152,7 @@ export function ArfClient<T extends Resource>({
     >
       <Form {...form}>
         <form className="flex grow flex-col gap-4" onSubmit={onSubmit}>
-          <ArfInputs
+          <ArfBody
             resource={resource}
             control={form.control}
             defaultValues={defaultValues}
@@ -168,7 +170,7 @@ export function ArfClient<T extends Resource>({
           >
             <ArfConfirmationModal
               loading={isPending}
-              disabled={!form.formState.isDirty}
+              disabled={!isFormStateDirty(form.formState)}
               getFormValues={form.getValues}
               onSubmit={onSubmit}
               triggerValidation={form.trigger}

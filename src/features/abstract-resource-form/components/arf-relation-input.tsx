@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { PendingInput } from "@/components/inputs/pending-input";
 import { SelectInput } from "@/components/inputs/select-input";
+import { FormField } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import type { SetOptionSelected } from "@/components/ui/multi-select";
@@ -35,6 +36,7 @@ import { useArfRelationMutation } from "../hooks/use-arf-relation-mutation";
 import { useArfSheet } from "../hooks/use-arf-sheet";
 import { getMutationConfig } from "../utils/get-mutation-config";
 import { isExistingItem } from "../utils/is-existing-item";
+import { ArfInput } from "./arf-input";
 import { ArfPivotData } from "./arf-pivot-data";
 
 export function ArfRelationInput<
@@ -79,22 +81,34 @@ export function ArfRelationInput<
     singular: declineNoun(resourceRelation, { plural: false }),
     plural: declineNoun(resourceRelation, { plural: true }),
   };
+  const isEditing = isExistingItem(resource, defaultValues);
   if (relationDefinition.type === RelationType.ManyToOne) {
+    const selectLabel = toTitleCase(relationDeclined.singular.nominative);
     return (
-      <SelectInput
+      <FormField
         control={control}
         name={relationDefinition.foreignKey}
-        label={toTitleCase(relationDeclined.singular.nominative)}
-        options={Object.values(allRelatedData).map((option) => (
-          <SelectItem key={option.id} value={sanitizeId(option.id)}>
-            {config.itemMapper(option).name}
-          </SelectItem>
-        ))}
+        render={({ field }) => (
+          <ArfInput
+            declensions={declensions}
+            isEditing={isEditing}
+            inputDefinition={{ label: selectLabel, ...relationDefinition }}
+          >
+            <SelectInput
+              {...field}
+              label={selectLabel}
+              options={Object.values(allRelatedData).map((option) => (
+                <SelectItem key={option.id} value={sanitizeId(option.id)}>
+                  {config.itemMapper(option).name}
+                </SelectItem>
+              ))}
+            />
+          </ArfInput>
+        )}
       />
     );
   }
   const inputLabel = toTitleCase(relationDeclined.plural.nominative);
-  const isEditing = isExistingItem(resource, defaultValues);
   if (!isEditing) {
     return (
       <PendingInput
@@ -137,112 +151,129 @@ export function ArfRelationInput<
     resource: resourceRelation,
     className: "w-full px-4",
   } satisfies ResourceFormProps<L>;
-  return (
-    <Label className="flex-col items-start">
-      {inputLabel}
-      <MultiSelect
-        deduplicateOptions
-        hideSelectAll
-        isReadOnly={
-          relationDefinition.type === RelationType.OneToMany ||
-          relationDefinition.pivotData != null
-        }
-        animationConfig={{
-          badgeAnimation: "none",
-        }}
-        placeholder={inputPlaceholder}
-        emptyIndicator={`Brak ${relationDeclined.plural.genitive} spełniających wyszukanie.`}
-        options={relationDataOptions.map((option, index) => {
-          const label =
-            config.itemMapper(option).name ?? JSON.stringify(option);
-          const value = String(
-            get(option, primaryKeyField, `item-${String(index)}`),
-          );
-          const queriedRelationData =
-            relationDefinition.type === RelationType.OneToMany
-              ? option
-              : queriedRelations.find(
-                  (queriedRelation) => queriedRelation.id === option.id,
-                );
-          return {
-            label,
-            value,
-            action: (setOptionSelected: SetOptionSelected) => (
-              <ArfPivotData
-                resource={resource}
-                endpoint={endpoint}
-                resourceRelation={resourceRelation}
-                pivotResources={pivotResources}
-                queriedRelationData={queriedRelationData}
-                optionValue={value}
-                setOptionSelected={setOptionSelected}
-                aria-label={`Ustaw relację między ${declensions.instrumental} a ${relationDeclined.singular.instrumental} ${label}`}
-              />
-            ),
-          };
-        })}
-        onOptionToggled={async (id, deleted) => {
-          if (relationDefinition.type !== RelationType.ManyToMany) {
-            toast.error(
-              `Nastąpił nieoczekiwany błąd: dodanie ${relationDeclined.singular.genitive} obecnie nie jest możliwe. Proszę zgłosić ten błąd deweloperom.`,
-            );
-            return false;
-          }
-          try {
-            await mutateRelation({
-              id,
-              deleted,
-              body: undefined,
-            });
-            return true;
-          } catch {
-            return false;
-          }
-        }}
-        onValueChange={() => {
-          toast.info(
-            "Zmiana wszystkich wartości na raz nie jest jeszcze dostępna. Dodawaj lub usuwaj pojedynczo.",
+  const multiselect = (
+    <MultiSelect
+      deduplicateOptions
+      hideSelectAll
+      isReadOnly={
+        relationDefinition.type === RelationType.OneToMany ||
+        relationDefinition.pivotData != null
+      }
+      animationConfig={{
+        badgeAnimation: "none",
+      }}
+      placeholder={inputPlaceholder}
+      emptyIndicator={`Brak ${relationDeclined.plural.genitive} spełniających wyszukanie.`}
+      options={relationDataOptions.map((option, index) => {
+        const label = config.itemMapper(option).name ?? JSON.stringify(option);
+        const value = String(
+          get(option, primaryKeyField, `item-${String(index)}`),
+        );
+        const queriedRelationData =
+          relationDefinition.type === RelationType.OneToMany
+            ? option
+            : queriedRelations.find(
+                (queriedRelation) => queriedRelation.id === option.id,
+              );
+        return {
+          label,
+          value,
+          action: (setOptionSelected: SetOptionSelected) => (
+            <ArfPivotData
+              resource={resource}
+              endpoint={endpoint}
+              resourceRelation={resourceRelation}
+              pivotResources={pivotResources}
+              queriedRelationData={queriedRelationData}
+              optionValue={value}
+              setOptionSelected={setOptionSelected}
+              aria-label={`Ustaw relację między ${declensions.instrumental} a ${relationDeclined.singular.instrumental} ${label}`}
+            />
+          ),
+        };
+      })}
+      onOptionToggled={async (id, deleted) => {
+        if (relationDefinition.type !== RelationType.ManyToMany) {
+          toast.error(
+            `Nastąpił nieoczekiwany błąd: dodanie ${relationDeclined.singular.genitive} obecnie nie jest możliwe. Proszę zgłosić ten błąd deweloperom.`,
           );
           return false;
-        }}
-        onCreateItem={() => {
-          showSheet(
-            {
-              item: null,
-              childResource: resourceRelation,
-              parentResourceData: defaultValues,
+        }
+        try {
+          await mutateRelation({
+            id,
+            deleted,
+            body: undefined,
+          });
+          return true;
+        } catch {
+          return false;
+        }
+      }}
+      onValueChange={() => {
+        toast.info(
+          "Zmiana wszystkich wartości na raz nie jest jeszcze dostępna. Dodawaj lub usuwaj pojedynczo.",
+        );
+        return false;
+      }}
+      onCreateItem={() => {
+        showSheet(
+          {
+            item: null,
+            childResource: resourceRelation,
+            parentResourceData: defaultValues,
+          },
+          formProps,
+        );
+      }}
+      onEditItem={(value) => {
+        const relationDefaultValues = relationDataOptions.find(
+          (option) => value === String(get(option, primaryKeyField)),
+        );
+        const label =
+          relationDefaultValues == null
+            ? undefined
+            : config.itemMapper(relationDefaultValues).name;
+        showSheet(
+          {
+            item: {
+              name: label,
+              id: value,
             },
-            formProps,
-          );
-        }}
-        onEditItem={(value) => {
-          const relationDefaultValues = relationDataOptions.find(
-            (option) => value === String(get(option, primaryKeyField)),
-          );
-          const label =
-            relationDefaultValues == null
-              ? undefined
-              : config.itemMapper(relationDefaultValues).name;
-          showSheet(
-            {
-              item: {
-                name: label,
-                id: value,
-              },
-              childResource: resourceRelation,
-              parentResourceData: defaultValues,
-            },
-            {
-              ...formProps,
-              defaultValues: {
-                ...relationDefaultValues,
-                [getResourcePk(resourceRelation)]: value,
-              } as ResourceDefaultValues<Resource>,
-            },
-          );
-        }}
-        defaultValue={[...new Set(selectedValues)]}
-      />
+            childResource: resourceRelation,
+            parentResourceData: defaultValues,
+          },
+          {
+            ...formProps,
+            defaultValues: {
+              ...relationDefaultValues,
+              [getResourcePk(resourceRelation)]: value,
+            } as ResourceDefaultValues<Resource>,
+          },
+        );
+      }}
+      defaultValue={[...new Set(selectedValues)]}
+    />
+  );
+  return relationDefinition.type === RelationType.ManyToMany ? (
+    // TODO: allow m:n relation inputs to be immutable
+    <Label className="flex-col items-start">
+      {inputLabel}
+      {multiselect}
     </Label>
+  ) : (
+    <FormField
+      control={control}
+      name={relationDefinition.foreignKey}
+      render={() => (
+        <ArfInput
+          declensions={declensions}
+          isEditing={isEditing}
+          inputDefinition={{ label: inputLabel, ...relationDefinition }}
+        >
+          {multiselect}
+        </ArfInput>
+      )}
+    />
   );
 }

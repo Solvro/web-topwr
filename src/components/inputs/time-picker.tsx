@@ -14,9 +14,11 @@ import { InputSlot } from "./input-slot";
 export function TimePicker({
   value,
   onChange,
+  disabled = false,
 }: {
   value: Date | string | null;
   onChange: (date: string | null) => void;
+  disabled?: boolean;
 }) {
   const handleTimeChange = (event_: ChangeEvent<HTMLInputElement>) => {
     const timeValue = event_.target.value;
@@ -39,6 +41,7 @@ export function TimePicker({
         step="1"
         value={isEmptyValue(value) ? "00:00:00" : formatDate(value, "HH:mm:ss")}
         onChange={handleTimeChange}
+        disabled={disabled}
       />
     </InputSlot>
   );

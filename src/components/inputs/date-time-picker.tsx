@@ -11,9 +11,11 @@ import { TimePicker } from "./time-picker";
 export function DateTimePicker({
   value,
   onChange,
+  disabled = false,
 }: {
   value: string | null;
   onChange: (date: string | null) => void;
+  disabled?: boolean;
 }) {
   const date = isEmptyValue(value) ? null : toDate(value);
 
@@ -39,8 +41,12 @@ export function DateTimePicker({
 
   return (
     <InputRow>
-      <DatePicker value={value} onChange={handleDateChange} />
-      <TimePicker value={value} onChange={onChange} />
+      <DatePicker
+        value={value}
+        disabled={disabled}
+        onChange={handleDateChange}
+      />
+      <TimePicker value={value} disabled={disabled} onChange={onChange} />
     </InputRow>
   );
 }

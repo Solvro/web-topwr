@@ -11,6 +11,8 @@ import type {
 
 export interface FormInputBase {
   label: string;
+  /** For fields which should only be set on creation, and not in the edit form. */
+  immutable?: boolean;
 }
 
 type FormInput<

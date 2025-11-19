@@ -21,6 +21,7 @@ import type {
 import type { WrapperProps } from "@/types/components";
 import type { OptionalPromise } from "@/types/helpers";
 
+/** Confirmation modal shown before submitting the form, if configured. */
 export function ArfConfirmationModal<T extends Resource>({
   confirmationMessage,
   getFormValues,

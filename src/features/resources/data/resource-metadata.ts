@@ -578,7 +578,7 @@ export const RESOURCE_METADATA = {
     form: {
       inputs: {
         textInputs: {
-          topicName: { label: "Nazwa" },
+          topicName: { label: "Nazwa", immutable: true },
           description: { label: "Opis" },
         },
       },
