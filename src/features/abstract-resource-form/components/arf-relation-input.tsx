@@ -92,7 +92,7 @@ export function ArfRelationInput<
           <ArfInput
             declensions={declensions}
             isEditing={isEditing}
-            inputDefinition={{ label: selectLabel }}
+            inputDefinition={{ label: selectLabel, ...relationDefinition }}
           >
             <SelectInput
               {...field}
@@ -269,7 +269,7 @@ export function ArfRelationInput<
         <ArfInput
           declensions={declensions}
           isEditing={isEditing}
-          inputDefinition={{ label: inputLabel }}
+          inputDefinition={{ label: inputLabel, ...relationDefinition }}
         >
           {multiselect}
         </ArfInput>

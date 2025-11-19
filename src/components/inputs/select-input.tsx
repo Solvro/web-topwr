@@ -14,11 +14,13 @@ export function SelectInput({
   options,
   value,
   onChange,
+  disabled,
 }: {
   label: string;
   options: ReactNode;
   value: unknown;
   onChange: (value: number | string) => void;
+  disabled?: boolean;
 }) {
   const placeholder = `Wybierz ${label.toLowerCase()}`;
   return (
@@ -30,6 +32,7 @@ export function SelectInput({
       onValueChange={(newValue) => {
         onChange(tryParseNumber(newValue));
       }}
+      disabled={disabled}
     >
       <FormControl>
         <SelectTrigger className="w-full">
