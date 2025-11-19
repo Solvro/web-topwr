@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import type { ComponentProps } from "react";
 import { useFieldArray } from "react-hook-form";
 import type { Control, FieldArray } from "react-hook-form";
 
@@ -8,7 +9,6 @@ import { MultiSelect } from "@/components/ui/multi-select";
 import type {
   ArrayInputField,
   ArrayInputOptions,
-  FormInputBase,
 } from "@/features/abstract-resource-form/types";
 import type { Resource } from "@/features/resources";
 import { getResourceMetadata } from "@/features/resources";
@@ -24,12 +24,14 @@ export function ArrayInput<T extends Resource>({
   label,
   inputOptions,
   relatedResources,
-}: {
+  ...props
+}: Partial<ComponentProps<typeof MultiSelect>> & {
   name: ArrayInputField<T>;
   control: Control<ResourceFormValues<T>>;
+  label: string;
   inputOptions: ArrayInputOptions;
   relatedResources: ResourceRelations<T>;
-} & FormInputBase) {
+}) {
   type ArrayMember = FieldArray<ResourceFormValues<T>, ArrayInputField<T>>;
 
   const array = useFieldArray({ control, name });
@@ -80,6 +82,7 @@ export function ArrayInput<T extends Resource>({
         }
       }}
       placeholder={`Wybierz ${label.toLowerCase()}`}
+      {...props}
     />
   );
 }
