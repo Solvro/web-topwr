@@ -1,6 +1,6 @@
 export function getBrighterColor(
   inputHex: string,
-  lightLuminanceCap = 120,
+  lightLuminanceCap = 180,
   darkLuminanceCap = 255,
 ): {
   light: string;
@@ -29,7 +29,8 @@ export function getBrighterColor(
     Math.round(n).toString(16).padStart(2, "0").toUpperCase();
 
   function generateVariant(luminanceCap: number) {
-    let scale = 255 / maxChannel;
+    let scale;
+    scale = maxChannel > 0 ? 255 / maxChannel : 255;
 
     const currentLuminance =
       0.2126 * r * scale + 0.7152 * g * scale + 0.0722 * b * scale;
