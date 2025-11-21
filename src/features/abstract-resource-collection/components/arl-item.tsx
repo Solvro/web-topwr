@@ -16,6 +16,7 @@ import type { ResourceRelations } from "@/types/components";
 
 import { getItemBadges } from "../lib/get-item-badges";
 import type { ItemBadge, ListItem } from "../types/internal";
+import { getBrighterColor } from "../utils/get-brighter-color";
 import { ArlItemDragHandle } from "./arl-item-drag-handle";
 import { ToggleOrganizationStatusButton } from "./toggle-status-button";
 
@@ -35,26 +36,31 @@ const isStudentOrganizationProps = <T extends EditableResource>(
   item: ResourceDataType<Resource.StudentOrganizations>;
 } => props.resource === Resource.StudentOrganizations;
 
-const getBadgeStyles = (badge: ItemBadge) => {
-  if (badge.customColors != null) {
+function getBadgeStyles(badge: ItemBadge) {
+  if (badge.color != null) {
+    const { light, dark } = getBrighterColor(badge.color);
+
     return {
+      className: cn(
+        "bg-[var(--color-light-bg)] text-[var(--color-light-text)] border-[var(--color-light-border)]",
+        "dark:bg-[var(--color-dark-bg)] dark:text-[var(--color-dark-text)] dark:border-[var(--color-dark-border)]",
+      ),
       style: {
-        backgroundColor: `${badge.customColors.color1}1A`,
-        color: badge.customColors.color2,
-        borderColor: badge.customColors.color2,
-      },
+        "--color-light-bg": `${light}20`,
+        "--color-light-text": light,
+        "--color-light-border": light,
+
+        "--color-dark-bg": `${dark}20`,
+        "--color-dark-text": dark,
+        "--color-dark-border": dark,
+      } as React.CSSProperties,
     };
   }
 
   return {
-    className: cn(
-      badge.variant === "default" &&
-        "border-muted-foreground text-muted-foreground bg-transparent",
-      badge.variant === "primary" &&
-        "border-primary text-primary bg-primary/10",
-    ),
+    className: "border-muted-foreground text-muted-foreground bg-transparent",
   };
-};
+}
 
 export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
   const { ref, item, resource, relatedResources, orderable = false } = props;

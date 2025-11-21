@@ -5,16 +5,14 @@ import type { ResourcePk, ResourceSchemaKey } from "@/features/resources/types";
 
 export interface ItemBadge {
   displayField: string;
-  variant: ItemBadgeVariant;
-  customColors?: { color1: string; color2: string };
+  color?: string;
 }
-export type ItemBadgeVariant = "default" | "primary";
-type OtherResources<T extends Resource> = Exclude<Resource, T>;
+export interface BadgeConfig<R extends Resource> {
+  displayField: ResourceSchemaKey<R, ZodString | ZodNumber>;
+  colorField?: ResourceSchemaKey<R, ZodString>;
+}
 export type ListItemBadge<T extends Resource> = {
-  [R in OtherResources<T>]?: {
-    displayField: ResourceSchemaKey<R, ZodString | ZodNumber>;
-    variant: ItemBadgeVariant;
-  };
+  [R in Exclude<Resource, T>]?: BadgeConfig<R>;
 };
 export interface ListItem<T extends Resource> {
   id: ResourcePk;
