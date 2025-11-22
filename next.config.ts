@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
@@ -20,6 +19,7 @@ const nextConfig: NextConfig = {
   },
   typedRoutes: true,
   serverExternalPackages: ["pino", "pino-pretty"],
+  reactCompiler: true,
 };
 
 export default nextConfig;
