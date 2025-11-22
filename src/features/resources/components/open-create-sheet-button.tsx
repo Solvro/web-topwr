@@ -10,6 +10,7 @@ import type {
   ResourceDataType,
   ResourceRelation,
 } from "@/features/resources/types";
+import { cn } from "@/lib/utils";
 import type { ResourceFormProps } from "@/types/components";
 
 export function OpenCreateSheetButton<T extends Resource>({
@@ -19,6 +20,8 @@ export function OpenCreateSheetButton<T extends Resource>({
   formProps,
   plural,
   children,
+  className,
+  iconOnly = false,
 }: {
   sheet: ArfSheetContextType<T>;
   resource: ResourceRelation<T>;
@@ -26,6 +29,8 @@ export function OpenCreateSheetButton<T extends Resource>({
   formProps: ResourceFormProps<T>;
   plural?: boolean;
   children?: ReactNode;
+  className?: string;
+  iconOnly?: boolean;
 }) {
   const resourceAccusative = declineNoun(resource, {
     case: GrammaticalCase.Accusative,
@@ -35,7 +40,7 @@ export function OpenCreateSheetButton<T extends Resource>({
     <Button
       resource={resource}
       variant="outline"
-      className="flex-1"
+      className={cn("flex-1", className)}
       onClick={() => {
         sheet.showSheet(
           {
@@ -47,7 +52,7 @@ export function OpenCreateSheetButton<T extends Resource>({
         );
       }}
     >
-      Dodaj {resourceAccusative}
+      {iconOnly ? null : <p>Dodaj {resourceAccusative}</p>}
       {children}
     </Button>
   );

@@ -1,13 +1,7 @@
 "use client";
 
-import { SquarePen } from "lucide-react";
-
 import { useArfSheet } from "@/features/abstract-resource-form";
-import {
-  DeleteButtonWithDialog,
-  OpenCreateSheetButton,
-  Resource,
-} from "@/features/resources";
+import { Resource } from "@/features/resources";
 import type {
   ResourceDataType,
   ResourceDefaultValues,
@@ -15,6 +9,7 @@ import type {
 import type { ResourceFormProps } from "@/types/components";
 
 import { formatDaySwapDescription } from "../utils/format-day-swap-description";
+import { SheetCard } from "./arc-sheet-card";
 
 export function DaySwapCard({
   event,
@@ -40,27 +35,17 @@ export function DaySwapCard({
   );
 
   return (
-    <article className="bg-accent flex w-full justify-between rounded-md p-3 text-left text-sm">
+    <SheetCard
+      event={event}
+      clickable={clickable}
+      parentResourceData={parentResourceData}
+      sheet={arfSheet}
+      formProps={formProps}
+      iconOnly
+    >
       <div className="my-auto">
         <div className="mt-1 font-medium">{formattedDescription}</div>
       </div>
-      {clickable ? (
-        <div className="flex items-center gap-2">
-          <OpenCreateSheetButton
-            resource={Resource.DaySwaps}
-            parentResourceData={parentResourceData}
-            sheet={arfSheet}
-            formProps={formProps}
-          >
-            <SquarePen />
-          </OpenCreateSheetButton>
-          <DeleteButtonWithDialog
-            resource={Resource.DaySwaps}
-            itemName={formattedDescription}
-            id={event.id}
-          />
-        </div>
-      ) : null}
-    </article>
+    </SheetCard>
   );
 }
