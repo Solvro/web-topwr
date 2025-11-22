@@ -15,8 +15,8 @@ export function EventBadge({
   limitToOne?: boolean;
 }) {
   return (
-    <div className="flex w-full items-center gap-2 overflow-hidden max-sm:hidden">
-      <div className="flex w-full flex-col gap-0.5 md:w-2/3 lg:w-1/2">
+    <article className="flex w-full items-center gap-2 overflow-hidden max-sm:hidden">
+      <section className="flex w-full flex-col gap-0.5 md:w-2/3 lg:w-1/2">
         {events
           .slice(0, limitToOne ? 1 : CALENDAR_MAX_EVENTS_PER_DAY)
           .map((_, id) => (
@@ -26,7 +26,7 @@ export function EventBadge({
               variant={isCurrentDay ? "secondary" : "default"}
             />
           ))}
-      </div>
+      </section>
       {events.length > CALENDAR_MAX_EVENTS_PER_DAY && !limitToOne ? (
         <>
           <Badge
@@ -44,6 +44,6 @@ export function EventBadge({
           </Badge>
         </>
       ) : null}
-    </div>
+    </article>
   );
 }

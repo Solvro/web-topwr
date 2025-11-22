@@ -20,10 +20,6 @@ export interface ResourceFormProps<T extends Resource> {
   className?: string;
 }
 
-export interface ResourceCalendarProps<T extends Resource> {
-  resource: T;
-}
-
 export type SearchParameters = Record<string, string | undefined>;
 
 export type ResourcePageProps = Readonly<{

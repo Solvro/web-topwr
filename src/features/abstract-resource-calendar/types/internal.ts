@@ -1,7 +1,11 @@
-import type { Resource } from "@/features/resources";
-import type { ResourceDataType, ResourceDataWithRelations } from "@/features/resources/types";
 import type { ReactNode } from "react";
 
+import type { Resource } from "@/features/resources";
+import type {
+  ResourceDataType,
+  ResourceDataWithRelations,
+  ResourcePk,
+} from "@/features/resources/types";
 
 export interface DateObject {
   year: number;
@@ -13,8 +17,11 @@ export interface DateObject {
   day: number;
 }
 
+export interface ResourceCalendarProps<T extends Resource> {
+  resource: T;
+}
+
 export type DayKey = string;
-export type SemesterId = number;
 export type EventCardType = ReactNode;
 
 export interface SemesterEvents {
@@ -29,7 +36,7 @@ export interface SemesterStructure {
 
 export interface MappedCalendarData {
   dayEvents: Record<DayKey, EventCardType[]>;
-  semesters: Record<SemesterId, SemesterStructure>;
+  semesters: Record<ResourcePk, SemesterStructure>;
 }
 
 export type CalendarDataMapper<T extends Resource> = (

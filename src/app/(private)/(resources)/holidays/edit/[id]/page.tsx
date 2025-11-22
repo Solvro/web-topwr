@@ -1,6 +1,6 @@
 import { AbstractResourceEditPage, Resource } from "@/features/resources";
 import type { ResourceEditPageProps } from "@/types/components";
 
-export default function EditHolidaysPage(props: ResourceEditPageProps) {
+export default function EditHolidayPage(props: ResourceEditPageProps) {
   return <AbstractResourceEditPage resource={Resource.Holidays} {...props} />;
 }

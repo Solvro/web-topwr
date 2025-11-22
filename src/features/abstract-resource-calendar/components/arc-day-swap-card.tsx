@@ -2,11 +2,18 @@
 
 import { SquarePen } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import type { ResourceFormProps } from "@/types/components";
-import { DeleteButtonWithDialog, Resource } from "@/features/resources";
-import type { ResourceDataType } from "@/features/resources/types";
 import { useArfSheet } from "@/features/abstract-resource-form";
+import {
+  DeleteButtonWithDialog,
+  OpenCreateSheetButton,
+  Resource,
+} from "@/features/resources";
+import type {
+  ResourceDataType,
+  ResourceDefaultValues,
+} from "@/features/resources/types";
+import type { ResourceFormProps } from "@/types/components";
+
 import { formatDaySwapDescription } from "../utils/format-day-swap-description";
 
 export function DaySwapCard({
@@ -18,12 +25,14 @@ export function DaySwapCard({
   clickable: boolean;
   parentResourceData: ResourceDataType<Resource.AcademicSemesters>;
 }) {
-  const arfSheet = useArfSheet(Resource.AcademicSemesters);
+  const arfSheet = useArfSheet(Resource.AcademicSemesters as Resource);
 
   const formProps = {
     resource: Resource.DaySwaps,
     className: "w-full px-4",
-  } satisfies ResourceFormProps<Resource.DaySwaps>;
+    ...event,
+  } satisfies ResourceFormProps<Resource.DaySwaps> &
+    ResourceDefaultValues<Resource.DaySwaps>;
 
   const formattedDescription = formatDaySwapDescription(
     event.changedWeekday,
@@ -31,31 +40,20 @@ export function DaySwapCard({
   );
 
   return (
-    <>
+    <article className="bg-accent flex w-full justify-between rounded-md p-3 text-left text-sm">
       <div className="my-auto">
-        <div className="text-xs">
-          {event.changedDayIsEven ? "Parzysty" : "Nieparzysty"}
-        </div>
         <div className="mt-1 font-medium">{formattedDescription}</div>
       </div>
       {clickable ? (
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            className="h-10 w-10"
-            onClick={() => {
-              arfSheet.showSheet(
-                {
-                  item: null,
-                  childResource: Resource.DaySwaps,
-                  parentResourceData,
-                },
-                formProps,
-              );
-            }}
+          <OpenCreateSheetButton
+            resource={Resource.DaySwaps}
+            parentResourceData={parentResourceData}
+            sheet={arfSheet}
+            formProps={formProps}
           >
             <SquarePen />
-          </Button>
+          </OpenCreateSheetButton>
           <DeleteButtonWithDialog
             resource={Resource.DaySwaps}
             itemName={formattedDescription}
@@ -63,6 +61,6 @@ export function DaySwapCard({
           />
         </div>
       ) : null}
-    </>
+    </article>
   );
 }
