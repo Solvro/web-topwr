@@ -3,6 +3,8 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 
+import { ArfSheetProvider } from "@/features/abstract-resource-form";
+import type { Resource } from "@/features/resources";
 import type { SearchParameters } from "@/types/components";
 
 import { CalendarModalContext } from "../context/calendar-modal-context";
@@ -11,11 +13,9 @@ import type {
   MappedCalendarData,
 } from "../types/internal";
 import { AllEventsModal } from "./arc-all-events-modal";
-import { Calendar } from "./arc-calendar";
-import type { Resource } from "@/features/resources";
-import { ArfSheetProvider } from "@/features/abstract-resource-form";
+import { CalendarInternal } from "./arc-internal";
 
-export function AbstractResourceCalendarInternal({
+export function AbstractResourceCalendarClient({
   resource,
   children,
   searchParams,
@@ -55,7 +55,7 @@ export function AbstractResourceCalendarInternal({
   return (
     <ArfSheetProvider resource={resource}>
       <CalendarModalContext.Provider value={contextValue}>
-        <Calendar
+        <CalendarInternal
           searchParams={searchParams}
           mappedData={mappedData}
           clickable={clickable}

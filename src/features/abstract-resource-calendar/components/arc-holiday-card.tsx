@@ -3,12 +3,15 @@
 import { SquarePen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import type { ResourceFormProps } from "@/types/components";
-import { DeleteButtonWithDialog, Resource } from "@/features/resources";
 import { useArfSheet } from "@/features/abstract-resource-form";
-import type { ResourceDataType } from "@/features/resources/types";
+import { DeleteButtonWithDialog, Resource } from "@/features/resources";
+import type {
+  ResourceDataType,
+  ResourceDefaultValues,
+} from "@/features/resources/types";
+import type { ResourceFormProps } from "@/types/components";
 
-export function HolidayEventCard({
+export function HolidayCard({
   event,
   clickable,
   parentResourceData,
@@ -22,9 +25,11 @@ export function HolidayEventCard({
   const formProps = {
     resource: Resource.Holidays,
     className: "w-full px-4",
-  } satisfies ResourceFormProps<Resource.Holidays>;
+    ...event,
+  } satisfies ResourceFormProps<Resource.Holidays> &
+    ResourceDefaultValues<Resource.Holidays>;
   return (
-    <>
+    <article className="bg-accent flex w-full justify-between rounded-md p-3 text-left text-sm">
       <div className="my-auto">
         <div className="font-medium">{event.description}</div>
         <div className="mt-1 text-xs">{event.startDate}</div>
@@ -54,6 +59,6 @@ export function HolidayEventCard({
           />
         </div>
       ) : null}
-    </>
+    </article>
   );
 }

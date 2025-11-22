@@ -3,8 +3,8 @@ import type { ResourceDataWithRelations } from "@/features/resources/types";
 
 import { AcademicSemesterCard } from "../components/arc-academic-semester-card";
 import { DaySwapCard } from "../components/arc-day-swap-card";
-import { HolidayEventCard } from "../components/arc-holiday-event-card";
-import type { MappedCalendarData, SemesterId } from "../types/internal";
+import { HolidayCard } from "../components/arc-holiday-card";
+import type { MappedCalendarData } from "../types/internal";
 import { serializeDateDay } from "./serialize-date-day";
 
 export function academicCalendarMapper(
@@ -26,7 +26,7 @@ export function academicCalendarMapper(
       />
     );
 
-    mappedData.semesters[semester.id as SemesterId] = {
+    mappedData.semesters[semester.id] = {
       semester,
       semesterCard,
       semesterEvents: {
@@ -42,15 +42,20 @@ export function academicCalendarMapper(
       const lastDate = new Date(holiday.lastDate);
 
       const dayKeys: string[] = [];
-      const currentDate = new Date(startDate);
-
-      while (currentDate.getTime() <= lastDate.getTime()) {
-        dayKeys.push(serializeDateDay(new Date(currentDate)));
-        currentDate.setDate(currentDate.getDate() + 1);
+      for (
+        let currentDate = new Date(startDate);
+        currentDate.getTime() <= lastDate.getTime();
+        currentDate.setDate(currentDate.getDate() + 1)
+      ) {
+        dayKeys.push(
+          serializeDateDay(
+            new Date(currentDate.getTime() + 24 * 60 * 60 * 1000),
+          ),
+        );
       }
 
       const holidayCard = (
-        <HolidayEventCard
+        <HolidayCard
           key={holiday.id}
           event={holiday}
           clickable={clickable}
@@ -63,9 +68,9 @@ export function academicCalendarMapper(
         mappedData.dayEvents[dayKey].push(holidayCard);
       }
 
-      mappedData.semesters[
-        semester.id as SemesterId
-      ].semesterEvents.holidays.push(holidayCard);
+      mappedData.semesters[semester.id].semesterEvents.holidays.push(
+        holidayCard,
+      );
     }
 
     for (const daySwap of daySwaps) {
@@ -83,11 +88,10 @@ export function academicCalendarMapper(
       );
 
       mappedData.dayEvents[dayKey].push(daySwapCard);
-      mappedData.semesters[
-        semester.id as SemesterId
-      ].semesterEvents.daySwaps.push(daySwapCard);
+      mappedData.semesters[semester.id].semesterEvents.daySwaps.push(
+        daySwapCard,
+      );
     }
   }
-
   return mappedData;
 }
