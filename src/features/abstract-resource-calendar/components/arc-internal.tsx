@@ -3,19 +3,19 @@
 import { parse } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
 import type { SearchParameters } from "@/types/components";
 
+import { WEEKDAYS } from "../constants";
 import type { MappedCalendarData } from "../types/internal";
 import { formatDateObject } from "../utils/format-date-object";
 import { getEventsForDay } from "../utils/get-events-for-day";
+import { getMonthByNumberAndYear } from "../utils/get-month-by-number-and-year";
 import { getMonthLink } from "../utils/get-month-link";
 import { DayButton } from "./arc-day-button";
-import { getMonthByNumberAndYear } from "../utils/get-month-by-number-and-year";
-import { Link } from "@/components/core/link";
-import { WEEKDAYS } from "../constants";
 
-export function Calendar({
+export function CalendarInternal({
   clickable = false,
   searchParams,
   mappedData,
@@ -58,8 +58,8 @@ export function Calendar({
   );
 
   return (
-    <div className="mx-auto grid h-fit w-full grid-cols-7 gap-1.5 sm:gap-2 lg:w-3/4">
-      <div className="col-span-full flex items-center justify-center gap-4 text-center text-base font-bold sm:text-lg">
+    <section className="mx-auto grid h-fit w-full grid-cols-7 gap-1.5 sm:gap-2 lg:w-3/4">
+      <article className="col-span-full flex items-center justify-center gap-4 text-center text-base font-bold sm:text-lg">
         <Button variant="ghost" size="icon" aria-label="Previous month" asChild>
           <Link href={getMonthLink(displayedYear, displayedMonth - 1)}>
             <ChevronLeft />
@@ -73,8 +73,8 @@ export function Calendar({
             <ChevronRight />
           </Link>
         </Button>
-      </div>
-      <div className="col-span-full mt-4 grid grid-cols-subgrid gap-1">
+      </article>
+      <article className="col-span-full mt-4 grid grid-cols-subgrid gap-1">
         {WEEKDAYS.map((day) => (
           <div
             key={day}
@@ -83,7 +83,7 @@ export function Calendar({
             {day}
           </div>
         ))}
-      </div>
+      </article>
       {calendarDays.map((cell) => {
         if (cell.type === "empty") {
           return <div key={cell.id} />;
@@ -109,6 +109,6 @@ export function Calendar({
           />
         );
       })}
-    </div>
+    </section>
   );
 }

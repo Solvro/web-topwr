@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
 
-import type {
-  ResourceCalendarProps,
-  ResourcePageProps,
-} from "@/types/components";
-
-import type { CalendarDataMapper } from "../types/internal";
-import { AbstractResourceCalendarInternal } from "./arc-client";
-import type { Resource } from "@/features/resources";
 import { fetchResources } from "@/features/backend";
+import type { Resource } from "@/features/resources";
+import type { ResourcePageProps } from "@/types/components";
+
+import type {
+  CalendarDataMapper,
+  ResourceCalendarProps,
+} from "../types/internal";
+import { AbstractResourceCalendarClient } from "./arc-client";
 
 export async function AbstractResourceCalendar<T extends Resource>({
   resource,
@@ -27,7 +27,7 @@ export async function AbstractResourceCalendar<T extends Resource>({
 
   const mappedData = dataMapper(resourceData, clickable);
   return (
-    <AbstractResourceCalendarInternal
+    <AbstractResourceCalendarClient
       resource={resource}
       searchParams={await searchParams}
       mappedData={mappedData}
@@ -35,6 +35,6 @@ export async function AbstractResourceCalendar<T extends Resource>({
       {...props}
     >
       {children}
-    </AbstractResourceCalendarInternal>
+    </AbstractResourceCalendarClient>
   );
 }

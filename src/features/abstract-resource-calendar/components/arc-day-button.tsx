@@ -36,9 +36,9 @@ export function DayButton({
       }}
       onClick={onDayClick}
     >
-      <div className="mt-0.5 ml-1 text-xs font-semibold sm:mt-1.5 sm:ml-2 sm:font-bold md:text-base lg:text-lg">
+      <p className="mt-0.5 ml-1 text-xs font-semibold sm:mt-1.5 sm:ml-2 sm:font-bold md:text-base lg:text-lg">
         {day}
-      </div>
+      </p>
 
       {eventsForDay.length > 0 && (
         <EventBadge

@@ -19,16 +19,16 @@ export function AcademicSemesterCard({
   resource: Resource;
 }) {
   return (
-    <div className="bg-accent flex w-full justify-between rounded-md p-3 text-left text-sm">
-      <div className="my-auto">
-        <div className="font-medium">{semester.name}</div>
-        <div className="mt-1 text-xs">
+    <article className="bg-accent flex w-full justify-between rounded-md p-3 text-left text-sm">
+      <section className="my-auto">
+        <p className="font-medium">{semester.name}</p>
+        <p className="mt-1 text-xs">
           {serializeDateDay(semester.semesterStartDate)} -{" "}
           {serializeDateDay(semester.examSessionLastDate)}
-        </div>
-      </div>
+        </p>
+      </section>
       {clickable ? (
-        <div className="flex items-center">
+        <section className="flex items-center">
           <EditButton
             resource={resource as EditableResource}
             id={semester.id}
@@ -38,8 +38,8 @@ export function AcademicSemesterCard({
             itemName={semester.name}
             id={semester.id}
           />
-        </div>
+        </section>
       ) : null}
-    </div>
+    </article>
   );
 }
