@@ -4,10 +4,10 @@ import { Calendar } from "lucide-react";
 import { useContext } from "react";
 
 import { Button } from "@/components/ui/button";
+import { GrammaticalCase, declineNoun } from "@/features/polish";
+import type { Resource } from "@/features/resources";
 
 import { CalendarModalContext } from "../context/calendar-modal-context";
-import { declineNoun, GrammaticalCase } from "@/features/polish";
-import type { Resource } from "@/features/resources";
 
 export function AcademicSemesterListButton({
   resource,
@@ -24,7 +24,7 @@ export function AcademicSemesterListButton({
       variant="outline"
       className="fixed right-4 bottom-4"
     >
-      <Calendar />
+      <Calendar />{" "}
       {declineNoun(resource, {
         case: GrammaticalCase.Nominative,
         plural: true,

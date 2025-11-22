@@ -10,19 +10,23 @@ export function CreateButton<T extends CreatableResource>({
   className,
   resource,
   prefillAttributes = {},
+  plural = false,
 }: {
   className?: string;
   resource: T;
   prefillAttributes?: Partial<Record<keyof ResourceFormValues<T>, string>>;
+  plural?: boolean;
 }) {
-  const resourceAccusative = declineNoun(resource, {
-    case: GrammaticalCase.Accusative,
-  });
   const searchParameters = new URLSearchParams(
     prefillAttributes as Record<string, string>,
   ).toString();
+  const resourceAccusative = declineNoun(resource, {
+    case: GrammaticalCase.Accusative,
+    plural,
+  });
+
   return (
-    <Button asChild className={className}>
+    <Button className={className} asChild>
       <Link href={`/${resource}/create?${searchParameters}`}>
         Dodaj {resourceAccusative}
         <Plus />
