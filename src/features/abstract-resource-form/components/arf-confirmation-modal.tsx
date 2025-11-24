@@ -46,12 +46,8 @@ export function ArfConfirmationModal<T extends Resource>({
     <AlertDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
       <Button
         type="button"
-        onClick={async () => {
-          const isValid = await form.trigger();
-          if (!isValid) {
-            return;
-          }
-          // only update the form value state if the dialog is being opened
+        onClick={() => {
+          // only update the form value state on opening the dialog to reduce re-renders
           setItem(form.getValues());
           setIsModalOpen(true);
         }}
