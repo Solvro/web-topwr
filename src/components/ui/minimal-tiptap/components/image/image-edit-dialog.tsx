@@ -29,7 +29,7 @@ function ImageEditDialog({ editor, size, variant }: ImageEditDialogProps) {
       <DialogTrigger asChild>
         <ToolbarButton
           isActive={editor.isActive("image")}
-          tooltip="Image"
+          tooltip="Obraz"
           aria-label="Image"
           size={size}
           variant={variant}

@@ -333,7 +333,7 @@ export function ImageViewBlock({
             <ActionWrapper>
               <ActionButton
                 icon={<TrashIcon />}
-                tooltip="Remove image"
+                tooltip="Usuń obraz"
                 onClick={onRemoveImg}
               />
             </ActionWrapper>

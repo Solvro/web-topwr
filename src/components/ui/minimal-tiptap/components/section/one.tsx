@@ -30,48 +30,48 @@ interface TextStyle
 
 const formatActions: TextStyle[] = [
   {
-    label: "Normal Text",
+    label: "Normalny tekst",
     element: "span",
     className: "grow",
     shortcuts: ["mod", "alt", "0"],
   },
   {
-    label: "Heading 1",
+    label: "Nagłówek 1",
     element: "h1",
     level: 1,
     className: "m-0 grow text-3xl font-extrabold",
     shortcuts: ["mod", "alt", "1"],
   },
   {
-    label: "Heading 2",
+    label: "Nagłówek 2",
     element: "h2",
     level: 2,
     className: "m-0 grow text-xl font-bold",
     shortcuts: ["mod", "alt", "2"],
   },
   {
-    label: "Heading 3",
+    label: "Nagłówek 3",
     element: "h3",
     level: 3,
     className: "m-0 grow text-lg font-semibold",
     shortcuts: ["mod", "alt", "3"],
   },
   {
-    label: "Heading 4",
+    label: "Nagłówek 4",
     element: "h4",
     level: 4,
     className: "m-0 grow text-base font-semibold",
     shortcuts: ["mod", "alt", "4"],
   },
   {
-    label: "Heading 5",
+    label: "Nagłówek 5",
     element: "h5",
     level: 5,
     className: "m-0 grow text-sm font-normal",
     shortcuts: ["mod", "alt", "5"],
   },
   {
-    label: "Heading 6",
+    label: "Nagłówek 6",
     element: "h6",
     level: 6,
     className: "m-0 grow text-sm font-normal",
@@ -135,7 +135,7 @@ export const SectionOne: React.FC<SectionOneProps> = ({
       <DropdownMenuTrigger asChild>
         <ToolbarButton
           isActive={editor.isActive("heading")}
-          tooltip="Text styles"
+          tooltip="Style tekstu"
           aria-label="Text styles"
           pressed={editor.isActive("heading")}
           disabled={editor.isActive("codeBlock")}
