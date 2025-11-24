@@ -5,6 +5,7 @@ import type { Resource } from "@/features/resources";
 import {
   RelationType,
   getFieldValue,
+  getResourceBadgeDefinitions,
   getResourceMetadata,
   getResourceRelationDefinitions,
 } from "@/features/resources";
@@ -14,11 +15,11 @@ import type {
   ResourceRelation,
   ResourceSchemaKey,
 } from "@/features/resources/types";
+import { ColorValueSchema } from "@/schemas";
 import type { ResourceRelations } from "@/types/components";
 import { typedEntries } from "@/utils";
 
-import type { ListItem } from "../types";
-import type { BadgeConfig, ItemBadge } from "../types/internal";
+import type { BadgeConfig, ItemBadge } from "../types/badges";
 
 function getManyToOneRelationBadge<
   T extends Resource,
@@ -53,17 +54,21 @@ function getManyToOneRelationBadge<
         return null;
       }
 
-      if (badgeConfig.colorField != null) {
-        const colorFieldValue = getFieldValue(
-          relatedResource,
-          badgeConfig.colorField,
-        );
-        if (typeof colorFieldValue !== "string") {
-          return null;
-        }
-        return { displayField: labelValue, color: colorFieldValue };
+      if (badgeConfig.colorField == null) {
+        return { displayField: labelValue };
       }
-      return { displayField: labelValue };
+
+      const colorFieldValue = getFieldValue(
+        relatedResource,
+        badgeConfig.colorField,
+      );
+
+      if (!ColorValueSchema.safeParse(colorFieldValue).success) {
+        logger.warn({ labelValue }, "Invalid color value for badge");
+        return null;
+      }
+
+      return { displayField: labelValue, color: colorFieldValue };
     }
   }
   return null;
@@ -101,26 +106,27 @@ function getManyToManyRelationBadge<
 
 export function getItemBadges<T extends Resource>(
   item: ResourceDataType<T>,
-  listItem: ListItem<T>,
   resource: T,
   relatedResources: ResourceRelations<T>,
-): ItemBadge[] {
-  if (listItem.badges == null) {
-    return [];
+): Set<ItemBadge> {
+  const badges = new Set<ItemBadge>();
+
+  const badgeDefinitions = getResourceBadgeDefinitions(resource);
+
+  if (badgeDefinitions == null) {
+    return badges;
   }
 
-  const badges: ItemBadge[] = [];
   const relationDefinitions = getResourceRelationDefinitions(resource);
 
-  for (const [badgeResource, badgeConfig] of typedEntries(listItem.badges)) {
+  for (const [badgeResource, badgeConfig] of typedEntries(badgeDefinitions)) {
     if (badgeConfig == null) {
       continue;
     }
 
     const [relationResource, relationDefinition] =
       typedEntries(relationDefinitions).find(
-        ([relationName]) =>
-          relationName === (badgeResource as unknown as ResourceRelation<T>),
+        ([relationName]) => relationName === badgeResource,
       ) ?? [];
 
     if (relationResource == null || relationDefinition == null) {
@@ -131,26 +137,29 @@ export function getItemBadges<T extends Resource>(
       continue;
     }
 
-    let newBadges: (ItemBadge | null)[] = [];
     switch (relationDefinition.type) {
       case RelationType.ManyToOne: {
-        newBadges = [
-          getManyToOneRelationBadge(
-            item,
-            relationResource,
-            relationDefinition,
-            relatedResources,
-            badgeConfig as unknown as BadgeConfig<typeof relationResource>,
-          ),
-        ];
+        const newBadge = getManyToOneRelationBadge(
+          item,
+          relationResource,
+          relationDefinition,
+          relatedResources,
+          badgeConfig as BadgeConfig<typeof relationResource>,
+        );
+        if (newBadge !== null) {
+          badges.add(newBadge);
+        }
         break;
       }
       case RelationType.ManyToMany: {
-        newBadges = getManyToManyRelationBadge(
+        const newBadges = getManyToManyRelationBadge(
           item,
           badgeResource,
-          badgeConfig as unknown as BadgeConfig<typeof relationResource>,
+          badgeConfig as BadgeConfig<typeof relationResource>,
         );
+        for (const newBadge of newBadges) {
+          badges.add(newBadge);
+        }
         break;
       }
       case RelationType.OneToMany: {
@@ -159,14 +168,6 @@ export function getItemBadges<T extends Resource>(
       }
       default: {
         break;
-      }
-    }
-    for (const newBadge of newBadges) {
-      if (
-        newBadge !== null &&
-        !badges.some((badge) => badge.displayField === newBadge.displayField)
-      ) {
-        badges.push(newBadge);
       }
     }
   }

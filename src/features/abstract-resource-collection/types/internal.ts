@@ -1,22 +1,7 @@
-import type { ZodNumber, ZodString } from "zod";
+import type { ResourcePk } from "@/features/resources/types";
 
-import type { Resource } from "@/features/resources";
-import type { ResourcePk, ResourceSchemaKey } from "@/features/resources/types";
-
-export interface ItemBadge {
-  displayField: string;
-  color?: string;
-}
-export interface BadgeConfig<R extends Resource> {
-  displayField: ResourceSchemaKey<R, ZodString | ZodNumber>;
-  colorField?: ResourceSchemaKey<R, ZodString>;
-}
-export type ListItemBadge<T extends Resource> = {
-  [R in Exclude<Resource, T>]?: BadgeConfig<R>;
-};
-export interface ListItem<T extends Resource> {
+export interface ListItem {
   id: ResourcePk;
   name?: string;
-  badges?: ListItemBadge<T>;
   shortDescription?: string | null;
 }
