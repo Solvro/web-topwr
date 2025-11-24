@@ -22,7 +22,14 @@ export function NotificationConfirmationMessage({
         kategorii.
       </p>
       <p>
-        Wybrano {selectedTopicsCount}: {quotedTopics}.
+        {item.topics.length === 0 ? (
+          <>Nie wybrano żadnych kategorii</>
+        ) : (
+          <>
+            Wybrano {selectedTopicsCount}: {quotedTopics}
+          </>
+        )}
+        .
       </p>
     </>
   );

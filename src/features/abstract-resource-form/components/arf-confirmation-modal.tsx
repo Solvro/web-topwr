@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { UseFormReturn } from "react-hook-form";
 
 import {
   AlertDialog,
@@ -24,32 +25,31 @@ import type { OptionalPromise } from "@/types/helpers";
 /** Confirmation modal shown before submitting the form, if configured. */
 export function ArfConfirmationModal<T extends Resource>({
   confirmationMessage,
-  getFormValues,
   onSubmit,
-  triggerValidation,
+  form,
   ...props
 }: WrapperProps & {
   confirmationMessage?: SubmitFormConfirmationMessage<T>;
-  getFormValues: () => ResourceFormValues<T>;
+  form: UseFormReturn<ResourceFormValues<T>>;
   onSubmit: () => OptionalPromise<void>;
-  triggerValidation: () => Promise<boolean>;
   loading: boolean;
-  disabled: boolean;
+  disabled?: boolean;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [item, setItem] = useState(() => form.getValues());
   if (confirmationMessage == null) {
     return <Button type="submit" {...props} />;
   }
   const Description = confirmationMessage.description;
+
   return (
     <AlertDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
       <Button
         type="button"
-        onClick={async () => {
-          const isValid = await triggerValidation();
-          if (isValid) {
-            setIsModalOpen(true);
-          }
+        onClick={() => {
+          // only update the form value state on opening the dialog to reduce re-renders
+          setItem(form.getValues());
+          setIsModalOpen(true);
         }}
         {...props}
       />
@@ -58,7 +58,7 @@ export function ArfConfirmationModal<T extends Resource>({
           <AlertDialogTitle>{confirmationMessage.title}</AlertDialogTitle>
           <AlertDialogDescription asChild>
             <div className="flex flex-col gap-2">
-              <Description item={getFormValues()} />
+              <Description item={item} />
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>

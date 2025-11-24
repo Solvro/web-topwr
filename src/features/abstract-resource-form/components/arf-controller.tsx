@@ -171,9 +171,8 @@ export function ArfController<T extends Resource>({
             <ArfConfirmationModal
               loading={isPending}
               disabled={!isFormStateDirty(form.formState)}
-              getFormValues={form.getValues}
+              form={form}
               onSubmit={onSubmit}
-              triggerValidation={form.trigger}
               confirmationMessage={confirmationMessage}
             >
               {submitLabel} {declensions.accusative} <SubmitIconComponent />
