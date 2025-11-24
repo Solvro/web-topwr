@@ -15,8 +15,8 @@ import { cn } from "@/lib/utils";
 import type { ResourceRelations } from "@/types/components";
 
 import { getItemBadges } from "../lib/get-item-badges";
-import type { ItemBadge, ListItem } from "../types/internal";
-import { getBrighterColor } from "../utils/get-brighter-color";
+import type { ListItem } from "../types/internal";
+import { getBadgeStyles } from "../utils/get-badge-styles";
 import { ArlItemDragHandle } from "./arl-item-drag-handle";
 import { ToggleOrganizationStatusButton } from "./toggle-status-button";
 
@@ -36,38 +36,12 @@ const isStudentOrganizationProps = <T extends EditableResource>(
   item: ResourceDataType<Resource.StudentOrganizations>;
 } => props.resource === Resource.StudentOrganizations;
 
-function getBadgeStyles(badge: ItemBadge) {
-  if (badge.color != null) {
-    const { light, dark } = getBrighterColor(badge.color);
-
-    return {
-      className: cn(
-        "bg-[var(--color-light-bg)] text-[var(--color-light-text)] border-[var(--color-light-border)]",
-        "dark:bg-[var(--color-dark-bg)] dark:text-[var(--color-dark-text)] dark:border-[var(--color-dark-border)]",
-      ),
-      style: {
-        "--color-light-bg": `${light}20`,
-        "--color-light-text": light,
-        "--color-light-border": light,
-
-        "--color-dark-bg": `${dark}20`,
-        "--color-dark-text": dark,
-        "--color-dark-border": dark,
-      } as React.CSSProperties,
-    };
-  }
-
-  return {
-    className: "border-muted-foreground text-muted-foreground bg-transparent",
-  };
-}
-
 export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
   const { ref, item, resource, relatedResources, orderable = false } = props;
 
   const metadata = getResourceMetadata(resource);
   const id = getResourcePkValue(resource, item);
-  const listItem: ListItem<T> = {
+  const listItem: ListItem = {
     id,
     ...metadata.itemMapper(item),
   };
@@ -85,7 +59,7 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
         <div className="flex min-w-0 grow flex-col justify-center gap-0.5">
           <header className="flex flex-col gap-y-1">
             <div className="hidden space-x-2 overflow-hidden md:block">
-              {getItemBadges(item, listItem, resource, relatedResources).map(
+              {[...getItemBadges(item, resource, relatedResources)].map(
                 (badge) => {
                   const { className, style } = getBadgeStyles(badge);
 

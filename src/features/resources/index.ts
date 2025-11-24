@@ -12,6 +12,7 @@ export * from "./utils/is-orderable-resource";
 export * from "./utils/get-field-value";
 export * from "./utils/get-managing-resource-label";
 export * from "./utils/get-resource-array-input-resources";
+export * from "./utils/get-resource-badge-definitions";
 export * from "./utils/get-resource-pk";
 export * from "./utils/get-resource-query-name";
 export * from "./utils/get-resource-relation-definitions";

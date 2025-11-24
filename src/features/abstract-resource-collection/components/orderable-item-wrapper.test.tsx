@@ -14,8 +14,8 @@ import { OrderableItemWrapper } from "./orderable-item-wrapper";
 
 const resource = Resource.GuideArticles;
 const relatedResources: ResourceRelations<Resource.GuideArticles> = {
-  "guide-authors": [],
-  "guide-questions": [],
+  [Resource.GuideAuthors]: [],
+  [Resource.GuideQuestions]: [],
 };
 type ResourceType = typeof resource;
 
