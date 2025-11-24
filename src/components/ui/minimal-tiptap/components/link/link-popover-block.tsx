@@ -47,7 +47,7 @@ export const LinkPopoverBlock: React.FC<LinkPopoverBlockProps> = ({
     <div className="bg-background flex overflow-hidden rounded p-2 shadow-lg">
       <div className="inline-flex items-center gap-1">
         <ToolbarButton tooltip="Edytuj link" onClick={onEdit}>
-          Edit link
+          Edytuj link
         </ToolbarButton>
         <Separator orientation="vertical" />
         <ToolbarButton
