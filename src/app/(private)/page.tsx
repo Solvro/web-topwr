@@ -4,6 +4,7 @@ import {
   Building,
   Calendar,
   CircleQuestionMark,
+  Map,
   Megaphone,
   Notebook,
   RefreshCcw,
@@ -53,6 +54,7 @@ export default async function Home() {
             label="Sekcja o nas"
           />
           <DashboardButton resource={Resource.Notifications} icon={Bell} />
+          <DashboardButton href="/map" icon={Map} label="Mapa obiektów" />
         </div>
       </div>
     </div>
