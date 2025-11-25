@@ -21,7 +21,7 @@ export const LinkPopoverBlock: React.FC<LinkPopoverBlockProps> = ({
   onClear,
   onEdit,
 }) => {
-  const [copyTitle, setCopyTitle] = React.useState<string>("Copy");
+  const [copyTitle, setCopyTitle] = React.useState<string>("Kopiuj");
 
   const handleCopy = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -29,9 +29,9 @@ export const LinkPopoverBlock: React.FC<LinkPopoverBlockProps> = ({
       navigator.clipboard
         .writeText(url)
         .then(() => {
-          setCopyTitle("Copied!");
+          setCopyTitle("Skopiowano!");
           setTimeout(() => {
-            setCopyTitle("Copy");
+            setCopyTitle("Kopiuj");
           }, 1000);
         })
         .catch(console.error);
@@ -46,18 +46,18 @@ export const LinkPopoverBlock: React.FC<LinkPopoverBlockProps> = ({
   return (
     <div className="bg-background flex overflow-hidden rounded p-2 shadow-lg">
       <div className="inline-flex items-center gap-1">
-        <ToolbarButton tooltip="Edit link" onClick={onEdit}>
-          Edit link
+        <ToolbarButton tooltip="Edytuj link" onClick={onEdit}>
+          Edytuj link
         </ToolbarButton>
         <Separator orientation="vertical" />
         <ToolbarButton
-          tooltip="Open link in a new tab"
+          tooltip="Otwórz link w nowej karcie"
           onClick={handleOpenLink}
         >
           <ExternalLinkIcon />
         </ToolbarButton>
         <Separator orientation="vertical" />
-        <ToolbarButton tooltip="Clear link" onClick={onClear}>
+        <ToolbarButton tooltip="Usuń link" onClick={onClear}>
           <LinkBreak2Icon />
         </ToolbarButton>
         <Separator orientation="vertical" />

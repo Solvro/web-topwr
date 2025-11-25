@@ -34,7 +34,7 @@ export const ToolbarSection: React.FC<ToolbarSectionProps> = ({
   activeActions = actions.map((action) => action.value),
   mainActionCount = 0,
   dropdownIcon,
-  dropdownTooltip = "More options",
+  dropdownTooltip = "Więcej opcji",
   dropdownClassName = "w-12",
   size,
   variant,

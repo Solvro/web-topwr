@@ -52,11 +52,11 @@ export function LinkEditBlock({
     <div ref={formRef}>
       <div className={cn("space-y-4", className)}>
         <div className="space-y-1">
-          <Label>URL</Label>
+          <Label>Adres URL</Label>
           <Input
             type="url"
             required
-            placeholder="Enter URL"
+            placeholder="Wpisz adres URL"
             value={url}
             onChange={(e) => {
               setUrl(e.target.value);
@@ -65,10 +65,10 @@ export function LinkEditBlock({
         </div>
 
         <div className="space-y-1">
-          <Label>Display Text (optional)</Label>
+          <Label>Wyświetlany tekst (opcjonalnie)</Label>
           <Input
             type="text"
-            placeholder="Enter display text"
+            placeholder="Wpisz wyświetlany tekst"
             value={text}
             onChange={(e) => {
               setText(e.target.value);
@@ -77,13 +77,13 @@ export function LinkEditBlock({
         </div>
 
         <div className="flex items-center space-x-2">
-          <Label>Open in New Tab</Label>
+          <Label>Otwórz w nowej karcie</Label>
           <Switch checked={isNewTab} onCheckedChange={setIsNewTab} />
         </div>
 
         <div className="flex justify-end space-x-2">
           <Button type="button" onClick={handleSave}>
-            Save
+            Zapisz
           </Button>
         </div>
       </div>

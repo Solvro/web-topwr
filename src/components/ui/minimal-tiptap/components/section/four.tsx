@@ -17,7 +17,7 @@ interface ListItem extends FormatAction {
 const formatActions: ListItem[] = [
   {
     value: "orderedList",
-    label: "Numbered list",
+    label: "Lista numerowana",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +37,7 @@ const formatActions: ListItem[] = [
   },
   {
     value: "bulletList",
-    label: "Bullet list",
+    label: "Lista punktowana",
     icon: <ListBulletIcon className="size-5" />,
     isActive: (editor) => editor.isActive("bulletList"),
     action: (editor) => editor.chain().focus().toggleBulletList().run(),
@@ -72,7 +72,7 @@ export const SectionFour: React.FC<SectionFourProps> = ({
           <CaretDownIcon className="size-5" />
         </>
       }
-      dropdownTooltip="Lists"
+      dropdownTooltip="Listy"
       size={size}
       variant={variant}
     />

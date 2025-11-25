@@ -37,39 +37,42 @@ const COLORS: ColorPalette[] = [
     label: "Palette 1",
     inverse: "hsl(var(--background))",
     colors: [
-      { cssVar: "hsl(var(--foreground))", label: "Default" },
-      { cssVar: "var(--mt-accent-bold-blue)", label: "Bold blue" },
-      { cssVar: "var(--mt-accent-bold-teal)", label: "Bold teal" },
-      { cssVar: "var(--mt-accent-bold-green)", label: "Bold green" },
-      { cssVar: "var(--mt-accent-bold-orange)", label: "Bold orange" },
-      { cssVar: "var(--mt-accent-bold-red)", label: "Bold red" },
-      { cssVar: "var(--mt-accent-bold-purple)", label: "Bold purple" },
+      { cssVar: "hsl(var(--foreground))", label: "Domyślny" },
+      { cssVar: "var(--mt-accent-bold-blue)", label: "Mocny niebieski" },
+      { cssVar: "var(--mt-accent-bold-teal)", label: "Mocny turkusowy" },
+      { cssVar: "var(--mt-accent-bold-green)", label: "Mocny zielony" },
+      { cssVar: "var(--mt-accent-bold-orange)", label: "Mocny pomarańczowy" },
+      { cssVar: "var(--mt-accent-bold-red)", label: "Mocny czerwony" },
+      { cssVar: "var(--mt-accent-bold-purple)", label: "Mocny fioletowy" },
     ],
   },
   {
     label: "Palette 2",
     inverse: "hsl(var(--background))",
     colors: [
-      { cssVar: "var(--mt-accent-gray)", label: "Gray" },
-      { cssVar: "var(--mt-accent-blue)", label: "Blue" },
-      { cssVar: "var(--mt-accent-teal)", label: "Teal" },
-      { cssVar: "var(--mt-accent-green)", label: "Green" },
-      { cssVar: "var(--mt-accent-orange)", label: "Orange" },
-      { cssVar: "var(--mt-accent-red)", label: "Red" },
-      { cssVar: "var(--mt-accent-purple)", label: "Purple" },
+      { cssVar: "var(--mt-accent-gray)", label: "Szary" },
+      { cssVar: "var(--mt-accent-blue)", label: "Niebieski" },
+      { cssVar: "var(--mt-accent-teal)", label: "Turkusowy" },
+      { cssVar: "var(--mt-accent-green)", label: "Zielony" },
+      { cssVar: "var(--mt-accent-orange)", label: "Pomarańczowy" },
+      { cssVar: "var(--mt-accent-red)", label: "Czerwony" },
+      { cssVar: "var(--mt-accent-purple)", label: "Fioletowy" },
     ],
   },
   {
     label: "Palette 3",
     inverse: "hsl(var(--foreground))",
     colors: [
-      { cssVar: "hsl(var(--background))", label: "White", darkLabel: "Black" },
-      { cssVar: "var(--mt-accent-blue-subtler)", label: "Blue subtle" },
-      { cssVar: "var(--mt-accent-teal-subtler)", label: "Teal subtle" },
-      { cssVar: "var(--mt-accent-green-subtler)", label: "Green subtle" },
-      { cssVar: "var(--mt-accent-yellow-subtler)", label: "Yellow subtle" },
-      { cssVar: "var(--mt-accent-red-subtler)", label: "Red subtle" },
-      { cssVar: "var(--mt-accent-purple-subtler)", label: "Purple subtle" },
+      { cssVar: "hsl(var(--background))", label: "Biały", darkLabel: "Czarny" },
+      { cssVar: "var(--mt-accent-blue-subtler)", label: "Subtelny niebieski" },
+      { cssVar: "var(--mt-accent-teal-subtler)", label: "Subtelny turkusowy" },
+      { cssVar: "var(--mt-accent-green-subtler)", label: "Subtelny zielony" },
+      { cssVar: "var(--mt-accent-yellow-subtler)", label: "Subtelny żółty" },
+      { cssVar: "var(--mt-accent-red-subtler)", label: "Subtelny czerwony" },
+      {
+        cssVar: "var(--mt-accent-purple-subtler)",
+        label: "Subtelny fioletowy",
+      },
     ],
   },
 ];
@@ -184,7 +187,7 @@ export const SectionThree: React.FC<SectionThreeProps> = ({
     <Popover>
       <PopoverTrigger asChild>
         <ToolbarButton
-          tooltip="Text color"
+          tooltip="Kolor tekstu"
           aria-label="Text color"
           className="gap-0"
           size={size}

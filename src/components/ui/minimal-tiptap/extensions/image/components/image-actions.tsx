@@ -96,22 +96,22 @@ const ActionItems: {
   {
     key: "onView",
     icon: <SizeIcon />,
-    tooltip: "View image",
+    tooltip: "Wyświetl obraz",
   },
   {
     key: "onDownload",
     icon: <DownloadIcon />,
-    tooltip: "Download image",
+    tooltip: "Pobierz obraz",
   },
   {
     key: "onCopy",
     icon: <ClipboardCopyIcon />,
-    tooltip: "Copy image to clipboard",
+    tooltip: "Kopiuj obraz do schowka",
   },
   {
     key: "onCopyLink",
     icon: <Link2Icon />,
-    tooltip: "Copy image link",
+    tooltip: "Kopiuj link do obrazu",
     isLink: true,
   },
 ];
@@ -144,7 +144,7 @@ export const ImageActions: React.FC<ImageActionsProps> = ({
           <DropdownMenuTrigger asChild>
             <ActionButton
               icon={<DotsHorizontalIcon />}
-              tooltip="Open menu"
+              tooltip="Otwórz menu"
               onClick={(e) => {
                 e.preventDefault();
               }}
