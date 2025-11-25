@@ -1,6 +1,7 @@
 import { Counter } from "@/components/core/counter";
 import { BackToHomeButton } from "@/components/presentation/back-to-home-button";
 import { ReturnButton } from "@/components/presentation/return-button";
+import { fetchRelatedResources } from "@/features/abstract-resource-form";
 import type { ResourceDeclinableField } from "@/features/polish/types";
 import { CreateButton } from "@/features/resources";
 import type {
@@ -48,6 +49,7 @@ export async function AbstractResourceList<
     sortFilters,
     filterDefinitions,
   );
+  const relatedResources = await fetchRelatedResources(resource);
 
   return (
     <section className="flex h-full flex-col gap-2">
@@ -68,6 +70,7 @@ export async function AbstractResourceList<
           initialData={firstPageData}
           filterDefinitions={filterDefinitions}
           sortFilters={sortFilters}
+          relatedResources={relatedResources}
         />
       </div>
       <footer className="mt-2 flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">

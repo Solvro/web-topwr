@@ -611,6 +611,15 @@ export const RESOURCE_METADATA = {
     apiPath: "student_organizations",
     itemMapper: (item) => ({
       name: item.name,
+      badges: {
+        [Resource.Departments]: {
+          displayField: "code",
+          colorField: "gradientStop",
+        },
+        [Resource.StudentOrganizationTags]: {
+          displayField: "tag",
+        },
+      },
       shortDescription: item.shortDescription,
     }),
     form: {

@@ -44,6 +44,7 @@ export async function fetchPaginatedResources<
     searchString,
     {
       resource,
+      includeRelations: true,
     },
   );
   return result;

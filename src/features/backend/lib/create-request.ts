@@ -30,10 +30,11 @@ export function createRequest<T extends Resource>(
   }
 
   const endpointPrefix = getResourceEndpointPrefix(resource);
-  const queryParameters = getRelationQueryParameters(
-    resource,
-    includeRelations,
-  );
+  let queryParameters = getRelationQueryParameters(resource, includeRelations);
+  if (queryParameters) {
+    queryParameters = (endpoint.includes("?") ? "&" : "?") + queryParameters;
+  }
+
   const url = isAbsolutePath(endpoint)
     ? endpoint
     : `${getResourceApiBase(resource)}/${endpointPrefix}${removeLeadingSlash(endpoint)}${queryParameters}`;
