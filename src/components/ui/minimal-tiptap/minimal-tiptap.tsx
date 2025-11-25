@@ -3,6 +3,7 @@ import type { Content, Editor } from "@tiptap/react";
 import { EditorContent } from "@tiptap/react";
 
 import { InputSlot } from "@/components/inputs/input-slot";
+import { RichTextSkeleton } from "@/components/inputs/rich-text-skeleton";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
@@ -84,7 +85,14 @@ export function MinimalTiptapEditor({
   });
 
   if (!editor) {
-    return null;
+    return (
+      <RichTextSkeleton
+        value={value}
+        editable={props.editable}
+        className={className}
+        editorContentClassName={editorContentClassName}
+      />
+    );
   }
 
   return (
