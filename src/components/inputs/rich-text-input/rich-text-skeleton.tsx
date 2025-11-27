@@ -1,4 +1,5 @@
 import type { Content } from "@tiptap/react";
+import sanitizeHtml from "sanitize-html";
 
 import { cn } from "@/lib/utils";
 
@@ -18,20 +19,22 @@ export function RichTextSkeleton({
   editable?: boolean;
   editorContentClassName?: string;
 }) {
-  const hasHtmlContent = typeof value === "string" && value.trim().length > 0;
+  const sanitizedHtml = sanitizeHtml(value as string, {
+    allowedAttributes: false,
+  }).trim();
 
   return (
     <>
       {editable ? <MockToolbar /> : null}
       <div className={cn("minimal-tiptap-editor", editorContentClassName)}>
-        {hasHtmlContent ? (
+        {sanitizedHtml ? (
           <div
             className="ProseMirror opacity-60"
             // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: value }}
+            dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
           />
         ) : (
-          <p className="ProseMirror opacity-20">Wpisz opis...</p>
+          <p className="text-secondary">Wpisz opis...</p>
         )}
       </div>
     </>
