@@ -4,6 +4,7 @@ import type { Editor } from "@tiptap/react";
 import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 
+import { TextColorIcon } from "@/components/presentation/icon-text-color";
 import {
   Popover,
   PopoverContent,
@@ -193,23 +194,7 @@ export const SectionThree: React.FC<SectionThreeProps> = ({
           size={size}
           variant={variant}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="size-5"
-            style={{ color: selectedColor }}
-          >
-            <path d="M4 20h16" />
-            <path d="m6 16 6-12 6 12" />
-            <path d="M8 12h8" />
-          </svg>
+          <TextColorIcon className="size-5" style={{ color: selectedColor }} />
           <CaretDownIcon className="size-5" />
         </ToolbarButton>
       </PopoverTrigger>
