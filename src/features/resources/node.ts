@@ -12,3 +12,4 @@ export {
 
 export * from "./utils/get-resource-metadata";
 export * from "./utils/get-recursive-relations";
+export * from "./utils/get-edit-button-props";

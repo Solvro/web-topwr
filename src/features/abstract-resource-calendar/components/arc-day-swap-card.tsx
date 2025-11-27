@@ -36,12 +36,12 @@ export function DaySwapCard({
 
   return (
     <SheetCard
+      resource={Resource.DaySwaps}
       event={event}
       clickable={clickable}
       parentResourceData={parentResourceData}
       sheet={arfSheet}
       formProps={formProps}
-      iconOnly
     >
       <div className="my-auto">
         <div className="mt-1 font-medium">{formattedDescription}</div>
