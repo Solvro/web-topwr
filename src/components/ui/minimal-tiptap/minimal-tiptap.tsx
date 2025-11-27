@@ -95,6 +95,12 @@ export function MinimalTiptapEditor({
       )}
     >
       {editor == null ? (
+        <RichTextSkeleton
+          value={value}
+          editable={props.editable}
+          editorContentClassName={editorContentClassName}
+        />
+      ) : (
         <>
           {props.editable ? <Toolbar editor={editor} /> : null}
           <EditorContent
@@ -103,12 +109,6 @@ export function MinimalTiptapEditor({
           />
           <LinkBubbleMenu editor={editor} />
         </>
-      ) : (
-        <RichTextSkeleton
-          value={value}
-          editable={props.editable}
-          editorContentClassName={editorContentClassName}
-        />
       )}
     </InputSlot>
   );
