@@ -10,6 +10,7 @@ import {
   UnderlineIcon,
 } from "@radix-ui/react-icons";
 
+import { TextColorIcon } from "@/components/presentation/icon-text-color";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
 
@@ -48,22 +49,7 @@ export function MockToolbar() {
 
       {/* Color picker */}
       <Toggle disabled className="gap-0">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="size-5"
-        >
-          <path d="M4 20h16" />
-          <path d="m6 16 6-12 6 12" />
-          <path d="M8 12h8" />
-        </svg>
+        <TextColorIcon className="size-5" />
         <CaretDownIcon className="size-5" />
       </Toggle>
 
