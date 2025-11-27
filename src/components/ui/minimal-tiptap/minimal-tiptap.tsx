@@ -84,17 +84,6 @@ export function MinimalTiptapEditor({
     ...props,
   });
 
-  if (!editor) {
-    return (
-      <RichTextSkeleton
-        value={value}
-        editable={props.editable}
-        className={className}
-        editorContentClassName={editorContentClassName}
-      />
-    );
-  }
-
   return (
     <InputSlot
       renderAs={MeasuredContainer}
@@ -106,12 +95,22 @@ export function MinimalTiptapEditor({
         className,
       )}
     >
-      {props.editable ? <Toolbar editor={editor} /> : null}
-      <EditorContent
-        editor={editor}
-        className={cn("minimal-tiptap-editor", editorContentClassName)}
-      />
-      <LinkBubbleMenu editor={editor} />
+      {!editor ? (
+        <RichTextSkeleton
+          value={value}
+          editable={props.editable}
+          editorContentClassName={editorContentClassName}
+        />
+      ) : (
+        <>
+          {props.editable ? <Toolbar editor={editor} /> : null}
+          <EditorContent
+            editor={editor}
+            className={cn("minimal-tiptap-editor", editorContentClassName)}
+          />
+          <LinkBubbleMenu editor={editor} />
+        </>
+      )}
     </InputSlot>
   );
 }
