@@ -30,12 +30,12 @@ export function HolidayCard({
 
   return (
     <SheetCard
+      resource={Resource.Holidays}
       event={event}
       clickable={clickable}
       parentResourceData={parentResourceData}
       sheet={arfSheet}
       formProps={formProps}
-      iconOnly
     >
       <div className="my-auto">
         <div className="font-medium">{event.description}</div>
