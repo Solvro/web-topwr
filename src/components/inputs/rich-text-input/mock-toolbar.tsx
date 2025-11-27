@@ -16,9 +16,6 @@ import { Toggle } from "@/components/ui/toggle";
 
 import { ToolbarWrapper } from "./toolbar-wrapper";
 
-/**
- * Mock toolbar that visually matches the real TipTap toolbar structure.
- */
 export function MockToolbar() {
   return (
     <ToolbarWrapper>

@@ -1,22 +1,24 @@
 import type { LucideProps } from "lucide-react";
-import { forwardRef } from "react";
 
-/**
- * Text color icon (letter "A" with underline) matching Lucide icon style.
- */
-export const TextColorIcon = forwardRef<SVGSVGElement, LucideProps>(
-  ({ size, absoluteStrokeWidth, ...props }, ref) => (
+export function TextColorIcon({
+  size = 24,
+  strokeWidth = 2,
+  ref,
+  ...props
+}: {
+  size?: number;
+  strokeWidth?: number;
+} & LucideProps) {
+  return (
     <svg
       ref={ref}
       xmlns="http://www.w3.org/2000/svg"
-      width={size ?? 24}
-      height={size ?? 24}
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={
-        absoluteStrokeWidth === true ? (24 / Number(size ?? 24)) * 2 : 2
-      }
+      strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
       {...props}
@@ -25,7 +27,5 @@ export const TextColorIcon = forwardRef<SVGSVGElement, LucideProps>(
       <path d="m6 16 6-12 6 12" />
       <path d="M8 12h8" />
     </svg>
-  ),
-);
-
-TextColorIcon.displayName = "TextColorIcon";
+  );
+}
