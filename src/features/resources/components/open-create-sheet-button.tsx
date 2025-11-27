@@ -4,13 +4,12 @@ import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import type { ArfSheetContextType } from "@/features/abstract-resource-form/types";
-import { GrammaticalCase, declineNoun } from "@/features/polish";
+import { getEditButtonProps } from "@/features/resources";
 import type { Resource } from "@/features/resources";
 import type {
   ResourceDataType,
   ResourceRelation,
 } from "@/features/resources/types";
-import { cn } from "@/lib/utils";
 import type { ResourceFormProps } from "@/types/components";
 
 export function OpenCreateSheetButton<T extends Resource>({
@@ -18,29 +17,26 @@ export function OpenCreateSheetButton<T extends Resource>({
   resource,
   parentResourceData,
   formProps,
-  plural,
-  children,
   className,
-  iconOnly = false,
+  children,
+  edit,
 }: {
   sheet: ArfSheetContextType<T>;
   resource: ResourceRelation<T>;
   parentResourceData: ResourceDataType<T>;
   formProps: ResourceFormProps<T>;
   plural?: boolean;
-  children?: ReactNode;
   className?: string;
-  iconOnly?: boolean;
+  edit?: boolean;
+  children: ReactNode;
 }) {
-  const resourceAccusative = declineNoun(resource, {
-    case: GrammaticalCase.Accusative,
-    plural,
-  });
+  const editButtonProps =
+    edit === undefined ? null : { ...getEditButtonProps(resource) };
   return (
     <Button
       resource={resource}
       variant="outline"
-      className={cn("flex-1", className)}
+      className={className}
       onClick={() => {
         sheet.showSheet(
           {
@@ -51,8 +47,8 @@ export function OpenCreateSheetButton<T extends Resource>({
           formProps,
         );
       }}
+      {...editButtonProps}
     >
-      {iconOnly ? null : <p>Dodaj {resourceAccusative}</p>}
       {children}
     </Button>
   );

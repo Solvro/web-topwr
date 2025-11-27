@@ -3,15 +3,13 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 
+import { BackToHomeButton } from "@/components/presentation/back-to-home-button";
 import { ArfSheetProvider } from "@/features/abstract-resource-form";
 import type { Resource } from "@/features/resources";
 import type { SearchParameters } from "@/types/components";
 
 import { CalendarModalContext } from "../context/calendar-modal-context";
-import type {
-  CalendarModalContextValue,
-  MappedCalendarData,
-} from "../types/internal";
+import type { MappedCalendarData } from "../types/internal";
 import { AllEventsModal } from "./arc-all-events-modal";
 import { CalendarInternal } from "./arc-internal";
 
@@ -48,13 +46,11 @@ export function AbstractResourceCalendarClient({
     }, 300);
   };
 
-  const contextValue: CalendarModalContextValue = {
-    openSemesters: handleOpenSemesters,
-  };
-
   return (
     <ArfSheetProvider resource={resource}>
-      <CalendarModalContext.Provider value={contextValue}>
+      <CalendarModalContext.Provider
+        value={{ openSemesters: handleOpenSemesters }}
+      >
         <CalendarInternal
           searchParams={searchParams}
           mappedData={mappedData}
@@ -63,12 +59,16 @@ export function AbstractResourceCalendarClient({
         />
         {children}
         <AllEventsModal
+          resource={resource}
           clickable={clickable}
           clickedDay={clickedDay}
           mappedData={mappedData}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
         />
+        <div className="fixed bottom-4 left-4">
+          <BackToHomeButton />
+        </div>
       </CalendarModalContext.Provider>
     </ArfSheetProvider>
   );
