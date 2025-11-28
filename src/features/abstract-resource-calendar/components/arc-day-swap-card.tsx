@@ -2,12 +2,9 @@
 
 import { useArfSheet } from "@/features/abstract-resource-form";
 import { Resource } from "@/features/resources";
-import type {
-  ResourceDataType,
-  ResourceDefaultValues,
-} from "@/features/resources/types";
-import type { ResourceFormProps } from "@/types/components";
+import type { ResourceDataType } from "@/features/resources/types";
 
+import type { SheetFormProps } from "../types/internal";
 import { formatDaySwapDescription } from "../utils/format-day-swap-description";
 import { SheetCard } from "./arc-sheet-card";
 
@@ -25,9 +22,8 @@ export function DaySwapCard({
   const formProps = {
     resource: Resource.DaySwaps,
     className: "w-full px-4",
-    ...event,
-  } satisfies ResourceFormProps<Resource.DaySwaps> &
-    ResourceDefaultValues<Resource.DaySwaps>;
+    defaultValues: event,
+  } satisfies SheetFormProps<Resource.DaySwaps>;
 
   const formattedDescription = formatDaySwapDescription(
     event.changedWeekday,
