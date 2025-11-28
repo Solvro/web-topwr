@@ -11,10 +11,10 @@ import {
 } from "@/features/resources";
 import type {
   ResourceDataType,
-  ResourceDefaultValues,
   ResourceRelation,
 } from "@/features/resources/types";
-import type { ResourceFormProps } from "@/types/components";
+
+import type { SheetFormProps } from "../types/internal";
 
 export function SheetCard<T extends Resource>({
   resource,
@@ -30,7 +30,7 @@ export function SheetCard<T extends Resource>({
   clickable: boolean;
   parentResourceData: ResourceDataType<T>;
   sheet: ArfSheetContextType<T>;
-  formProps: ResourceFormProps<T> & ResourceDefaultValues<T>;
+  formProps: SheetFormProps<T>;
   children?: ReactNode;
 }) {
   return (
