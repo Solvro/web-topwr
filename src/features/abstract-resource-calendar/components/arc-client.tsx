@@ -47,7 +47,10 @@ export function AbstractResourceCalendarClient({
   };
 
   return (
-    <ArfSheetProvider resource={resource}>
+    <ArfSheetProvider
+      resource={resource}
+      className="flex h-full flex-col justify-between"
+    >
       <CalendarModalContext.Provider
         value={{ openSemesters: handleOpenSemesters }}
       >
@@ -58,6 +61,7 @@ export function AbstractResourceCalendarClient({
           onDayClick={handleOpenDayEvents}
         />
         {children}
+        <BackToHomeButton className="self-start" />
         <AllEventsModal
           resource={resource}
           clickable={clickable}
@@ -66,9 +70,6 @@ export function AbstractResourceCalendarClient({
           isOpen={isModalOpen}
           onClose={handleCloseModal}
         />
-        <div className="fixed bottom-4 left-4">
-          <BackToHomeButton />
-        </div>
       </CalendarModalContext.Provider>
     </ArfSheetProvider>
   );

@@ -21,10 +21,11 @@ export function AcademicSemesterListButton({
       onClick={() => {
         openSemesters();
       }}
-      variant="outline"
-      className="fixed right-4 bottom-4"
+      variant="default"
+      className="mt-4 self-end"
     >
-      <Calendar />{" "}
+      <Calendar />
+      Konfiguruj{" "}
       {declineNoun(resource, {
         case: GrammaticalCase.Nominative,
         plural: true,
