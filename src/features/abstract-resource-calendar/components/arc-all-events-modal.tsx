@@ -13,8 +13,11 @@ import {
   CreateButton,
   CreateButtonLabel,
   OpenCreateSheetButton,
+  RelationType,
   Resource,
+  getResourceRelationDefinitions,
 } from "@/features/resources";
+import type { ResourceRelation } from "@/features/resources/types";
 import type { ResourceFormProps } from "@/types/components";
 import { getRoundedDate } from "@/utils";
 
@@ -43,14 +46,20 @@ export function AllEventsModal({
 }) {
   const arfSheet = useArfSheet(resource);
 
-  const daySwapFormProps = {
-    resource: Resource.DaySwaps,
-    className: "w-full px-4",
-  } satisfies ResourceFormProps<Resource.DaySwaps>;
-  const holidayFormProps = {
-    resource: Resource.Holidays,
-    className: "w-full px-4",
-  } satisfies ResourceFormProps<Resource.Holidays>;
+  const relationDefinitions = getResourceRelationDefinitions(resource);
+  const relatedResources = Object.entries(relationDefinitions).filter(
+    ([_, definition]) => definition.type === RelationType.OneToMany,
+  );
+
+  const relatedResourceFormProps = relatedResources.map(
+    ([relatedResource]) => ({
+      resource: relatedResource,
+      formProps: {
+        resource: relatedResource as ResourceRelation<Resource>,
+        className: "w-full px-4",
+      } satisfies ResourceFormProps<Resource>,
+    }),
+  );
 
   const semesterEntries = Object.entries(mappedData.semesters);
   const totalSemesters = semesterEntries.length;
@@ -120,22 +129,23 @@ export function AllEventsModal({
                     </p>
                   ) : (
                     <div className="flex gap-2">
-                      <OpenCreateSheetButton
-                        sheet={arfSheet}
-                        formProps={daySwapFormProps}
-                        resource={Resource.DaySwaps}
-                        parentResourceData={parentSemester.semester}
-                      >
-                        <CreateButtonLabel resource={Resource.DaySwaps} />
-                      </OpenCreateSheetButton>
-                      <OpenCreateSheetButton
-                        sheet={arfSheet}
-                        formProps={holidayFormProps}
-                        resource={Resource.Holidays}
-                        parentResourceData={parentSemester.semester}
-                      >
-                        <CreateButtonLabel resource={Resource.Holidays} />
-                      </OpenCreateSheetButton>
+                      {relatedResourceFormProps.map(
+                        ({ resource: relatedResource, formProps }) => (
+                          <OpenCreateSheetButton
+                            key={relatedResource}
+                            sheet={arfSheet}
+                            formProps={formProps}
+                            resource={
+                              relatedResource as ResourceRelation<Resource>
+                            }
+                            parentResourceData={parentSemester.semester}
+                          >
+                            <CreateButtonLabel
+                              resource={relatedResource as Resource}
+                            />
+                          </OpenCreateSheetButton>
+                        ),
+                      )}
                     </div>
                   )}
                 </section>
