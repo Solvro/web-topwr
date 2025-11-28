@@ -2,12 +2,9 @@
 
 import { useArfSheet } from "@/features/abstract-resource-form";
 import { Resource } from "@/features/resources";
-import type {
-  ResourceDataType,
-  ResourceDefaultValues,
-} from "@/features/resources/types";
-import type { ResourceFormProps } from "@/types/components";
+import type { ResourceDataType } from "@/features/resources/types";
 
+import type { SheetFormProps } from "../types/internal";
 import { SheetCard } from "./arc-sheet-card";
 
 export function HolidayCard({
@@ -24,9 +21,8 @@ export function HolidayCard({
   const formProps = {
     resource: Resource.Holidays,
     className: "w-full px-4",
-    ...event,
-  } satisfies ResourceFormProps<Resource.Holidays> &
-    ResourceDefaultValues<Resource.Holidays>;
+    defaultValues: event,
+  } satisfies SheetFormProps<Resource.Holidays>;
 
   return (
     <SheetCard
