@@ -3,8 +3,6 @@
 import type { ReactNode } from "react";
 
 import {
-  Dialog,
-  DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
@@ -26,6 +24,7 @@ import type {
   SemesterStructure,
 } from "../types/internal";
 import { findParentSemesterForDate } from "../utils/find-parent-semester-for-date";
+import { GenericModal } from "./arc-modal";
 
 export function AllEventsModal({
   resource,
@@ -66,101 +65,85 @@ export function AllEventsModal({
   }
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(open) => {
-        if (!open) {
-          onClose();
-        }
-      }}
-    >
-      <DialogContent
-        className="h-max max-h-[80vh] max-w-lg"
-        onOpenAutoFocus={(event) => {
-          event.preventDefault();
-        }}
-      >
-        {clickedDay === null ? (
-          <>
-            <DialogHeader>
-              <DialogTitle>Kalendarze akademickie</DialogTitle>
-              <DialogDescription>
-                {totalSemesters === 0
-                  ? "Brak kalendarzy akademickich"
-                  : `Znaleziono ${declineNumeric(totalSemesters, "semestr akademicki", "semestry akademickie", "semestrów akademickich")}.`}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex flex-col gap-4">
-              <div className="flex max-h-[50svh] flex-col gap-2 overflow-y-auto">
-                {semesterEntries.map(
-                  ([_, semesterStructure]): EventCardType => {
-                    return semesterStructure.semesterCard;
-                  },
-                )}
-              </div>
-              {clickable ? (
-                <CreateButton resource={Resource.AcademicSemesters} />
-              ) : null}
+    <GenericModal isOpen={isOpen} onClose={onClose}>
+      {clickedDay === null ? (
+        <>
+          <DialogHeader>
+            <DialogTitle>Kalendarze akademickie</DialogTitle>
+            <DialogDescription>
+              {totalSemesters === 0
+                ? "Brak kalendarzy akademickich"
+                : `Znaleziono ${declineNumeric(totalSemesters, "semestr akademicki", "semestry akademickie", "semestrów akademickich")}.`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-4">
+            <div className="flex max-h-[50svh] flex-col gap-2 overflow-y-auto">
+              {semesterEntries.map(([_, semesterStructure]): EventCardType => {
+                return semesterStructure.semesterCard;
+              })}
             </div>
-          </>
-        ) : (
-          <>
-            <DialogHeader>
-              <DialogTitle>Wydarzenia {clickedDay}</DialogTitle>
-              <DialogDescription>
-                {totalEvents === 0
-                  ? "Brak wydarzeń zaplanowanych na ten dzień"
-                  : `W tym dniu zaplanowano ${declineNumeric(totalEvents, "wydarzenie", "wydarzenia", "wydarzeń")}.`}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex flex-col gap-4">
-              <div className="flex max-h-[50svh] flex-col gap-2 overflow-y-auto">
-                {dayEvents}
-              </div>
-              <div className="flex flex-col gap-2">
-                {semesterEntries.length === 0 ? (
-                  <CreateButton
-                    resource={Resource.CalendarEvents}
-                    prefillAttributes={{
-                      startTime: getRoundedDate(8, clickedDay),
-                      endTime: getRoundedDate(20, clickedDay),
-                    }}
-                    plural
-                  />
-                ) : (
-                  <section>
-                    {parentSemester == null ? (
-                      <p className="text-sm font-bold">
-                        Stwórz najpierw semestr akademicki, aby móc dodać zmiany
-                        dni i święta
-                      </p>
-                    ) : (
-                      <div className="flex gap-2">
-                        <OpenCreateSheetButton
-                          sheet={arfSheet}
-                          formProps={daySwapFormProps}
-                          resource={Resource.DaySwaps}
-                          parentResourceData={parentSemester.semester}
-                        >
-                          <CreateButtonLabel resource={Resource.DaySwaps} />
-                        </OpenCreateSheetButton>
-                        <OpenCreateSheetButton
-                          sheet={arfSheet}
-                          formProps={holidayFormProps}
-                          resource={Resource.Holidays}
-                          parentResourceData={parentSemester.semester}
-                        >
-                          <CreateButtonLabel resource={Resource.Holidays} />
-                        </OpenCreateSheetButton>
-                      </div>
-                    )}
-                  </section>
-                )}
-              </div>
+            {clickable ? (
+              <CreateButton resource={Resource.AcademicSemesters} />
+            ) : null}
+          </div>
+        </>
+      ) : (
+        <>
+          <DialogHeader>
+            <DialogTitle>Wydarzenia {clickedDay}</DialogTitle>
+            <DialogDescription>
+              {totalEvents === 0
+                ? "Brak wydarzeń zaplanowanych na ten dzień"
+                : `W tym dniu zaplanowano ${declineNumeric(totalEvents, "wydarzenie", "wydarzenia", "wydarzeń")}.`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-4">
+            <div className="flex max-h-[50svh] flex-col gap-2 overflow-y-auto">
+              {dayEvents}
             </div>
-          </>
-        )}
-      </DialogContent>
-    </Dialog>
+            <div className="flex flex-col gap-2">
+              {semesterEntries.length === 0 ? (
+                <CreateButton
+                  resource={Resource.CalendarEvents}
+                  prefillAttributes={{
+                    startTime: getRoundedDate(8, clickedDay),
+                    endTime: getRoundedDate(20, clickedDay),
+                  }}
+                  plural
+                />
+              ) : (
+                <section>
+                  {parentSemester == null ? (
+                    <p className="text-sm font-bold">
+                      Stwórz najpierw semestr akademicki, aby móc dodać zmiany
+                      dni i święta
+                    </p>
+                  ) : (
+                    <div className="flex gap-2">
+                      <OpenCreateSheetButton
+                        sheet={arfSheet}
+                        formProps={daySwapFormProps}
+                        resource={Resource.DaySwaps}
+                        parentResourceData={parentSemester.semester}
+                      >
+                        <CreateButtonLabel resource={Resource.DaySwaps} />
+                      </OpenCreateSheetButton>
+                      <OpenCreateSheetButton
+                        sheet={arfSheet}
+                        formProps={holidayFormProps}
+                        resource={Resource.Holidays}
+                        parentResourceData={parentSemester.semester}
+                      >
+                        <CreateButtonLabel resource={Resource.Holidays} />
+                      </OpenCreateSheetButton>
+                    </div>
+                  )}
+                </section>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+    </GenericModal>
   );
 }
