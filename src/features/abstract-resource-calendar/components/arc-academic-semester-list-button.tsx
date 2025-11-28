@@ -1,20 +1,19 @@
 "use client";
 
 import { Calendar } from "lucide-react";
-import { useContext } from "react";
 
 import { Button } from "@/components/ui/button";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
 
-import { CalendarModalContext } from "../context/calendar-modal-context";
+import { useCalendarModal } from "../hooks/use-calendar-modal";
 
 export function AcademicSemesterListButton({
   resource,
 }: {
   resource: Resource;
 }) {
-  const { openSemesters } = useContext(CalendarModalContext);
+  const { openSemesters } = useCalendarModal();
 
   return (
     <Button
