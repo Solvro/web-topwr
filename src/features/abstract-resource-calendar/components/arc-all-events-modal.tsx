@@ -26,6 +26,7 @@ import type {
   MappedCalendarData,
   SemesterStructure,
 } from "../types/internal";
+import { findExistingDaySwap } from "../utils/find-existing-day-swap";
 import { findParentSemesterForDate } from "../utils/find-parent-semester-for-date";
 import { GenericModal } from "./arc-modal";
 
@@ -130,21 +131,31 @@ export function AllEventsModal({
                   ) : (
                     <div className="flex gap-2">
                       {relatedResourceFormProps.map(
-                        ({ resource: relatedResource, formProps }) => (
-                          <OpenCreateSheetButton
-                            key={relatedResource}
-                            sheet={arfSheet}
-                            formProps={formProps}
-                            resource={
-                              relatedResource as ResourceRelation<Resource>
-                            }
-                            parentResourceData={parentSemester.semester}
-                          >
-                            <CreateButtonLabel
-                              resource={relatedResource as Resource}
-                            />
-                          </OpenCreateSheetButton>
-                        ),
+                        ({ resource: relatedResource, formProps }) => {
+                          const daySwapExists = findExistingDaySwap(
+                            clickedDay,
+                            parentSemester,
+                          );
+                          return (
+                            <OpenCreateSheetButton
+                              key={relatedResource}
+                              sheet={arfSheet}
+                              formProps={formProps}
+                              resource={
+                                relatedResource as ResourceRelation<Resource>
+                              }
+                              parentResourceData={parentSemester.semester}
+                              restrictToOne={
+                                (relatedResource as Resource) ===
+                                  Resource.DaySwaps && daySwapExists
+                              }
+                            >
+                              <CreateButtonLabel
+                                resource={relatedResource as Resource}
+                              />
+                            </OpenCreateSheetButton>
+                          );
+                        },
                       )}
                     </div>
                   )}
