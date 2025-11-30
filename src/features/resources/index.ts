@@ -2,7 +2,9 @@ export * from "./components/abstract-resource-edit-page";
 export * from "./components/abstract-resource-group";
 export * from "./components/delete-button-with-dialog";
 export * from "./components/create-button";
+export * from "./components/create-button-label";
 export * from "./components/edit-button";
+export * from "./components/open-create-sheet-button";
 
 export * from "./node";
 
