@@ -33,7 +33,7 @@ export interface SemesterEvents {
 export interface SemesterStructure {
   semester: ResourceDataType<Resource.AcademicSemesters>;
   semesterCard: ReactNode;
-  semesterEvents: SemesterEvents;
+  semesterEvents: Partial<Record<DayKey, SemesterEvents>>;
 }
 
 export interface MappedCalendarData {

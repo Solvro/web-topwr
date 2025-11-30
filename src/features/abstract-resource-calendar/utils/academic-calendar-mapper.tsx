@@ -29,10 +29,7 @@ export function academicCalendarMapper(
     mappedData.semesters[semester.id] = {
       semester,
       semesterCard,
-      semesterEvents: {
-        daySwaps: [],
-        holidays: [],
-      },
+      semesterEvents: {},
     };
 
     const { holidays, daySwaps } = semester;
@@ -62,11 +59,16 @@ export function academicCalendarMapper(
       for (const dayKey of dayKeys) {
         mappedData.dayEvents[dayKey] ??= [];
         mappedData.dayEvents[dayKey].push(holidayCard);
-      }
 
-      mappedData.semesters[semester.id].semesterEvents.holidays.push(
-        holidayCard,
-      );
+        // Add to semester events for this specific day
+        mappedData.semesters[semester.id].semesterEvents[dayKey] ??= {
+          daySwaps: [],
+          holidays: [],
+        };
+        mappedData.semesters[semester.id].semesterEvents[dayKey]?.holidays.push(
+          holidayCard,
+        );
+      }
     }
 
     for (const daySwap of daySwaps) {
@@ -84,7 +86,13 @@ export function academicCalendarMapper(
       );
 
       mappedData.dayEvents[dayKey].push(daySwapCard);
-      mappedData.semesters[semester.id].semesterEvents.daySwaps.push(
+
+      // Add to semester events for this specific day
+      mappedData.semesters[semester.id].semesterEvents[dayKey] ??= {
+        daySwaps: [],
+        holidays: [],
+      };
+      mappedData.semesters[semester.id].semesterEvents[dayKey]?.daySwaps.push(
         daySwapCard,
       );
     }

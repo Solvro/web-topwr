@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import type { ArfSheetContextType } from "@/features/abstract-resource-form/types";
@@ -20,6 +21,7 @@ export function OpenCreateSheetButton<T extends Resource>({
   className,
   children,
   edit,
+  restrictToOne,
 }: {
   sheet: ArfSheetContextType<T>;
   resource: ResourceRelation<T>;
@@ -29,24 +31,30 @@ export function OpenCreateSheetButton<T extends Resource>({
   className?: string;
   edit?: boolean;
   children: ReactNode;
+  restrictToOne?: boolean;
 }) {
   const editButtonProps =
     edit === undefined ? null : { ...getEditButtonProps(resource) };
+  const handleClick =
+    restrictToOne != null && restrictToOne
+      ? () => toast.error("Na ten dzień już istnieje zamiana dnia!")
+      : () => {
+          sheet.showSheet(
+            {
+              item: null,
+              childResource: resource,
+              parentResourceData,
+            },
+            formProps,
+          );
+        };
+
   return (
     <Button
       resource={resource}
       variant="outline"
       className={className}
-      onClick={() => {
-        sheet.showSheet(
-          {
-            item: null,
-            childResource: resource,
-            parentResourceData,
-          },
-          formProps,
-        );
-      }}
+      onClick={handleClick}
       {...editButtonProps}
     >
       {children}
