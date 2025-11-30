@@ -1,9 +1,9 @@
-
 import { Resource } from "@/features/resources";
+import type { ResourceDataType } from "@/features/resources/types";
+
 import { EventCard } from "../components/arc-event-card";
 import type { MappedCalendarData } from "../types/internal";
 import { serializeDateDay } from "./serialize-date-day";
-import type { ResourceDataType } from "@/features/resources/types";
 
 export function eventCalendarMapper(
   events: ResourceDataType<Resource.CalendarEvents>[],
@@ -15,18 +15,31 @@ export function eventCalendarMapper(
   };
 
   for (const event of events) {
-    const dayKey = serializeDateDay(event.startTime);
+    const startDate = new Date(event.startTime);
+    const lastDate = new Date(event.endTime);
 
-    mappedData.dayEvents[dayKey] ??= [];
+    const dayKeys: string[] = [];
+    for (
+      let currentDate = new Date(startDate);
+      currentDate.getTime() <= lastDate.getTime();
+      currentDate.setDate(currentDate.getDate() + 1)
+    ) {
+      dayKeys.push(serializeDateDay(currentDate.toISOString()));
+    }
 
-    mappedData.dayEvents[dayKey].push(
+    const eventCard = (
       <EventCard
         key={event.id}
         event={event}
         resource={Resource.CalendarEvents}
         clickable={clickable}
-      />,
+      />
     );
+
+    for (const dayKey of dayKeys) {
+      mappedData.dayEvents[dayKey] ??= [];
+      mappedData.dayEvents[dayKey].push(eventCard);
+    }
   }
 
   return mappedData;
