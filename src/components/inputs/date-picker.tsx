@@ -15,6 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { isEmptyValue } from "@/utils";
+import { parseLocalDate } from "@/utils/parse-local-date";
 
 export function DatePicker({
   value,
@@ -25,7 +26,7 @@ export function DatePicker({
   onChange: (date: string | null) => void;
   disabled?: boolean;
 }) {
-  const date = isEmptyValue(value) ? null : new Date(value);
+  const date = isEmptyValue(value) ? null : parseLocalDate(value);
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -52,6 +53,7 @@ export function DatePicker({
           selected={date ?? undefined}
           captionLayout="dropdown"
           onSelect={(newValue) => {
+            newValue?.setHours(12, 0, 0, 0);
             onChange(newValue?.toISOString() ?? null);
             setIsOpen(false);
           }}

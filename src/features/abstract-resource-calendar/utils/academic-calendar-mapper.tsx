@@ -47,11 +47,7 @@ export function academicCalendarMapper(
         currentDate.getTime() <= lastDate.getTime();
         currentDate.setDate(currentDate.getDate() + 1)
       ) {
-        dayKeys.push(
-          serializeDateDay(
-            new Date(currentDate.getTime() + 24 * 60 * 60 * 1000),
-          ),
-        );
+        dayKeys.push(serializeDateDay(currentDate.toISOString()));
       }
 
       const holidayCard = (
