@@ -14,21 +14,19 @@ import type {
 import { useRouter } from "@/hooks/use-router";
 import { sanitizeId } from "@/utils";
 
-interface ToggleButtonProps<R extends Resource> {
-  id: number | string;
-  resource: R;
-  config: ToggleFieldConfig<R>;
-  currentValue: unknown;
-  onValueChange?: (newValue: unknown) => void;
-}
-
 export function ToggleButton<R extends Resource>({
   id,
   resource,
   config,
   currentValue,
   onValueChange,
-}: ToggleButtonProps<R>) {
+}: {
+  id: number | string;
+  resource: R;
+  config: ToggleFieldConfig<R>;
+  currentValue: unknown;
+  onValueChange?: (newValue: unknown) => void;
+}) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
