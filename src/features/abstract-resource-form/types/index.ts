@@ -7,4 +7,4 @@ export type {
   SelectInputOptions,
 } from "./inputs";
 
-export type { ArfSheetContextType } from "./internal"
+export type { ArfSheetContextType } from "./internal";

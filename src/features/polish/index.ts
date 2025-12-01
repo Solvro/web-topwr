@@ -5,5 +5,5 @@ export * from "./lib/decline-numeric";
 
 export * from "./utils/is-declinable-noun";
 
-export * from "./data/polish-weekdays"
-export * from "./data/determiner-declensions"
+export * from "./data/polish-weekdays";
+export * from "./data/determiner-declensions";

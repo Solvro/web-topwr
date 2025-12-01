@@ -1,5 +1,9 @@
 import type { Weekday } from "@/config/enums";
-import { declineNoun, DETERMINER_DECLENSIONS, GrammaticalCase } from "@/features/polish";
+import {
+  DETERMINER_DECLENSIONS,
+  GrammaticalCase,
+  declineNoun,
+} from "@/features/polish";
 
 /**
  * Creates a properly declined Polish string for day swap description
@@ -25,5 +29,5 @@ export function formatDaySwapDescription(
   const declinedAdjective =
     DETERMINER_DECLENSIONS[adjectiveKey][weekdayGender].singular.nominative;
 
-  return `${declinedAdjective} ${declinedWeekday}`;
+  return `${declinedAdjective.charAt(0).toUpperCase() + declinedAdjective.slice(1)} ${declinedWeekday}`;
 }

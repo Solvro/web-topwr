@@ -29,7 +29,7 @@ export function DateTimePicker({
     const selectedDate = parseLocalDate(dateValue);
 
     date == null
-      ? selectedDate.setHours(12, 0, 0, 0)
+      ? selectedDate.setHours(0, 0, 0, 0)
       : selectedDate.setHours(
           date.getHours(),
           date.getMinutes(),
