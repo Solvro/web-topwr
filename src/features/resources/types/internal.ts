@@ -15,6 +15,53 @@ import type { ResourceDataWithRelations } from "./relations";
 
 export type ResourcePk = string | number;
 
+/**
+ * Configuration for a single state in a toggle (e.g., "Active" or "Inactive")
+ */
+export interface ToggleStateConfig<TValue = unknown> {
+  /** The value this state represents (boolean or enum value) */
+  value: TValue;
+  /** Icon to display for this state */
+  icon: LucideIcon;
+  /** Tooltip text shown on hover */
+  tooltip: string;
+  /** Button variant (optional, defaults based on state) */
+  variant?: "default" | "destructive-ghost" | "ghost" | "outline";
+}
+
+/**
+ * Toast messages for a toggle action
+ */
+export interface ToggleToastMessages {
+  /** Message shown while the API request is processing */
+  loading: string;
+  /** Message shown when toggle succeeds */
+  success: string;
+  /** Message shown when toggle fails */
+  error: string;
+}
+
+/**
+ * Configuration for a toggleable field on a resource
+ */
+export interface ToggleFieldConfig<_R extends Resource> {
+  /** The field name to toggle (should be boolean or enum field from the schema) */
+  field: string;
+  /**
+   * Array of exactly 2 states representing the toggle options.
+   * First state = "off/inactive", Second state = "on/active"
+   */
+  states: readonly [ToggleStateConfig, ToggleStateConfig];
+  /**
+   * Custom toast messages for this toggle.
+   * Function receives the current and next state for message customization.
+   */
+  getToastMessages: (
+    fromState: ToggleStateConfig,
+    toState: ToggleStateConfig,
+  ) => ToggleToastMessages;
+}
+
 export type RoutableResource = {
   [R in Resource]: `/${R}` extends Route ? R : never;
 }[Resource];
@@ -101,6 +148,12 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
   orderable?: boolean;
   /** Whether the resource can be deleted by the user. Defaults to true. */
   deletable?: boolean;
+  /**
+   * Configuration for a toggleable field in the resource list view.
+   * Creates a button that switches between two states.
+   * Limited to one toggle per resource for simplicity.
+   */
+  toggle?: ToggleFieldConfig<R>;
   /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */
   itemMapper: (item: UnorderableResourceDataType<R>) => Omit<ListItem, "id">; // use the UnorderableResourceDataType here to avoid circular type reference
   form: {
