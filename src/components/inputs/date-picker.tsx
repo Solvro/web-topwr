@@ -15,7 +15,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { isEmptyValue } from "@/utils";
-import { parseLocalDate } from "@/utils/parse-local-date";
 
 export function DatePicker({
   value,
@@ -26,7 +25,7 @@ export function DatePicker({
   onChange: (date: string | null) => void;
   disabled?: boolean;
 }) {
-  const date = isEmptyValue(value) ? null : parseLocalDate(value);
+  const date = isEmptyValue(value) ? null : new Date(value);
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>

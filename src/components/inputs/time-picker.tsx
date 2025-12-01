@@ -1,3 +1,4 @@
+import { formatDate, isValid, parse, toDate } from "date-fns";
 import { Clock } from "lucide-react";
 import type { ChangeEvent } from "react";
 
@@ -7,8 +8,6 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { isEmptyValue } from "@/utils";
-import { createUTCDateTime } from "@/utils/create-utc-datetime";
-import { extractTime } from "@/utils/extract-time";
 
 import { InputSlot } from "./input-slot";
 
@@ -23,17 +22,14 @@ export function TimePicker({
 }) {
   const handleTimeChange = (event_: ChangeEvent<HTMLInputElement>) => {
     const timeValue = event_.target.value;
-    if (!timeValue) {
-      onChange(null);
-      return;
+    const baseDate = value == null ? new Date() : toDate(value);
+    const parsedTime = parse(timeValue, "HH:mm:ss", baseDate);
+    if (isValid(parsedTime)) {
+      onChange(parsedTime.toISOString());
+    } else {
+      event_.preventDefault();
     }
-    const newDateTime = createUTCDateTime(value, timeValue);
-    onChange(newDateTime);
   };
-
-  const displayTime = isEmptyValue(value)
-    ? "00:00:00"
-    : extractTime(value.toString());
 
   return (
     <InputSlot renderAs={InputGroup} className="w-fit min-w-34 overflow-hidden">
@@ -43,7 +39,7 @@ export function TimePicker({
       <InputGroupInput
         type="time"
         step="1"
-        value={displayTime}
+        value={isEmptyValue(value) ? "00:00:00" : formatDate(value, "HH:mm:ss")}
         onChange={handleTimeChange}
         disabled={disabled}
       />
