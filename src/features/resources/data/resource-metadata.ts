@@ -1,4 +1,4 @@
-import { SendHorizonal } from "lucide-react";
+import { Archive, ArchiveRestore, SendHorizonal } from "lucide-react";
 import { lazy } from "react";
 
 import { ImageType } from "@/config/enums";
@@ -16,7 +16,7 @@ import {
   StudiesType,
   UniversityBranch,
 } from "../enums";
-import type { ResourceMetadata } from "../types/internal";
+import type { ResourceMetadata, ToggleFieldConfig } from "../types/internal";
 
 // lazy import needed due to circular dependency
 const NotificationConfirmationMessage = lazy(
@@ -571,6 +571,31 @@ export const RESOURCE_METADATA = {
     apiPath: "firebase/topics",
     pk: "topicName",
     deletable: false,
+    toggle: {
+      field: "isActive",
+      states: [
+        {
+          value: false,
+          icon: ArchiveRestore,
+          tooltip: "Aktywuj",
+          variant: "ghost",
+        },
+        {
+          value: true,
+          icon: Archive,
+          tooltip: "Dezaktywuj",
+          variant: "destructive-ghost",
+        },
+      ],
+      getToastMessages: (_fromState, toState) => {
+        const isDeactivating = toState.value === false;
+        return {
+          loading: `Trwa ${isDeactivating ? "dezaktywacja" : "aktywacja"} tematu powiadomień...`,
+          success: `Temat powiadomień został ${isDeactivating ? "zdezaktywowany" : "aktywowany"}.`,
+          error: `Nie udało się ${isDeactivating ? "zdezaktywować" : "aktywować"} tematu powiadomień`,
+        };
+      },
+    } as ToggleFieldConfig<Resource.NotificationTopics>,
     itemMapper: (item) => ({
       name: item.topicName,
       shortDescription: item.description,
@@ -609,6 +634,31 @@ export const RESOURCE_METADATA = {
   },
   [Resource.StudentOrganizations]: {
     apiPath: "student_organizations",
+    toggle: {
+      field: "organizationStatus",
+      states: [
+        {
+          value: OrganizationStatus.Inactive,
+          icon: ArchiveRestore,
+          tooltip: "Przywróć",
+          variant: "ghost",
+        },
+        {
+          value: OrganizationStatus.Active,
+          icon: Archive,
+          tooltip: "Archiwizuj",
+          variant: "destructive-ghost",
+        },
+      ],
+      getToastMessages: (_fromState, toState) => {
+        const isArchiving = toState.value === OrganizationStatus.Inactive;
+        return {
+          loading: `Trwa ${isArchiving ? "archiwizowanie" : "przywracanie"} organizacji studenckiej...`,
+          success: `Organizacja studencka została ${isArchiving ? "zarchiwizowana" : "przywrócona"}.`,
+          error: `Nie udało się ${isArchiving ? "zarchiwizować" : "przywrócić"} organizacji studenckiej`,
+        };
+      },
+    } as ToggleFieldConfig<Resource.StudentOrganizations>,
     itemMapper: (item) => ({
       name: item.name,
       shortDescription: item.shortDescription,
