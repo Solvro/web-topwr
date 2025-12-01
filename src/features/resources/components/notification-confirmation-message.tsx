@@ -8,12 +8,7 @@ export function NotificationConfirmationMessage({
   item,
 }: ConfirmationMessageProps<Resource.Notifications>) {
   const selected = item.topics.length === 1 ? "wybranej" : "wybranych";
-  const selectedTopicsCount = declineNumeric(
-    item.topics.length,
-    "kategorię",
-    "kategorie",
-    "kategorii",
-  );
+  const selectedTopicsCount = declineNumeric(item.topics.length, "category");
   const quotedTopics = item.topics.map((topic) => quoteText(topic)).join(", ");
   return (
     <>
