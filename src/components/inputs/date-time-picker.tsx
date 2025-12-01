@@ -3,7 +3,6 @@
 import { toDate } from "date-fns";
 
 import { isEmptyValue } from "@/utils";
-import { parseLocalDate } from "@/utils/parse-local-date";
 
 import { DatePicker } from "./date-picker";
 import { InputRow } from "./input-row";
@@ -26,7 +25,7 @@ export function DateTimePicker({
       return;
     }
 
-    const selectedDate = parseLocalDate(dateValue);
+    const selectedDate = new Date(dateValue);
 
     date == null
       ? selectedDate.setHours(0, 0, 0, 0)
