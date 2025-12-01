@@ -53,7 +53,6 @@ export function DatePicker({
           selected={date ?? undefined}
           captionLayout="dropdown"
           onSelect={(newValue) => {
-            newValue?.setHours(12, 0, 0, 0);
             onChange(newValue?.toISOString() ?? null);
             setIsOpen(false);
           }}
