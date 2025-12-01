@@ -4,7 +4,7 @@ import type { Editor } from "@tiptap/react";
 import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 
-import { TextColorIcon } from "@/components/presentation/icon-text-color";
+import { TextColorIcon } from "@/components/presentation/text-color-icon";
 import {
   Popover,
   PopoverContent,

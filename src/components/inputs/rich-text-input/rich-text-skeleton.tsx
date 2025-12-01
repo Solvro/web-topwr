@@ -34,7 +34,7 @@ export function RichTextSkeleton({
             dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
           />
         ) : (
-          <p className="text-secondary">Wpisz opis...</p>
+          <p className="text-muted-foreground">Wpisz opis...</p>
         )}
       </div>
     </>

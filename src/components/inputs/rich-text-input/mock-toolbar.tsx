@@ -10,7 +10,7 @@ import {
   UnderlineIcon,
 } from "@radix-ui/react-icons";
 
-import { TextColorIcon } from "@/components/presentation/icon-text-color";
+import { TextColorIcon } from "@/components/presentation/text-color-icon";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
 
