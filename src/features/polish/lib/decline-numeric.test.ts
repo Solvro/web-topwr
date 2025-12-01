@@ -80,7 +80,7 @@ describe("declineNumeric", () => {
       it("should decline 'version' from REUSABLE_DECLENSIONS correctly", () => {
         // wersja: wersję (acc sg), wersje (nom pl), wersji (gen pl)
         expect(declineNumeric(0, "version")).toBe("0 wersji");
-        expect(declineNumeric(1, "version")).toBe("1 wersję");
+        expect(declineNumeric(1, "version")).toBe("1 wersja");
         expect(declineNumeric(2, "version")).toBe("2 wersje");
         expect(declineNumeric(5, "version")).toBe("5 wersji");
         expect(declineNumeric(13, "version")).toBe("13 wersji");
@@ -104,7 +104,7 @@ describe("declineNumeric", () => {
 
       it("should handle large numbers correctly", () => {
         expect(declineNumeric(100, "category")).toBe("100 kategorii");
-        expect(declineNumeric(101, Resource.Changes)).toBe("101 zmianę");
+        expect(declineNumeric(101, Resource.Changes)).toBe("101 zmian");
         expect(declineNumeric(102, Resource.Banners)).toBe("102 banery");
         expect(declineNumeric(111, "link")).toBe("111 linków");
         expect(declineNumeric(112, "version")).toBe("112 wersji");
@@ -113,9 +113,9 @@ describe("declineNumeric", () => {
 
       it("should handle numbers ending in 1 (except 11) correctly", () => {
         expect(declineNumeric(21, "category")).toBe("21 kategorii");
-        expect(declineNumeric(31, Resource.Changes)).toBe("31 zmianę");
-        expect(declineNumeric(41, Resource.Banners)).toBe("41 baner");
-        expect(declineNumeric(101, "link")).toBe("101 link");
+        expect(declineNumeric(31, Resource.Changes)).toBe("31 zmian");
+        expect(declineNumeric(41, Resource.Banners)).toBe("41 banerów");
+        expect(declineNumeric(101, "link")).toBe("101 linków");
       });
 
       it("should handle numbers ending in 2-4 (except 12-14) correctly", () => {
@@ -135,7 +135,7 @@ describe("declineNumeric", () => {
       });
 
       it("should work with feminine nouns", () => {
-        expect(declineNumeric(1, "category")).toBe("1 kategorię");
+        expect(declineNumeric(1, "category")).toBe("1 kategoria");
         expect(declineNumeric(3, "version")).toBe("3 wersje");
       });
 
