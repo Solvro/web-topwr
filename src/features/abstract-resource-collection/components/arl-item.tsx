@@ -1,9 +1,9 @@
 import type { Ref } from "react";
+import { get } from "react-hook-form";
 
 import { Badge } from "@/components/ui/badge";
 import {
   EditButton,
-  Resource,
   getFieldValue,
   getResourceMetadata,
   getResourcePk,
@@ -16,7 +16,7 @@ import type {
 
 import type { ListItem } from "../types/internal";
 import { ArlItemDragHandle } from "./arl-item-drag-handle";
-import { ToggleOrganizationStatusButton } from "./toggle-status-button";
+import { ToggleButton } from "./toggle-button";
 
 export interface ItemProps<T extends EditableResource> {
   ref?: Ref<HTMLLIElement>;
@@ -24,12 +24,6 @@ export interface ItemProps<T extends EditableResource> {
   resource: T;
   orderable?: boolean;
 }
-
-/** TODO: pass custom delete functionality as a prop, which would eliminate this helper */
-const isStudentOrganizationProps = (
-  props: ItemProps<EditableResource>,
-): props is ItemProps<Resource.StudentOrganizations> =>
-  props.resource === Resource.StudentOrganizations;
 
 export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
   const { ref, item, resource, orderable = false } = props;
@@ -64,13 +58,14 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
         </p>
         <footer className="flex gap-0.5 sm:gap-2">
           <EditButton resource={resource} id={listItem.id} />
-          {isStudentOrganizationProps(props) ? (
-            <ToggleOrganizationStatusButton
-              id={Number(listItem.id)}
+          {metadata.toggle === undefined ? null : (
+            <ToggleButton
+              id={listItem.id}
               resource={resource}
-              organizationStatus={props.item.organizationStatus}
+              config={metadata.toggle}
+              currentValue={get(item, metadata.toggle.field) as unknown}
             />
-          ) : null}
+          )}
         </footer>
       </article>
     </li>

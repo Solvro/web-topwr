@@ -12,7 +12,31 @@ import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import { sanitizeId } from "@/utils";
 
-// TODO: make this more generic to support other resources with property toggles
+/**
+ * @deprecated Use the generic ToggleButton component instead.
+ * This component is kept for backward compatibility but will be removed in a future version.
+ *
+ * Migration example:
+ * ```tsx
+ * // Old (deprecated):
+ * <ToggleOrganizationStatusButton
+ *   id={id}
+ *   resource={Resource.StudentOrganizations}
+ *   organizationStatus={item.organizationStatus}
+ * />
+ *
+ * // New (recommended):
+ * // Add toggle config to resource metadata, then:
+ * {metadata.toggle !== undefined ? null : (
+ *   <ToggleButton
+ *     id={id}
+ *     resource={resource}
+ *     config={metadata.toggle}
+ *     currentValue={item[metadata.toggle.field]}
+ *   />
+ * )}
+ * ```
+ */
 export function ToggleOrganizationStatusButton({
   id,
   resource,
