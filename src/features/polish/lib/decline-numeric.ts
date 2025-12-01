@@ -7,7 +7,7 @@ import { isDeclinableNoun } from "../utils/is-declinable-noun";
  * @param count - The numeric count.
  * @param noun - The DeclinableNoun to decline.
  * @returns The declined noun with the count as a space-separated string.
- * @example declineNumeric(1, 'category') // '1 kategorię'
+ * @example declineNumeric(1, 'category') // '1 kategoria'
  * @example declineNumeric(2, 'category') // '2 kategorie'
  * @example declineNumeric(5, 'category') // '5 kategorii'
  */
