@@ -61,8 +61,8 @@ export function ToggleButton<R extends Resource>({
     (state) => state.value === currentValue,
   );
   const currentState = config.states[currentStateIndex] ?? config.states[0];
-  const nextState =
-    config.states[currentStateIndex === 0 ? 1 : 0] ?? config.states[1];
+  const nextStateIndex = currentStateIndex === -1 ? 1 : (currentStateIndex === 0 ? 1 : 0);
+  const nextState = config.states[nextStateIndex];
 
   const declensions = declineNoun(resource);
   const label = `${currentState.tooltip} ${declensions.accusative}`;
