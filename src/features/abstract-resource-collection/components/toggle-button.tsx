@@ -70,8 +70,7 @@ export function ToggleButton<R extends Resource>({
   return (
     <Button
       variant={
-        currentState.variant ??
-        (currentStateIndex === 1 ? "ghost" : "destructive-ghost")
+        currentState.variant ?? "ghost"
       }
       loading={isPending}
       tooltip={currentState.tooltip}
