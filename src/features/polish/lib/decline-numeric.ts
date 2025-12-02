@@ -6,12 +6,18 @@ import { isDeclinableNoun } from "../utils/is-declinable-noun";
  * Declines a quantitative noun based on its count using a DeclinableNoun.
  * @param count - The numeric count.
  * @param noun - The DeclinableNoun to decline.
+ * @param defaultOneForm - Optional custom form to use when count is 1 (overrides default behavior).
  * @returns The declined noun with the count as a space-separated string.
  * @example declineNumeric(1, 'category') // '1 kategoria'
  * @example declineNumeric(2, 'category') // '2 kategorie'
  * @example declineNumeric(5, 'category') // '5 kategorii'
+ * @example declineNumeric(1, 'category', 'jedna kategoria') // 'jedna kategoria'
  */
-export function declineNumeric(count: number, noun: DeclinableNoun): string;
+export function declineNumeric(
+  count: number,
+  noun: DeclinableNoun,
+  defaultOneForm?: string,
+): string;
 
 /**
  * Declines a quantitative noun based on its count using manual forms.
@@ -34,31 +40,36 @@ export function declineNumeric(
 export function declineNumeric(
   count: number,
   singularOrNoun: string,
-  paucal?: string,
+  paucalOrDefaultOneForm?: string,
   plural?: string,
 ): string {
   let singular: string;
   let paucalForm: string;
   let pluralForm: string;
+  let oneFormValue: string | undefined;
 
   if (isDeclinableNoun(singularOrNoun)) {
     const forms = getNumericFormsFromNoun(singularOrNoun);
     singular = forms.singular;
     paucalForm = forms.paucal;
     pluralForm = forms.plural;
+    oneFormValue = paucalOrDefaultOneForm;
   } else {
-    if (paucal == null || plural == null) {
+    if (paucalOrDefaultOneForm == null || plural == null) {
       throw new TypeError(
         "Invalid arguments: when providing a string as second argument, paucal and plural forms are required",
       );
     }
     singular = singularOrNoun;
-    paucalForm = paucal;
+    paucalForm = paucalOrDefaultOneForm;
     pluralForm = plural;
   }
 
   const countString = count.toString();
   if (count === 1) {
+    if (oneFormValue !== undefined) {
+      return oneFormValue;
+    }
     return `${countString} ${singular}`;
   }
   if (count >= 12 && count <= 14) {

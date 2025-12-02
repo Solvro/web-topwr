@@ -1,4 +1,3 @@
-import { GrammaticalCase } from "../enums";
 import { declineNoun } from "../lib/decline-noun";
 import type { DeclinableNoun } from "../types/internal";
 
@@ -12,18 +11,12 @@ export function getNumericFormsFromNoun(noun: DeclinableNoun): {
   paucal: string;
   plural: string;
 } {
+  const singularDeclensions = declineNoun(noun, { plural: false });
+  const pluralDeclensions = declineNoun(noun, { plural: true });
+
   return {
-    singular: declineNoun(noun, {
-      case: GrammaticalCase.Accusative,
-      plural: false,
-    }),
-    paucal: declineNoun(noun, {
-      case: GrammaticalCase.Nominative,
-      plural: true,
-    }),
-    plural: declineNoun(noun, {
-      case: GrammaticalCase.Genitive,
-      plural: true,
-    }),
+    singular: singularDeclensions.accusative,
+    paucal: pluralDeclensions.nominative,
+    plural: pluralDeclensions.genitive,
   };
 }
