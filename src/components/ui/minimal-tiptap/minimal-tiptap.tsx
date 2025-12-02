@@ -3,6 +3,8 @@ import type { Content, Editor } from "@tiptap/react";
 import { EditorContent } from "@tiptap/react";
 
 import { InputSlot } from "@/components/inputs/input-slot";
+import { RichTextSkeleton } from "@/components/inputs/rich-text-input";
+import { ToolbarWrapper } from "@/components/inputs/rich-text-input/toolbar-wrapper";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
@@ -27,46 +29,44 @@ interface MinimalTiptapProps
 
 function Toolbar({ editor }: { editor: Editor }) {
   return (
-    <div className="border-border flex h-12 shrink-0 overflow-x-auto border-b p-2">
-      <div className="flex w-max items-center gap-px">
-        <SectionOne editor={editor} activeLevels={[1, 2, 3, 4, 5]} />
+    <ToolbarWrapper>
+      <SectionOne editor={editor} activeLevels={[1, 2, 3, 4, 5]} />
 
-        <Separator orientation="vertical" className="mx-2" />
+      <Separator orientation="vertical" className="mx-2" />
 
-        <SectionTwo
-          editor={editor}
-          activeActions={[
-            "bold",
-            "italic",
-            "underline",
-            "strikethrough",
-            "code",
-            "clearFormatting",
-          ]}
-          mainActionCount={3}
-        />
+      <SectionTwo
+        editor={editor}
+        activeActions={[
+          "bold",
+          "italic",
+          "underline",
+          "strikethrough",
+          "code",
+          "clearFormatting",
+        ]}
+        mainActionCount={3}
+      />
 
-        <Separator orientation="vertical" className="mx-2" />
+      <Separator orientation="vertical" className="mx-2" />
 
-        <SectionThree editor={editor} />
+      <SectionThree editor={editor} />
 
-        <Separator orientation="vertical" className="mx-2" />
+      <Separator orientation="vertical" className="mx-2" />
 
-        <SectionFour
-          editor={editor}
-          activeActions={["orderedList", "bulletList"]}
-          mainActionCount={0}
-        />
+      <SectionFour
+        editor={editor}
+        activeActions={["orderedList", "bulletList"]}
+        mainActionCount={0}
+      />
 
-        <Separator orientation="vertical" className="mx-2" />
+      <Separator orientation="vertical" className="mx-2" />
 
-        <SectionFive
-          editor={editor}
-          activeActions={["codeBlock", "blockquote", "horizontalRule"]}
-          mainActionCount={0}
-        />
-      </div>
-    </div>
+      <SectionFive
+        editor={editor}
+        activeActions={["codeBlock", "blockquote", "horizontalRule"]}
+        mainActionCount={0}
+      />
+    </ToolbarWrapper>
   );
 }
 
@@ -83,10 +83,6 @@ export function MinimalTiptapEditor({
     ...props,
   });
 
-  if (!editor) {
-    return null;
-  }
-
   return (
     <InputSlot
       renderAs={MeasuredContainer}
@@ -98,12 +94,22 @@ export function MinimalTiptapEditor({
         className,
       )}
     >
-      {props.editable ? <Toolbar editor={editor} /> : null}
-      <EditorContent
-        editor={editor}
-        className={cn("minimal-tiptap-editor", editorContentClassName)}
-      />
-      <LinkBubbleMenu editor={editor} />
+      {editor == null ? (
+        <RichTextSkeleton
+          value={value}
+          editable={props.editable}
+          editorContentClassName={editorContentClassName}
+        />
+      ) : (
+        <>
+          {props.editable ? <Toolbar editor={editor} /> : null}
+          <EditorContent
+            editor={editor}
+            className={cn("minimal-tiptap-editor", editorContentClassName)}
+          />
+          <LinkBubbleMenu editor={editor} />
+        </>
+      )}
     </InputSlot>
   );
 }
