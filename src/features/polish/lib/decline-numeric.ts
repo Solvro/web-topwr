@@ -46,8 +46,8 @@ export function declineNumeric(
     singular = forms.singular;
     paucalForm = forms.paucal;
     pluralForm = forms.plural;
-  } else if (typeof singularOrNoun === "string") {
-    if (typeof paucal !== "string" || typeof plural !== "string") {
+  } else {
+    if (paucal == null || plural == null) {
       throw new TypeError(
         "Invalid arguments: when providing a string as second argument, paucal and plural forms are required",
       );
@@ -55,8 +55,6 @@ export function declineNumeric(
     singular = singularOrNoun;
     paucalForm = paucal;
     pluralForm = plural;
-  } else {
-    throw new TypeError("Second argument must be a string or DeclinableNoun");
   }
 
   const countString = count.toString();
