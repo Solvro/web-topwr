@@ -11,7 +11,7 @@ import { isDeclinableNoun } from "../utils/is-declinable-noun";
  * @example declineNumeric(1, 'category') // '1 kategoria'
  * @example declineNumeric(2, 'category') // '2 kategorie'
  * @example declineNumeric(5, 'category') // '5 kategorii'
- * @example declineNumeric(1, 'category', 'jedna kategoria') // 'jedna kategoria'
+ * @example declineNumeric(1, 'category', 'abc') // '1 abc'
  */
 export function declineNumeric(
   count: number,
