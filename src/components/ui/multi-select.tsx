@@ -1252,7 +1252,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                       <span>
                         (Wybierz wszystkie
                         {getAllOptions().length > 20
-                          ? ` – ${declineNumeric(getAllOptions().length, "option")}`
+                          ? ` – ${declineNumeric(getAllOptions().length, "option", "opcja")}`
                           : ""}
                         )
                       </span>
