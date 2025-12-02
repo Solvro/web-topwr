@@ -27,7 +27,7 @@ import { sanitizeId } from "@/utils";
  *
  * // New (recommended):
  * // Add toggle config to resource metadata, then:
- * {metadata.toggle !== undefined ? null : (
+ * {metadata.toggle === undefined ? null : (
  *   <ToggleButton
  *     id={id}
  *     resource={resource}
