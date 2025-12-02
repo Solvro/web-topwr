@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { Resource } from "@/features/resources/node";
 
+import { GrammaticalCase } from "../enums";
 import { declineNumeric } from "./decline-numeric";
 
 describe("declineNumeric", () => {
@@ -211,6 +212,96 @@ describe("declineNumeric", () => {
       expect(nounResult).not.toBe(stringResult);
       expect(nounResult).toBe("5 kategorii");
       expect(stringResult).toBe("5 katów");
+    });
+  });
+
+  describe("singularCase option", () => {
+    it("should use nominative case when singularCase is set to Nominative", () => {
+      // category nominative: kategoria
+      expect(
+        declineNumeric(1, "category", {
+          singularCase: GrammaticalCase.Nominative,
+        }),
+      ).toBe("1 kategoria");
+    });
+
+    it("should use default accusative case when no option is provided", () => {
+      // category accusative: kategorię
+      expect(declineNumeric(1, "category")).toBe("1 kategorię");
+    });
+
+    it("should use genitive case when singularCase is set to Genitive", () => {
+      // category genitive: kategorii
+      expect(
+        declineNumeric(1, "category", {
+          singularCase: GrammaticalCase.Genitive,
+        }),
+      ).toBe("1 kategorii");
+    });
+
+    it("should only affect count of 1", () => {
+      // With nominative case option
+      expect(
+        declineNumeric(1, "category", {
+          singularCase: GrammaticalCase.Nominative,
+        }),
+      ).toBe("1 kategoria");
+      expect(
+        declineNumeric(2, "category", {
+          singularCase: GrammaticalCase.Nominative,
+        }),
+      ).toBe("2 kategorie");
+      expect(
+        declineNumeric(5, "category", {
+          singularCase: GrammaticalCase.Nominative,
+        }),
+      ).toBe("5 kategorii");
+    });
+
+    it("should work with Resource enums", () => {
+      // Resource.Changes nominative singular: zmiana
+      expect(
+        declineNumeric(1, Resource.Changes, {
+          singularCase: GrammaticalCase.Nominative,
+        }),
+      ).toBe("1 zmiana");
+
+      // Default (accusative): zmianę
+      expect(declineNumeric(1, Resource.Changes)).toBe("1 zmianę");
+    });
+
+    it("should work with different grammatical cases", () => {
+      // Test all cases with 'category'
+      expect(
+        declineNumeric(1, "category", {
+          singularCase: GrammaticalCase.Nominative,
+        }),
+      ).toBe("1 kategoria");
+      expect(
+        declineNumeric(1, "category", {
+          singularCase: GrammaticalCase.Genitive,
+        }),
+      ).toBe("1 kategorii");
+      expect(
+        declineNumeric(1, "category", {
+          singularCase: GrammaticalCase.Dative,
+        }),
+      ).toBe("1 kategorii");
+      expect(
+        declineNumeric(1, "category", {
+          singularCase: GrammaticalCase.Accusative,
+        }),
+      ).toBe("1 kategorię");
+      expect(
+        declineNumeric(1, "category", {
+          singularCase: GrammaticalCase.Instrumental,
+        }),
+      ).toBe("1 kategorią");
+      expect(
+        declineNumeric(1, "category", {
+          singularCase: GrammaticalCase.Locative,
+        }),
+      ).toBe("1 kategorii");
     });
   });
 });
