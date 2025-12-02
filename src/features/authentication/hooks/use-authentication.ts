@@ -31,7 +31,9 @@ interface AuthContextLoggedOut {
 
 type AuthContext = (AuthContextLoggedIn | AuthContextLoggedOut) & {
   login: (data: LoginFormValues) => Promise<AuthState>;
-  logout: () => Promise<void>;
+  logout: (all?: boolean) => Promise<void>;
+  logoutRequest: (all?: boolean) => Promise<void>;
+  clearAuthState: () => void;
 };
 
 const parseAuthState = (
@@ -94,10 +96,12 @@ export function useAuthentication(): AuthContext {
   }
 
   /**
-   * Logs out by deleting the refresh token. Can only be called when logged in.
-   * @param all if set to true, will invalidate all refresh tokens, causing logout on all devices.
+   * Makes logout API request to invalidate refresh token on server.
+   * Does NOT clear local state - call clearAuthState() separately.
+   * @param all if set to true, will invalidate all refresh tokens
+   * @throws Error if request fails or response is invalid
    */
-  async function logout(all = false) {
+  async function logoutRequest(all = false): Promise<void> {
     if (authState == null) {
       throw new Error("Cannot log out when not authenticated");
     }
@@ -115,12 +119,35 @@ export function useAuthentication(): AuthContext {
         `Logout failed: ${result.message || "<missing-result-message>"}`,
       );
     }
-    toast.success(
-      `Wylogowano pomyślnie${all ? " ze wszystkich urządzeń" : ""}.`,
-    );
+  }
+
+  /**
+   * Clears local authentication state (cookies and atom).
+   * Should be called AFTER successful logoutRequest().
+   */
+  function clearAuthState(): void {
     Cookies.remove(AUTH_STATE_COOKIE_NAME);
     setAuthState(null);
   }
 
-  return { ...parseAuthState(authState), login, logout };
+  /**
+   * Complete logout flow: makes API request and clears state.
+   * For backward compatibility with existing code that calls logout() directly.
+   * @param all if set to true, will invalidate all refresh tokens
+   */
+  async function logout(all = false): Promise<void> {
+    await logoutRequest(all);
+    toast.success(
+      `Wylogowano pomyślnie${all ? " ze wszystkich urządzeń" : ""}.`,
+    );
+    clearAuthState();
+  }
+
+  return {
+    ...parseAuthState(authState),
+    login,
+    logout,
+    logoutRequest,
+    clearAuthState,
+  };
 }
