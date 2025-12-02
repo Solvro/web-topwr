@@ -68,7 +68,7 @@ export function declineNumeric(
   const countString = count.toString();
   if (count === 1) {
     if (oneFormValue !== undefined) {
-      return oneFormValue;
+      return `${countString} ${oneFormValue}`;
     }
     return `${countString} ${singular}`;
   }
