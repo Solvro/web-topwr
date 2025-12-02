@@ -61,7 +61,8 @@ export function ToggleButton<R extends Resource>({
     (state) => state.value === currentValue,
   );
   const currentState = config.states[currentStateIndex] ?? config.states[0];
-  const nextStateIndex = currentStateIndex === -1 ? 1 : (currentStateIndex === 0 ? 1 : 0);
+  const nextStateIndex =
+    currentStateIndex === -1 ? 1 : currentStateIndex === 0 ? 1 : 0;
   const nextState = config.states[nextStateIndex];
 
   const declensions = declineNoun(resource);
@@ -69,9 +70,7 @@ export function ToggleButton<R extends Resource>({
 
   return (
     <Button
-      variant={
-        currentState.variant ?? "ghost"
-      }
+      variant={currentState.variant ?? "ghost"}
       loading={isPending}
       tooltip={currentState.tooltip}
       aria-label={label}
