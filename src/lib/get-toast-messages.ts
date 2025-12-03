@@ -3,10 +3,7 @@ import { getErrorMessage } from "@/features/backend";
 import { declineNoun } from "@/features/polish";
 import type { Declensions } from "@/features/polish/types";
 import { Resource } from "@/features/resources";
-import type {
-  ToggleStateConfig,
-  ToggleToastMessages,
-} from "@/features/resources";
+import type { ToggleStateConfig } from "@/features/resources";
 
 import { toTitleCase } from "../utils";
 
@@ -27,7 +24,7 @@ const getDefaultToastMessages = (declensions: Declensions) => ({
   toggleState: (
     _fromState: ToggleStateConfig,
     _toState: ToggleStateConfig,
-  ): ToggleToastMessages => ({
+  ) => ({
     loading: `Trwa zmiana statusu ${declensions.genitive}...`,
     success: `${toTitleCase(declensions.nominative)} została zaktualizowana.`,
     error: `Nie udało się zmienić statusu ${declensions.genitive}`,

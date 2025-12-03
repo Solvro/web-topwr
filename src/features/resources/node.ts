@@ -15,7 +15,6 @@ export type {
   ResourceSchemaKey,
   ToggleFieldConfig,
   ToggleStateConfig,
-  ToggleToastMessages,
 } from "./types";
 
 export * from "./utils/get-resource-metadata";
