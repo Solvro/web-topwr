@@ -1,100 +1,87 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Archive, ArchiveRestore } from "lucide-react";
+import { get, set } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { fetchMutation, getKey, useMutationWrapper } from "@/features/backend";
 import type { ModifyResourceResponse } from "@/features/backend/types";
 import { declineNoun } from "@/features/polish";
-import type { Resource } from "@/features/resources";
-import { OrganizationStatus } from "@/features/resources";
+import type {
+  Resource,
+  ResourceFormValues,
+  ToggleFieldConfig,
+} from "@/features/resources";
 import { useRouter } from "@/hooks/use-router";
-import { getToastMessages } from "@/lib/get-toast-messages";
 import { sanitizeId } from "@/utils";
 
-/**
- * @deprecated Use the generic ToggleButton component instead.
- * This component is kept for backward compatibility but will be removed in a future version.
- *
- * Migration example:
- * ```tsx
- * // Old (deprecated):
- * <ToggleOrganizationStatusButton
- *   id={id}
- *   resource={Resource.StudentOrganizations}
- *   organizationStatus={item.organizationStatus}
- * />
- *
- * // New (recommended):
- * // Add toggle config to resource metadata, then:
- * {metadata.toggle === undefined ? null : (
- *   <ToggleButton
- *     id={id}
- *     resource={resource}
- *     config={metadata.toggle}
- *     currentValue={item[metadata.toggle.field]}
- *   />
- * )}
- * ```
- */
-export function ToggleOrganizationStatusButton({
+export function ToggleStatusButton<R extends Resource>({
   id,
   resource,
-  organizationStatus,
-  onStatusChange,
+  config,
+  currentValue,
+  onValueChange,
 }: {
-  id: number;
-  resource: Resource;
-  organizationStatus: OrganizationStatus;
-  onStatusChange?: (newStatus: OrganizationStatus) => void;
+  id: number | string;
+  resource: R;
+  config: ToggleFieldConfig<R>;
+  currentValue: unknown;
+  onValueChange?: (newValue: unknown) => void;
 }) {
   const router = useRouter();
-  const isActive = organizationStatus === OrganizationStatus.Active;
+  const queryClient = useQueryClient();
 
   type ModifyResponseType = ModifyResourceResponse<typeof resource>;
 
-  const queryClient = useQueryClient();
   const { mutateAsync, isPending } = useMutationWrapper<
     ModifyResponseType,
-    { organizationStatus: OrganizationStatus }
-  >(`toggle-organization-status__${resource}__${String(id)}`, async (body) => {
+    Partial<ResourceFormValues<R>>
+  >(`toggle-${resource}-${config.field}-${String(id)}`, async (body) => {
     const result = await fetchMutation<ModifyResponseType>(sanitizeId(id), {
       method: "PATCH",
       body,
       resource,
     });
+
     await queryClient.invalidateQueries({
       queryKey: [getKey.query.resourceList(resource)],
       exact: false,
     });
+
     router.refresh();
-    onStatusChange?.(body.organizationStatus);
+    const fieldValue = get(body, config.field) as unknown;
+    if (fieldValue !== undefined) {
+      onValueChange?.(fieldValue);
+    }
+
     return result;
   });
 
+  // Determine current and next state
+  const isActive = currentValue === config.states.active.value;
+  const currentState = isActive ? config.states.active : config.states.inactive;
+  const nextState = isActive ? config.states.inactive : config.states.active;
+
   const declensions = declineNoun(resource);
-  const tooltip = isActive ? "Archiwizuj" : "Przywróć";
-  const label = `${tooltip} ${declensions.accusative}`;
+  const label = `${currentState.tooltip} ${declensions.accusative}`;
 
   return (
     <Button
-      variant={isActive ? "destructive-ghost" : "ghost"}
+      variant={currentState.variant ?? "ghost"}
       loading={isPending}
-      tooltip={tooltip}
+      tooltip={currentState.tooltip}
       aria-label={label}
       size="icon"
       onClick={() => {
+        const body = {} as Partial<ResourceFormValues<R>>;
+        set(body, config.field, nextState.value);
+
         toast.promise(
-          mutateAsync({
-            organizationStatus: isActive
-              ? OrganizationStatus.Inactive
-              : OrganizationStatus.Active,
-          }),
-          getToastMessages.resource(resource).toggleArchived(isActive),
+          mutateAsync(body),
+          config.getToastMessages(currentState, nextState),
         );
       }}
     >
-      {isActive ? <Archive /> : <ArchiveRestore />}
+      <currentState.icon />
     </Button>
   );
 }
