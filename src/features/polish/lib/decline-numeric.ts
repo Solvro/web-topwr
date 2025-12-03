@@ -1,8 +1,8 @@
-import type { GrammaticalCase } from "../enums";
-import type { DeclinableNoun } from "../types/internal";
-import { getNumericFormsFromNoun } from "../utils/get-numeric-forms-from-noun";
-import { isDeclinableNoun } from "../utils/is-declinable-noun";
-import { declineNoun } from "./decline-noun";
+import type {
+  DeclinableNoun,
+  NumericDeclensionOptions,
+} from "../types/internal";
+import { getNumericDeclensionOptions } from "../utils/get-numeric-declension-options";
 
 /**
  * Declines a quantitative noun based on its count using a DeclinableNoun.
@@ -19,7 +19,7 @@ import { declineNoun } from "./decline-noun";
 export function declineNumeric(
   count: number,
   noun: DeclinableNoun,
-  options?: { singularCase: GrammaticalCase },
+  options?: NumericDeclensionOptions,
 ): string;
 
 /**
@@ -43,54 +43,23 @@ export function declineNumeric(
 export function declineNumeric(
   count: number,
   singularOrNoun: string,
-  paucalOrOptions?: string | { singularCase: GrammaticalCase },
-  plural?: string,
+  paucalOrOptions?: string | NumericDeclensionOptions,
+  pluralOverride?: string,
 ): string {
-  let singular: string;
-  let paucalForm: string;
-  let pluralForm: string;
-  let oneFormValue: string | undefined;
-
-  if (isDeclinableNoun(singularOrNoun)) {
-    const forms = getNumericFormsFromNoun(singularOrNoun);
-    singular = forms.singular;
-    paucalForm = forms.paucal;
-    pluralForm = forms.plural;
-
-    // Handle options object with singularCase
-    if (paucalOrOptions !== undefined && typeof paucalOrOptions === "object") {
-      oneFormValue = declineNoun(singularOrNoun, {
-        case: paucalOrOptions.singularCase,
-      });
-    }
-  } else {
-    if (paucalOrOptions == null || plural == null) {
-      throw new TypeError(
-        "Invalid arguments: when providing a string as second argument, paucal and plural forms are required",
-      );
-    }
-    if (typeof paucalOrOptions !== "string") {
-      throw new TypeError(
-        "Invalid arguments: options object can only be used with DeclinableNoun",
-      );
-    }
-    singular = singularOrNoun;
-    paucalForm = paucalOrOptions;
-    pluralForm = plural;
-  }
-
+  const { singular, plural, paucal } = getNumericDeclensionOptions({
+    singularOrNoun,
+    paucalOrOptions,
+    pluralOverride,
+  });
   const countString = count.toString();
   if (count === 1) {
-    if (oneFormValue !== undefined) {
-      return `${countString} ${oneFormValue}`;
-    }
     return `${countString} ${singular}`;
   }
   if (count >= 12 && count <= 14) {
     // Exception for numbers 12, 13 and 14, which always use the plural-many form
-    return `${countString} ${pluralForm}`;
+    return `${countString} ${plural}`;
   }
   const remainder = count % 10;
   const isMany = remainder <= 1 || remainder >= 5;
-  return `${countString} ${isMany ? pluralForm : paucalForm}`;
+  return `${countString} ${isMany ? plural : paucal}`;
 }
