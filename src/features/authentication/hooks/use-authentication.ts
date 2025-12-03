@@ -3,7 +3,6 @@
 import { useAtom } from "jotai";
 import Cookies from "js-cookie";
 import { useEffect } from "react";
-import { toast } from "sonner";
 
 import { fetchMutation } from "@/features/backend";
 import type { LogInResponse, MessageResponse } from "@/features/backend/types";
@@ -32,7 +31,6 @@ interface AuthContextLoggedOut {
 type AuthContext = (AuthContextLoggedIn | AuthContextLoggedOut) & {
   login: (data: LoginFormValues) => Promise<AuthState>;
   logout: (all?: boolean) => Promise<void>;
-  logoutRequest: (all?: boolean) => Promise<void>;
   clearAuthState: () => void;
 };
 
@@ -101,7 +99,7 @@ export function useAuthentication(): AuthContext {
    * @param all if set to true, will invalidate all refresh tokens
    * @throws Error if request fails or response is invalid
    */
-  async function logoutRequest(all = false): Promise<void> {
+  async function logout(all = false): Promise<void> {
     if (authState == null) {
       throw new Error("Cannot log out when not authenticated");
     }
@@ -130,24 +128,10 @@ export function useAuthentication(): AuthContext {
     setAuthState(null);
   }
 
-  /**
-   * Complete logout flow: makes API request and clears state.
-   * For backward compatibility with existing code that calls logout() directly.
-   * @param all if set to true, will invalidate all refresh tokens
-   */
-  async function logout(all = false): Promise<void> {
-    await logoutRequest(all);
-    toast.success(
-      `Wylogowano pomyślnie${all ? " ze wszystkich urządzeń" : ""}.`,
-    );
-    clearAuthState();
-  }
-
   return {
     ...parseAuthState(authState),
     login,
     logout,
-    logoutRequest,
     clearAuthState,
   };
 }
