@@ -16,7 +16,7 @@ import type {
 
 import type { ListItem } from "../types/internal";
 import { ArlItemDragHandle } from "./arl-item-drag-handle";
-import { ToggleButton } from "./toggle-button";
+import { ToggleStatusButton } from "./toggle-status-button";
 
 export interface ItemProps<T extends EditableResource> {
   ref?: Ref<HTMLLIElement>;
@@ -58,8 +58,8 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
         </p>
         <footer className="flex gap-0.5 sm:gap-2">
           <EditButton resource={resource} id={listItem.id} />
-          {metadata.toggle === undefined ? null : (
-            <ToggleButton
+          {metadata.toggle == null ? null : (
+            <ToggleStatusButton
               id={listItem.id}
               resource={resource}
               config={metadata.toggle}
