@@ -573,20 +573,20 @@ export const RESOURCE_METADATA = {
     deletable: false,
     toggle: {
       field: "isActive",
-      states: [
-        {
-          value: false,
-          icon: ArchiveRestore,
-          tooltip: "Aktywuj",
-          variant: "ghost",
-        },
-        {
+      states: {
+        active: {
           value: true,
           icon: Archive,
           tooltip: "Dezaktywuj",
           variant: "destructive-ghost",
         },
-      ],
+        inactive: {
+          value: false,
+          icon: ArchiveRestore,
+          tooltip: "Aktywuj",
+          variant: "ghost",
+        },
+      },
       getToastMessages: (_fromState, toState) => {
         const isDeactivating = toState.value === false;
         return {
@@ -595,7 +595,7 @@ export const RESOURCE_METADATA = {
           error: `Nie udało się ${isDeactivating ? "zdezaktywować" : "aktywować"} tematu powiadomień`,
         };
       },
-    } as ToggleFieldConfig<Resource.NotificationTopics>,
+    },
     itemMapper: (item) => ({
       name: item.topicName,
       shortDescription: item.description,
@@ -636,20 +636,20 @@ export const RESOURCE_METADATA = {
     apiPath: "student_organizations",
     toggle: {
       field: "organizationStatus",
-      states: [
-        {
-          value: OrganizationStatus.Inactive,
-          icon: ArchiveRestore,
-          tooltip: "Przywróć",
-          variant: "ghost",
-        },
-        {
+      states: {
+        active: {
           value: OrganizationStatus.Active,
           icon: Archive,
           tooltip: "Archiwizuj",
           variant: "destructive-ghost",
         },
-      ],
+        inactive: {
+          value: OrganizationStatus.Inactive,
+          icon: ArchiveRestore,
+          tooltip: "Przywróć",
+          variant: "ghost",
+        },
+      },
       getToastMessages: (_fromState, toState) => {
         const isArchiving = toState.value === OrganizationStatus.Inactive;
         return {

@@ -1,8 +1,10 @@
+import type { VariantProps } from "class-variance-authority";
 import type { LucideIcon } from "lucide-react";
 import type { Route } from "next";
 import type { ReactNode } from "react";
 import type { z } from "zod";
 
+import type { buttonVariants } from "@/components/ui/button/variants";
 import type { ListItem } from "@/features/abstract-resource-collection/types";
 import type { AbstractResourceFormInputs } from "@/features/abstract-resource-form/types";
 import type { DatedResource } from "@/features/backend/types";
@@ -26,19 +28,7 @@ export interface ToggleStateConfig<TValue = unknown> {
   /** Tooltip text shown on hover */
   tooltip: string;
   /** Button variant (optional, defaults based on state) */
-  variant?: "default" | "destructive-ghost" | "ghost" | "outline";
-}
-
-/**
- * Toast messages for a toggle action
- */
-export interface ToggleToastMessages {
-  /** Message shown while the API request is processing */
-  loading: string;
-  /** Message shown when toggle succeeds */
-  success: string;
-  /** Message shown when toggle fails */
-  error: string;
+  variant?: VariantProps<typeof buttonVariants>["variant"];
 }
 
 /**
@@ -47,11 +37,11 @@ export interface ToggleToastMessages {
 export interface ToggleFieldConfig<_R extends Resource> {
   /** The field name to toggle (should be boolean or enum field from the schema) */
   field: string;
-  /**
-   * Array of exactly 2 states representing the toggle options.
-   * First state = "off/inactive", Second state = "on/active"
-   */
-  states: readonly [ToggleStateConfig, ToggleStateConfig];
+  /** The two possible states for the toggle. */
+  states: {
+    active: ToggleStateConfig;
+    inactive: ToggleStateConfig;
+  };
   /**
    * Custom toast messages for this toggle.
    * Function receives the current and next state for message customization.
@@ -59,7 +49,11 @@ export interface ToggleFieldConfig<_R extends Resource> {
   getToastMessages: (
     fromState: ToggleStateConfig,
     toState: ToggleStateConfig,
-  ) => ToggleToastMessages;
+  ) => {
+    loading: string;
+    success: string;
+    error: string;
+  };
 }
 
 export type RoutableResource = {
