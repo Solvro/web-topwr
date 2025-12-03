@@ -13,7 +13,6 @@ export type {
   SubmitFormConfirmationMessage,
   ToggleStateConfig,
   ToggleFieldConfig,
-  ToggleToastMessages,
 } from "./internal";
 
 export type {

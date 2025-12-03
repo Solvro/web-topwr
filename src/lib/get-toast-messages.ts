@@ -3,6 +3,10 @@ import { getErrorMessage } from "@/features/backend";
 import { declineNoun } from "@/features/polish";
 import type { Declensions } from "@/features/polish/types";
 import { Resource } from "@/features/resources";
+import type {
+  ToggleStateConfig,
+  ToggleToastMessages,
+} from "@/features/resources";
 
 import { toTitleCase } from "../utils";
 
@@ -20,10 +24,13 @@ const getDefaultToastMessages = (declensions: Declensions) => ({
     success: `Pomyślnie usunięto ${declensions.accusative}!`,
     error: `Wystąpił błąd podczas usuwania ${declensions.genitive}`,
   },
-  toggleArchived: (isArchived: boolean) => ({
-    loading: `Trwa ${isArchived ? "archiwizowanie" : "przywracanie"} ${declensions.genitive}...`,
-    success: `${toTitleCase(declensions.nominative)} została ${isArchived ? "zarchiwizowana" : "przywrócona"}.`,
-    error: `Nie udało się ${isArchived ? "zarchiwizować" : "przywrócić"} ${declensions.genitive}`,
+  toggleState: (
+    _fromState: ToggleStateConfig,
+    _toState: ToggleStateConfig,
+  ): ToggleToastMessages => ({
+    loading: `Trwa zmiana statusu ${declensions.genitive}...`,
+    success: `${toTitleCase(declensions.nominative)} została zaktualizowana.`,
+    error: `Nie udało się zmienić statusu ${declensions.genitive}`,
   }),
 });
 
@@ -40,6 +47,16 @@ const getResourceSpecificToastMessages = (declensions: Declensions) =>
         loading: `Trwa wysyłanie ${declensions.genitive}...`,
         success: `Pomyślnie wysłano ${declensions.accusative}!`,
         error: `Wystąpił błąd podczas wysyłania ${declensions.genitive}.`,
+      },
+    },
+    [Resource.StudentOrganizations]: {
+      toggleState: (_fromState, toState) => {
+        const isArchiving = toState.tooltip === "Przywróć";
+        return {
+          loading: `Trwa ${isArchiving ? "archiwizowanie" : "przywracanie"} ${declensions.genitive}...`,
+          success: `${toTitleCase(declensions.nominative)} została ${isArchiving ? "zarchiwizowana" : "przywrócona"}.`,
+          error: `Nie udało się ${isArchiving ? "zarchiwizować" : "przywrócić"} ${declensions.genitive}`,
+        };
       },
     },
   }) satisfies Partial<ResourceSpecificToastMessages>;
