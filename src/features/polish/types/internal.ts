@@ -28,3 +28,7 @@ export interface Pluralized<T extends Record<string, unknown>> {
   singular: T;
   plural: { [K in keyof T]: T[K] };
 }
+
+export interface NumericDeclensionOptions {
+  singularCase: GrammaticalCase;
+}

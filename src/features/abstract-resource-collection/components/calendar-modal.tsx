@@ -64,7 +64,7 @@ export function CalendarModal({
           <DialogDescription>
             {events.length === 0
               ? "Brak wydarzeń zaplanowanych na ten dzień"
-              : `W tym dniu zaplanowano ${declineNumeric(events.length, "wydarzenie", "wydarzenia", "wydarzeń")}.`}
+              : `W tym dniu zaplanowano ${declineNumeric(events.length, "event")}.`}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4">

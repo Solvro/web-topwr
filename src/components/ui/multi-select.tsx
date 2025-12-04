@@ -38,7 +38,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { declineNumeric } from "@/features/polish";
+import { GrammaticalCase, declineNumeric } from "@/features/polish";
 import { cn } from "@/lib/utils";
 import type { OptionalPromise } from "@/types/helpers";
 
@@ -1254,9 +1254,8 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                         {getAllOptions().length > 20
                           ? ` – ${declineNumeric(
                               getAllOptions().length,
-                              "opcja",
-                              "opcje",
-                              "opcji",
+                              "option",
+                              { singularCase: GrammaticalCase.Accusative },
                             )}`
                           : ""}
                         )
