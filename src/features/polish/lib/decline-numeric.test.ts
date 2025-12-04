@@ -215,7 +215,7 @@ describe("declineNumeric", () => {
     });
   });
 
-  describe("singularCase option", () => {
+  describe("with or without additional options", () => {
     it("should use nominative case when singularCase is set to Nominative", () => {
       // category nominative: kategoria
       expect(
