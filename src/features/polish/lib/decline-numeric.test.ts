@@ -5,7 +5,7 @@ import { Resource } from "@/features/resources/node";
 import { GrammaticalCase } from "../enums";
 import { declineNumeric } from "./decline-numeric";
 
-describe("declineNumeric", () => {
+describe("declineNumeric function", () => {
   describe("with DeclinableNoun overload", () => {
     describe("simple nouns", () => {
       it("should decline feminine noun 'category' correctly", () => {
@@ -151,7 +151,7 @@ describe("declineNumeric", () => {
     });
   });
 
-  describe("with string overload (backward compatibility)", () => {
+  describe("with string overload", () => {
     it("should work with original string parameters", () => {
       expect(declineNumeric(0, "kategorię", "kategorie", "kategorii")).toBe(
         "0 kategorii",
@@ -215,7 +215,7 @@ describe("declineNumeric", () => {
     });
   });
 
-  describe("with or without additional options", () => {
+  describe("with additional options", () => {
     it("should use nominative case when singularCase is set to Nominative", () => {
       // category nominative: kategoria
       expect(
