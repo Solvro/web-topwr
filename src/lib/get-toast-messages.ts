@@ -52,6 +52,12 @@ export const getToastMessages = {
     error: (error: unknown) =>
       getErrorMessage(error, "Nastąpił błąd podczas logowania"),
   },
+  logout: {
+    loading: "Trwa wylogowywanie...",
+    success: "Wylogowano pomyślnie.",
+    error: (error: unknown) =>
+      getErrorMessage(error, "Nastąpił błąd podczas wylogowywania"),
+  },
   object: (declensions: Declensions) => ({
     upload: {
       loading: `Trwa przesyłanie ${declensions.genitive}...`,
