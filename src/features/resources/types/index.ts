@@ -11,6 +11,8 @@ export type {
   ResourceSchemaKey,
   RoutableResource,
   SubmitFormConfirmationMessage,
+  ToggleStateConfig,
+  ToggleFieldConfig,
 } from "./internal";
 
 export type {
