@@ -1,3 +1,5 @@
+import type { LatLngExpression } from "leaflet";
+
 import type { FormInputName } from "@/features/abstract-resource-form/types";
 
 export const UNFILTERABLE_INPUT_TYPES = new Set<FormInputName>(["imageInputs"]);
@@ -10,3 +12,5 @@ export const LIST_RESULTS_PER_PAGE = 10;
 export const WEEKDAY_ABBREVIATIONS = ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"];
 
 export const CALENDAR_MAX_EVENTS_PER_DAY = 5;
+
+export const PWR_COORDINATES = [51.11, 17.06] satisfies LatLngExpression;
