@@ -2,10 +2,10 @@ import { SquarePen } from "lucide-react";
 
 import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
-import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { sanitizeId } from "@/utils";
 
 import type { EditableResource, ResourcePk } from "../types/internal";
+import { getEditButtonProps } from "../utils/get-edit-button-props";
 
 export function EditButton({
   resource,
@@ -14,17 +14,8 @@ export function EditButton({
   resource: EditableResource;
   id: ResourcePk;
 }) {
-  const resourceAccusative = declineNoun(resource, {
-    case: GrammaticalCase.Accusative,
-  });
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      asChild
-      aria-label={`Edytuj ${resourceAccusative}`}
-      tooltip="Edytuj"
-    >
+    <Button asChild {...getEditButtonProps(resource)}>
       <Link href={`/${resource}/edit/${sanitizeId(id)}`}>
         <SquarePen />
       </Link>
