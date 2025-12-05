@@ -37,20 +37,12 @@ export function LogoutButton() {
     },
   );
 
-  const handleLogout = () => {
-    toast.promise(mutateAsync(null), {
-      loading: getToastMessages.logout.loading,
-      success: getToastMessages.logout.success,
-      error: (error) => getToastMessages.logout.error(error),
-    });
-  };
-
   return (
     <Button
       variant="ghost"
       size="icon"
       className="rounded-full"
-      onClick={handleLogout}
+      onClick={() => toast.promise(mutateAsync(null), getToastMessages.logout)}
       disabled={isPending}
       tooltip="Wyloguj się"
     >
