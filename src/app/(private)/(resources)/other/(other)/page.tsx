@@ -4,7 +4,7 @@ import { DashboardButton } from "@/components/presentation/dashboard-button";
 import { AbstractResourceGroup, Resource } from "@/features/resources";
 import type { ResourcePageProps } from "@/types/components";
 
-export default function AboutUsPage(_props: ResourcePageProps) {
+export default function OtherPage(_props: ResourcePageProps) {
   return (
     <AbstractResourceGroup>
       <DashboardButton
