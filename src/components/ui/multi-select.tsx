@@ -378,7 +378,6 @@ function MultiSelectOptionItem({
   return (
     <div className="flex items-center">
       <CommandItem
-        value={option.value}
         onSelect={isReadOnly ? undefined : () => toggleOption(option.value)}
         role="option"
         aria-selected={isSelected}
@@ -736,6 +735,28 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
           option.value.toLowerCase().includes(searchValue.toLowerCase()),
       );
     }, [options, searchValue, searchable, isGroupedOptions]);
+
+    const hasFilteredResults = React.useMemo(() => {
+      if (isGroupedOptions(filteredOptions)) {
+        return filteredOptions.some((group) => group.options.length > 0);
+      }
+      return filteredOptions.length > 0;
+    }, [filteredOptions, isGroupedOptions]);
+
+    const filteredOptionValues = React.useMemo(() => {
+      if (isGroupedOptions(filteredOptions)) {
+        return filteredOptions.flatMap((group) =>
+          group.options.map((option) => option.value),
+        );
+      }
+      return filteredOptions.map((option) => option.value);
+    }, [filteredOptions, isGroupedOptions]);
+
+    const hasSelectedInFiltered = React.useMemo(
+      () =>
+        filteredOptionValues.some((value) => selectedValues.includes(value)),
+      [filteredOptionValues, selectedValues],
+    );
 
     const handleInputKeyDown = (
       event: React.KeyboardEvent<HTMLInputElement>,
@@ -1191,7 +1212,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
             align="start"
             onEscapeKeyDown={() => setIsPopoverOpen(false)}
           >
-            <Command>
+            <Command shouldFilter={false}>
               {searchable && (
                 <CommandInput
                   placeholder="Wyszukaj opcję..."
@@ -1214,85 +1235,96 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                   "overscroll-behavior-y-contain",
                 )}
               >
-                <CommandEmpty>{emptyIndicator || "Brak wyników."}</CommandEmpty>{" "}
-                {!hideSelectAll && !searchValue && (
-                  <CommandGroup>
-                    <CommandItem
-                      key="all"
-                      onSelect={toggleAll}
-                      role="option"
-                      aria-selected={
-                        selectedValues.length ===
-                        getAllOptions().filter((opt) => !opt.disabled).length
-                      }
-                      aria-label={`Select all ${
-                        getAllOptions().length
-                      } options`}
-                      className="cursor-pointer"
-                    >
-                      <div
-                        className={cn(
-                          "border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
-                          selectedValues.length ===
+                {hasFilteredResults ? (
+                  <>
+                    {!hideSelectAll && !searchValue && (
+                      <CommandGroup>
+                        <CommandItem
+                          key="all"
+                          onSelect={toggleAll}
+                          role="option"
+                          aria-selected={
+                            selectedValues.length ===
                             getAllOptions().filter((opt) => !opt.disabled)
                               .length
-                            ? "bg-primary"
-                            : "opacity-50 [&_svg]:invisible",
-                        )}
-                        aria-hidden="true"
-                      >
-                        <CheckIcon className="text-primary-foreground h-4 w-4" />
-                      </div>
-                      <span>
-                        (Wybierz wszystkie
-                        {getAllOptions().length > 20
-                          ? ` – ${declineNumeric(
-                              getAllOptions().length,
-                              "option",
-                              { singularCase: GrammaticalCase.Accusative },
-                            )}`
-                          : ""}
-                        )
-                      </span>
-                    </CommandItem>
-                  </CommandGroup>
-                )}
-                {isGroupedOptions(filteredOptions) ? (
-                  filteredOptions.map((group) => (
-                    <CommandGroup key={group.heading} heading={group.heading}>
-                      {group.options.map((option) => (
-                        <MultiSelectOptionItem
-                          key={option.value}
-                          option={option}
-                          isReadOnly={isReadOnly}
-                          selectedValues={selectedValues}
-                          toggleOption={toggleOption}
-                          setOptionSelected={setOptionSelected}
-                          onEditItem={onEditItem}
-                        />
-                      ))}
-                    </CommandGroup>
-                  ))
+                          }
+                          aria-label={`Select all ${
+                            getAllOptions().length
+                          } options`}
+                          className="cursor-pointer"
+                        >
+                          <div
+                            className={cn(
+                              "border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
+                              selectedValues.length ===
+                                getAllOptions().filter((opt) => !opt.disabled)
+                                  .length
+                                ? "bg-primary"
+                                : "opacity-50 [&_svg]:invisible",
+                            )}
+                            aria-hidden="true"
+                          >
+                            <CheckIcon className="text-primary-foreground h-4 w-4" />
+                          </div>
+                          <span>
+                            (Wybierz wszystkie
+                            {getAllOptions().length > 20
+                              ? ` – ${declineNumeric(
+                                  getAllOptions().length,
+                                  "option",
+                                  { singularCase: GrammaticalCase.Accusative },
+                                )}`
+                              : ""}
+                            )
+                          </span>
+                        </CommandItem>
+                      </CommandGroup>
+                    )}
+                    {isGroupedOptions(filteredOptions) ? (
+                      filteredOptions.map((group) => (
+                        <CommandGroup
+                          key={group.heading}
+                          heading={group.heading}
+                        >
+                          {group.options.map((option) => (
+                            <MultiSelectOptionItem
+                              key={option.value}
+                              option={option}
+                              isReadOnly={isReadOnly}
+                              selectedValues={selectedValues}
+                              toggleOption={toggleOption}
+                              setOptionSelected={setOptionSelected}
+                              onEditItem={onEditItem}
+                            />
+                          ))}
+                        </CommandGroup>
+                      ))
+                    ) : (
+                      <CommandGroup>
+                        {filteredOptions.map((option) => (
+                          <MultiSelectOptionItem
+                            key={option.value}
+                            option={option}
+                            isReadOnly={isReadOnly}
+                            selectedValues={selectedValues}
+                            toggleOption={toggleOption}
+                            setOptionSelected={setOptionSelected}
+                            onEditItem={onEditItem}
+                          />
+                        ))}
+                      </CommandGroup>
+                    )}
+                  </>
                 ) : (
-                  <CommandGroup>
-                    {filteredOptions.map((option) => (
-                      <MultiSelectOptionItem
-                        key={option.value}
-                        option={option}
-                        isReadOnly={isReadOnly}
-                        selectedValues={selectedValues}
-                        toggleOption={toggleOption}
-                        setOptionSelected={setOptionSelected}
-                        onEditItem={onEditItem}
-                      />
-                    ))}
-                  </CommandGroup>
+                  <div className="text-muted-foreground px-3 py-6 text-sm">
+                    {emptyIndicator || "Brak wyników."}
+                  </div>
                 )}
               </CommandList>
-              <CommandSeparator />
+              <Separator className="bg-border" />
               <CommandGroup>
                 <div className="flex items-center justify-between">
-                  {selectedValues.length > 0 && (
+                  {hasSelectedInFiltered && (
                     <>
                       <CommandItem
                         onSelect={handleClear}
