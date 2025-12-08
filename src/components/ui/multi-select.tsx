@@ -378,6 +378,7 @@ function MultiSelectOptionItem({
   return (
     <div className="flex items-center">
       <CommandItem
+        value={option.value}
         onSelect={isReadOnly ? undefined : () => toggleOption(option.value)}
         role="option"
         aria-selected={isSelected}
@@ -1190,7 +1191,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
             align="start"
             onEscapeKeyDown={() => setIsPopoverOpen(false)}
           >
-            <Command shouldFilter={false}>
+            <Command>
               {searchable && (
                 <CommandInput
                   placeholder="Wyszukaj opcję..."
