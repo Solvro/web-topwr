@@ -7,6 +7,7 @@ export default function SksOpeningHoursPage(props: ResourcePageProps) {
     <AbstractResourceList
       resource={Resource.SksOpeningHours}
       sortableFields={[]}
+      parentResource={Resource.MobileConfig}
       {...props}
     />
   );

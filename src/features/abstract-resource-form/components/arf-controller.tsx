@@ -16,6 +16,7 @@ import type { Resource } from "@/features/resources";
 import {
   DeleteButtonWithDialog,
   RESOURCE_SCHEMAS,
+  getFieldValue,
   getResourceMetadata,
   getResourcePk,
 } from "@/features/resources";
@@ -122,7 +123,7 @@ export function ArfController<T extends Resource>({
         // assume that creatable resources in non-embedded forms are routable/editable
         metadata.isSingleton === true
           ? `/${resource as RoutableResource}`
-          : `/${resource as EditableResource}/edit/${sanitizeId(response.data.id)}`,
+          : `/${resource as EditableResource}/edit/${sanitizeId(getFieldValue(response.data, getResourcePk(resource)))}`,
       );
     } else {
       if (wasCreated && relationContext != null) {

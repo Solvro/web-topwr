@@ -1,5 +1,6 @@
 import { SendHorizonal } from "lucide-react";
 import { lazy } from "react";
+import type { ZodString } from "zod";
 
 import { ImageType, Weekday } from "@/config/enums";
 import { POLISH_WEEKDAYS } from "@/features/polish";
@@ -8,6 +9,7 @@ import { getRoundedDate } from "@/utils";
 import {
   ChangeType,
   GuideAuthorRole,
+  Language,
   LinkType,
   OrganizationSource,
   OrganizationStatus,
@@ -17,7 +19,7 @@ import {
   StudiesType,
   UniversityBranch,
 } from "../enums";
-import type { ResourceMetadata } from "../types/internal";
+import type { ResourceMetadata, ResourceSchemaKey } from "../types/internal";
 
 // lazy import needed due to circular dependency
 const NotificationConfirmationMessage = lazy(
@@ -53,6 +55,12 @@ const SELECT_OPTION_LABELS = {
       [GuideAuthorRole.Author]: "Autor",
       [GuideAuthorRole.Redactor]: "Redaktor",
     } satisfies Record<GuideAuthorRole, string>,
+  },
+  SKS_OPENING_HOURS: {
+    LANGUAGE: {
+      [Language.Polish]: "Polski",
+      [Language.English]: "Angielski",
+    },
   },
   LINK_TYPE: {
     [LinkType.Default]: "Strona internetowa",
@@ -636,9 +644,9 @@ export const RESOURCE_METADATA = {
     form: {
       inputs: {
         textInputs: {
-          cmsReferenceNumber: { label: "CMS Reference Number" },
-          daySwapLookahead: { label: "daySwapLookahead" },
-          translatorReferenceNumber: { label: "translatorReferenceNumber" },
+          cmsReferenceNumber: { label: "Numer referencyjny CMS" },
+          daySwapLookahead: { label: "Wyprzedzenie zamiany dni" },
+          translatorReferenceNumber: { label: "Numer referencyjny tłumaczeń" },
         },
       },
       defaultValues: {
@@ -729,22 +737,29 @@ export const RESOURCE_METADATA = {
   },
   [Resource.SksOpeningHours]: {
     apiPath: "sks_opening_hours",
-    pk: "language",
+    pk: "language" as ResourceSchemaKey<Resource.SksOpeningHours, ZodString>,
     itemMapper: (item) => ({
-      name: item.language,
+      name: SELECT_OPTION_LABELS.SKS_OPENING_HOURS.LANGUAGE[item.language],
+      shortDescription: `${item.canteen} | ${item.cafe}`,
     }),
     form: {
       inputs: {
         textInputs: {
-          language: { label: "Język" },
           canteen: { label: "Godziny otwarcia stołówki" },
           cafe: { label: "Godziny otwarcia kawiarni" },
         },
+        selectInputs: {
+          language: {
+            label: "Język",
+            optionEnum: Language,
+            optionLabels: SELECT_OPTION_LABELS.SKS_OPENING_HOURS.LANGUAGE,
+          },
+        },
       },
       defaultValues: {
-        language: "",
         canteen: "",
         cafe: "",
+        language: null as unknown as Language,
       },
     },
   },

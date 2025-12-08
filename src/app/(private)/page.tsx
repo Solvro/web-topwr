@@ -4,12 +4,12 @@ import {
   Building,
   Calendar,
   CalendarCog,
-  CircleEllipsis,
   CircleQuestionMark,
   Megaphone,
   Notebook,
   RefreshCcw,
   University,
+  Wrench,
 } from "lucide-react";
 
 import { DashboardButton } from "@/components/presentation/dashboard-button";
@@ -59,10 +59,7 @@ export default async function Home() {
             resource={Resource.AcademicSemesters}
             icon={CalendarCog}
           />
-          <DashboardButton
-            resource={Resource.MobileConfig}
-            icon={CircleEllipsis}
-          />
+          <DashboardButton resource={Resource.MobileConfig} icon={Wrench} />
         </div>
       </div>
     </div>
