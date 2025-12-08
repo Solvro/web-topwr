@@ -1,4 +1,8 @@
-import type { DateObject, EventCardType, MappedCalendarData } from "../types/internal";
+import type {
+  DateObject,
+  EventCardType,
+  MappedCalendarData,
+} from "../types/internal";
 import { formatDateObject } from "./format-date-object";
 
 export function getEventsForDay(

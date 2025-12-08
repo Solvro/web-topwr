@@ -1,4 +1,5 @@
-import { Resource } from "@/features/resources/node";
+import { Weekday } from "@/config/enums";
+import { Resource } from "@/features/resources/enums";
 import type { RecordIntersection } from "@/types/helpers";
 import { quoteText } from "@/utils";
 
@@ -9,7 +10,6 @@ import type {
   Pluralized,
 } from "../types/internal";
 import { REUSABLE_DECLENSIONS } from "./reusable-declensions";
-import { Weekday } from "@/config/enums";
 
 /** A dictionary of Polish language declensions of all resource names & other nouns, as well as their genders for use with determiners. */
 export const SIMPLE_NOUN_DECLENSIONS = {

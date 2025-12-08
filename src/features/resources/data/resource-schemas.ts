@@ -3,17 +3,20 @@ import type { AppSchema } from "@/types/schemas";
 import { Resource } from "../enums";
 import { AboutUsLinkSchema } from "../schemas/about-us-link-schema";
 import { AboutUsSchema } from "../schemas/about-us-schema";
+import { AcademicSemesterSchema } from "../schemas/academic-semester-schema";
 import { BannerSchema } from "../schemas/banner-schema";
 import { CalendarEventSchema } from "../schemas/calendar-event-schema";
 import { ChangeScreenshotsSchema } from "../schemas/change-screenshots-schema";
 import { ChangesSchema } from "../schemas/changes-schema";
 import { ContributorSchema } from "../schemas/contributor-schema";
 import { ContributorSocialLinkSchema } from "../schemas/contributor-social-link-schema";
+import { DaySwapSchema } from "../schemas/day-swap-schema";
 import { DepartmentLinkSchema } from "../schemas/department-link-schema";
 import { DepartmentSchema } from "../schemas/department-schema";
 import { GuideArticleSchema } from "../schemas/guide-article-schema";
 import { GuideAuthorSchema } from "../schemas/guide-author-schema";
 import { GuideQuestionSchema } from "../schemas/guide-question-schema";
+import { HolidaySchema } from "../schemas/holiday-schema";
 import { MajorSchema } from "../schemas/major-schema";
 import { MilestonesSchema } from "../schemas/milestones-schema";
 import { NotificationSchema } from "../schemas/notification-schema";
@@ -24,9 +27,6 @@ import { StudentOrganizationSchema } from "../schemas/student-organization-schem
 import { StudentOrganizationTagSchema } from "../schemas/student-organization-tag-schema";
 import { VersionScreenshotsSchema } from "../schemas/version-screenshots-schema";
 import { VersionsSchema } from "../schemas/versions-schema";
-import { AcademicSemesterSchema } from "../schemas/academic-semester-schema";
-import { DaySwapSchema } from "../schemas/day-swap-schema";
-import { HolidaySchema } from "../schemas/holiday-schema";
 
 export const RESOURCE_SCHEMAS = {
   [Resource.AboutUs]: AboutUsSchema,

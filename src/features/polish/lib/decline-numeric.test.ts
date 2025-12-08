@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { Resource } from "@/features/resources/node";
+import { Resource } from "@/features/resources/enums";
 
 import { GrammaticalCase } from "../enums";
 import { declineNumeric } from "./decline-numeric";

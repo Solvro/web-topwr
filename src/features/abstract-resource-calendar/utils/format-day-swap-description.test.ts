@@ -7,11 +7,11 @@ import { formatDaySwapDescription } from "./format-day-swap-description";
 describe("formatDaySwapDescription", () => {
   it("should format Monday with even day correctly", () => {
     const result = formatDaySwapDescription(Weekday.Monday, true);
-    expect(result).toBe("parzysty poniedziałek");
+    expect(result).toBe("Parzysty poniedziałek");
   });
 
   it("should format Wednesday (feminine) with odd day correctly", () => {
     const result = formatDaySwapDescription(Weekday.Wednesday, false);
-    expect(result).toBe("nieparzysta środa");
+    expect(result).toBe("Nieparzysta środa");
   });
 });

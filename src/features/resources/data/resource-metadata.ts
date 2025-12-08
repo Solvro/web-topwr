@@ -2,6 +2,7 @@ import { SendHorizonal } from "lucide-react";
 import { lazy } from "react";
 
 import { ImageType, Weekday } from "@/config/enums";
+import { POLISH_WEEKDAYS } from "@/features/polish";
 import { getRoundedDate } from "@/utils";
 
 import {
@@ -17,7 +18,6 @@ import {
   UniversityBranch,
 } from "../enums";
 import type { ResourceMetadata } from "../types/internal";
-import { POLISH_WEEKDAYS } from "@/features/polish";
 
 // lazy import needed due to circular dependency
 const NotificationConfirmationMessage = lazy(
