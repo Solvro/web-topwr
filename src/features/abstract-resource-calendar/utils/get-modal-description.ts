@@ -25,7 +25,7 @@ export function getModalDescription(
 
     return count === 0
       ? `Brak ${declineNoun(resource, { case: GrammaticalCase.Genitive, plural: true })}`
-      : `Znaleziono ${declineNumeric(count, resource)}.`;
+      : `Utworzono ${declineNumeric(count, resource)}.`;
   }
 
   if (relatedResources.length === 0) {
