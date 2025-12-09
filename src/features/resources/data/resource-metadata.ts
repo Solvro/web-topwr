@@ -2,6 +2,7 @@ import { Archive, ArchiveRestore, SendHorizonal } from "lucide-react";
 import { lazy } from "react";
 
 import { ImageType } from "@/config/enums";
+import { getToastMessages } from "@/lib/get-toast-messages";
 import { getRoundedDate } from "@/utils";
 
 import {
@@ -587,14 +588,10 @@ export const RESOURCE_METADATA = {
           variant: "ghost",
         },
       },
-      getToastMessages: (_fromState, toState) => {
-        const isDeactivating = toState.value === false;
-        return {
-          loading: `Trwa ${isDeactivating ? "dezaktywacja" : "aktywacja"} tematu powiadomień...`,
-          success: `Temat powiadomień został ${isDeactivating ? "zdezaktywowany" : "aktywowany"}.`,
-          error: `Nie udało się ${isDeactivating ? "zdezaktywować" : "aktywować"} tematu powiadomień`,
-        };
-      },
+      getToastMessages: (_fromState, toState) =>
+        getToastMessages
+          .resource(Resource.NotificationTopics)
+          .toggleState(_fromState, toState),
     },
     itemMapper: (item) => ({
       name: item.topicName,
@@ -650,14 +647,10 @@ export const RESOURCE_METADATA = {
           variant: "ghost",
         },
       },
-      getToastMessages: (_fromState, toState) => {
-        const isArchiving = toState.value === OrganizationStatus.Inactive;
-        return {
-          loading: `Trwa ${isArchiving ? "archiwizowanie" : "przywracanie"} organizacji studenckiej...`,
-          success: `Organizacja studencka została ${isArchiving ? "zarchiwizowana" : "przywrócona"}.`,
-          error: `Nie udało się ${isArchiving ? "zarchiwizować" : "przywrócić"} organizacji studenckiej`,
-        };
-      },
+      getToastMessages: (_fromState, toState) =>
+        getToastMessages
+          .resource(Resource.StudentOrganizations)
+          .toggleState(_fromState, toState),
     } as ToggleFieldConfig<Resource.StudentOrganizations>,
     itemMapper: (item) => ({
       name: item.name,

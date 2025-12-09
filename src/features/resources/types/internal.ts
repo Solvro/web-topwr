@@ -36,7 +36,7 @@ export interface ToggleStateConfig<TValue = unknown> {
  */
 export interface ToggleFieldConfig<_R extends Resource> {
   /** The field name to toggle (should be boolean or enum field from the schema) */
-  field: string;
+  field: ResourceSchemaKey<_R>;
   /** The two possible states for the toggle. */
   states: {
     active: ToggleStateConfig;

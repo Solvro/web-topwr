@@ -14,7 +14,7 @@ import type {
 import { useRouter } from "@/hooks/use-router";
 import { sanitizeId } from "@/utils";
 
-export function ToggleStatusButton<R extends Resource>({
+export function ToggleStatusButton<T extends Resource>({
   id,
   resource,
   config,
@@ -22,20 +22,20 @@ export function ToggleStatusButton<R extends Resource>({
   onValueChange,
 }: {
   id: number | string;
-  resource: R;
-  config: ToggleFieldConfig<R>;
+  resource: T;
+  config: ToggleFieldConfig<T>;
   currentValue: unknown;
   onValueChange?: (newValue: unknown) => void;
 }) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  type ModifyResponseType = ModifyResourceResponse<typeof resource>;
+  type ModifyResponseType = ModifyResourceResponse<T>;
 
   const { mutateAsync, isPending } = useMutationWrapper<
     ModifyResponseType,
-    Partial<ResourceFormValues<R>>
-  >(`toggle-${resource}-${config.field}-${String(id)}`, async (body) => {
+    Partial<ResourceFormValues<T>>
+  >(`toggle__${resource}__${String(id)}__${config.field}`, async (body) => {
     const result = await fetchMutation<ModifyResponseType>(sanitizeId(id), {
       method: "PATCH",
       body,
@@ -72,7 +72,7 @@ export function ToggleStatusButton<R extends Resource>({
       aria-label={label}
       size="icon"
       onClick={() => {
-        const body = {} as Partial<ResourceFormValues<R>>;
+        const body = {} as Partial<ResourceFormValues<T>>;
         set(body, config.field, nextState.value);
 
         toast.promise(
