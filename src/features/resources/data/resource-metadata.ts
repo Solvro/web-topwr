@@ -158,10 +158,12 @@ export const RESOURCE_METADATA = {
           [Resource.DaySwaps]: {
             type: RelationType.OneToMany,
             foreignKey: "academicCalendarId",
+            dateFields: ["date"],
           },
           [Resource.Holidays]: {
             type: RelationType.OneToMany,
             foreignKey: "academicCalendarId",
+            dateFields: ["startDate", "lastDate"],
           },
         },
       },

@@ -3,7 +3,10 @@
 import { SquarePen } from "lucide-react";
 import type { ReactNode } from "react";
 
-import type { ArfSheetContextType } from "@/features/abstract-resource-form/types";
+import type {
+  ArfSheetContextType,
+  ArfSheetFormProps,
+} from "@/features/abstract-resource-form/types";
 import type { Resource } from "@/features/resources";
 import {
   DeleteButtonWithDialog,
@@ -14,9 +17,7 @@ import type {
   ResourceRelation,
 } from "@/features/resources/types";
 
-import type { SheetFormProps } from "../types/internal";
-
-export function SheetCard<T extends Resource>({
+export function SheetCard<T extends Resource, L extends ResourceRelation<T>>({
   resource,
   event,
   sheet,
@@ -26,11 +27,11 @@ export function SheetCard<T extends Resource>({
   children,
 }: {
   resource: ResourceRelation<T>;
-  event: ResourceDataType<T>;
+  event: ResourceDataType<L>;
   clickable: boolean;
   parentResourceData: ResourceDataType<T>;
   sheet: ArfSheetContextType<T>;
-  formProps: SheetFormProps<T>;
+  formProps: ArfSheetFormProps<L>;
   children?: ReactNode;
 }) {
   return (

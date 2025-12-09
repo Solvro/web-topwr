@@ -7,6 +7,7 @@ import type { Dispatch, ReactNode, SetStateAction } from "react";
 import type { Resource } from "@/features/resources";
 import type {
   ResourceDataType,
+  ResourceDefaultValues,
   ResourcePk,
   ResourceRelation,
 } from "@/features/resources/types";
@@ -55,4 +56,10 @@ export interface ArfSheetContextType<T extends Resource> {
     options: Omit<ArfSheetDataContent<T>, "form">,
     ...formProps: Parameters<typeof renderAbstractResourceForm>
   ) => void;
+}
+
+export interface ArfSheetFormProps<T extends Resource> {
+  resource: T;
+  className?: string;
+  defaultValues?: ResourceDefaultValues<T>;
 }

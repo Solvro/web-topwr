@@ -11,10 +11,10 @@ export default function DaySwapsPage(props: ResourcePageProps) {
     <AbstractResourceCalendar
       resource={Resource.AcademicSemesters}
       dataMapper={academicCalendarMapper}
-      clickable={true}
+      clickable
       {...props}
     >
-      <AcademicSemesterListButton resource={Resource.AcademicSemesters} />
+      <AcademicSemesterListButton />
     </AbstractResourceCalendar>
   );
 }

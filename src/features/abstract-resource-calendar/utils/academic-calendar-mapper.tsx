@@ -1,4 +1,4 @@
-import { Resource } from "@/features/resources";
+import type { Resource } from "@/features/resources";
 import type { ResourceDataWithRelations } from "@/features/resources/types";
 
 import { AcademicSemesterCard } from "../components/arc-academic-semester-card";
@@ -22,7 +22,6 @@ export function academicCalendarMapper(
         key={semester.id}
         semester={semester}
         clickable={clickable}
-        resource={Resource.AcademicSemesters}
       />
     );
 

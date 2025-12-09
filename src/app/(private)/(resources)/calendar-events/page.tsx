@@ -10,7 +10,7 @@ export default function CalendarEventsPage(props: ResourcePageProps) {
     <AbstractResourceCalendar
       resource={Resource.CalendarEvents}
       dataMapper={eventCalendarMapper}
-      clickable={true}
+      clickable
       {...props}
     />
   );

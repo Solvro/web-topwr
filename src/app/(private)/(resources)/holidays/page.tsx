@@ -14,7 +14,7 @@ export default function HolidaysPage(props: ResourcePageProps) {
       clickable={true}
       {...props}
     >
-      <AcademicSemesterListButton resource={Resource.AcademicSemesters} />
+      <AcademicSemesterListButton />
     </AbstractResourceCalendar>
   );
 }
