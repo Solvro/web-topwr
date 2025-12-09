@@ -1,11 +1,11 @@
 import { z } from "zod";
 
-import { IsoTimestampSchema, RequiredStringSchema } from "@/schemas";
+import { RequiredStringSchema, StringDateSchema } from "@/schemas";
 
 export const AcademicSemesterSchema = z.object({
   name: RequiredStringSchema,
-  semesterStartDate: IsoTimestampSchema,
-  examSessionStartDate: IsoTimestampSchema,
-  examSessionLastDate: IsoTimestampSchema,
+  semesterStartDate: StringDateSchema,
+  examSessionStartDate: StringDateSchema,
+  examSessionLastDate: StringDateSchema,
   isFirstWeekEven: z.boolean(),
 });

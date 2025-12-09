@@ -1,14 +1,14 @@
 import { z } from "zod";
 
 import {
-  IsoTimestampSchema,
   NumericIdSchema,
   RequiredStringSchema,
+  StringDateSchema,
 } from "@/schemas";
 
 export const HolidaySchema = z.object({
   academicCalendarId: NumericIdSchema,
-  startDate: IsoTimestampSchema,
-  lastDate: IsoTimestampSchema,
+  startDate: StringDateSchema,
+  lastDate: StringDateSchema,
   description: RequiredStringSchema,
 });

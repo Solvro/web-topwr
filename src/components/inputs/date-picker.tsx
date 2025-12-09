@@ -1,6 +1,6 @@
 "use client";
 
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { pl } from "date-fns/locale/pl";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useState } from "react";
@@ -25,7 +25,10 @@ export function DatePicker({
   onChange: (date: string | null) => void;
   disabled?: boolean;
 }) {
-  const date = isEmptyValue(value) ? null : new Date(value);
+  const date = isEmptyValue(value)
+    ? null
+    : parse(value, "yyyy-MM-dd", new Date());
+
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -52,7 +55,7 @@ export function DatePicker({
           selected={date ?? undefined}
           captionLayout="dropdown"
           onSelect={(newValue) => {
-            onChange(newValue?.toISOString() ?? null);
+            onChange(newValue == null ? null : format(newValue, "yyyy-MM-dd"));
             setIsOpen(false);
           }}
         />

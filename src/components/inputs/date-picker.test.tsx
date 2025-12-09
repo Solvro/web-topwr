@@ -14,7 +14,9 @@ function renderDatePicker(initialValue?: Date) {
   const screen = render(
     <InputComponentWrapper
       component={DatePicker}
-      initialValue={initialValue?.toISOString()}
+      initialValue={
+        initialValue == null ? undefined : format(initialValue, "yyyy-MM-dd")
+      }
     />,
   );
   const user = userEvent.setup();
