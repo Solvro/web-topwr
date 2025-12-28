@@ -1,8 +1,10 @@
+import type { VariantProps } from "class-variance-authority";
 import type { LucideIcon } from "lucide-react";
 import type { Route } from "next";
 import type { ReactNode } from "react";
 import type { z } from "zod";
 
+import type { buttonVariants } from "@/components/ui/button/variants";
 import type { ListItem } from "@/features/abstract-resource-collection/types";
 import type { AbstractResourceFormInputs } from "@/features/abstract-resource-form/types";
 import type { DatedResource } from "@/features/backend/types";
@@ -14,6 +16,45 @@ import type { Resource } from "../enums";
 import type { ResourceDataWithRelations } from "./relations";
 
 export type ResourcePk = string | number;
+
+/**
+ * Configuration for a single state in a toggle (e.g., "Active" or "Inactive")
+ */
+export interface ToggleStateConfig<TValue = unknown> {
+  /** The value this state represents (boolean or enum value) */
+  value: TValue;
+  /** Icon to display for this state */
+  icon: LucideIcon;
+  /** Tooltip text shown on hover */
+  tooltip: string;
+  /** Button variant (optional, defaults based on state) */
+  variant?: VariantProps<typeof buttonVariants>["variant"];
+}
+
+/**
+ * Configuration for a toggleable field on a resource
+ */
+export interface ToggleFieldConfig<_R extends Resource> {
+  /** The field name to toggle (should be boolean or enum field from the schema) */
+  field: ResourceSchemaKey<_R>;
+  /** The two possible states for the toggle. */
+  states: {
+    active: ToggleStateConfig;
+    inactive: ToggleStateConfig;
+  };
+  /**
+   * Custom toast messages for this toggle.
+   * Function receives the current and next state for message customization.
+   */
+  getToastMessages: (
+    fromState: ToggleStateConfig,
+    toState: ToggleStateConfig,
+  ) => {
+    loading: string;
+    success: string;
+    error: string;
+  };
+}
 
 export type RoutableResource = {
   [R in Resource]: `/${R}` extends Route ? R : never;
@@ -101,6 +142,12 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
   orderable?: boolean;
   /** Whether the resource can be deleted by the user. Defaults to true. */
   deletable?: boolean;
+  /**
+   * Configuration for a toggleable field in the resource list view.
+   * Creates a button that switches between two states.
+   * Limited to one toggle per resource for simplicity.
+   */
+  toggle?: ToggleFieldConfig<R>;
   /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */
   itemMapper: (item: UnorderableResourceDataType<R>) => Omit<ListItem, "id">; // use the UnorderableResourceDataType here to avoid circular type reference
   form: {

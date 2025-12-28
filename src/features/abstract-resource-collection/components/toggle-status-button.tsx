@@ -1,76 +1,96 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Archive, ArchiveRestore } from "lucide-react";
+import { set } from "react-hook-form";
 import { toast } from "sonner";
+import type { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { fetchMutation, getKey, useMutationWrapper } from "@/features/backend";
 import type { ModifyResourceResponse } from "@/features/backend/types";
 import { declineNoun } from "@/features/polish";
-import type { Resource } from "@/features/resources";
-import { OrganizationStatus } from "@/features/resources";
+import { getFieldValue } from "@/features/resources";
+import type {
+  Resource,
+  ResourceFormValues,
+  ResourceSchemaKey,
+  ToggleFieldConfig,
+} from "@/features/resources";
 import { useRouter } from "@/hooks/use-router";
-import { getToastMessages } from "@/lib/get-toast-messages";
 import { sanitizeId } from "@/utils";
 
-// TODO: make this more generic to support other resources with property toggles
-export function ToggleOrganizationStatusButton({
+export function ToggleStatusButton<T extends Resource>({
   id,
   resource,
-  organizationStatus,
-  onStatusChange,
+  config,
+  currentValue,
+  onValueChange,
 }: {
-  id: number;
-  resource: Resource;
-  organizationStatus: OrganizationStatus;
-  onStatusChange?: (newStatus: OrganizationStatus) => void;
+  id: number | string;
+  resource: T;
+  config: ToggleFieldConfig<T>;
+  currentValue: unknown;
+  onValueChange?: (newValue: unknown) => void;
 }) {
   const router = useRouter();
-  const isActive = organizationStatus === OrganizationStatus.Active;
-
-  type ModifyResponseType = ModifyResourceResponse<typeof resource>;
-
   const queryClient = useQueryClient();
+
+  type ModifyResponseType = ModifyResourceResponse<T>;
+
   const { mutateAsync, isPending } = useMutationWrapper<
     ModifyResponseType,
-    { organizationStatus: OrganizationStatus }
-  >(`toggle-organization-status__${resource}__${String(id)}`, async (body) => {
+    Partial<ResourceFormValues<T>>
+  >(`toggle__${resource}__${String(id)}__${config.field}`, async (body) => {
     const result = await fetchMutation<ModifyResponseType>(sanitizeId(id), {
       method: "PATCH",
       body,
       resource,
     });
+
     await queryClient.invalidateQueries({
       queryKey: [getKey.query.resourceList(resource)],
       exact: false,
     });
+
     router.refresh();
-    onStatusChange?.(body.organizationStatus);
+    const fieldValue = getFieldValue(
+      body,
+      config.field as unknown as ResourceSchemaKey<
+        T,
+        z.ZodString | z.ZodNumber
+      >,
+    ) as unknown;
+    if (fieldValue !== undefined) {
+      onValueChange?.(fieldValue);
+    }
+
     return result;
   });
 
+  // Determine current and next state
+  const isActive = currentValue === config.states.active.value;
+  const currentState = isActive ? config.states.active : config.states.inactive;
+  const nextState = isActive ? config.states.inactive : config.states.active;
+
   const declensions = declineNoun(resource);
-  const tooltip = isActive ? "Archiwizuj" : "Przywróć";
-  const label = `${tooltip} ${declensions.accusative}`;
+  const label = `${currentState.tooltip} ${declensions.accusative}`;
 
   return (
     <Button
-      variant={isActive ? "destructive-ghost" : "ghost"}
+      variant={currentState.variant ?? "ghost"}
       loading={isPending}
-      tooltip={tooltip}
+      tooltip={currentState.tooltip}
       aria-label={label}
       size="icon"
       onClick={() => {
+        const body = {} as Partial<ResourceFormValues<T>>;
+        set(body, config.field, nextState.value);
+
         toast.promise(
-          mutateAsync({
-            organizationStatus: isActive
-              ? OrganizationStatus.Inactive
-              : OrganizationStatus.Active,
-          }),
-          getToastMessages.resource(resource).toggleArchived(isActive),
+          mutateAsync(body),
+          config.getToastMessages(currentState, nextState),
         );
       }}
     >
-      {isActive ? <Archive /> : <ArchiveRestore />}
+      <currentState.icon />
     </Button>
   );
 }

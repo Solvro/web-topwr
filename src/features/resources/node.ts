@@ -10,5 +10,12 @@ export {
   UniversityBranch,
 } from "./enums";
 
+export type {
+  ResourceFormValues,
+  ResourceSchemaKey,
+  ToggleFieldConfig,
+  ToggleStateConfig,
+} from "./types";
+
 export * from "./utils/get-resource-metadata";
 export * from "./utils/get-recursive-relations";

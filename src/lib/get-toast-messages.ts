@@ -2,7 +2,8 @@ import type { AuthState } from "@/features/authentication/types";
 import { getErrorMessage } from "@/features/backend";
 import { declineNoun } from "@/features/polish";
 import type { Declensions } from "@/features/polish/types";
-import { Resource } from "@/features/resources";
+import { OrganizationStatus, Resource } from "@/features/resources";
+import type { ToggleStateConfig } from "@/features/resources";
 
 import { toTitleCase } from "../utils";
 
@@ -20,10 +21,13 @@ const getDefaultToastMessages = (declensions: Declensions) => ({
     success: `Pomyślnie usunięto ${declensions.accusative}!`,
     error: `Wystąpił błąd podczas usuwania ${declensions.genitive}`,
   },
-  toggleArchived: (isArchived: boolean) => ({
-    loading: `Trwa ${isArchived ? "archiwizowanie" : "przywracanie"} ${declensions.genitive}...`,
-    success: `${toTitleCase(declensions.nominative)} została ${isArchived ? "zarchiwizowana" : "przywrócona"}.`,
-    error: `Nie udało się ${isArchived ? "zarchiwizować" : "przywrócić"} ${declensions.genitive}`,
+  toggleState: (
+    _fromState: ToggleStateConfig,
+    _toState: ToggleStateConfig,
+  ) => ({
+    loading: `Trwa zmiana statusu ${declensions.genitive}...`,
+    success: `${toTitleCase(declensions.nominative)} została zaktualizowana.`,
+    error: `Nie udało się zmienić statusu ${declensions.genitive}`,
   }),
 });
 
@@ -40,6 +44,26 @@ const getResourceSpecificToastMessages = (declensions: Declensions) =>
         loading: `Trwa wysyłanie ${declensions.genitive}...`,
         success: `Pomyślnie wysłano ${declensions.accusative}!`,
         error: `Wystąpił błąd podczas wysyłania ${declensions.genitive}.`,
+      },
+    },
+    [Resource.StudentOrganizations]: {
+      toggleState: (_fromState, toState) => {
+        const isArchiving = toState.value === OrganizationStatus.Inactive;
+        return {
+          loading: `Trwa ${isArchiving ? "archiwizowanie" : "przywracanie"} ${declensions.genitive}...`,
+          success: `${toTitleCase(declensions.nominative)} została ${isArchiving ? "zarchiwizowana" : "przywrócona"}.`,
+          error: `Nie udało się ${isArchiving ? "zarchiwizować" : "przywrócić"} ${declensions.genitive}`,
+        };
+      },
+    },
+    [Resource.NotificationTopics]: {
+      toggleState: (_fromState, toState) => {
+        const isDeactivating = toState.value === false;
+        return {
+          loading: `Trwa ${isDeactivating ? "dezaktywacja" : "aktywacja"} tematu ${declensions.nominative}...`,
+          success: `Temat ${declensions.nominative} został ${isDeactivating ? "zdezaktywowany" : "aktywowany"}.`,
+          error: `Nie udało się ${isDeactivating ? "zdezaktywować" : "aktywować"} tematu ${declensions.nominative}`,
+        };
       },
     },
   }) satisfies Partial<ResourceSpecificToastMessages>;

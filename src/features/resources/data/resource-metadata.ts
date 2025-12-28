@@ -1,7 +1,8 @@
-import { SendHorizonal } from "lucide-react";
+import { Archive, ArchiveRestore, SendHorizonal } from "lucide-react";
 import { lazy } from "react";
 
 import { ImageType } from "@/config/enums";
+import { getToastMessages } from "@/lib/get-toast-messages";
 import { getRoundedDate } from "@/utils";
 
 import {
@@ -16,7 +17,7 @@ import {
   StudiesType,
   UniversityBranch,
 } from "../enums";
-import type { ResourceMetadata } from "../types/internal";
+import type { ResourceMetadata, ToggleFieldConfig } from "../types/internal";
 
 // lazy import needed due to circular dependency
 const NotificationConfirmationMessage = lazy(
@@ -571,6 +572,27 @@ export const RESOURCE_METADATA = {
     apiPath: "firebase/topics",
     pk: "topicName",
     deletable: false,
+    toggle: {
+      field: "isActive",
+      states: {
+        active: {
+          value: true,
+          icon: Archive,
+          tooltip: "Dezaktywuj",
+          variant: "destructive-ghost",
+        },
+        inactive: {
+          value: false,
+          icon: ArchiveRestore,
+          tooltip: "Aktywuj",
+          variant: "ghost",
+        },
+      },
+      getToastMessages: (_fromState, toState) =>
+        getToastMessages
+          .resource(Resource.NotificationTopics)
+          .toggleState(_fromState, toState),
+    },
     itemMapper: (item) => ({
       name: item.topicName,
       shortDescription: item.description,
@@ -609,6 +631,27 @@ export const RESOURCE_METADATA = {
   },
   [Resource.StudentOrganizations]: {
     apiPath: "student_organizations",
+    toggle: {
+      field: "organizationStatus",
+      states: {
+        active: {
+          value: OrganizationStatus.Active,
+          icon: Archive,
+          tooltip: "Archiwizuj",
+          variant: "destructive-ghost",
+        },
+        inactive: {
+          value: OrganizationStatus.Inactive,
+          icon: ArchiveRestore,
+          tooltip: "Przywróć",
+          variant: "ghost",
+        },
+      },
+      getToastMessages: (_fromState, toState) =>
+        getToastMessages
+          .resource(Resource.StudentOrganizations)
+          .toggleState(_fromState, toState),
+    } as ToggleFieldConfig<Resource.StudentOrganizations>,
     itemMapper: (item) => ({
       name: item.name,
       shortDescription: item.shortDescription,
