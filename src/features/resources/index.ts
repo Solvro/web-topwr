@@ -15,3 +15,4 @@ export * from "./utils/get-resource-array-input-resources";
 export * from "./utils/get-resource-pk";
 export * from "./utils/get-resource-query-name";
 export * from "./utils/get-resource-relation-definitions";
+export * from "./utils/get-resource-pk-value";

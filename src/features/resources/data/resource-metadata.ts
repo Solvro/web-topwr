@@ -1,6 +1,5 @@
 import { SendHorizonal } from "lucide-react";
 import { lazy } from "react";
-import type { ZodString } from "zod";
 
 import { ImageType, Weekday } from "@/config/enums";
 import { POLISH_WEEKDAYS } from "@/features/polish";
@@ -19,7 +18,7 @@ import {
   StudiesType,
   UniversityBranch,
 } from "../enums";
-import type { ResourceMetadata, ResourceSchemaKey } from "../types/internal";
+import type { ResourceMetadata } from "../types/internal";
 
 // lazy import needed due to circular dependency
 const NotificationConfirmationMessage = lazy(
@@ -737,7 +736,7 @@ export const RESOURCE_METADATA = {
   },
   [Resource.SksOpeningHours]: {
     apiPath: "sks_opening_hours",
-    pk: "language" as ResourceSchemaKey<Resource.SksOpeningHours, ZodString>,
+    pk: "language",
     itemMapper: (item) => ({
       name: SELECT_OPTION_LABELS.SKS_OPENING_HOURS.LANGUAGE[item.language],
       shortDescription: `${item.canteen} | ${item.cafe}`,

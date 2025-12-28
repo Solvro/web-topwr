@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { get } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
-import { getResourcePk } from "@/features/resources";
+import { getResourcePkValue } from "@/features/resources";
 import { tryParseNumber } from "@/utils";
 
 import { ArfRelationContext } from "../context/arf-relation-context";
@@ -50,15 +49,11 @@ export function ArfSheetContent<T extends Resource>({
             case: GrammaticalCase.Genitive,
           })} ${resourceDeclensions.genitive}.`,
         ];
-
-  const parentResourceId = get(
+  const parentResourceId = getResourcePkValue(
+    resource,
     content.parentResourceData,
-    getResourcePk(resource),
-  ) as string | null;
-  if (
-    parentResourceId == null ||
-    !["string", "number"].includes(typeof parentResourceId)
-  ) {
+  );
+  if (!["string", "number"].includes(typeof parentResourceId)) {
     throw new Error("Parent resource ID is missing or invalid.");
   }
 

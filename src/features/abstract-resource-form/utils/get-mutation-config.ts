@@ -1,10 +1,9 @@
 import { FilePlus2, Save } from "lucide-react";
-import { get } from "react-hook-form";
 
 import {
   RelationType,
   getResourceMetadata,
-  getResourcePk,
+  getResourcePkValue,
   getResourceQueryName,
   getResourceRelationDefinitions,
 } from "@/features/resources";
@@ -36,14 +35,7 @@ const getMultiInstanceEditConfig = <T extends Resource>(
   resource: T,
   defaultValues: ResourceDataType<T>,
 ) => {
-  const unsanitizedPkValue = (get(defaultValues, getResourcePk(resource)) ??
-    defaultValues.id) as string | undefined;
-  if (unsanitizedPkValue == null || unsanitizedPkValue === "") {
-    throw new Error(
-      `Cannot obtain primary key value while editing resource: ${JSON.stringify(defaultValues)}`,
-    );
-  }
-  const pkValue = sanitizeId(unsanitizedPkValue);
+  const pkValue = String(getResourcePkValue(resource, defaultValues));
   return {
     ...BASE_EDIT_CONFIG,
     mutationKey: `update__${resource}__${pkValue}`,
