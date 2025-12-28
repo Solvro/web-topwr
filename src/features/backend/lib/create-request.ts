@@ -31,8 +31,8 @@ export function createRequest<T extends Resource>(
 
   const endpointPrefix = getResourceEndpointPrefix(resource);
   let queryParameters = getRelationQueryParameters(resource, includeRelations);
-  if (queryParameters) {
-    queryParameters = (endpoint.includes("?") ? "&" : "?") + queryParameters;
+  if (queryParameters !== "") {
+    queryParameters = `${endpoint.includes("?") ? "&" : "?"}${queryParameters}`;
   }
 
   const url = isAbsolutePath(endpoint)

@@ -62,7 +62,6 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
               {[...getItemBadges(item, resource, relatedResources)].map(
                 (badge) => {
                   const { className, style } = getBadgeStyles(badge);
-
                   return (
                     <Badge
                       key={badge.displayField}

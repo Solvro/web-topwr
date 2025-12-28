@@ -163,7 +163,9 @@ export function getItemBadges<T extends Resource>(
         break;
       }
       case RelationType.OneToMany: {
-        logger.warn("Badges for one to many relations are not implemented yet");
+        logger.error(
+          "Badges for one to many relations are not implemented yet - possible configuration error",
+        );
         break;
       }
       default: {

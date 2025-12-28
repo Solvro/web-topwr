@@ -146,6 +146,8 @@ export function OrderableItemWrapper<T extends OrderableResource>({
     );
   }
 
+  const itemProps = { resource, relatedResources, orderable: true };
+
   return (
     <DndContext
       id={`dnd-context-${resource}`}
@@ -164,25 +166,16 @@ export function OrderableItemWrapper<T extends OrderableResource>({
       }}
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
-        <ArlItems
-          items={items as ResourceDataType<EditableResource>[]}
-          resource={resource}
-          relatedResources={
-            relatedResources as ResourceRelations<EditableResource>
-          }
-          orderable
+        <ArlItems<T>
+          items={items}
           ItemComponent={SortableItem}
+          {...itemProps}
         />
       </SortableContext>
       <DragOverlay>
         {activeId == null ? null : (
           <div className="opacity-80 drop-shadow-xl">
-            <ArlItem
-              item={getActiveItem()}
-              resource={resource}
-              relatedResources={relatedResources}
-              orderable
-            />
+            <ArlItem item={getActiveItem()} {...itemProps} />
           </div>
         )}
       </DragOverlay>
