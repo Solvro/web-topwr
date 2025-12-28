@@ -18,6 +18,7 @@ export function DashboardButton({
   label: labelOverride,
   resource,
   longLabel = false,
+  preserveCase = false,
 }: VariantProps<typeof Button> & {
   icon: LucideIcon;
   className?: string;
@@ -27,8 +28,15 @@ export function DashboardButton({
         label?: string;
         resource: RoutableResource;
         longLabel?: boolean;
+        preserveCase?: boolean;
       }
-    | { href: Route; label: string; resource?: never; longLabel?: never }
+    | {
+        href: Route;
+        label: string;
+        resource?: never;
+        longLabel?: never;
+        preserveCase?: never;
+      }
   )) {
   const [href, label] =
     resource == null
@@ -72,7 +80,7 @@ export function DashboardButton({
               : undefined,
           }}
         >
-          {toTitleCase(label)}
+          {preserveCase ? label : toTitleCase(label)}
         </h2>
       </Link>
     </Button>

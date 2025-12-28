@@ -645,7 +645,7 @@ export const RESOURCE_METADATA = {
       inputs: {
         textInputs: {
           cmsReferenceNumber: { label: "Numer referencyjny CMS" },
-          daySwapLookahead: { label: "Wyprzedzenie zamiany dni" },
+          daySwapLookahead: { label: "Horyzont czasowy zamiany dni" },
           translatorReferenceNumber: { label: "Numer referencyjny tłumaczeń" },
         },
       },

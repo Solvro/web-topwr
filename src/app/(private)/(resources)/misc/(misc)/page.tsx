@@ -1,10 +1,14 @@
 import { Link, Settings } from "lucide-react";
 
 import { DashboardButton } from "@/components/presentation/dashboard-button";
-import { AbstractResourceGroup, Resource } from "@/features/resources";
+import {
+  AbstractResourceGroup,
+  Resource,
+  getManagingResourceLabel,
+} from "@/features/resources";
 import type { ResourcePageProps } from "@/types/components";
 
-export default function OtherPage(_props: ResourcePageProps) {
+export default function MobileConfigPage(_props: ResourcePageProps) {
   return (
     <AbstractResourceGroup>
       <DashboardButton
@@ -17,8 +21,11 @@ export default function OtherPage(_props: ResourcePageProps) {
       <DashboardButton
         resource={Resource.SksOpeningHours}
         icon={Settings}
-        longLabel
+        label={getManagingResourceLabel(Resource.SksOpeningHours, {
+          firstWordOnly: false,
+        })}
         variant="outline"
+        preserveCase
       />
     </AbstractResourceGroup>
   );

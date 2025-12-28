@@ -4,6 +4,10 @@ import type { WrapperProps } from "@/types/components";
 
 export default function SksOpeningHoursLayout(props: WrapperProps) {
   return (
-    <AbstractResourceLayout resource={Resource.SksOpeningHours} {...props} />
+    <AbstractResourceLayout
+      resource={Resource.SksOpeningHours}
+      labelOptions={{ firstWordOnly: false }}
+      {...props}
+    />
   );
 }
