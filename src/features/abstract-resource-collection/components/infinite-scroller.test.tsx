@@ -2,6 +2,7 @@ import { waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
+import { fetchRelatedResources } from "@/features/abstract-resource-form";
 import { Resource } from "@/features/resources";
 import { getLoadingIndicator, renderWithProviders } from "@/tests/unit";
 
@@ -14,8 +15,13 @@ const resource = Resource.StudentOrganizations;
 async function renderInfiniteScroll() {
   const user = userEvent.setup();
   const initialData = await fetchPaginatedResources(resource);
+  const relatedResources = await fetchRelatedResources(resource);
   const screen = renderWithProviders(
-    <InfiniteScroller resource={resource} initialData={initialData} />,
+    <InfiniteScroller
+      resource={resource}
+      initialData={initialData}
+      relatedResources={relatedResources}
+    />,
   );
   const showMoreButton = screen.getByRole("button", {
     name: /załaduj więcej/i,

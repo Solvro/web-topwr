@@ -31,6 +31,7 @@ import type {
   ResourcePk,
 } from "@/features/resources/types";
 import { getToastMessages } from "@/lib/get-toast-messages";
+import type { ResourceRelations } from "@/types/components";
 import { sanitizeId } from "@/utils";
 
 import { ArlItem } from "./arl-item";
@@ -60,9 +61,11 @@ function calculateNewSortValue(
 
 export function OrderableItemWrapper<T extends OrderableResource>({
   resource,
+  relatedResources,
   data,
 }: {
   resource: T;
+  relatedResources: ResourceRelations<T>;
   data: ResourceDataType<T>[];
 }) {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -143,6 +146,8 @@ export function OrderableItemWrapper<T extends OrderableResource>({
     );
   }
 
+  const itemProps = { resource, relatedResources, orderable: true };
+
   return (
     <DndContext
       id={`dnd-context-${resource}`}
@@ -161,17 +166,16 @@ export function OrderableItemWrapper<T extends OrderableResource>({
       }}
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
-        <ArlItems
+        <ArlItems<T>
           items={items}
-          resource={resource}
-          orderable
           ItemComponent={SortableItem}
+          {...itemProps}
         />
       </SortableContext>
       <DragOverlay>
         {activeId == null ? null : (
           <div className="opacity-80 drop-shadow-xl">
-            <ArlItem item={getActiveItem()} resource={resource} orderable />
+            <ArlItem item={getActiveItem()} {...itemProps} />
           </div>
         )}
       </DragOverlay>
@@ -182,9 +186,11 @@ export function OrderableItemWrapper<T extends OrderableResource>({
 function SortableItem<T extends EditableResource>({
   item,
   resource,
+  relatedResources,
 }: {
   item: ResourceDataType<T>;
   resource: T;
+  relatedResources: ResourceRelations<T>;
 }) {
   const { setNodeRef, transform, transition } = useSortable({
     id: getResourcePkValue(resource, item),
@@ -197,7 +203,13 @@ function SortableItem<T extends EditableResource>({
 
   return (
     <div style={style}>
-      <ArlItem ref={setNodeRef} item={item} resource={resource} orderable />
+      <ArlItem
+        ref={setNodeRef}
+        item={item}
+        resource={resource}
+        relatedResources={relatedResources}
+        orderable
+      />
     </div>
   );
 }
