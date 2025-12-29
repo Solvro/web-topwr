@@ -1,7 +1,8 @@
 import { SendHorizonal } from "lucide-react";
 import { lazy } from "react";
 
-import { ImageType } from "@/config/enums";
+import { ImageType, Weekday } from "@/config/enums";
+import { POLISH_WEEKDAYS } from "@/features/polish";
 import { getRoundedDate } from "@/utils";
 
 import {
@@ -127,6 +128,51 @@ export const RESOURCE_METADATA = {
       defaultValues: {
         link: "",
         linkType: LinkType.Default,
+      },
+    },
+  },
+  [Resource.AcademicSemesters]: {
+    queryName: "academicCalendar",
+    apiPath: "academic_calendars",
+    itemMapper: (item) => ({
+      name: item.name,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa semestru" },
+        },
+        dateInputs: {
+          semesterStartDate: { label: "Data rozpoczęcia semestru" },
+          examSessionStartDate: {
+            label: "Data rozpoczęcia sesji egzaminacyjnej",
+          },
+          examSessionLastDate: {
+            label: "Data zakończenia sesji egzaminacyjnej",
+          },
+        },
+        checkboxInputs: {
+          isFirstWeekEven: { label: "Czy pierwszy tydzień jest parzysty?" },
+        },
+        relationInputs: {
+          [Resource.DaySwaps]: {
+            type: RelationType.OneToMany,
+            foreignKey: "academicCalendarId",
+            dateFields: ["date"],
+          },
+          [Resource.Holidays]: {
+            type: RelationType.OneToMany,
+            foreignKey: "academicCalendarId",
+            dateFields: ["startDate", "lastDate"],
+          },
+        },
+      },
+      defaultValues: {
+        name: "",
+        semesterStartDate: "",
+        examSessionStartDate: "",
+        examSessionLastDate: "",
+        isFirstWeekEven: false,
       },
     },
   },
@@ -311,6 +357,36 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.DaySwaps]: {
+    queryName: "daySwaps",
+    apiPath: "day_swaps",
+    itemMapper: (item) => ({
+      name: item.date,
+    }),
+    form: {
+      inputs: {
+        dateInputs: {
+          date: { label: "Data" },
+        },
+        selectInputs: {
+          changedWeekday: {
+            label: "Zmieniony dzień tygodnia",
+            optionEnum: Weekday,
+            optionLabels: POLISH_WEEKDAYS,
+          },
+        },
+        checkboxInputs: {
+          changedDayIsEven: { label: "Czy zmieniony dzień jest parzysty?" },
+        },
+      },
+      defaultValues: {
+        date: "",
+        changedWeekday: Weekday.Monday,
+        changedDayIsEven: false,
+        academicCalendarId: -1,
+      },
+    },
+  },
   [Resource.Departments]: {
     apiPath: "departments",
     itemMapper: (item) => ({
@@ -465,6 +541,31 @@ export const RESOURCE_METADATA = {
         title: "",
         answer: "",
         articleId: -1,
+      },
+    },
+  },
+  [Resource.Holidays]: {
+    queryName: "holidays",
+    apiPath: "holidays",
+    itemMapper: (item) => ({
+      name: item.description,
+      shortDescription: `${item.startDate} - ${item.lastDate}`,
+    }),
+    form: {
+      inputs: {
+        textareaInputs: {
+          description: { label: "Opis" },
+        },
+        dateInputs: {
+          startDate: { label: "Data rozpoczęcia" },
+          lastDate: { label: "Data zakończenia" },
+        },
+      },
+      defaultValues: {
+        startDate: "",
+        lastDate: "",
+        description: "",
+        academicCalendarId: -1,
       },
     },
   },

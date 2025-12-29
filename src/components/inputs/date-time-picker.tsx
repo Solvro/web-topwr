@@ -1,6 +1,6 @@
 "use client";
 
-import { toDate } from "date-fns";
+import { format, isValid, parse } from "date-fns";
 
 import { isEmptyValue } from "@/utils";
 
@@ -17,7 +17,9 @@ export function DateTimePicker({
   onChange: (date: string | null) => void;
   disabled?: boolean;
 }) {
-  const date = isEmptyValue(value) ? null : toDate(value);
+  const date = isEmptyValue(value) ? null : new Date(value);
+
+  const formatedDateValue = date == null ? null : format(date, "yyyy-MM-dd");
 
   const handleDateChange = (dateValue: string | null) => {
     if (dateValue === null) {
@@ -25,7 +27,10 @@ export function DateTimePicker({
       return;
     }
 
-    const selectedDate = new Date(dateValue);
+    const selectedDate = parse(dateValue, "yyyy-MM-dd", new Date());
+    if (!isValid(selectedDate)) {
+      return;
+    }
 
     date == null
       ? selectedDate.setHours(0, 0, 0, 0)
@@ -42,7 +47,7 @@ export function DateTimePicker({
   return (
     <InputRow>
       <DatePicker
-        value={value}
+        value={formatedDateValue}
         disabled={disabled}
         onChange={handleDateChange}
       />

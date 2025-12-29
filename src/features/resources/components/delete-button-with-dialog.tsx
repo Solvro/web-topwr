@@ -82,7 +82,7 @@ export function DeleteButtonWithDialog({
       <AlertDialogTrigger asChild>
         <Button
           variant="destructive-ghost"
-          size="sm"
+          size={showLabel ? "sm" : "icon"}
           aria-label={label}
           tooltip={showLabel ? undefined : label}
           {...props}
