@@ -2,7 +2,7 @@ import { isDeclinableNoun } from "@/features/polish";
 import { isEmptyValue } from "@/utils";
 
 import { SORT_DIRECTION_SEPARATOR } from "../constants";
-import type { SortFiltersFormValues } from "../types/sort-filters";
+import type { SortFiltersFormValues } from "../types/internal";
 
 /** Converts the sort filter values into search parameters. */
 export const serializeSortFilters = (values: SortFiltersFormValues) => {

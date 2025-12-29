@@ -13,12 +13,12 @@ import type {
   OrderableResource,
   ResourceDataType,
 } from "@/features/resources/types";
-
-import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
 import type {
   FilterDefinitions,
   SortFiltersFormValuesNarrowed,
-} from "../types/sort-filters";
+} from "@/features/sort-filters/types";
+
+import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
 import { ArlItems } from "./arl-items";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
 
