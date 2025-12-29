@@ -1,4 +1,4 @@
-import { sanitizeId } from "@/utils";
+import { isEmptyValue, sanitizeId } from "@/utils";
 
 import type { Resource } from "../enums";
 import type { ResourceDataType } from "../types";
@@ -11,7 +11,7 @@ export function getResourcePkValue<T extends Resource>(
 ): string {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const unsanitizedPkValue = getFieldValue(item, getResourcePk(resource));
-  if (unsanitizedPkValue == null || unsanitizedPkValue === "") {
+  if (isEmptyValue(unsanitizedPkValue)) {
     throw new Error(
       `Cannot obtain primary key value; resource: ${resource} item: ${JSON.stringify(item)}`,
     );
