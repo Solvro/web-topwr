@@ -43,35 +43,35 @@ function getManyToOneRelationBadge<
     >,
   );
 
-  for (const relatedResource of relatedResources[relationResource]) {
-    if (relatedResource.id === foreignKeyValue) {
-      const labelValue = getFieldValue(
-        relatedResource,
-        badgeConfig.displayField,
-      );
+  const relatedResource = relatedResources[relationResource].find(
+    (resource) => resource.id === foreignKeyValue,
+  );
 
-      if (typeof labelValue !== "string") {
-        return null;
-      }
-
-      if (badgeConfig.colorField == null) {
-        return { displayField: labelValue };
-      }
-
-      const colorFieldValue = getFieldValue(
-        relatedResource,
-        badgeConfig.colorField,
-      );
-
-      if (!ColorValueSchema.safeParse(colorFieldValue).success) {
-        logger.warn({ labelValue }, "Invalid color value for badge");
-        return null;
-      }
-
-      return { displayField: labelValue, color: colorFieldValue };
-    }
+  if (relatedResource == null) {
+    return null;
   }
-  return null;
+
+  const labelValue = getFieldValue(relatedResource, badgeConfig.displayField);
+
+  if (typeof labelValue !== "string") {
+    return null;
+  }
+
+  if (badgeConfig.colorField == null) {
+    return { displayField: labelValue };
+  }
+
+  const colorFieldValue = getFieldValue(
+    relatedResource,
+    badgeConfig.colorField,
+  );
+
+  if (!ColorValueSchema.safeParse(colorFieldValue).success) {
+    logger.warn({ labelValue }, "Invalid color value for badge");
+    return null;
+  }
+
+  return { displayField: labelValue, color: colorFieldValue };
 }
 
 function getManyToManyRelationBadge<
