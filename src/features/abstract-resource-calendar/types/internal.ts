@@ -4,10 +4,8 @@ import type { Resource } from "@/features/resources";
 import type {
   ResourceDataType,
   ResourceDataWithRelations,
-  ResourceDefaultValues,
   ResourcePk,
 } from "@/features/resources/types";
-import type { ResourceFormProps } from "@/types/components";
 
 export interface DateObject {
   year: number;
@@ -49,7 +47,3 @@ export type CalendarDataMapper<T extends Resource> = (
 export interface CalendarModalContextValue {
   openSemesters: () => void;
 }
-
-export type SheetFormProps<T extends Resource> = ResourceFormProps<T> & {
-  defaultValues: ResourceDefaultValues<T>;
-};

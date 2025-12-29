@@ -45,8 +45,7 @@ interface PivotDataDefinitionBase {
 export interface RelationPivotDataDefinition extends PivotDataDefinitionBase {
   relatedResource: Resource;
 }
-export type EnumPivotDataDefinition = PivotDataDefinitionBase &
-  SelectInputOptions;
+type EnumPivotDataDefinition = PivotDataDefinitionBase & SelectInputOptions;
 export type PivotDataDefinition =
   | RelationPivotDataDefinition
   | EnumPivotDataDefinition;

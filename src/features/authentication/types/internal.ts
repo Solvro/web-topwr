@@ -14,7 +14,7 @@ import type { LoginSchema } from "../schemas/login-schema";
 import type { UserSchema } from "../schemas/user-schema";
 
 export type RequestCookie = NextRequestCookie;
-export type ResponseCookie = NextResponseCookie;
+type ResponseCookie = NextResponseCookie;
 
 export type CookieOptions = Partial<ResponseCookie> & Cookies.CookieAttributes;
 

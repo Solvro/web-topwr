@@ -18,7 +18,7 @@ type BaseZodType<T extends z.ZodTypeAny> = T extends
  * Resolves the Zod type located at path P in schema S, included recursively nested paths.
  * @example type NotificationTitle = ResolvePath<ResourceSchema<Resource.Notifications>, "notification.title"> // yields ZodString
  */
-export type ResolvePath<
+type ResolvePath<
   S extends AppSchema,
   P extends Path<z.infer<S>>,
 > = P extends `${infer K}.${infer V}`

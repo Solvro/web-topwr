@@ -5,10 +5,4 @@ import type { LogPayloadSchemaServer } from "../schemas/log-payload-schema.serve
 
 export type LogLevel = (typeof LOG_LEVELS)[number];
 
-export interface LogObject {
-  level: number;
-  time: number;
-  msg: string;
-}
-
 export type LogPayloadServer = z.infer<typeof LogPayloadSchemaServer>;

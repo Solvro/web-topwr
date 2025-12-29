@@ -34,7 +34,7 @@ export type OrderableResource = {
     : never;
 }[Resource] &
   RoutableResource;
-export type ResourceSchema<T extends Resource> = (typeof RESOURCE_SCHEMAS)[T];
+type ResourceSchema<T extends Resource> = (typeof RESOURCE_SCHEMAS)[T];
 export type ResourceFormValues<T extends Resource> = z.infer<ResourceSchema<T>>;
 type PossiblyOrderable<T extends Resource, U> = T extends OrderableResource
   ? U & { order: number }
