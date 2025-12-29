@@ -4,15 +4,17 @@ import type {
   GetResourcesResponsePaginated,
 } from "@/features/backend/types";
 import type { Resource } from "@/features/resources";
-
-import { LIST_RESULTS_PER_PAGE } from "../constants";
-import { SORT_FILTER_DEFAULT_VALUES } from "../data/sort-filter-default-values";
-import { SortDirection } from "../enums";
+import {
+  SORT_FILTER_DEFAULT_VALUES,
+  SortDirection,
+  sanitizeFilteredFields,
+} from "@/features/sort-filters";
 import type {
   FilterDefinitions,
   SortFiltersFormValuesNarrowed,
-} from "../types/sort-filters";
-import { sanitizeFilteredFields } from "../utils/sanitize-filtered-fields";
+} from "@/features/sort-filters/types";
+
+import { LIST_RESULTS_PER_PAGE } from "../constants";
 
 export async function fetchPaginatedResources<
   T extends Resource,

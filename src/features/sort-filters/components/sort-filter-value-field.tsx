@@ -26,7 +26,7 @@ import { FilterType } from "../enums";
 import type {
   FilterDefinitions,
   SortFiltersFormValues,
-} from "../types/sort-filters";
+} from "../types/internal";
 
 // TODO: remove this rule from @solvro/config
 /* eslint-disable @typescript-eslint/restrict-template-expressions */

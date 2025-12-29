@@ -8,15 +8,17 @@ import type {
   EditableResource,
   RoutableResource,
 } from "@/features/resources/types";
+import {
+  SortFiltersPopover,
+  deserializeSortFilters,
+  getResourceFilterDefinitions,
+  parseSortParameter,
+} from "@/features/sort-filters";
+import type { SortFiltersFormValuesNarrowed } from "@/features/sort-filters/types";
 import type { SearchParameters } from "@/types/components";
 
 import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
-import type { SortFiltersFormValuesNarrowed } from "../types/sort-filters";
-import { deserializeSortFilters } from "../utils/deserialize-sort-filters";
-import { getResourceFilterDefinitions } from "../utils/get-resource-filter-definitions";
-import { parseSortParameter } from "../utils/parse-sort-parameter";
 import { InfiniteScroller } from "./infinite-scroller";
-import { SortFiltersPopover } from "./sort-filters-popover";
 
 export async function AbstractResourceList<
   T extends CreatableResource & EditableResource,

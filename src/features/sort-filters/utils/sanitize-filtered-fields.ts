@@ -2,7 +2,7 @@ import { logger } from "@/features/logging";
 import { isEmptyValue } from "@/utils";
 
 import { FilterType } from "../enums";
-import type { FilterDefinitions, FilteredField } from "../types/sort-filters";
+import type { FilterDefinitions, FilteredField } from "../types/internal";
 
 /** Converts the client-side search parameters to backend-compatible filters. */
 export const sanitizeFilteredFields = (

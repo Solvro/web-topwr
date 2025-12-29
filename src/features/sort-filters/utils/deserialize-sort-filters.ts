@@ -1,7 +1,7 @@
 import type { SearchParameters } from "@/types/components";
 import { isEmptyValue, typedEntries } from "@/utils";
 
-import type { FilterDefinitions, FilteredField } from "../types/sort-filters";
+import type { FilterDefinitions, FilteredField } from "../types/internal";
 
 /** Parses the sort filters from client-side search parameters. */
 export const deserializeSortFilters = (

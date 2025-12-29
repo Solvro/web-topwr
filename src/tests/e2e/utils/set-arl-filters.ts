@@ -1,19 +1,19 @@
 import type { Page } from "@playwright/test";
 
+import { declineNoun } from "@/features/polish";
+import type { Resource } from "@/features/resources";
+import type { ResourceSchemaKey } from "@/features/resources/types";
 import {
   SORT_DIRECTION_NAMES,
   SORT_FILTER_DEFAULT_VALUES,
   SORT_FILTER_LABEL_DECLENSION_CASES,
   getResourceFilterDefinitions,
   serializeSortFilters,
-} from "@/features/abstract-resource-collection/node";
+} from "@/features/sort-filters/node";
 import type {
   FilteredField,
   SortFiltersFormValuesNarrowed,
-} from "@/features/abstract-resource-collection/types";
-import { declineNoun } from "@/features/polish";
-import type { Resource } from "@/features/resources";
-import type { ResourceSchemaKey } from "@/features/resources/types";
+} from "@/features/sort-filters/types";
 
 import { selectOptionByLabel } from "./select-option-by-label";
 

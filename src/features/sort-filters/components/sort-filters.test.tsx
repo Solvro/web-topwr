@@ -13,7 +13,7 @@ import { SORT_FILTER_DEFAULT_VALUES } from "../data/sort-filter-default-values";
 import { SORT_FILTER_LABEL_DECLENSION_CASES } from "../data/sort-filter-label-declension-cases";
 import { SORT_FILTER_PLACEHOLDER } from "../data/sort-filter-placeholder";
 import { FilterType, SortDirection } from "../enums";
-import type { SortFiltersFormValuesNarrowed } from "../types/sort-filters";
+import type { SortFiltersFormValuesNarrowed } from "../types/internal";
 import { SortFilters } from "./sort-filters";
 
 const MOCK_SORTABLE_FIELDS = ["description"] satisfies DeclinableNoun[];

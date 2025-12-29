@@ -38,7 +38,7 @@ import type {
   FilterDefinitions,
   SortFiltersFormValues,
   SortFiltersFormValuesNarrowed,
-} from "../types/sort-filters";
+} from "../types/internal";
 import { serializeSortFilters } from "../utils/serialize-sort-filters";
 import { FieldGroup } from "./field-group";
 import { FilterValueField } from "./sort-filter-value-field";

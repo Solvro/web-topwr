@@ -15,7 +15,7 @@ import { typedEntries, typedFromEntries } from "@/utils";
 import { UNFILTERABLE_INPUT_TYPES } from "../constants";
 import { FILTER_TYPE_MAPPINGS } from "../data/filter-type-mappings";
 import { FilterType } from "../enums";
-import type { FilterDefinitions } from "../types/sort-filters";
+import type { FilterDefinitions } from "../types/internal";
 
 /** Obtains the filter definitions for a specific resource. */
 export const getResourceFilterDefinitions = async <T extends Resource>(
