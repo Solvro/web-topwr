@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { cn } from "@/lib/utils";
 
 import type { ItemBadge } from "../types/badges";
@@ -21,13 +22,13 @@ export function getBadgeStyles(badge: ItemBadge) {
     style: {
       "--badge-base": badge.color,
 
-      "--color-light-text": `oklch(from var(--badge-base) ${String(LIGHTNESS_LIGHT)} c h)`,
-      "--color-light-border": `oklch(from var(--badge-base) ${String(LIGHTNESS_LIGHT)} c h)`,
-      "--color-light-bg": `oklch(from var(--badge-base) ${String(LIGHTNESS_LIGHT)} c h / ${String(BADGE_BG_OPACITY)})`,
+      "--color-light-text": `oklch(from var(--badge-base) ${LIGHTNESS_LIGHT} c h)`,
+      "--color-light-border": `oklch(from var(--badge-base) ${LIGHTNESS_LIGHT} c h)`,
+      "--color-light-bg": `oklch(from var(--badge-base) ${LIGHTNESS_LIGHT} c h / ${BADGE_BG_OPACITY})`,
 
-      "--color-dark-text": `oklch(from var(--badge-base) ${String(LIGHTNESS_DARK)} c h)`,
-      "--color-dark-border": `oklch(from var(--badge-base) ${String(LIGHTNESS_DARK)} c h)`,
-      "--color-dark-bg": `oklch(from var(--badge-base) ${String(LIGHTNESS_DARK)} c h / ${String(BADGE_BG_OPACITY)})`,
+      "--color-dark-text": `oklch(from var(--badge-base) ${LIGHTNESS_DARK} c h)`,
+      "--color-dark-border": `oklch(from var(--badge-base) ${LIGHTNESS_DARK} c h)`,
+      "--color-dark-bg": `oklch(from var(--badge-base) ${LIGHTNESS_DARK} c h / ${BADGE_BG_OPACITY})`,
     },
   };
 }

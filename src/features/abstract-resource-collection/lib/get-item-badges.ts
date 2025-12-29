@@ -108,15 +108,13 @@ export function getItemBadges<T extends Resource>(
   item: ResourceDataType<T>,
   resource: T,
   relatedResources: ResourceRelations<T>,
-): Set<ItemBadge> {
-  const badges = new Set<ItemBadge>();
-
+): ItemBadge[] {
   const badgeDefinitions = getResourceBadgeDefinitions(resource);
-
   if (badgeDefinitions == null) {
-    return badges;
+    return [];
   }
 
+  const badges = new Set<ItemBadge>();
   const relationDefinitions = getResourceRelationDefinitions(resource);
 
   for (const [badgeResource, badgeConfig] of typedEntries(badgeDefinitions)) {
@@ -164,6 +162,7 @@ export function getItemBadges<T extends Resource>(
       }
       case RelationType.OneToMany: {
         logger.error(
+          { resource, item, relatedResources },
           "Badges for one to many relations are not implemented yet - possible configuration error",
         );
         break;
@@ -173,5 +172,5 @@ export function getItemBadges<T extends Resource>(
       }
     }
   }
-  return badges;
+  return [...badges];
 }

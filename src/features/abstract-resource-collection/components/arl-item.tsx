@@ -59,20 +59,18 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
         <div className="flex min-w-0 grow flex-col justify-center gap-0.5">
           <header className="flex flex-col gap-y-1">
             <div className="hidden space-x-2 overflow-hidden md:block">
-              {[...getItemBadges(item, resource, relatedResources)].map(
-                (badge) => {
-                  const { className, style } = getBadgeStyles(badge);
-                  return (
-                    <Badge
-                      key={badge.displayField}
-                      className={cn("py-0.5", className)}
-                      style={style}
-                    >
-                      {badge.displayField}
-                    </Badge>
-                  );
-                },
-              )}
+              {getItemBadges(item, resource, relatedResources).map((badge) => {
+                const { className, style } = getBadgeStyles(badge);
+                return (
+                  <Badge
+                    key={badge.displayField}
+                    className={cn("py-0.5", className)}
+                    style={style}
+                  >
+                    {badge.displayField}
+                  </Badge>
+                );
+              })}
             </div>
             <h2 className="text-lg font-semibold text-balance">
               {listItem.name}
