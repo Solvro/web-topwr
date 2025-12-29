@@ -122,7 +122,7 @@ export function ArfController<T extends Resource>({
         // assume that creatable resources in non-embedded forms are routable/editable
         metadata.isSingleton === true
           ? `/${resource as RoutableResource}`
-          : `/${resource as EditableResource}/edit/${String(getResourcePkValue(resource, response.data))}`,
+          : `/${resource as EditableResource}/edit/${getResourcePkValue(resource, response.data)}`,
       );
     } else {
       if (wasCreated && relationContext != null) {

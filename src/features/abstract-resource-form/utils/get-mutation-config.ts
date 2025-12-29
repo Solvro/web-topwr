@@ -35,7 +35,7 @@ const getMultiInstanceEditConfig = <T extends Resource>(
   resource: T,
   defaultValues: ResourceDataType<T>,
 ) => {
-  const pkValue = String(getResourcePkValue(resource, defaultValues));
+  const pkValue = getResourcePkValue(resource, defaultValues);
   return {
     ...BASE_EDIT_CONFIG,
     mutationKey: `update__${resource}__${pkValue}`,

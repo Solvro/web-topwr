@@ -8,7 +8,14 @@ import { getResourcePk } from "./get-resource-pk";
 export function getResourcePkValue<T extends Resource>(
   resource: T,
   item: ResourceDataType<T>,
-): string | number {
+): string {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const unsanitizedPkValue = getFieldValue(item, getResourcePk(resource));
+  if (unsanitizedPkValue == null || unsanitizedPkValue === "") {
+    throw new Error(
+      `Cannot obtain primary key value; resource: ${resource} item: ${JSON.stringify(item)}`,
+    );
+  }
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  return sanitizeId(getFieldValue(item, getResourcePk(resource)));
+  return sanitizeId(unsanitizedPkValue);
 }

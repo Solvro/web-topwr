@@ -1,4 +1,4 @@
-import { Link, Settings } from "lucide-react";
+import { Clock, Wrench } from "lucide-react";
 
 import { DashboardButton } from "@/components/presentation/dashboard-button";
 import {
@@ -13,14 +13,14 @@ export default function MobileConfigPage(_props: ResourcePageProps) {
     <AbstractResourceGroup>
       <DashboardButton
         resource={Resource.MobileConfig}
-        icon={Link}
+        icon={Wrench}
         href={`/${Resource.MobileConfig}/edit`}
-        longLabel
+        label="Zarządzanie ustawieniami"
         variant="outline"
       />
       <DashboardButton
         resource={Resource.SksOpeningHours}
-        icon={Settings}
+        icon={Clock}
         label={getManagingResourceLabel(Resource.SksOpeningHours, {
           firstWordOnly: false,
         })}
