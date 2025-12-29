@@ -43,6 +43,10 @@ jobs:
         run: npm run lint
         if: always()
 
+      - name: Check for unused dependencies
+        run: npm run knip
+        if: always()
+
       - name: Run unit tests
         run: npm run test:unit
         if: always()

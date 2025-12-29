@@ -7,7 +7,6 @@ export type {
   ResourceDataType,
   ResourceDefaultValues,
   ResourceFormValues,
-  ResourceSchema,
   ResourceSchemaKey,
   RoutableResource,
   SubmitFormConfirmationMessage,

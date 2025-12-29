@@ -1,4 +1,4 @@
-import { getMonthByDate } from "@/features/abstract-resource-collection";
+import { getMonthByDate } from "./get-month-by-date";
 
 export function getMonthByNumberAndYear(
   month: number,
