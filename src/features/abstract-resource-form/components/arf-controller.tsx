@@ -18,6 +18,7 @@ import {
   RESOURCE_SCHEMAS,
   getResourceMetadata,
   getResourcePk,
+  getResourcePkValue,
 } from "@/features/resources";
 import type {
   EditableResource,
@@ -36,7 +37,6 @@ import type {
   ResourceFormProps,
   ResourceRelations,
 } from "@/types/components";
-import { sanitizeId } from "@/utils";
 
 import { useArfRelation } from "../hooks/use-arf-relation";
 import { ArfSheetProvider } from "../providers/arf-sheet-provider";
@@ -122,7 +122,7 @@ export function ArfController<T extends Resource>({
         // assume that creatable resources in non-embedded forms are routable/editable
         metadata.isSingleton === true
           ? `/${resource as RoutableResource}`
-          : `/${resource as EditableResource}/edit/${sanitizeId(response.data.id)}`,
+          : `/${resource as EditableResource}/edit/${getResourcePkValue(resource, response.data)}`,
       );
     } else {
       if (wasCreated && relationContext != null) {

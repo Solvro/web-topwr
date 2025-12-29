@@ -81,11 +81,14 @@ type SubmitFormConfiguration<R extends Resource> = Readonly<{
   confirmationMessage?: SubmitFormConfirmationMessage<R>;
 }>;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyZodEnum = z.ZodNativeEnum<any> | z.ZodEnum<any>;
+
 export type ResourceMetadata<R extends Resource> = Readonly<{
   /** The name of the query param used to fetch this resource from the API, if this is the related resource in a 1-m:n relation. */
   queryName?: string;
   /** The primary key field in the resource schema, if not `"id"`. */
-  pk?: ResourceSchemaKey<R, z.ZodString | z.ZodNumber>;
+  pk?: ResourceSchemaKey<R, z.ZodString | z.ZodNumber | AnyZodEnum>;
   /** A mapping of the client-side resources to their paths in the backend API. */
   apiPath: string;
   /** The API version to be used when fetching this resource. Defaults to 1. */

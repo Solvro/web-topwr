@@ -23,6 +23,7 @@ import { toast } from "sonner";
 
 import { fetchMutation, useMutationWrapper } from "@/features/backend";
 import type { ModifyResourceResponse } from "@/features/backend/types";
+import { getResourcePkValue } from "@/features/resources";
 import type {
   EditableResource,
   OrderableResource,
@@ -104,7 +105,9 @@ export function OrderableItemWrapper<T extends OrderableResource>({
   }, [data]);
 
   function getActiveItem() {
-    const activeItem = items.find((item) => item.id === activeId);
+    const activeItem = items.find(
+      (item) => getResourcePkValue(resource, item) === activeId,
+    );
     if (activeItem == null) {
       throw new Error("Active item not found in the list");
     }
@@ -118,12 +121,13 @@ export function OrderableItemWrapper<T extends OrderableResource>({
     let oldIndex = -1;
     let newIndex = -1;
     for (const [index, item] of items.entries()) {
-      if (item.id === eventActiveId) {
+      const itemId = getResourcePkValue(resource, item);
+      if (itemId === eventActiveId) {
         oldIndex = index;
         if (newIndex !== -1) {
           break;
         }
-      } else if (item.id === overId) {
+      } else if (itemId === overId) {
         newIndex = index;
         if (oldIndex !== -1) {
           break;
@@ -134,7 +138,7 @@ export function OrderableItemWrapper<T extends OrderableResource>({
     setItems(newItems);
     const order = calculateNewSortValue(items, oldIndex, newIndex);
     toast.promise(
-      mutateAsync({ id: getActiveItem().id, order }),
+      mutateAsync({ id: getResourcePkValue(resource, getActiveItem()), order }),
       getToastMessages.resource(resource).modify,
     );
   }
@@ -182,7 +186,9 @@ function SortableItem<T extends EditableResource>({
   item: ResourceDataType<T>;
   resource: T;
 }) {
-  const { setNodeRef, transform, transition } = useSortable({ id: item.id });
+  const { setNodeRef, transform, transition } = useSortable({
+    id: getResourcePkValue(resource, item),
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),

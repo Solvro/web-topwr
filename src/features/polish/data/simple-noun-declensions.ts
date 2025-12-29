@@ -298,6 +298,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       nominative: `wersja w sekcji ${quoteText("o nas")}`,
     },
   },
+  [Resource.MobileConfig]: {
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "konfiguracja mobilna",
+      genitive: "konfiguracji mobilnej",
+      dative: "konfiguracji mobilnej",
+      accusative: "konfigurację mobilną",
+      instrumental: "konfiguracją mobilną",
+      locative: "konfiguracji mobilnej",
+      vocative: "konfiguracja mobilna",
+    },
+    plural: {
+      nominative: "konfiguracja mobilna",
+      genitive: "konfiguracji mobilnej",
+      dative: "konfiguracji mobilnej",
+      accusative: "konfigurację mobilną",
+      instrumental: "konfiguracją mobilną",
+      locative: "konfiguracji mobilnej",
+      vocative: "konfiguracja mobilna",
+    },
+  },
   [Resource.Notifications]: {
     gender: GrammaticalGender.Masculine,
     singular: {
@@ -339,6 +360,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
       instrumental: "rolami",
       locative: "rolach",
       vocative: "role",
+    },
+  },
+  [Resource.SksOpeningHours]: {
+    gender: GrammaticalGender.Feminine,
+    singular: {
+      nominative: "godziny otwarcia SKS",
+      genitive: "godzin otwarcia SKS",
+      dative: "godzinom otwarcia SKS",
+      accusative: "godziny otwarcia SKS",
+      instrumental: "godzinami otwarcia SKS",
+      locative: "godzinach otwarcia SKS",
+      vocative: "godziny otwarcia SKS",
+    },
+    plural: {
+      nominative: "godziny otwarcia SKS",
+      genitive: "godzin otwarcia SKS",
+      dative: "godzinom otwarcia SKS",
+      accusative: "godziny otwarcia SKS",
+      instrumental: "godzinami otwarcia SKS",
+      locative: "godzinach otwarcia SKS",
+      vocative: "godziny otwarcia SKS",
     },
   },
   [Resource.StudentOrganizations]: {

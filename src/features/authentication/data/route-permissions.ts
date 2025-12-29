@@ -18,9 +18,11 @@ export const ROUTE_PERMISSIONS = {
   [`/${Resource.GuideArticles}`]: ["user", "admin"],
   [`/${Resource.Holidays}`]: ["user", "admin"],
   [`/${Resource.Milestones}`]: ["user", "admin"],
+  [`/${Resource.MobileConfig}`]: ["user", "admin"],
   [`/${Resource.Notifications}`]: ["user", "admin"],
   [`/${Resource.NotificationTopics}`]: ["user", "admin"],
   [`/${Resource.Roles}`]: ["user", "admin"],
+  [`/${Resource.SksOpeningHours}`]: ["user", "admin"],
   [`/${Resource.StudentOrganizations}`]: ["user", "admin"],
   [`/${Resource.Versions}`]: ["user", "admin"],
 } satisfies RecordIntersection<

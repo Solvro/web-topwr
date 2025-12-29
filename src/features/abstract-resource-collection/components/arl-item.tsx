@@ -4,14 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import {
   EditButton,
   Resource,
-  getFieldValue,
   getResourceMetadata,
-  getResourcePk,
+  getResourcePkValue,
 } from "@/features/resources";
 import type {
   EditableResource,
   ResourceDataType,
-  ResourcePk,
 } from "@/features/resources/types";
 
 import type { ListItem } from "../types/internal";
@@ -35,8 +33,7 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
   const { ref, item, resource, orderable = false } = props;
 
   const metadata = getResourceMetadata(resource);
-  const pkField = getResourcePk(resource);
-  const id = getFieldValue(item, pkField) as ResourcePk;
+  const id = getResourcePkValue(resource, item);
   const listItem: ListItem = { id, ...metadata.itemMapper(item) };
 
   return (
