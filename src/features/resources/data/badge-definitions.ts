@@ -1,4 +1,4 @@
-import type { ResourceBadgeDefinitions } from "@/features/abstract-resource-collection";
+import type { ResourceBadgeDefinitions } from "@/features/abstract-resource-list";
 
 import { Resource } from "../enums";
 

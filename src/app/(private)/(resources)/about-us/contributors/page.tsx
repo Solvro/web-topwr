@@ -1,4 +1,4 @@
-import { AbstractResourceList } from "@/features/abstract-resource-collection";
+import { AbstractResourceList } from "@/features/abstract-resource-list";
 import { Resource } from "@/features/resources";
 import type { ResourcePageProps } from "@/types/components";
 

@@ -3,8 +3,8 @@ import type { Route } from "next";
 import type { ReactNode } from "react";
 import type { z } from "zod";
 
-import type { ListItem } from "@/features/abstract-resource-collection/types";
 import type { AbstractResourceFormInputs } from "@/features/abstract-resource-form/types";
+import type { ListItem } from "@/features/abstract-resource-list/types";
 import type { DatedResource } from "@/features/backend/types";
 import type { TypedSchemaKey } from "@/types/schemas";
 
