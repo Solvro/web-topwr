@@ -5,6 +5,7 @@ import {
   Calendar,
   CalendarCog,
   CircleQuestionMark,
+  Map,
   Megaphone,
   Notebook,
   RefreshCcw,
@@ -60,6 +61,7 @@ export default async function Home() {
             icon={CalendarCog}
           />
           <DashboardButton resource={Resource.MobileConfig} icon={Wrench} />
+          <DashboardButton href="/map" icon={Map} label="Mapa obiektów" />
         </div>
       </div>
     </div>
