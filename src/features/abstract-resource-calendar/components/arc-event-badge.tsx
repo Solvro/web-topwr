@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import { CALENDAR_MAX_EVENTS_PER_DAY } from "@/features/abstract-resource-list/constants";
+
+import { CALENDAR_MAX_EVENTS_PER_DAY } from "../constants";
 
 export function EventBadge({
   events,
