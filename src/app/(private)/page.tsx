@@ -5,6 +5,7 @@ import {
   Calendar,
   CalendarCog,
   CircleQuestionMark,
+  Map,
   Megaphone,
   Notebook,
   RefreshCcw,
@@ -48,6 +49,7 @@ export default async function Home() {
           <DashboardButton resource={Resource.Banners} icon={Megaphone} />
           <DashboardButton resource={Resource.CalendarEvents} icon={Calendar} />
           <DashboardButton resource={Resource.Departments} icon={University} />
+          <DashboardButton resource={Resource.Map} icon={Map} />
           <DashboardButton resource={Resource.Versions} icon={Notebook} />
           <DashboardButton
             resource={Resource.AboutUs}
