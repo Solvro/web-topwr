@@ -975,16 +975,6 @@ export const RESOURCE_METADATA = {
         imageInputs: {
           coverKey: { label: "Zdjęcie okładki", type: ImageType.Banner },
         },
-        relationInputs: {
-          [Resource.Buildings]: {
-            type: RelationType.OneToMany,
-            foreignKey: "campusId",
-          },
-          [Resource.PolinkaStations]: {
-            type: RelationType.OneToMany,
-            foreignKey: "campusId",
-          },
-        },
       },
       defaultValues: {
         name: "",
@@ -1035,32 +1025,12 @@ export const RESOURCE_METADATA = {
             type: RelationType.ManyToOne,
             foreignKey: "campusId",
           },
-          [Resource.Aeds]: {
-            type: RelationType.OneToMany,
-            foreignKey: "buildingId",
-          },
-          [Resource.BicycleShowers]: {
-            type: RelationType.OneToMany,
-            foreignKey: "buildingId",
-          },
-          [Resource.FoodSpots]: {
-            type: RelationType.OneToMany,
-            foreignKey: "buildingId",
-          },
-          [Resource.Libraries]: {
-            type: RelationType.OneToMany,
-            foreignKey: "buildingId",
-          },
-          [Resource.PinkBoxes]: {
-            type: RelationType.OneToMany,
-            foreignKey: "buildingId",
-          },
         },
       },
       defaultValues: {
         identifier: "",
         specialName: null,
-        campusId: -1,
+        campusId: null,
         addressLine1: "",
         addressLine2: null,
         latitude: 51.107_883,
@@ -1371,7 +1341,7 @@ export const RESOURCE_METADATA = {
         longitude: 17.038_538,
         branch: Branch.Main,
         photoKey: null,
-        buildingId: -1,
+        buildingId: null,
       },
     },
   },
@@ -1417,7 +1387,7 @@ export const RESOURCE_METADATA = {
       },
       defaultValues: {
         name: "",
-        campusId: -1,
+        campusId: null,
         addressLine1: "",
         addressLine2: null,
         latitude: 51.107_883,
