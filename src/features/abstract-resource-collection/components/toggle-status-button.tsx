@@ -1,7 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { set } from "react-hook-form";
 import { toast } from "sonner";
-import type { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { fetchMutation, getKey, useMutationWrapper } from "@/features/backend";
@@ -11,7 +10,6 @@ import { getFieldValue } from "@/features/resources";
 import type {
   Resource,
   ResourceFormValues,
-  ResourceSchemaKey,
   ToggleFieldConfig,
 } from "@/features/resources";
 import { useRouter } from "@/hooks/use-router";
@@ -51,16 +49,8 @@ export function ToggleStatusButton<T extends Resource>({
     });
 
     router.refresh();
-    const fieldValue = getFieldValue(
-      body,
-      config.field as unknown as ResourceSchemaKey<
-        T,
-        z.ZodString | z.ZodNumber
-      >,
-    ) as unknown;
-    if (fieldValue !== undefined) {
-      onValueChange?.(fieldValue);
-    }
+    const fieldValue = getFieldValue(body, config.field);
+    onValueChange?.(fieldValue);
 
     return result;
   });
