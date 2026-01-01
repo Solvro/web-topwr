@@ -736,26 +736,18 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       );
     }, [options, searchValue, searchable, isGroupedOptions]);
 
-    const hasFilteredResults = React.useMemo(() => {
-      if (isGroupedOptions(filteredOptions)) {
-        return filteredOptions.some((group) => group.options.length > 0);
-      }
-      return filteredOptions.length > 0;
-    }, [filteredOptions, isGroupedOptions]);
+    const hasFilteredResults = isGroupedOptions(filteredOptions)
+      ? filteredOptions.some((group) => group.options.length > 0)
+      : filteredOptions.length > 0;
 
-    const filteredOptionValues = React.useMemo(() => {
-      if (isGroupedOptions(filteredOptions)) {
-        return filteredOptions.flatMap((group) =>
+    const filteredOptionValues = isGroupedOptions(filteredOptions)
+      ? filteredOptions.flatMap((group) =>
           group.options.map((option) => option.value),
-        );
-      }
-      return filteredOptions.map((option) => option.value);
-    }, [filteredOptions, isGroupedOptions]);
+        )
+      : filteredOptions.map((option) => option.value);
 
-    const hasSelectedInFiltered = React.useMemo(
-      () =>
-        filteredOptionValues.some((value) => selectedValues.includes(value)),
-      [filteredOptionValues, selectedValues],
+    const hasSelectedInFiltered = filteredOptionValues.some((value) =>
+      selectedValues.includes(value),
     );
 
     const handleInputKeyDown = (
