@@ -60,9 +60,9 @@ const getResourceSpecificToastMessages = (declensions: Declensions) =>
       toggleState: (_fromState, toState) => {
         const isDeactivating = toState.value === false;
         return {
-          loading: `Trwa ${isDeactivating ? "dezaktywacja" : "aktywacja"} tematu ${declensions.nominative}...`,
-          success: `Temat ${declensions.nominative} został ${isDeactivating ? "zdezaktywowany" : "aktywowany"}.`,
-          error: `Nie udało się ${isDeactivating ? "zdezaktywować" : "aktywować"} tematu ${declensions.nominative}`,
+          loading: `Trwa ${isDeactivating ? "dezaktywacja" : "aktywacja"} ${declensions.genitive}...`,
+          success: `${toTitleCase(declensions.nominative)} została ${isDeactivating ? "zdezaktywowana" : "aktywowana"}.`,
+          error: `Nie udało się ${isDeactivating ? "zdezaktywować" : "aktywować"} ${declensions.genitive}`,
         };
       },
     },
