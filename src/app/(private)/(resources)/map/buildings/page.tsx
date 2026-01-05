@@ -6,7 +6,6 @@ export default function BuildingsPage(props: ResourcePageProps) {
   return (
     <AbstractResourceList
       resource={Resource.Buildings}
-      sortableFields={["identifier"]}
       parentResource={Resource.Map}
       {...props}
     />

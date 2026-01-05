@@ -6,7 +6,6 @@ export default function BicycleShowersPage(props: ResourcePageProps) {
   return (
     <AbstractResourceList
       resource={Resource.BicycleShowers}
-      sortableFields={["room"]}
       parentResource={Resource.Map}
       {...props}
     />

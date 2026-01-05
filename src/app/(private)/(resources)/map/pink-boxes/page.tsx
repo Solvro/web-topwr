@@ -6,7 +6,6 @@ export default function PinkBoxesPage(props: ResourcePageProps) {
   return (
     <AbstractResourceList
       resource={Resource.PinkBoxes}
-      sortableFields={["roomOrNearby"]}
       parentResource={Resource.Map}
       {...props}
     />

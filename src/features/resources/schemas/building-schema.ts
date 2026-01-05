@@ -7,7 +7,7 @@ import { Branch, ExternalDigitalGuideMode } from "../enums";
 export const BuildingSchema = z.object({
   identifier: RequiredStringSchema,
   specialName: z.string().nullish(),
-  campusId: z.number(),
+  campusId: z.number().nullish(),
   addressLine1: RequiredStringSchema,
   addressLine2: z.string().nullish(),
   latitude: z.number().min(-90).max(90),
