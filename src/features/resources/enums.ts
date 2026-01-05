@@ -2,8 +2,12 @@ export enum Resource {
   AboutUs = "about-us",
   AboutUsLinks = "about-us/links",
   AcademicSemesters = "academic-semesters",
+  Aeds = "map/aeds",
   Banners = "banners",
+  BicycleShowers = "map/bicycle-showers",
+  Buildings = "map/buildings",
   CalendarEvents = "calendar-events",
+  Campuses = "map/campuses",
   Changes = "changes",
   ChangeScreenshots = "change-screenshots",
   Contributors = "about-us/contributors",
@@ -11,20 +15,27 @@ export enum Resource {
   DaySwaps = "day-swaps",
   Departments = "departments",
   DepartmentLinks = "department-links",
+  FoodSpots = "map/food-spots",
   GuideArticles = "guide-articles",
   GuideAuthors = "guide-authors",
   GuideQuestions = "guide-questions",
   Holidays = "holidays",
+  Libraries = "map/libraries",
+  Majors = "majors",
+  Map = "map",
+  Milestones = "about-us/versions",
+  MobileConfig = "misc",
   Notifications = "notifications",
   NotificationTopics = "notifications/topics",
+  PinkBoxes = "map/pink-boxes",
+  PolinkaStations = "map/polinka-stations",
+  RegularHours = "library-regular-hours",
   Roles = "about-us/roles",
   SksOpeningHours = "misc/sks-opening-hours",
+  SpecialHours = "library-special-hours",
   StudentOrganizations = "student-organizations",
   StudentOrganizationLinks = "student-organization-links",
   StudentOrganizationTags = "student-organization-tags",
-  Majors = "majors",
-  Milestones = "about-us/versions",
-  MobileConfig = "misc",
   Versions = "versions",
   VersionScreenshots = "version-screenshots",
 }
@@ -58,6 +69,18 @@ export enum ChangeType {
 /** Filia/oddział Politechniki */
 export enum UniversityBranch {
   MainCampus = "main",
+}
+
+export enum Branch {
+  Main = "main",
+  JeleniaGora = "jelenia_gora",
+  Walbrzych = "walbrzych",
+  Legnica = "legnica",
+}
+
+export enum ExternalDigitalGuideMode {
+  AppId = "APP_ID",
+  Url = "URL",
 }
 
 // from https://github.com/Solvro/backend-topwr/blob/main/app/enums/link_type.ts

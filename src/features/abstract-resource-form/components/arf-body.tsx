@@ -11,6 +11,7 @@ import { ImageUpload } from "@/components/inputs/image-upload";
 import { RichTextInput } from "@/components/inputs/rich-text-input";
 import { SelectInput } from "@/components/inputs/select-input";
 import { SelectOptions } from "@/components/inputs/select-options";
+import { TimePicker } from "@/components/inputs/time-picker";
 import { FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -59,6 +60,8 @@ export function ArfBody<T extends Resource>({
   const {
     imageInputs,
     textInputs,
+    numberInputs,
+    timeInputs,
     textareaInputs,
     richTextInputs,
     dateInputs,
@@ -124,6 +127,58 @@ export function ArfBody<T extends Resource>({
                       placeholder="Wpisz tekst..."
                       {...field}
                       value={(field.value ?? "") as string}
+                    />
+                  </ArfInput>
+                )}
+              />
+            )}
+          />
+          <ArfInputSet
+            inputs={numberInputs}
+            mapper={([name, input]) => (
+              <FormField
+                key={name}
+                control={control}
+                name={name}
+                render={({ field }) => (
+                  <ArfInput
+                    declensions={declensions}
+                    isEditing={isEditing}
+                    inputDefinition={input}
+                  >
+                    <Input
+                      type="number"
+                      step="any"
+                      placeholder="Wpisz liczbę..."
+                      {...field}
+                      value={field.value as number | ""}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        field.onChange(value === "" ? null : Number(value));
+                      }}
+                    />
+                  </ArfInput>
+                )}
+              />
+            )}
+          />
+          <ArfInputSet
+            inputs={timeInputs}
+            mapper={([name, input]) => (
+              <FormField
+                key={name}
+                control={control}
+                name={name}
+                render={({ field }) => (
+                  <ArfInput
+                    declensions={declensions}
+                    isEditing={isEditing}
+                    inputDefinition={input}
+                    noControl
+                  >
+                    <TimePicker
+                      value={field.value as string | null}
+                      onChange={field.onChange}
                     />
                   </ArfInput>
                 )}
@@ -214,8 +269,7 @@ export function ArfBody<T extends Resource>({
                     inputDefinition={input}
                   >
                     <RichTextInput
-                      // @ts-expect-error types not matching
-                      value={field.value ?? ""}
+                      value={(field.value ?? "") as string}
                       onChange={field.onChange}
                       placeholder="Wpisz opis..."
                       aria-label={input.label}
