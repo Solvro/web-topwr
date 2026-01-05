@@ -9,5 +9,5 @@ export const PinkBoxSchema = z.object({
   longitude: z.number().min(-180).max(180),
   branch: z.nativeEnum(Branch),
   photoKey: z.string().nullish(),
-  buildingId: z.number(),
+  buildingId: z.number().nullish(),
 });

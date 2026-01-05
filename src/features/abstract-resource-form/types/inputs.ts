@@ -54,6 +54,10 @@ export interface AbstractResourceFormInputs<T extends Resource> {
   imageInputs?: FormInput<T, z.ZodString, { type: ImageType }>;
   /** Standard text input fields. */
   textInputs?: FormInput<T>;
+  /** Number input fields for numeric values. */
+  numberInputs?: FormInput<T, z.ZodNumber>;
+  /** Time input fields for time strings (HH:mm). */
+  timeInputs?: FormInput<T>;
   /** Resizable longer text input fields. */
   textareaInputs?: FormInput<T>;
   /** Date input fields, without time. */

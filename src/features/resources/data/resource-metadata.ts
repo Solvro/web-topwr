@@ -996,11 +996,13 @@ export const RESOURCE_METADATA = {
           specialName: { label: "Specjalna nazwa budynku" },
           addressLine1: { label: "Adres - linia 1" },
           addressLine2: { label: "Adres - linia 2" },
-          latitude: { label: "Szerokość geograficzna" },
-          longitude: { label: "Długość geograficzna" },
           externalDigitalGuideIdOrUrl: {
             label: "ID lub URL zewnętrznego przewodnika",
           },
+        },
+        numberInputs: {
+          latitude: { label: "Szerokość geograficzna" },
+          longitude: { label: "Długość geograficzna" },
         },
         selectInputs: {
           branch: {
@@ -1055,6 +1057,8 @@ export const RESOURCE_METADATA = {
           room: { label: "Numer pokoju/pomieszczenia" },
           addressLine1: { label: "Adres - linia 1" },
           addressLine2: { label: "Adres - linia 2" },
+        },
+        numberInputs: {
           latitude: { label: "Szerokość geograficzna" },
           longitude: { label: "Długość geograficzna" },
         },
@@ -1102,6 +1106,8 @@ export const RESOURCE_METADATA = {
         textInputs: {
           addressLine1: { label: "Adres - linia 1" },
           addressLine2: { label: "Adres - linia 2" },
+        },
+        numberInputs: {
           latitude: { label: "Szerokość geograficzna" },
           longitude: { label: "Długość geograficzna" },
         },
@@ -1149,6 +1155,8 @@ export const RESOURCE_METADATA = {
           name: { label: "Nazwa miejsca" },
           addressLine1: { label: "Adres - linia 1" },
           addressLine2: { label: "Adres - linia 2" },
+        },
+        numberInputs: {
           latitude: { label: "Szerokość geograficzna" },
           longitude: { label: "Długość geograficzna" },
         },
@@ -1181,6 +1189,15 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.Map]: {
+    // Map is a grouping resource for navigation, not an actual data resource
+    apiPath: "map",
+    itemMapper: () => ({ name: "Mapa", shortDescription: null }),
+    form: {
+      inputs: {},
+      defaultValues: {},
+    },
+  },
   [Resource.Libraries]: {
     apiPath: "libraries",
     itemMapper: (item) => ({
@@ -1196,6 +1213,8 @@ export const RESOURCE_METADATA = {
           addressLine2: { label: "Adres - linia 2" },
           phone: { label: "Numer telefonu" },
           email: { label: "Adres email" },
+        },
+        numberInputs: {
           latitude: { label: "Szerokość geograficzna" },
           longitude: { label: "Długość geograficzna" },
         },
@@ -1314,6 +1333,8 @@ export const RESOURCE_METADATA = {
         textInputs: {
           roomOrNearby: { label: "Numer pokoju lub opis lokalizacji" },
           floor: { label: "Piętro" },
+        },
+        numberInputs: {
           latitude: { label: "Szerokość geograficzna" },
           longitude: { label: "Długość geograficzna" },
         },
@@ -1357,11 +1378,13 @@ export const RESOURCE_METADATA = {
           name: { label: "Nazwa stacji" },
           addressLine1: { label: "Adres - linia 1" },
           addressLine2: { label: "Adres - linia 2" },
-          latitude: { label: "Szerokość geograficzna" },
-          longitude: { label: "Długość geograficzna" },
           externalDigitalGuideIdOrUrl: {
             label: "ID lub URL zewnętrznego przewodnika",
           },
+        },
+        numberInputs: {
+          latitude: { label: "Szerokość geograficzna" },
+          longitude: { label: "Długość geograficzna" },
         },
         selectInputs: {
           branch: {

@@ -24,6 +24,7 @@ import { GuideQuestionSchema } from "../schemas/guide-question-schema";
 import { HolidaySchema } from "../schemas/holiday-schema";
 import { LibrarySchema } from "../schemas/library-schema";
 import { MajorSchema } from "../schemas/major-schema";
+import { MapSchema } from "../schemas/map-schema";
 import { MilestonesSchema } from "../schemas/milestones-schema";
 import { MobileConfigSchema } from "../schemas/mobile-config-schema";
 import { NotificationSchema } from "../schemas/notification-schema";
@@ -64,6 +65,7 @@ export const RESOURCE_SCHEMAS = {
   [Resource.Holidays]: HolidaySchema,
   [Resource.Libraries]: LibrarySchema,
   [Resource.Majors]: MajorSchema,
+  [Resource.Map]: MapSchema,
   [Resource.Milestones]: MilestonesSchema,
   [Resource.MobileConfig]: MobileConfigSchema,
   [Resource.Notifications]: NotificationSchema,
