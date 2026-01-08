@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ImageType } from "@/config/enums";
+import type { ImageSize } from "@/features/abstract-resource-form";
 import { ApiImage, uploadFile, useMutationWrapper } from "@/features/backend";
 import { declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
@@ -20,15 +21,40 @@ import type {
   ResourceSchemaKey,
 } from "@/features/resources/types";
 import { getToastMessages } from "@/lib/get-toast-messages";
+import { cn } from "@/lib/utils";
 import type { WrapperProps } from "@/types/components";
 
 import { ImagePreviewModal } from "../presentation/image-preview-modal";
 
-function InputBox({ children }: WrapperProps) {
+function getImageSizeClasses(size: ImageSize): string {
+  switch (size) {
+    case "small": {
+      return "md:size-32";
+    }
+    case "medium": {
+      return "md:size-48";
+    }
+    case "large": {
+      return "md:size-64";
+    }
+    case "wide": {
+      return "md:h-48 md:w-full aspect-video";
+    }
+  }
+}
+
+function InputBox({
+  children,
+  size = "medium",
+}: WrapperProps & { size?: ImageSize }) {
   return (
     <InputSlot
       renderAs="div"
-      className="aspect-video h-fit max-h-48 w-full overflow-hidden rounded-lg md:size-48"
+      className={cn(
+        "h-fit w-full overflow-hidden rounded-lg",
+        size !== "wide" && "aspect-video max-h-48",
+        getImageSizeClasses(size),
+      )}
     >
       {children}
     </InputSlot>
@@ -41,6 +67,7 @@ export function ImageUpload<T extends Resource>({
   value,
   label,
   type = ImageType.Logo,
+  size = "medium",
   existingImage,
   resourceData,
   disabled,
@@ -50,6 +77,7 @@ export function ImageUpload<T extends Resource>({
   onChange: (value: string | null) => void;
   label: string;
   type?: ImageType;
+  size?: ImageSize;
   existingImage?: ReactNode;
   resourceData?: ResourceFormValues<T>;
   disabled?: boolean;
@@ -112,7 +140,7 @@ export function ImageUpload<T extends Resource>({
       <FormLabel className="flex flex-col items-start space-y-1.5">
         {label}
         {hasImage ? null : (
-          <InputBox>
+          <InputBox size={size}>
             <div className="flex size-full cursor-pointer flex-col items-center justify-center">
               <Camera className="text-image-input-icon size-12" />
               <span className="text-muted-foreground text-xs">
@@ -123,7 +151,7 @@ export function ImageUpload<T extends Resource>({
         )}
       </FormLabel>
       {hasImage ? (
-        <InputBox>
+        <InputBox size={size}>
           <FormControl>
             <Button
               type="button"
