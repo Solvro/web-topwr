@@ -43,6 +43,12 @@ function UserProfileMenu({ user }: { user: User }) {
             <FooterSource compact />
           </DropdownMenuItem>
         </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <a href="/change-password" className="block w-full">
+            Zmień hasło
+          </a>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
