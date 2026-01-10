@@ -39,9 +39,16 @@ function UserProfileMenu({ user }: { user: User | null }) {
         <DropdownMenuGroup>
           <DropdownMenuLabel>Moje konto</DropdownMenuLabel>
           {user == null ? (
-            <DropdownMenuItem asChild className="cursor-pointer">
-              <Link href="/login">Zaloguj się</Link>
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/login">Zaloguj się</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <a href="/change-password" className="block w-full">
+                  Zmiana hasła
+                </a>
+              </DropdownMenuItem>
+            </>
           ) : (
             <DropdownMenuItem className="font-normal">
               {user.fullName ?? user.email}
