@@ -35,9 +35,7 @@ function UserProfileMenu({ user }: { user: User }) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <a href="/change-password" className="block w-full">
-            Zmień hasło
-          </a>
+          <Link href="/change-password">Zmień hasło</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
