@@ -5,16 +5,10 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { PasswordInput } from "@/components/inputs/password-input";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form, FormField } from "@/components/ui/form";
+import { FetchError } from "@/features/backend";
 
 import { changePassword } from "../api/change-password";
 import { ChangePasswordSchema } from "../schemas/change-password-schema";
@@ -30,9 +24,9 @@ export function ChangePasswordForm() {
     },
   });
 
-  const { mutateAsync, isPending } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (data: ChangePasswordFormValues) =>
-      await changePassword({
+      changePassword({
         oldPassword: data.oldPassword,
         newPassword: data.newPassword,
         newPasswordConfirm: data.newPasswordConfirm,
@@ -41,36 +35,53 @@ export function ChangePasswordForm() {
       toast.success("Hasło zmienione poprawnie");
       form.reset();
     },
+    onError: (error) => {
+      if (error instanceof FetchError) {
+        const validationIssues = error.errorReport?.error.validationIssues;
+        if (Array.isArray(validationIssues)) {
+          for (const issue of validationIssues) {
+            const fieldName =
+              (issue as Record<string, unknown>).field ??
+              (issue as Record<string, unknown>).rule;
+            const message = (issue as Record<string, unknown>).message;
+            if (fieldName === "oldPassword" && typeof message === "string") {
+              form.setError("oldPassword", {
+                type: "server",
+                message,
+              });
+              toast.error(message);
+              return;
+            }
+          }
+        }
+        toast.error(error.getCodedMessage("Nie udało się zmienić hasła"));
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Nie udało się zmienić hasła");
+      }
+    },
+    retry: false,
   });
 
   return (
     <Form {...form}>
       <form
         noValidate
-        onSubmit={form.handleSubmit((data) =>
-          toast.promise(mutateAsync(data), {
-            loading: "Trwa zmiana hasła...",
-            success: "Hasło zmienione",
-            error: (error) => (error instanceof Error ? error.message : "Błąd"),
-          }),
-        )}
+        onSubmit={form.handleSubmit((data) => {
+          mutate(data);
+        })}
         className="bg-background w-full max-w-md space-y-4 rounded-xl px-6 py-8"
       >
         <FormField
           control={form.control}
           name="oldPassword"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Aktualne hasło</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  placeholder="Aktualne hasło"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+            <PasswordInput
+              label="Aktualne hasło"
+              placeholder="Aktualne hasło"
+              {...field}
+            />
           )}
         />
 
@@ -78,13 +89,11 @@ export function ChangePasswordForm() {
           control={form.control}
           name="newPassword"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nowe hasło</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="Nowe hasło" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+            <PasswordInput
+              label="Nowe hasło"
+              placeholder="Nowe hasło"
+              {...field}
+            />
           )}
         />
 
@@ -92,17 +101,11 @@ export function ChangePasswordForm() {
           control={form.control}
           name="newPasswordConfirm"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Potwierdź nowe hasło</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  placeholder="Potwierdź nowe hasło"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+            <PasswordInput
+              label="Potwierdź nowe hasło"
+              placeholder="Potwierdź nowe hasło"
+              {...field}
+            />
           )}
         />
 
