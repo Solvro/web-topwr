@@ -44,9 +44,9 @@ function UserProfileMenu({ user }: { user: User | null }) {
                 <Link href="/login">Zaloguj się</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <a href="/change-password" className="block w-full">
+                <Link href="/change-password" className="block w-full">
                   Zmiana hasła
-                </a>
+                </Link>
               </DropdownMenuItem>
             </>
           ) : (
