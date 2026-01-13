@@ -98,19 +98,19 @@ describe("declineNoun function", () => {
         case: GrammaticalCase.Accusative,
         prependDeterminer: "this",
       }),
-    ).toBe("tego autora");
+    ).toBe("tego autora lub redaktora");
     expect(
       declineNoun(Resource.GuideAuthors, {
         case: GrammaticalCase.Accusative,
         prependDeterminer: "new",
       }),
-    ).toBe("nowego autora");
+    ).toBe("nowego autora lub redaktora");
     expect(
       declineNoun(Resource.GuideAuthors, {
         case: GrammaticalCase.Accusative,
         prependDeterminer: "existing",
       }),
-    ).toBe("istniejącego autora");
+    ).toBe("istniejącego autora lub redaktora");
   });
 
   it("should handle singular inanimate masculine nouns correctly in accusative case", () => {
@@ -141,21 +141,21 @@ describe("declineNoun function", () => {
         plural: true,
         prependDeterminer: "this",
       }),
-    ).toBe("tych autorów");
+    ).toBe("tych autorów i redaktorów");
     expect(
       declineNoun(Resource.GuideAuthors, {
         case: GrammaticalCase.Accusative,
         plural: true,
         prependDeterminer: "new",
       }),
-    ).toBe("nowych autorów");
+    ).toBe("nowych autorów i redaktorów");
     expect(
       declineNoun(Resource.GuideAuthors, {
         case: GrammaticalCase.Accusative,
         plural: true,
         prependDeterminer: "existing",
       }),
-    ).toBe("istniejących autorów");
+    ).toBe("istniejących autorów i redaktorów");
     expect(
       declineNoun(Resource.StudentOrganizationTags, {
         case: GrammaticalCase.Accusative,

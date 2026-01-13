@@ -6,7 +6,7 @@ export default function StudentOrganizationsPage(props: ResourcePageProps) {
   return (
     <AbstractResourceList
       resource={Resource.StudentOrganizations}
-      sortableFields={["name", "shortDescription"]}
+      sortableFields={["id", "name", "shortDescription"]}
       {...props}
     />
   );
