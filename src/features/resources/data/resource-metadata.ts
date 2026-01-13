@@ -377,7 +377,7 @@ export const RESOURCE_METADATA = {
         },
         selectInputs: {
           changedWeekday: {
-            label: "Zmieniony dzień tygodnia",
+            label: "Na jaki dzień tygodnia zmiana?",
             optionEnum: Weekday,
             optionLabels: POLISH_WEEKDAYS,
           },
