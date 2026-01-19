@@ -11,13 +11,12 @@ import type {
   EditableResource,
   ResourceDataType,
 } from "@/features/resources/types";
-import { cn } from "@/lib/utils";
 import type { ResourceRelations } from "@/types/components";
 
 import { getItemBadges } from "../lib/get-item-badges";
 import type { ListItem } from "../types/internal";
-import { getBadgeStyles } from "../utils/get-badge-styles";
 import { ArlItemDragHandle } from "./arl-item-drag-handle";
+import { ResourceBadge } from "./resource-badge";
 import { ToggleOrganizationStatusButton } from "./toggle-status-button";
 
 export interface ItemProps<T extends EditableResource> {
@@ -60,16 +59,7 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
           <header className="flex flex-col gap-y-1">
             <div className="hidden space-x-2 overflow-hidden md:block">
               {getItemBadges(item, resource, relatedResources).map((badge) => {
-                const { className, style } = getBadgeStyles(badge);
-                return (
-                  <Badge
-                    key={badge.displayField}
-                    className={cn("py-0.5", className)}
-                    style={style}
-                  >
-                    {badge.displayField}
-                  </Badge>
-                );
+                return <ResourceBadge key={badge.displayField} badge={badge} />;
               })}
             </div>
             <h2 className="text-lg font-semibold text-balance">
