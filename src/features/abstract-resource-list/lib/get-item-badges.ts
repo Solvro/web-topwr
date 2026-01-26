@@ -93,7 +93,10 @@ function getManyToManyRelationBadge<
     for (const relationItem of relationItems) {
       const labelValue = getFieldValue(
         relationItem as ResourceDataType<Resource>,
-        badgeConfig.displayField,
+        badgeConfig.displayField as ResourceSchemaKey<
+          Resource,
+          ZodString | ZodNumber
+        >,
       );
 
       if (typeof labelValue === "string") {

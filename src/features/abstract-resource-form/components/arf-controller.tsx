@@ -65,8 +65,7 @@ export function ArfController<T extends Resource>({
   const router = useRouter();
   const relationContext = useArfRelation();
   const form = useForm<ResourceFormValues<T>>({
-    // Maybe try extracting the id from the defaultValues and passing it as an editedResourceId prop?
-    // @ts-expect-error TODO: the schema is compatible but for some reason the types don't match
+    // Maybe try extracting the id from the defaultValues and passing it as an editedResourceId prop
     resolver: zodResolver(schema) as Resolver<ResourceFormValues<T>>,
     defaultValues: getDefaultValues(
       defaultValues,
