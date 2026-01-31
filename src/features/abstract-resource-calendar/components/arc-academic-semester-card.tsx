@@ -1,13 +1,13 @@
 "use client";
 
+import { format } from "date-fns";
+
 import {
   DeleteButtonWithDialog,
   EditButton,
   Resource,
 } from "@/features/resources";
 import type { ResourceDataType } from "@/features/resources/types";
-
-import { serializeDateDay } from "../utils/serialize-date-day";
 
 export function AcademicSemesterCard({
   semester,
@@ -21,8 +21,8 @@ export function AcademicSemesterCard({
       <section className="my-auto">
         <p className="font-medium">{semester.name}</p>
         <p className="mt-1 text-xs">
-          {serializeDateDay(semester.semesterStartDate)} –{" "}
-          {serializeDateDay(semester.examSessionLastDate)}
+          {format(new Date(semester.semesterStartDate), "yyyy-MM-dd")} –{" "}
+          {format(semester.examSessionLastDate, "yyyy-MM-dd")}
         </p>
       </section>
       {clickable ? (

@@ -1,9 +1,10 @@
+import { format } from "date-fns";
+
 import { Resource } from "@/features/resources";
 import type { ResourceDataType } from "@/features/resources/types";
 
 import { EventCard } from "../components/arc-event-card";
 import type { MappedCalendarData } from "../types/internal";
-import { serializeDateDay } from "./serialize-date-day";
 
 export function eventCalendarMapper(
   events: ResourceDataType<Resource.CalendarEvents>[],
@@ -24,7 +25,7 @@ export function eventCalendarMapper(
       currentDate.getTime() <= lastDate.getTime();
       currentDate.setDate(currentDate.getDate() + 1)
     ) {
-      dayKeys.push(serializeDateDay(currentDate.toISOString()));
+      dayKeys.push(format(currentDate.toISOString(), "yyyy-MM-dd"));
     }
 
     const eventCard = (

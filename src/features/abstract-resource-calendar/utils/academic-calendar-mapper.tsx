@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 import type { Resource } from "@/features/resources";
 import type { ResourceDataWithRelations } from "@/features/resources/types";
 
@@ -5,7 +7,6 @@ import { AcademicSemesterCard } from "../components/arc-academic-semester-card";
 import { DaySwapCard } from "../components/arc-day-swap-card";
 import { HolidayCard } from "../components/arc-holiday-card";
 import type { MappedCalendarData } from "../types/internal";
-import { serializeDateDay } from "./serialize-date-day";
 
 export function academicCalendarMapper(
   semesters: ResourceDataWithRelations<Resource.AcademicSemesters>[],
@@ -43,7 +44,7 @@ export function academicCalendarMapper(
         currentDate.getTime() <= lastDate.getTime();
         currentDate.setDate(currentDate.getDate() + 1)
       ) {
-        dayKeys.push(serializeDateDay(currentDate.toISOString()));
+        dayKeys.push(format(currentDate.toISOString(), "yyyy-MM-dd"));
       }
 
       const holidayCard = (
@@ -71,7 +72,7 @@ export function academicCalendarMapper(
     }
 
     for (const daySwap of daySwaps) {
-      const dayKey = serializeDateDay(daySwap.date);
+      const dayKey = format(daySwap.date, "yyyy-MM-dd");
 
       mappedData.dayEvents[dayKey] ??= [];
 
