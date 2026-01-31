@@ -1,13 +1,14 @@
 "use client";
 
+import { formatDate, isSameDay } from "date-fns";
+import { pl } from "date-fns/locale";
+
 import type { Resource } from "@/features/resources";
 import { DeleteButtonWithDialog, EditButton } from "@/features/resources";
 import type {
   EditableResource,
   ResourceDataType,
 } from "@/features/resources/types";
-
-import { formatTime } from "../utils/format-time";
 
 export function EventCard({
   event,
@@ -27,11 +28,24 @@ export function EventCard({
       <header>
         <p className="font-medium">{event.name}</p>
         <p className="mt-1 text-xs">
-          {formatTime(event, "startTime")}
+          {formatDate(
+            event.startTime,
+            isSameDay(event.startTime, event.endTime) ? "HH:mm" : "HH:mm (E)",
+            { locale: pl },
+          )}
           {event.startTime === event.endTime ? (
             ""
           ) : (
-            <>—{formatTime(event, "endTime")}</>
+            <>
+              —
+              {formatDate(
+                event.endTime,
+                isSameDay(event.startTime, event.endTime)
+                  ? "HH:mm"
+                  : "HH:mm (E)",
+                { locale: pl },
+              )}
+            </>
           )}
         </p>
       </header>
