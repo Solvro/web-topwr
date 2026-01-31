@@ -1,6 +1,7 @@
 "use client";
 
 import { format, getDaysInMonth, parse } from "date-fns";
+import { pl } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Link } from "@/components/core/link";
@@ -58,7 +59,7 @@ export function CalendarInternal({
           </Link>
         </Button>
         <span className="min-w-[200px]">
-          {format(currentDisplayedMonth, "MMMM")} {displayedYear}
+          {format(currentDisplayedMonth, "LLLL yyyy", { locale: pl })}
         </span>
         <Button variant="ghost" size="icon" aria-label="Next month" asChild>
           <Link href={getMonthLink(displayedYear, displayedMonth + 1)}>
