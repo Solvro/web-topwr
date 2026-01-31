@@ -1,3 +1,6 @@
+import { format } from "date-fns";
+import { pl } from "date-fns/locale";
+
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { getResourceRelationDefinitions } from "@/features/resources";
 import type { Resource } from "@/features/resources";
@@ -21,6 +24,7 @@ export function getModalHeader(
       }),
     );
   } else {
+    const clickedDayDate = new Date(clickedDay);
     return relatedResources.length > 0
       ? relatedResources.length === 1
         ? `${toTitleCase(
@@ -28,7 +32,7 @@ export function getModalHeader(
               case: GrammaticalCase.Nominative,
               plural: true,
             }),
-          )} ${clickedDay}`
+          )} ${format(clickedDayDate, "dd MMMM yyyy", { locale: pl })}`
         : `${toTitleCase(
             relatedResources
               .map((relatedResource) =>
@@ -38,12 +42,12 @@ export function getModalHeader(
                 }),
               )
               .join(" i "),
-          )} ${clickedDay}`
+          )} ${format(clickedDayDate, "dd MMMM yyyy", { locale: pl })}`
       : `${toTitleCase(
           declineNoun(resource, {
             case: GrammaticalCase.Nominative,
             plural: true,
           }),
-        )} ${clickedDay}`;
+        )} ${format(clickedDayDate, "dd MMMM yyyy", { locale: pl })}`;
   }
 }

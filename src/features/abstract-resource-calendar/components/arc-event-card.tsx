@@ -1,6 +1,6 @@
 "use client";
 
-import { formatDate, isSameDay } from "date-fns";
+import { formatDate } from "date-fns";
 import { pl } from "date-fns/locale";
 
 import type { Resource } from "@/features/resources";
@@ -28,23 +28,13 @@ export function EventCard({
       <header>
         <p className="font-medium">{event.name}</p>
         <p className="mt-1 text-xs">
-          {formatDate(
-            event.startTime,
-            isSameDay(event.startTime, event.endTime) ? "HH:mm" : "HH:mm (E)",
-            { locale: pl },
-          )}
           {event.startTime === event.endTime ? (
-            ""
+            <>{formatDate(event.startTime, "HH:mm", { locale: pl })}</>
           ) : (
             <>
-              —
-              {formatDate(
-                event.endTime,
-                isSameDay(event.startTime, event.endTime)
-                  ? "HH:mm"
-                  : "HH:mm (E)",
-                { locale: pl },
-              )}
+              {formatDate(event.endTime, "EEEE HH:mm", { locale: pl })}
+              {" — "}
+              {formatDate(event.endTime, "EEEE HH:mm", { locale: pl })}
             </>
           )}
         </p>

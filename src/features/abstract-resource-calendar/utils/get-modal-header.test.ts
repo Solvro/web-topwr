@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+import { pl } from "date-fns/locale";
 import { describe, expect, it } from "vitest";
 
 import { Resource } from "@/features/resources";
@@ -13,7 +15,9 @@ describe("getModalHeader", () => {
   });
 
   describe("when clickedDay is provided", () => {
-    const clickedDay = "2024-03-15";
+    const clickedDay = format(new Date("2024-03-15"), "dd MMMM yyyy", {
+      locale: pl,
+    });
 
     it("should return resource name with date for resource without relations", () => {
       const result = getModalHeader(Resource.CalendarEvents, clickedDay);

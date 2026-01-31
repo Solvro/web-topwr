@@ -1,5 +1,8 @@
 "use client";
 
+import { formatDate } from "date-fns";
+import { pl } from "date-fns/locale";
+
 import { useArfSheet } from "@/features/abstract-resource-form";
 import type { ArfSheetFormProps } from "@/features/abstract-resource-form/types";
 import { Resource } from "@/features/resources";
@@ -35,7 +38,15 @@ export function HolidayCard({
     >
       <div className="my-auto">
         <div className="font-medium">{event.description}</div>
-        <div className="mt-1 text-xs">{event.startDate}</div>
+        {event.startDate === event.lastDate ? (
+          <>{formatDate(event.startDate, "dd MMMM yyyy", { locale: pl })}</>
+        ) : (
+          <>
+            {formatDate(event.startDate, "dd MMMM yyyy", { locale: pl })}
+            {" — "}
+            {formatDate(event.lastDate, "dd MMMM yyyy", { locale: pl })}
+          </>
+        )}
       </div>
     </SheetCard>
   );
