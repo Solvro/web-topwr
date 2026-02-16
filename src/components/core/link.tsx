@@ -6,21 +6,23 @@ import type { LinkProps } from "next/link";
 
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 
-export function Link<T extends string>(
-  props: LinkProps<T> & { href: Route<T> },
-) {
+export function Link<T extends string>({
+  href,
+  ...rest
+}: LinkProps<T> & { href: Route<T> }) {
   const { hasUnsavedChanges, showConfirmDialog } = useUnsavedChanges();
 
   return (
     <TransitionLink
+      href={href as LinkProps<T>["href"]}
       onClick={(event_) => {
         if (!hasUnsavedChanges) {
           return;
         }
-        showConfirmDialog(props.href as Route<T>);
+        showConfirmDialog(href as Route);
         event_.preventDefault();
       }}
-      {...props}
+      {...rest}
     />
   );
 }

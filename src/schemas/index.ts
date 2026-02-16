@@ -1,4 +1,5 @@
 export * from "./color-value-schema";
+export * from "./email-schema";
 export * from "./string-date-schema";
 export * from "./iso-timestamp-schema";
 export * from "./numeric-id-schema";

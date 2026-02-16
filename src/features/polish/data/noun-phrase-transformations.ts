@@ -16,12 +16,20 @@ export const NOUN_PHRASE_TRANSFORMATIONS = {
     base: "link",
     transform: (base) => `${base} do sociali`,
   },
+  [Resource.DepartmentLinks]: {
+    base: "link",
+    transform: (base) => `${base} wydziału`,
+  },
   [Resource.NotificationTopics]: {
     base: "category",
     transform: (base) => ({
       singular: `${base} powiadomienia`,
       plural: `${base} powiadomień`,
     }),
+  },
+  [Resource.StudentOrganizationLinks]: {
+    base: "link",
+    transform: (base) => `${base} organizacji`,
   },
 } satisfies Record<
   string,

@@ -6,7 +6,9 @@ import { POLISH_WEEKDAYS } from "@/features/polish";
 import { getRoundedDate } from "@/utils";
 
 import {
+  Branch,
   ChangeType,
+  ExternalDigitalGuideMode,
   GuideAuthorRole,
   Language,
   LinkType,
@@ -89,7 +91,31 @@ const SELECT_OPTION_LABELS = {
       [StudiesType.LongCycle]: "Studia jednolite magisterskie",
     } satisfies Record<StudiesType, string>,
   },
+  MAP: {
+    BRANCH: {
+      [Branch.Main]: "Kampus główny",
+      [Branch.JeleniaGora]: "Jelenia Góra",
+      [Branch.Walbrzych]: "Wałbrzych",
+      [Branch.Legnica]: "Legnica",
+    } satisfies Record<Branch, string>,
+    EXTERNAL_GUIDE_MODE: {
+      [ExternalDigitalGuideMode.AppId]: "ID aplikacji",
+      [ExternalDigitalGuideMode.Url]: "URL",
+    } satisfies Record<ExternalDigitalGuideMode, string>,
+  },
 };
+
+/** Default coordinates for Wrocław University of Science and Technology */
+const DEFAULT_COORDINATES = {
+  latitude: 51.107_883,
+  longitude: 17.038_538,
+} as const;
+
+/** Common address input configuration */
+const ADDRESS_LINE_INPUTS = {
+  addressLine1: { label: "Adres — linia 1" },
+  addressLine2: { label: "Adres — linia 2" },
+} as const;
 
 /** Required metadata for each resource. */
 export const RESOURCE_METADATA = {
@@ -406,8 +432,7 @@ export const RESOURCE_METADATA = {
           name: { label: "Nazwa" },
           code: { label: "Kod wydziału (z numerem)" },
           betterCode: { label: "Kod wydziału (ze skrótem)" },
-          addressLine1: { label: "Adres - linia 1" },
-          addressLine2: { label: "Adres - linia 2" },
+          ...ADDRESS_LINE_INPUTS,
         },
         imageInputs: {
           logoKey: { label: "Logo", type: ImageType.Logo },
@@ -937,6 +962,461 @@ export const RESOURCE_METADATA = {
         versionId: -1,
         imageKey: "",
         subtitle: null,
+      },
+    },
+  },
+  [Resource.Campuses]: {
+    apiPath: "campuses",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: SELECT_OPTION_LABELS.MAP.BRANCH[item.branch],
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa kampusu" },
+        },
+        selectInputs: {
+          branch: {
+            label: "Oddział",
+            optionEnum: Branch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
+        imageInputs: {
+          coverKey: { label: "Zdjęcie okładki", type: ImageType.Banner },
+        },
+      },
+      defaultValues: {
+        name: "",
+        coverKey: null,
+        branch: Branch.Main,
+      },
+    },
+  },
+  [Resource.Buildings]: {
+    apiPath: "buildings",
+    itemMapper: (item) => ({
+      name: `${item.identifier}${item.specialName == null ? "" : ` - ${item.specialName}`}`,
+      shortDescription: item.addressLine1,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          identifier: { label: "Identyfikator budynku (np. A1, C13)" },
+          specialName: { label: "Specjalna nazwa budynku" },
+          ...ADDRESS_LINE_INPUTS,
+          externalDigitalGuideIdOrUrl: {
+            label: "ID lub URL zewnętrznego przewodnika",
+          },
+        },
+        numberInputs: {
+          latitude: { label: "Szerokość geograficzna" },
+          longitude: { label: "Długość geograficzna" },
+        },
+        selectInputs: {
+          branch: {
+            label: "Oddział",
+            optionEnum: Branch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+          externalDigitalGuideMode: {
+            label: "Tryb przewodnika cyfrowego",
+            optionEnum: ExternalDigitalGuideMode,
+            optionLabels: SELECT_OPTION_LABELS.MAP.EXTERNAL_GUIDE_MODE,
+          },
+        },
+        checkboxInputs: {
+          haveFood: { label: "Czy budynek ma miejsca z jedzeniem?" },
+        },
+        imageInputs: {
+          coverKey: { label: "Zdjęcie okładki", type: ImageType.Banner },
+        },
+        relationInputs: {
+          [Resource.Campuses]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "campusId",
+          },
+        },
+      },
+      defaultValues: {
+        identifier: "",
+        specialName: null,
+        campusId: null,
+        addressLine1: "",
+        addressLine2: null,
+        ...DEFAULT_COORDINATES,
+        haveFood: false,
+        branch: Branch.Main,
+        coverKey: null,
+        externalDigitalGuideMode: null,
+        externalDigitalGuideIdOrUrl: null,
+      },
+    },
+  },
+  [Resource.BicycleShowers]: {
+    apiPath: "bicycle_showers",
+    itemMapper: (item) => ({
+      name: item.room ?? "Prysznic rowerowy",
+      shortDescription: item.addressLine1 ?? null,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          room: { label: "Numer pokoju/pomieszczenia" },
+          ...ADDRESS_LINE_INPUTS,
+        },
+        numberInputs: {
+          latitude: { label: "Szerokość geograficzna" },
+          longitude: { label: "Długość geograficzna" },
+        },
+        textareaInputs: {
+          instructions: { label: "Instrukcje użytkowania" },
+        },
+        selectInputs: {
+          branch: {
+            label: "Oddział",
+            optionEnum: Branch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
+        relationInputs: {
+          [Resource.Buildings]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "buildingId",
+          },
+        },
+      },
+      defaultValues: {
+        room: null,
+        instructions: null,
+        ...DEFAULT_COORDINATES,
+        addressLine1: null,
+        addressLine2: null,
+        branch: Branch.Main,
+        photoKey: null,
+        buildingId: null,
+      },
+    },
+  },
+  [Resource.Aeds]: {
+    apiPath: "aeds",
+    itemMapper: (item) => ({
+      name: "Defibrylator AED",
+      shortDescription: item.addressLine1 ?? null,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          ...ADDRESS_LINE_INPUTS,
+        },
+        numberInputs: {
+          latitude: { label: "Szerokość geograficzna" },
+          longitude: { label: "Długość geograficzna" },
+        },
+        textareaInputs: {
+          instructions: { label: "Instrukcje użytkowania" },
+        },
+        selectInputs: {
+          branch: {
+            label: "Oddział",
+            optionEnum: Branch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
+        relationInputs: {
+          [Resource.Buildings]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "buildingId",
+          },
+        },
+      },
+      defaultValues: {
+        ...DEFAULT_COORDINATES,
+        addressLine1: null,
+        addressLine2: null,
+        branch: Branch.Main,
+        instructions: null,
+        photoKey: null,
+        buildingId: null,
+      },
+    },
+  },
+  [Resource.FoodSpots]: {
+    apiPath: "food_spots",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.addressLine1 ?? null,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa miejsca" },
+          ...ADDRESS_LINE_INPUTS,
+        },
+        numberInputs: {
+          latitude: { label: "Szerokość geograficzna" },
+          longitude: { label: "Długość geograficzna" },
+        },
+        selectInputs: {
+          branch: {
+            label: "Oddział",
+            optionEnum: Branch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
+        relationInputs: {
+          [Resource.Buildings]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "buildingId",
+          },
+        },
+      },
+      defaultValues: {
+        name: "",
+        addressLine1: null,
+        addressLine2: null,
+        ...DEFAULT_COORDINATES,
+        branch: Branch.Main,
+        photoKey: null,
+        buildingId: null,
+      },
+    },
+  },
+  [Resource.Map]: {
+    // Map is a grouping resource for navigation, not an actual data resource
+    apiPath: "map",
+    itemMapper: () => ({ name: "Mapa", shortDescription: null }),
+    form: {
+      inputs: {},
+      defaultValues: {},
+    },
+  },
+  [Resource.Libraries]: {
+    apiPath: "libraries",
+    itemMapper: (item) => ({
+      name: item.title,
+      shortDescription: item.addressLine1 ?? null,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          title: { label: "Nazwa biblioteki" },
+          room: { label: "Numer pokoju" },
+          ...ADDRESS_LINE_INPUTS,
+          phone: { label: "Numer telefonu" },
+          email: { label: "Adres email" },
+        },
+        numberInputs: {
+          latitude: { label: "Szerokość geograficzna" },
+          longitude: { label: "Długość geograficzna" },
+        },
+        selectInputs: {
+          branch: {
+            label: "Oddział",
+            optionEnum: Branch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
+        relationInputs: {
+          [Resource.Buildings]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "buildingId",
+          },
+          [Resource.RegularHours]: {
+            type: RelationType.OneToMany,
+            foreignKey: "libraryId",
+          },
+          [Resource.SpecialHours]: {
+            type: RelationType.OneToMany,
+            foreignKey: "libraryId",
+          },
+        },
+      },
+      defaultValues: {
+        title: "",
+        room: null,
+        addressLine1: null,
+        addressLine2: null,
+        phone: null,
+        email: null,
+        ...DEFAULT_COORDINATES,
+        branch: Branch.Main,
+        photoKey: null,
+        buildingId: null,
+      },
+    },
+  },
+  [Resource.RegularHours]: {
+    apiPath: "library_regular_hours",
+    itemMapper: (item) => ({
+      name: POLISH_WEEKDAYS[item.weekDay],
+      shortDescription: `${item.openTime} - ${item.closeTime}`,
+    }),
+    form: {
+      inputs: {
+        selectInputs: {
+          weekDay: {
+            label: "Dzień tygodnia",
+            optionEnum: Weekday,
+            optionLabels: POLISH_WEEKDAYS,
+          },
+        },
+        timeInputs: {
+          openTime: { label: "Godzina otwarcia" },
+          closeTime: { label: "Godzina zamknięcia" },
+        },
+        relationInputs: {
+          [Resource.Libraries]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "libraryId",
+          },
+        },
+      },
+      defaultValues: {
+        weekDay: Weekday.Monday,
+        openTime: "08:00",
+        closeTime: "16:00",
+        libraryId: -1,
+      },
+    },
+  },
+  [Resource.SpecialHours]: {
+    apiPath: "library_special_hours",
+    itemMapper: (item) => ({
+      name: item.specialDate,
+      shortDescription: `${item.openTime} - ${item.closeTime}`,
+    }),
+    form: {
+      inputs: {
+        dateInputs: {
+          specialDate: { label: "Specjalna data" },
+        },
+        timeInputs: {
+          openTime: { label: "Godzina otwarcia" },
+          closeTime: { label: "Godzina zamknięcia" },
+        },
+        relationInputs: {
+          [Resource.Libraries]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "libraryId",
+          },
+        },
+      },
+      defaultValues: {
+        specialDate: getRoundedDate(0),
+        openTime: "08:00",
+        closeTime: "16:00",
+        libraryId: -1,
+      },
+    },
+  },
+  [Resource.PinkBoxes]: {
+    apiPath: "pink_boxes",
+    itemMapper: (item) => ({
+      name: item.roomOrNearby ?? "Różowa skrzynka",
+      shortDescription: item.floor ?? null,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          roomOrNearby: { label: "Numer pokoju lub opis lokalizacji" },
+          floor: { label: "Piętro" },
+        },
+        numberInputs: {
+          latitude: { label: "Szerokość geograficzna" },
+          longitude: { label: "Długość geograficzna" },
+        },
+        selectInputs: {
+          branch: {
+            label: "Oddział",
+            optionEnum: Branch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
+        relationInputs: {
+          [Resource.Buildings]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "buildingId",
+          },
+        },
+      },
+      defaultValues: {
+        roomOrNearby: null,
+        floor: null,
+        ...DEFAULT_COORDINATES,
+        branch: Branch.Main,
+        photoKey: null,
+        buildingId: null,
+      },
+    },
+  },
+  [Resource.PolinkaStations]: {
+    apiPath: "polinka_stations",
+    itemMapper: (item) => ({
+      name: item.name,
+      shortDescription: item.addressLine1,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa stacji" },
+          ...ADDRESS_LINE_INPUTS,
+          externalDigitalGuideIdOrUrl: {
+            label: "ID lub URL zewnętrznego przewodnika",
+          },
+        },
+        numberInputs: {
+          latitude: { label: "Szerokość geograficzna" },
+          longitude: { label: "Długość geograficzna" },
+        },
+        selectInputs: {
+          branch: {
+            label: "Oddział",
+            optionEnum: Branch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+          externalDigitalGuideMode: {
+            label: "Tryb przewodnika cyfrowego",
+            optionEnum: ExternalDigitalGuideMode,
+            optionLabels: SELECT_OPTION_LABELS.MAP.EXTERNAL_GUIDE_MODE,
+          },
+        },
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
+        relationInputs: {
+          [Resource.Campuses]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "campusId",
+          },
+        },
+      },
+      defaultValues: {
+        name: "",
+        campusId: null,
+        addressLine1: "",
+        addressLine2: null,
+        ...DEFAULT_COORDINATES,
+        branch: Branch.Main,
+        photoKey: null,
+        externalDigitalGuideMode: null,
+        externalDigitalGuideIdOrUrl: null,
       },
     },
   },

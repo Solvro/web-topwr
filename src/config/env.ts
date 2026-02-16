@@ -2,6 +2,7 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 import { LOG_LEVELS } from "@/features/logging/node";
+import { EmailSchema } from "@/schemas";
 import { tryParseNumber } from "@/utils";
 
 const UrlBaseSchema = z
@@ -13,7 +14,7 @@ const UrlBaseSchema = z
 
 export const env = createEnv({
   server: {
-    TEST_USER_EMAIL: z.string().email().optional(),
+    TEST_USER_EMAIL: EmailSchema.optional(),
     TEST_USER_PASSWORD: z.string().optional(),
     MAX_LOG_PAYLOAD_LENGTH: z.number().default(1000),
   },
