@@ -105,6 +105,18 @@ const SELECT_OPTION_LABELS = {
   },
 };
 
+/** Default coordinates for Wrocław University of Science and Technology */
+const DEFAULT_COORDINATES = {
+  latitude: 51.107_883,
+  longitude: 17.038_538,
+} as const;
+
+/** Common address input configuration */
+const ADDRESS_LINE_INPUTS = {
+  addressLine1: { label: "Adres - linia 1" },
+  addressLine2: { label: "Adres - linia 2" },
+} as const;
+
 /** Required metadata for each resource. */
 export const RESOURCE_METADATA = {
   [Resource.AboutUs]: {
@@ -420,8 +432,7 @@ export const RESOURCE_METADATA = {
           name: { label: "Nazwa" },
           code: { label: "Kod wydziału (z numerem)" },
           betterCode: { label: "Kod wydziału (ze skrótem)" },
-          addressLine1: { label: "Adres - linia 1" },
-          addressLine2: { label: "Adres - linia 2" },
+          ...ADDRESS_LINE_INPUTS,
         },
         imageInputs: {
           logoKey: { label: "Logo", type: ImageType.Logo },
@@ -994,8 +1005,7 @@ export const RESOURCE_METADATA = {
         textInputs: {
           identifier: { label: "Identyfikator budynku (np. A1, C13)" },
           specialName: { label: "Specjalna nazwa budynku" },
-          addressLine1: { label: "Adres - linia 1" },
-          addressLine2: { label: "Adres - linia 2" },
+          ...ADDRESS_LINE_INPUTS,
           externalDigitalGuideIdOrUrl: {
             label: "ID lub URL zewnętrznego przewodnika",
           },
@@ -1035,8 +1045,7 @@ export const RESOURCE_METADATA = {
         campusId: null,
         addressLine1: "",
         addressLine2: null,
-        latitude: 51.107_883,
-        longitude: 17.038_538,
+        ...DEFAULT_COORDINATES,
         haveFood: false,
         branch: Branch.Main,
         coverKey: null,
@@ -1055,8 +1064,7 @@ export const RESOURCE_METADATA = {
       inputs: {
         textInputs: {
           room: { label: "Numer pokoju/pomieszczenia" },
-          addressLine1: { label: "Adres - linia 1" },
-          addressLine2: { label: "Adres - linia 2" },
+          ...ADDRESS_LINE_INPUTS,
         },
         numberInputs: {
           latitude: { label: "Szerokość geograficzna" },
@@ -1085,8 +1093,7 @@ export const RESOURCE_METADATA = {
       defaultValues: {
         room: null,
         instructions: null,
-        latitude: 51.107_883,
-        longitude: 17.038_538,
+        ...DEFAULT_COORDINATES,
         addressLine1: null,
         addressLine2: null,
         branch: Branch.Main,
@@ -1104,8 +1111,7 @@ export const RESOURCE_METADATA = {
     form: {
       inputs: {
         textInputs: {
-          addressLine1: { label: "Adres - linia 1" },
-          addressLine2: { label: "Adres - linia 2" },
+          ...ADDRESS_LINE_INPUTS,
         },
         numberInputs: {
           latitude: { label: "Szerokość geograficzna" },
@@ -1132,8 +1138,7 @@ export const RESOURCE_METADATA = {
         },
       },
       defaultValues: {
-        latitude: 51.107_883,
-        longitude: 17.038_538,
+        ...DEFAULT_COORDINATES,
         addressLine1: null,
         addressLine2: null,
         branch: Branch.Main,
@@ -1153,8 +1158,7 @@ export const RESOURCE_METADATA = {
       inputs: {
         textInputs: {
           name: { label: "Nazwa miejsca" },
-          addressLine1: { label: "Adres - linia 1" },
-          addressLine2: { label: "Adres - linia 2" },
+          ...ADDRESS_LINE_INPUTS,
         },
         numberInputs: {
           latitude: { label: "Szerokość geograficzna" },
@@ -1181,8 +1185,7 @@ export const RESOURCE_METADATA = {
         name: "",
         addressLine1: null,
         addressLine2: null,
-        latitude: 51.107_883,
-        longitude: 17.038_538,
+        ...DEFAULT_COORDINATES,
         branch: Branch.Main,
         photoKey: null,
         buildingId: null,
@@ -1209,8 +1212,7 @@ export const RESOURCE_METADATA = {
         textInputs: {
           title: { label: "Nazwa biblioteki" },
           room: { label: "Numer pokoju" },
-          addressLine1: { label: "Adres - linia 1" },
-          addressLine2: { label: "Adres - linia 2" },
+          ...ADDRESS_LINE_INPUTS,
           phone: { label: "Numer telefonu" },
           email: { label: "Adres email" },
         },
@@ -1250,8 +1252,7 @@ export const RESOURCE_METADATA = {
         addressLine2: null,
         phone: null,
         email: null,
-        latitude: 51.107_883,
-        longitude: 17.038_538,
+        ...DEFAULT_COORDINATES,
         branch: Branch.Main,
         photoKey: null,
         buildingId: null,
@@ -1358,8 +1359,7 @@ export const RESOURCE_METADATA = {
       defaultValues: {
         roomOrNearby: null,
         floor: null,
-        latitude: 51.107_883,
-        longitude: 17.038_538,
+        ...DEFAULT_COORDINATES,
         branch: Branch.Main,
         photoKey: null,
         buildingId: null,
@@ -1376,8 +1376,7 @@ export const RESOURCE_METADATA = {
       inputs: {
         textInputs: {
           name: { label: "Nazwa stacji" },
-          addressLine1: { label: "Adres - linia 1" },
-          addressLine2: { label: "Adres - linia 2" },
+          ...ADDRESS_LINE_INPUTS,
           externalDigitalGuideIdOrUrl: {
             label: "ID lub URL zewnętrznego przewodnika",
           },
@@ -1413,8 +1412,7 @@ export const RESOURCE_METADATA = {
         campusId: null,
         addressLine1: "",
         addressLine2: null,
-        latitude: 51.107_883,
-        longitude: 17.038_538,
+        ...DEFAULT_COORDINATES,
         branch: Branch.Main,
         photoKey: null,
         externalDigitalGuideMode: null,
