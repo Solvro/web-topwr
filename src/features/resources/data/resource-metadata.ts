@@ -113,8 +113,8 @@ const DEFAULT_COORDINATES = {
 
 /** Common address input configuration */
 const ADDRESS_LINE_INPUTS = {
-  addressLine1: { label: "Adres - linia 1" },
-  addressLine2: { label: "Adres - linia 2" },
+  addressLine1: { label: "Adres — linia 1" },
+  addressLine2: { label: "Adres — linia 2" },
 } as const;
 
 /** Required metadata for each resource. */
