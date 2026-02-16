@@ -55,6 +55,7 @@ export default function MapPage(_props: ResourcePageProps) {
         icon={MapPin}
         longLabel
         variant="outline"
+        preserveCase={true}
       />
       <DashboardButton
         resource={Resource.PinkBoxes}
