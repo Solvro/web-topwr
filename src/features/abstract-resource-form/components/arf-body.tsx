@@ -28,11 +28,13 @@ import type {
 import { cn } from "@/lib/utils";
 import type { ExistingImages, ResourceRelations } from "@/types/components";
 
+import { INPUT_COMPONENT_MESSAGES } from "../data/input-component-messages";
 import { useArfRelation } from "../hooks/use-arf-relation";
 import { isExistingItem } from "../utils/is-existing-item";
 import { ArfInput } from "./arf-input";
 import { ArfInputSet } from "./arf-input-set";
 import { ArfRelationInput } from "./arf-relation-input";
+import { BumpValueButton } from "./bump-value-button";
 
 /** Contains the body of the Abstract Resource Form, rendering all input fields. */
 export function ArfBody<T extends Resource>({
@@ -61,6 +63,7 @@ export function ArfBody<T extends Resource>({
     imageInputs,
     textInputs,
     numberInputs,
+    bumpInputs,
     timeInputs,
     textareaInputs,
     richTextInputs,
@@ -156,6 +159,42 @@ export function ArfBody<T extends Resource>({
                         const value = event.target.value;
                         field.onChange(value === "" ? null : Number(value));
                       }}
+                    />
+                  </ArfInput>
+                )}
+              />
+            )}
+          />
+          <ArfInputSet
+            inputs={bumpInputs}
+            mapper={([name, input]) => (
+              <FormField
+                key={name}
+                control={control}
+                name={name}
+                render={({ field }) => (
+                  <ArfInput
+                    declensions={declensions}
+                    isEditing={isEditing}
+                    inputDefinition={{ ...input, immutable: true }}
+                    tooltip={INPUT_COMPONENT_MESSAGES.bumpFieldDisabled}
+                    actionButton={
+                      <BumpValueButton
+                        resource={resource}
+                        field={name}
+                        bumpPath={input.bumpPath}
+                        currentValue={field.value as number}
+                        onSuccess={(newValue) => {
+                          field.onChange(newValue);
+                        }}
+                      />
+                    }
+                  >
+                    <Input
+                      placeholder="Wpisz liczbę..."
+                      type="number"
+                      {...field}
+                      value={field.value as number}
                     />
                   </ArfInput>
                 )}

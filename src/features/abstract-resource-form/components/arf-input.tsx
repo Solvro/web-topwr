@@ -1,4 +1,5 @@
 import { Slot } from "@radix-ui/react-slot";
+import type { ReactNode } from "react";
 
 import { TooltipWrapper } from "@/components/core/tooltip-wrapper";
 import {
@@ -25,6 +26,7 @@ export function ArfInput({
   tooltip: tooltipOverride,
   noControl = false,
   noLabel = false,
+  actionButton,
   children,
 }: WrapperProps & {
   declensions: Declensions;
@@ -33,6 +35,7 @@ export function ArfInput({
   tooltip?: string;
   noControl?: boolean;
   noLabel?: boolean;
+  actionButton?: ReactNode;
 }) {
   const Comp = children == null ? Input : Slot;
 
@@ -48,12 +51,17 @@ export function ArfInput({
     </Comp>
   );
   return (
-    <TooltipWrapper tooltip={tooltip}>
-      <FormItem>
-        {noLabel ? null : <FormLabel>{inputDefinition.label}</FormLabel>}
-        {noControl ? input : <FormControl>{input}</FormControl>}
-        <FormMessage />
-      </FormItem>
-    </TooltipWrapper>
+    <FormItem>
+      {noLabel ? null : <FormLabel>{inputDefinition.label}</FormLabel>}
+      <div className="flex gap-2">
+        <TooltipWrapper tooltip={tooltip}>
+          <div className="grow">
+            {noControl ? input : <FormControl>{input}</FormControl>}
+          </div>
+        </TooltipWrapper>
+        {actionButton}
+      </div>
+      <FormMessage />
+    </FormItem>
   );
 }

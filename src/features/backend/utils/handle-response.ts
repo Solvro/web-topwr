@@ -10,7 +10,8 @@ export async function handleResponse<T>(
   let responseBody = null;
 
   try {
-    responseBody = (await response.json()) as T;
+    const text = await response.text();
+    responseBody = (text ? JSON.parse(text) : {}) as T;
   } catch (error) {
     logger.warn(parseError(error), "Could not parse the response body as JSON");
   }

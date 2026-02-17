@@ -667,16 +667,24 @@ export const RESOURCE_METADATA = {
     itemMapper: () => ({}),
     form: {
       inputs: {
-        textInputs: {
-          cmsReferenceNumber: { label: "Numer referencyjny CMS" },
+        numberInputs: {
           daySwapLookahead: { label: "Horyzont czasowy zamiany dni" },
-          translatorReferenceNumber: { label: "Numer referencyjny tłumaczeń" },
+        },
+        bumpInputs: {
+          cmsReferenceNumber: {
+            label: "Numer referencyjny CMS",
+            bumpPath: "cms",
+          },
+          translatorReferenceNumber: {
+            label: "Numer referencyjny tłumaczeń",
+            bumpPath: "translator",
+          },
         },
       },
       defaultValues: {
-        cmsReferenceNumber: "",
-        daySwapLookahead: "",
-        translatorReferenceNumber: "",
+        cmsReferenceNumber: -1,
+        daySwapLookahead: -1,
+        translatorReferenceNumber: -1,
       },
     },
   },
