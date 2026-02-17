@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-param-names */
 import { Slot } from "@radix-ui/react-slot";
 import type { ReactNode } from "react";
 
@@ -18,6 +19,11 @@ import type { FormInputBase } from "../types";
 /**
  * Wraps a single input component with label, tooltip, and validation message.
  * Sets the input as disabled if the input definition marks it as immutable and the form is in editing mode.
+ *
+ * @param tooltip - Controls the tooltip text behavior:
+ * - `undefined`: Uses default behavior (shows immutable message if the input is disabled).
+ * - `null`: Explicitly suppresses the tooltip, ensuring nothing is shown.
+ * - `string`: Overrides the default and forces specific tooltip text to appear.
  */
 export function ArfInput({
   declensions,
