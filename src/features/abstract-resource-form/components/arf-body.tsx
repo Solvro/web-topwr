@@ -1,5 +1,6 @@
 "use client";
 
+import { Info } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import type { Control, FieldPathValue } from "react-hook-form";
 
@@ -167,9 +168,10 @@ export function ArfBody<T extends Resource>({
             )}
           />
           {bumpInputs != null && Object.keys(bumpInputs).length > 0 && (
-            <p className="text-muted-foreground text-xs">
-              Zmiana wartości możliwa tylko za pomocą przycisku podbicia.
-            </p>
+            <div className="text-muted-foreground flex gap-1 text-xs">
+              <Info className="size-4" />
+              <p>Zmiana wartości możliwa tylko za pomocą przycisku podbicia.</p>
+            </div>
           )}
           <ArfInputSet
             inputs={bumpInputs}
