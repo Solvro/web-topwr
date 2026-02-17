@@ -6,8 +6,6 @@ import type { ZodNumber } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { fetchMutation, useMutationWrapper } from "@/features/backend";
-import type { ModifyResourceResponse } from "@/features/backend/types";
-import { getResourceMetadata } from "@/features/resources";
 import type { Resource } from "@/features/resources";
 import type { ResourceSchemaKey } from "@/features/resources/types";
 
@@ -24,14 +22,14 @@ export function BumpValueButton<R extends Resource>({
   currentValue: number;
   onSuccess: (newValue: number) => void;
 }) {
-  const apiPath = `${getResourceMetadata(resource).apiPath}/bump/${bumpPath}`;
-
-  const { mutateAsync, isPending } = useMutationWrapper<
-    ModifyResourceResponse<R>,
-    null
-  >(`${apiPath}__bump__${field}`, async () => {
-    return await fetchMutation(apiPath);
-  });
+  const { mutateAsync, isPending } = useMutationWrapper(
+    `${resource}__bump__${field}`,
+    async () => {
+      return await fetchMutation(`bump/${bumpPath}`, {
+        resource,
+      });
+    },
+  );
 
   function handleBump() {
     toast.promise(
@@ -55,6 +53,8 @@ export function BumpValueButton<R extends Resource>({
         handleBump();
       }}
       disabled={isPending}
+      aria-label="Podbij wartość"
+      tooltip="Podbij wartość"
     >
       <ArrowUp />
     </Button>
