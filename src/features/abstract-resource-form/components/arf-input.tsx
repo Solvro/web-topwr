@@ -32,7 +32,7 @@ export function ArfInput({
   declensions: Declensions;
   isEditing: boolean;
   inputDefinition: FormInputBase;
-  tooltip?: string;
+  tooltip?: string | null;
   noControl?: boolean;
   noLabel?: boolean;
   actionButton?: ReactNode;
@@ -41,10 +41,11 @@ export function ArfInput({
 
   const isImmutableField = inputDefinition.immutable === true && isEditing;
   const tooltip =
-    tooltipOverride ??
-    (isImmutableField
-      ? INPUT_COMPONENT_MESSAGES.immutableFieldDisabled(declensions)
-      : null);
+    tooltipOverride === undefined
+      ? isImmutableField
+        ? INPUT_COMPONENT_MESSAGES.immutableFieldDisabled(declensions)
+        : null
+      : tooltipOverride;
   const input = (
     <Comp data-slot="input" disabled={isImmutableField}>
       {children}

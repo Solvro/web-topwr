@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { fetchMutation, useMutationWrapper } from "@/features/backend";
 import type { Resource } from "@/features/resources";
 import type { ResourceSchemaKey } from "@/features/resources/types";
+import { getToastMessages } from "@/lib/get-toast-messages";
 
 export function BumpValueButton<R extends Resource>({
   resource,
@@ -36,11 +37,7 @@ export function BumpValueButton<R extends Resource>({
       mutateAsync(null).then(() => {
         onSuccess(currentValue + 1);
       }),
-      {
-        loading: "Podbijanie wartości...",
-        success: "Wartość została podbita",
-        error: "Wystąpił błąd podczas podbijania wartości",
-      },
+      getToastMessages.resource(resource).bump,
     );
   }
 
@@ -53,7 +50,6 @@ export function BumpValueButton<R extends Resource>({
         handleBump();
       }}
       disabled={isPending}
-      aria-label="Podbij wartość"
       tooltip="Podbij wartość"
     >
       <ArrowUp />

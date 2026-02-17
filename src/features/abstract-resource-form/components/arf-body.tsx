@@ -1,6 +1,7 @@
 "use client";
 
-import type { Control } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
+import type { Control, FieldPathValue } from "react-hook-form";
 
 import { ArrayInput } from "@/components/inputs/array-input";
 import { CheckboxInput } from "@/components/inputs/checkbox-input";
@@ -28,7 +29,6 @@ import type {
 import { cn } from "@/lib/utils";
 import type { ExistingImages, ResourceRelations } from "@/types/components";
 
-import { INPUT_COMPONENT_MESSAGES } from "../data/input-component-messages";
 import { useArfRelation } from "../hooks/use-arf-relation";
 import { isExistingItem } from "../utils/is-existing-item";
 import { ArfInput } from "./arf-input";
@@ -52,6 +52,7 @@ export function ArfBody<T extends Resource>({
   relatedResources: ResourceRelations<T>;
   pivotResources: ResourcePivotRelationData<T>;
 }) {
+  const { setValue } = useFormContext<ResourceFormValues<T>>();
   const relationContext = useArfRelation();
 
   const metadata = getResourceMetadata(resource);
@@ -165,6 +166,11 @@ export function ArfBody<T extends Resource>({
               />
             )}
           />
+          {bumpInputs != null && Object.keys(bumpInputs).length > 0 && (
+            <p className="text-muted-foreground text-xs">
+              Zmiana wartości możliwa tylko za pomocą przycisku podbicia.
+            </p>
+          )}
           <ArfInputSet
             inputs={bumpInputs}
             mapper={([name, input]) => (
@@ -177,7 +183,7 @@ export function ArfBody<T extends Resource>({
                     declensions={declensions}
                     isEditing={isEditing}
                     inputDefinition={{ ...input, immutable: true }}
-                    tooltip={INPUT_COMPONENT_MESSAGES.bumpFieldDisabled}
+                    tooltip={null}
                     actionButton={
                       <BumpValueButton
                         resource={resource}
@@ -185,7 +191,13 @@ export function ArfBody<T extends Resource>({
                         bumpPath={input.bumpPath}
                         currentValue={field.value as number}
                         onSuccess={(newValue) => {
-                          field.onChange(newValue);
+                          setValue(
+                            name,
+                            newValue as FieldPathValue<
+                              ResourceFormValues<T>,
+                              typeof name
+                            >,
+                          );
                         }}
                       />
                     }
