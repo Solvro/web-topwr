@@ -3,11 +3,13 @@
  * not to be re-exported or imported outside of its root directory.
  */
 import type { Dispatch, ReactNode, SetStateAction } from "react";
+import type { UseFormReturn } from "react-hook-form";
 
 import type { Resource } from "@/features/resources";
 import type {
   ResourceDataType,
   ResourceDefaultValues,
+  ResourceFormValues,
   ResourcePk,
   ResourceRelation,
 } from "@/features/resources/types";
@@ -62,4 +64,20 @@ export interface ArfSheetFormProps<T extends Resource> {
   resource: T;
   className?: string;
   defaultValues?: ResourceDefaultValues<T>;
+}
+
+export interface FormPersistenceOptions<T extends Resource> {
+  storageKey: string;
+  form: UseFormReturn<ResourceFormValues<T>>;
+  enabled?: boolean;
+  debounceMs?: number;
+  excludeFields?: string[];
+  autoPromptRestore?: boolean;
+  onUnsavedChangesChange?: (hasChanges: boolean) => void;
+  isEditing?: boolean;
+}
+
+export interface PersistedFormData<T extends Resource> {
+  values: ResourceFormValues<T>;
+  timestamp: number;
 }
