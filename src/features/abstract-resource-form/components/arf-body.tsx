@@ -1,6 +1,8 @@
 "use client";
 
-import type { Control } from "react-hook-form";
+import { Info } from "lucide-react";
+import { useFormContext } from "react-hook-form";
+import type { Control, FieldPathValue } from "react-hook-form";
 
 import { ArrayInput } from "@/components/inputs/array-input";
 import { CheckboxInput } from "@/components/inputs/checkbox-input";
@@ -33,6 +35,7 @@ import { isExistingItem } from "../utils/is-existing-item";
 import { ArfInput } from "./arf-input";
 import { ArfInputSet } from "./arf-input-set";
 import { ArfRelationInput } from "./arf-relation-input";
+import { BumpValueButton } from "./bump-value-button";
 
 /** Contains the body of the Abstract Resource Form, rendering all input fields. */
 export function ArfBody<T extends Resource>({
@@ -50,6 +53,7 @@ export function ArfBody<T extends Resource>({
   relatedResources: ResourceRelations<T>;
   pivotResources: ResourcePivotRelationData<T>;
 }) {
+  const { setValue } = useFormContext<ResourceFormValues<T>>();
   const relationContext = useArfRelation();
 
   const metadata = getResourceMetadata(resource);
@@ -61,6 +65,7 @@ export function ArfBody<T extends Resource>({
     imageInputs,
     textInputs,
     numberInputs,
+    bumpInputs,
     timeInputs,
     textareaInputs,
     richTextInputs,
@@ -407,6 +412,57 @@ export function ArfBody<T extends Resource>({
               />
             </div>
           )}
+          {bumpInputs != null && Object.keys(bumpInputs).length > 0 ? (
+            <div className="text-muted-foreground flex gap-1 text-xs">
+              <Info className="size-4" />
+              <p>
+                Zmiana poniższych wartości możliwa tylko za pomocą przycisku
+                podbicia.
+              </p>
+            </div>
+          ) : null}
+          <ArfInputSet
+            inputs={bumpInputs}
+            mapper={([name, input]) => (
+              <FormField
+                key={name}
+                control={control}
+                name={name}
+                render={({ field }) => (
+                  <ArfInput
+                    declensions={declensions}
+                    isEditing={isEditing}
+                    inputDefinition={{ ...input, immutable: true }}
+                    tooltip={null}
+                    actionButton={
+                      <BumpValueButton
+                        resource={resource}
+                        field={name}
+                        bumpPath={input.bumpPath}
+                        currentValue={field.value as number}
+                        onSuccess={(newValue) => {
+                          setValue(
+                            name,
+                            newValue as FieldPathValue<
+                              ResourceFormValues<T>,
+                              typeof name
+                            >,
+                          );
+                        }}
+                      />
+                    }
+                  >
+                    <Input
+                      placeholder="Wpisz liczbę..."
+                      type="number"
+                      {...field}
+                      value={field.value as number}
+                    />
+                  </ArfInput>
+                )}
+              />
+            )}
+          />
         </div>
       </div>
     </div>

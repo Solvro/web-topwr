@@ -25,6 +25,11 @@ const getDefaultToastMessages = (declensions: Declensions) => ({
     success: `${toTitleCase(declensions.nominative)} została ${isArchived ? "zarchiwizowana" : "przywrócona"}.`,
     error: `Nie udało się ${isArchived ? "zarchiwizować" : "przywrócić"} ${declensions.genitive}`,
   }),
+  bump: {
+    loading: "Podbijanie wartości...",
+    success: "Wartość została podbita",
+    error: "Wystąpił błąd podczas podbijania wartości",
+  },
 });
 
 type ToastMessages = ReturnType<typeof getDefaultToastMessages>;

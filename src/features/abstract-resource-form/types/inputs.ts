@@ -56,6 +56,8 @@ export interface AbstractResourceFormInputs<T extends Resource> {
   textInputs?: FormInput<T>;
   /** Number input fields for numeric values. */
   numberInputs?: FormInput<T, z.ZodNumber>;
+  /** Number input fields that can only be incremented, not directly edited */
+  bumpInputs?: FormInput<T, z.ZodNumber, { bumpPath: string }>;
   /** Time input fields for time strings (HH:mm). */
   timeInputs?: FormInput<T>;
   /** Resizable longer text input fields. */
