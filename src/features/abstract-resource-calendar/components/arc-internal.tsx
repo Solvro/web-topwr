@@ -10,6 +10,7 @@ import type { SearchParameters } from "@/types/components";
 
 import { WEEKDAYS } from "../constants";
 import type { MappedCalendarData } from "../types/internal";
+import { formatDateKey } from "../utils/format-date-key";
 import { getEventsForDay } from "../utils/get-events-for-day";
 import { getMonthLink } from "../utils/get-month-link";
 import { DayButton } from "./arc-day-button";
@@ -93,7 +94,7 @@ export function CalendarInternal({
             eventsForDay={dayEvents}
             currentDate={todayDate}
             onDayClick={() => {
-              onDayClick(format(cellDate, "yyyy-MM-dd"));
+              onDayClick(formatDateKey(cellDate));
             }}
           />
         );

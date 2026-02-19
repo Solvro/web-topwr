@@ -24,7 +24,9 @@ export function getModalHeader(
       }),
     );
   } else {
-    const clickedDayDate = new Date(clickedDay);
+    const clickedDayFormatted = format(new Date(clickedDay), "dd MMMM yyyy", {
+      locale: pl,
+    });
     return relatedResources.length > 0
       ? relatedResources.length === 1
         ? `${toTitleCase(
@@ -32,7 +34,7 @@ export function getModalHeader(
               case: GrammaticalCase.Nominative,
               plural: true,
             }),
-          )} ${format(clickedDayDate, "dd MMMM yyyy", { locale: pl })}`
+          )} ${clickedDayFormatted}`
         : `${toTitleCase(
             relatedResources
               .map((relatedResource) =>
@@ -42,12 +44,12 @@ export function getModalHeader(
                 }),
               )
               .join(" i "),
-          )} ${format(clickedDayDate, "dd MMMM yyyy", { locale: pl })}`
+          )} ${clickedDayFormatted}`
       : `${toTitleCase(
           declineNoun(resource, {
             case: GrammaticalCase.Nominative,
             plural: true,
           }),
-        )} ${format(clickedDayDate, "dd MMMM yyyy", { locale: pl })}`;
+        )} ${clickedDayFormatted}`;
   }
 }

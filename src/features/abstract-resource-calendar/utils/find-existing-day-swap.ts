@@ -1,12 +1,11 @@
-import { format } from "date-fns";
-
 import type { SemesterStructure } from "../types/internal";
+import { formatDateKey } from "./format-date-key";
 
 export function findExistingDaySwap(
   date: string,
   parentSemester: SemesterStructure,
 ): boolean {
-  const dayKey = format(date, "yyyy-MM-dd");
+  const dayKey = formatDateKey(new Date(date));
   const semesterEventsForDay = parentSemester.semesterEvents[dayKey];
 
   if (semesterEventsForDay == null) {
