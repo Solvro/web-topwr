@@ -1,13 +1,13 @@
 "use client";
 
-import { format } from "date-fns";
-
 import {
   DeleteButtonWithDialog,
   EditButton,
   Resource,
 } from "@/features/resources";
 import type { ResourceDataType } from "@/features/resources/types";
+
+import { formatDateKey } from "../utils/format-date-key";
 
 export function AcademicSemesterCard({
   semester,
@@ -21,8 +21,9 @@ export function AcademicSemesterCard({
       <section className="my-auto">
         <p className="font-medium">{semester.name}</p>
         <p className="mt-1 text-xs">
-          {format(new Date(semester.semesterStartDate), "yyyy-MM-dd")} –{" "}
-          {format(semester.examSessionLastDate, "yyyy-MM-dd")}
+          {formatDateKey(new Date(semester.semesterStartDate))}
+          {" — "}
+          {formatDateKey(new Date(semester.examSessionLastDate))}
         </p>
       </section>
       {clickable ? (

@@ -29,7 +29,7 @@ export function EventCard({
         <p className="font-medium">{event.name}</p>
         <p className="mt-1 text-xs">
           {event.startTime === event.endTime ? (
-            <>{formatDate(event.startTime, "HH:mm", { locale: pl })}</>
+            formatDate(event.startTime, "HH:mm", { locale: pl })
           ) : (
             <>
               {formatDate(event.endTime, "EEEE HH:mm", { locale: pl })}
