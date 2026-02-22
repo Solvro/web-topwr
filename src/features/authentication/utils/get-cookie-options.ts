@@ -1,4 +1,6 @@
-import type { AuthState, CookieOptions, User } from "../types/internal";
+import type { CookieOptions } from "@/types/cookies";
+
+import type { AuthState, User } from "../types/internal";
 
 /** Prepares the user state to be saved to cookies. */
 export function getCookieOptions(

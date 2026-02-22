@@ -24,6 +24,12 @@ export const MOCK_USER = {
     fullName: faker.person.fullName(),
     email: faker.internet.email(),
     ...mockDatedResource(),
+    roles: [
+      {
+        slug: "admin",
+      },
+    ],
+    permissions: [],
   },
 } satisfies Mocked<User>;
 

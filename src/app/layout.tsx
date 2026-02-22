@@ -4,8 +4,8 @@ import { Space_Grotesk } from "next/font/google";
 
 import { Analytics } from "@/components/analytics";
 import { RootProviders } from "@/components/providers/root-providers";
-import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/config/env";
+import { Toaster } from "@/features/toaster";
 import { cn } from "@/lib/utils";
 import type { WrapperProps } from "@/types/components";
 

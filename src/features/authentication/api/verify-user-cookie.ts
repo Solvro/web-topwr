@@ -1,6 +1,7 @@
 import { logger, parseError } from "@/features/logging";
+import type { RequestCookie } from "@/types/cookies";
 
-import type { AuthState, RequestCookie, User } from "../types/internal";
+import type { AuthState, User } from "../types/internal";
 import { parseAuthCookie } from "../utils/parse-auth-cookie";
 import { getCurrentUser } from "./get-current-user";
 

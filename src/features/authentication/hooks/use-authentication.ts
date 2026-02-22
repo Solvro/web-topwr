@@ -6,6 +6,9 @@ import { useEffect } from "react";
 
 import { fetchMutation } from "@/features/backend";
 import type { LogInResponse, MessageResponse } from "@/features/backend/types";
+import { logger } from "@/features/logging";
+import { useSavedToast } from "@/features/toaster";
+import { getToastMessages } from "@/lib/get-toast-messages";
 
 import { getCurrentUser } from "../api/get-current-user";
 import { AUTH_STATE_COOKIE_NAME } from "../constants";
@@ -52,6 +55,7 @@ const parseAuthState = (
 /** React hook for client-side authentication-related operations. */
 export function useAuthentication(): AuthContext {
   const [authState, setAuthState] = useAtom(authStateAtom);
+  const { deferToast } = useSavedToast();
 
   useEffect(() => {
     if (authState != null) {
@@ -63,11 +67,15 @@ export function useAuthentication(): AuthContext {
     }
     const parsed = parseAuthCookie(cookie);
     if (parsed == null) {
+      deferToast({
+        level: "info",
+        message: getToastMessages.auth.invalidCookie,
+      });
       Cookies.remove(AUTH_STATE_COOKIE_NAME);
     } else {
       setAuthState(parsed);
     }
-  }, [authState, setAuthState]);
+  }, [authState, setAuthState, deferToast]);
 
   async function login(data: LoginFormValues) {
     if (authState != null) {
@@ -81,13 +89,21 @@ export function useAuthentication(): AuthContext {
         body: data,
       });
     const user: User = await getCurrentUser(accessToken);
-    const newState = AuthStateSchema.parse({
+    const parseResult = AuthStateSchema.safeParse({
       accessToken,
       refreshToken,
       accessTokenExpiresAt: now + accessExpiresInMs,
       refreshTokenExpiresAt: now + refreshExpiresInMs,
       user,
     });
+    if (!parseResult.success) {
+      logger.error(
+        parseResult.error.format(),
+        "Login response does not match expected schema",
+      );
+      throw parseResult.error;
+    }
+    const newState = parseResult.data;
     Cookies.set(AUTH_STATE_COOKIE_NAME, ...getCookieOptions(newState));
     setAuthState(newState);
     return newState;
