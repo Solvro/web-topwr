@@ -6,5 +6,7 @@ import type { RoutePermission } from "../types/internal";
  * The route permissions configuration is typed to include all routable resources, so this is enforced by TypeScript,
  * but during development it helps by displaying a 403 Forbidden error rather than a runtime error in case of missing routes.
  */
-export const getRoutePermissions = (route: RoutePermission): string[] =>
-  (ROUTE_PERMISSIONS[route] as string[] | undefined) ?? [];
+export const getRoutePermissions = (
+  route: RoutePermission,
+): readonly string[] =>
+  (ROUTE_PERMISSIONS[route] as readonly string[] | undefined) ?? [];

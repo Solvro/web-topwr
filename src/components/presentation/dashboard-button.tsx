@@ -4,13 +4,15 @@ import type { Route } from "next";
 
 import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
+import { permit } from "@/features/authentication/server";
+import type { RoutePermission } from "@/features/authentication/types";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { getManagingResourceLabel } from "@/features/resources";
 import type { RoutableResource } from "@/features/resources/types";
 import { cn } from "@/lib/utils";
 import { toTitleCase } from "@/utils";
 
-export function DashboardButton({
+export async function DashboardButton({
   icon: Icon,
   variant = "default",
   className,
@@ -51,6 +53,11 @@ export function DashboardButton({
                 plural: true,
               })),
         ];
+
+  const hasPermission = await permit(href as RoutePermission);
+  if (!hasPermission) {
+    return null;
+  }
 
   const useViewTransition = resource != null && variant === "default";
 
