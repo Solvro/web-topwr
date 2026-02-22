@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
-import { useEffect } from "react";
 import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
@@ -22,6 +21,7 @@ import {
 } from "@/features/resources";
 import type {
   EditableResource,
+  ResourceDataWithRelations,
   ResourceDefaultValues,
   ResourceFormValues,
   ResourcePivotRelationData,
@@ -29,7 +29,6 @@ import type {
   RoutableResource,
 } from "@/features/resources/types";
 import { useRouter } from "@/hooks/use-router";
-import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import { cn } from "@/lib/utils";
 import type {
@@ -39,13 +38,16 @@ import type {
 } from "@/types/components";
 
 import { useArfRelation } from "../hooks/use-arf-relation";
+import { useFormWithPersistence } from "../hooks/use-form-with-persistence";
 import { ArfSheetProvider } from "../providers/arf-sheet-provider";
+import { generateFormStorageKey } from "../utils/generate-form-storage-key";
 import { getDefaultValues } from "../utils/get-default-values";
 import { getMutationConfig } from "../utils/get-mutation-config";
 import { isExistingItem } from "../utils/is-existing-item";
 import { isFormStateDirty } from "../utils/is-form-state-dirty";
 import { ArfBody } from "./arf-body";
 import { ArfConfirmationModal } from "./arf-confirmation-modal";
+import { CancelButton } from "./cancel-button";
 
 /** Controller component for Abstract Resource Form. Sets up form context and handles submission. */
 export function ArfController<T extends Resource>({
@@ -72,25 +74,23 @@ export function ArfController<T extends Resource>({
       relationContext,
     ) as DefaultValues<ResourceFormValues<T>>,
   });
-  const { setHasUnsavedChanges } = useUnsavedChanges();
 
   const isEditing = isExistingItem(resource, defaultValues);
   const isEmbedded = relationContext != null;
-  const { subscribe } = form;
 
-  useEffect(() => {
-    const unsubscribe = subscribe({
-      formState: { isDirty: true, dirtyFields: true },
-      callback: (formState) => {
-        setHasUnsavedChanges(isFormStateDirty(formState));
-      },
-    });
+  const storageKey = generateFormStorageKey(
+    resource,
+    defaultValues as ResourceDataWithRelations<T>,
+    isEditing,
+    isEmbedded,
+  );
 
-    return () => {
-      unsubscribe();
-      setHasUnsavedChanges(false);
-    };
-  }, [setHasUnsavedChanges, subscribe]);
+  const { clearPersistedData, resetForm } = useFormWithPersistence({
+    storageKey,
+    form,
+    excludeFields: ["id"],
+    isEditing,
+  });
 
   const {
     mutationKey,
@@ -114,6 +114,10 @@ export function ArfController<T extends Resource>({
       ...mutationOptions,
     });
     const wasCreated = mutationOptions.method === "POST";
+
+    // Clear persisted data after successful submission
+    clearPersistedData();
+
     // initially disables the save button after successful edit
     form.reset(wasCreated ? undefined : response.data);
     if (relationContext == null && wasCreated) {
@@ -206,15 +210,26 @@ export function ArfController<T extends Resource>({
             ) : null}
 
             {isEmbedded ? null : (
-              // It would be too complex to relate `isEmbedded` to `resource` being a `RoutableResource`,
-              // so I'm going to assume the codebase won't use `AbstractResourceForm` anywhere except for
-              // routable resources with `isEmbedded` set to `false` and otherwise with it set to `true`.
-              <ReturnButton
-                className="lg:mr-auto"
-                resource={resource as RoutableResource}
-                returnLabel="Wróć do"
-                icon={ChevronLeft}
-              />
+              <>
+                <CancelButton
+                  resource={resource as RoutableResource}
+                  isEditing={isEditing}
+                  onClearData={clearPersistedData}
+                  onResetForm={resetForm}
+                  disabled={isPending}
+                />
+                {isEditing ? (
+                  // It would be too complex to relate `isEmbedded` to `resource` being a `RoutableResource`,
+                  // so I'm going to assume the codebase won't use `AbstractResourceForm` anywhere except for
+                  // routable resources with `isEmbedded` set to `false` and otherwise with it set to `true`.
+                  <ReturnButton
+                    className="lg:mr-auto"
+                    resource={resource as RoutableResource}
+                    returnLabel="Wróć do"
+                    icon={ChevronLeft}
+                  />
+                ) : null}
+              </>
             )}
           </footer>
         </form>
