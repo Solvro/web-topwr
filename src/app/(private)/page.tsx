@@ -62,6 +62,11 @@ export default async function Home() {
             icon={CalendarCog}
           />
           <DashboardButton resource={Resource.MobileConfig} icon={Wrench} />
+          <DashboardButton
+            href="/interactive-map"
+            icon={Map}
+            label="Mapa obiektów"
+          />
         </div>
       </div>
     </div>
