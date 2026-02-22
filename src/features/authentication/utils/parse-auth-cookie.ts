@@ -1,3 +1,5 @@
+import { logger } from "@/features/logging";
+
 import { AuthStateSchema } from "../schemas/auth-state-schema";
 import type { AuthState } from "../types/internal";
 
@@ -11,9 +13,20 @@ export function parseAuthCookie(
   if (cookie == null) {
     return null;
   }
+  let parsedCookie: unknown;
   try {
-    return AuthStateSchema.parse(JSON.parse(cookie));
-  } catch {
+    parsedCookie = JSON.parse(cookie);
+  } catch (error) {
+    logger.error(error, "Failed to parse auth cookie as JSON");
     return null;
   }
+  const parseResult = AuthStateSchema.safeParse(parsedCookie);
+  if (parseResult.success) {
+    return parseResult.data;
+  }
+  logger.error(
+    parseResult.error.format(),
+    "Auth cookie does not match expected schema",
+  );
+  return null;
 }

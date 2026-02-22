@@ -6,6 +6,9 @@ import {
   parseAuthCookie,
 } from "@/features/authentication";
 
+import { deferToastProxy } from "./features/toaster";
+import { getToastMessages } from "./lib/get-toast-messages";
+
 /** Removes the auth cookie if it is malformed. */
 function verifyUserCookie(request: NextRequest, response: NextResponse) {
   const cookie = request.cookies.get(AUTH_STATE_COOKIE_NAME);
@@ -14,12 +17,17 @@ function verifyUserCookie(request: NextRequest, response: NextResponse) {
   }
   const authState = parseAuthCookie(cookie.value);
   if (authState == null) {
+    deferToastProxy(response, {
+      level: "info",
+      message: getToastMessages.auth.invalidCookie,
+    });
     response.cookies.delete(AUTH_STATE_COOKIE_NAME);
   }
 }
 
 export function proxy(request: NextRequest) {
   const response = NextResponse.next();
+  // TODO: move this to a React Server Component to ensure synchronous validation
   verifyUserCookie(request, response);
   return response;
 }

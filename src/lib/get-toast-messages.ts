@@ -82,4 +82,7 @@ export const getToastMessages = {
       ...specificToastMessages,
     };
   },
+  auth: {
+    invalidCookie: "Proszę zalogować się ponownie.",
+  },
 };
