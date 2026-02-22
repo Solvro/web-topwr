@@ -33,18 +33,18 @@ export async function DashboardButton({
         preserveCase?: boolean;
       }
     | {
-        href: Route;
+        href: Route & RoutePermission;
         label: string;
         resource?: never;
         longLabel?: never;
         preserveCase?: never;
       }
   )) {
-  const [href, label] =
+  const [route, label] =
     resource == null
       ? [hrefOverride, labelOverride]
       : [
-          hrefOverride ?? (`/${resource}` as const),
+          `/${resource}` as const,
           longLabel
             ? getManagingResourceLabel(resource)
             : (labelOverride ??
@@ -54,7 +54,7 @@ export async function DashboardButton({
               })),
         ];
 
-  const hasPermission = await permit(href as RoutePermission);
+  const hasPermission = await permit(route);
   if (!hasPermission) {
     return null;
   }
@@ -71,7 +71,7 @@ export async function DashboardButton({
       asChild
     >
       <Link
-        href={href}
+        href={hrefOverride ?? route}
         style={{
           viewTransitionName: useViewTransition
             ? `resource-card-${resource}`
