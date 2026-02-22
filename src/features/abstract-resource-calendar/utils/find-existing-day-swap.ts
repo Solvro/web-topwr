@@ -1,11 +1,11 @@
 import type { SemesterStructure } from "../types/internal";
-import { serializeDateDay } from "./serialize-date-day";
+import { formatDateKey } from "./format-date-key";
 
 export function findExistingDaySwap(
   date: string,
   parentSemester: SemesterStructure,
 ): boolean {
-  const dayKey = serializeDateDay(date);
+  const dayKey = formatDateKey(new Date(date));
   const semesterEventsForDay = parentSemester.semesterEvents[dayKey];
 
   if (semesterEventsForDay == null) {

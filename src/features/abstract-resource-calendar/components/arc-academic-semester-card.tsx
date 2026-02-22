@@ -7,7 +7,7 @@ import {
 } from "@/features/resources";
 import type { ResourceDataType } from "@/features/resources/types";
 
-import { serializeDateDay } from "../utils/serialize-date-day";
+import { formatDateKey } from "../utils/format-date-key";
 
 export function AcademicSemesterCard({
   semester,
@@ -21,8 +21,9 @@ export function AcademicSemesterCard({
       <section className="my-auto">
         <p className="font-medium">{semester.name}</p>
         <p className="mt-1 text-xs">
-          {serializeDateDay(semester.semesterStartDate)} –{" "}
-          {serializeDateDay(semester.examSessionLastDate)}
+          {formatDateKey(new Date(semester.semesterStartDate))}
+          {" — "}
+          {formatDateKey(new Date(semester.examSessionLastDate))}
         </p>
       </section>
       {clickable ? (

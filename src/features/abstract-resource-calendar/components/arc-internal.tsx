@@ -1,6 +1,7 @@
 "use client";
 
-import { parse } from "date-fns";
+import { format, getDaysInMonth, parse } from "date-fns";
+import { pl } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Link } from "@/components/core/link";
@@ -9,9 +10,8 @@ import type { SearchParameters } from "@/types/components";
 
 import { WEEKDAYS } from "../constants";
 import type { MappedCalendarData } from "../types/internal";
-import { formatDateObject } from "../utils/format-date-object";
+import { formatDateKey } from "../utils/format-date-key";
 import { getEventsForDay } from "../utils/get-events-for-day";
-import { getMonthByNumberAndYear } from "../utils/get-month-by-number-and-year";
 import { getMonthLink } from "../utils/get-month-link";
 import { DayButton } from "./arc-day-button";
 
@@ -27,23 +27,17 @@ export function CalendarInternal({
   onDayClick: (dayKey: string) => void;
 }) {
   const { year, month } = searchParams;
-  const currentDate = new Date();
+  const todayDate = new Date();
   const displayedYear = (
-    year == null ? currentDate : parse(year, "yyyy", currentDate)
+    year == null ? todayDate : parse(year, "yyyy", todayDate)
   ).getFullYear();
   const displayedMonth =
-    (month == null ? currentDate : parse(month, "MM", currentDate)).getMonth() +
-    1;
+    (month == null ? todayDate : parse(month, "MM", todayDate)).getMonth() + 1;
 
-  const currentDisplayedMonth = getMonthByNumberAndYear(
-    displayedMonth,
-    displayedYear,
-  );
+  const currentDisplayedMonth = new Date(displayedYear, displayedMonth - 1, 1);
+  const startDayOfWeek = (currentDisplayedMonth.getDay() + 6) % 7;
+  const totalCells = startDayOfWeek + getDaysInMonth(currentDisplayedMonth);
 
-  const firstDayOfMonth = new Date(displayedYear, displayedMonth - 1, 1);
-  const startDayOfWeek = (firstDayOfMonth.getDay() + 6) % 7;
-
-  const totalCells = startDayOfWeek + currentDisplayedMonth.daysInMonth;
   const calendarDays = Array.from({ length: totalCells }, (_, index) =>
     index < startDayOfWeek
       ? ({
@@ -66,7 +60,7 @@ export function CalendarInternal({
           </Link>
         </Button>
         <span className="min-w-[200px]">
-          {currentDisplayedMonth.name} {displayedYear}
+          {format(currentDisplayedMonth, "LLLL yyyy", { locale: pl })}
         </span>
         <Button variant="ghost" size="icon" aria-label="Next month" asChild>
           <Link href={getMonthLink(displayedYear, displayedMonth + 1)}>
@@ -88,23 +82,19 @@ export function CalendarInternal({
         if (cell.type === "empty") {
           return <div key={cell.id} />;
         }
-        const displayedDateObject = {
-          year: displayedYear,
-          month: currentDisplayedMonth,
-          day: cell.day,
-        };
-        const dayEvents = getEventsForDay(displayedDateObject, mappedData);
+
+        const cellDate = new Date(currentDisplayedMonth.setDate(cell.day));
+        const dayEvents = getEventsForDay(cellDate, mappedData);
 
         return (
           <DayButton
             key={cell.id}
-            day={cell.day}
-            today={displayedDateObject}
+            dayButtonDate={cellDate}
             clickable={clickable}
             eventsForDay={dayEvents}
-            currentDate={currentDate}
+            currentDate={todayDate}
             onDayClick={() => {
-              onDayClick(formatDateObject(displayedDateObject));
+              onDayClick(formatDateKey(cellDate));
             }}
           />
         );

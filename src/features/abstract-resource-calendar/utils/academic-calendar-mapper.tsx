@@ -5,7 +5,7 @@ import { AcademicSemesterCard } from "../components/arc-academic-semester-card";
 import { DaySwapCard } from "../components/arc-day-swap-card";
 import { HolidayCard } from "../components/arc-holiday-card";
 import type { MappedCalendarData } from "../types/internal";
-import { serializeDateDay } from "./serialize-date-day";
+import { formatDateKey } from "./format-date-key";
 
 export function academicCalendarMapper(
   semesters: ResourceDataWithRelations<Resource.AcademicSemesters>[],
@@ -43,7 +43,7 @@ export function academicCalendarMapper(
         currentDate.getTime() <= lastDate.getTime();
         currentDate.setDate(currentDate.getDate() + 1)
       ) {
-        dayKeys.push(serializeDateDay(currentDate.toISOString()));
+        dayKeys.push(formatDateKey(currentDate));
       }
 
       const holidayCard = (
@@ -71,7 +71,7 @@ export function academicCalendarMapper(
     }
 
     for (const daySwap of daySwaps) {
-      const dayKey = serializeDateDay(daySwap.date);
+      const dayKey = formatDateKey(new Date(daySwap.date));
 
       mappedData.dayEvents[dayKey] ??= [];
 

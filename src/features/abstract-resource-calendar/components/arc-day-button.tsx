@@ -1,28 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-import type { DateObject, EventCardType } from "../types/internal";
+import type { EventCardType } from "../types/internal";
 import { EventBadge } from "./arc-event-badge";
 
 export function DayButton({
-  day,
-  today,
+  dayButtonDate,
   clickable,
   eventsForDay,
   currentDate,
   onDayClick,
 }: {
-  day: number;
-  today: DateObject;
+  dayButtonDate: Date;
   clickable: boolean;
   currentDate: Date;
   eventsForDay: EventCardType[];
   onDayClick: () => void;
 }) {
   const isCurrentDay =
-    day === currentDate.getDate() &&
-    today.month.value === currentDate.getMonth() + 1 &&
-    today.year === currentDate.getFullYear();
+    dayButtonDate.getDate() === currentDate.getDate() &&
+    dayButtonDate.getMonth() === currentDate.getMonth() &&
+    dayButtonDate.getFullYear() === currentDate.getFullYear();
+
+  const day = dayButtonDate.getDate();
 
   return (
     <Button
