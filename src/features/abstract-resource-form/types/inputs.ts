@@ -9,6 +9,8 @@ import type {
   ResourceSchemaKey,
 } from "@/features/resources/types";
 
+export type ImageSize = "small" | "medium" | "large" | "wide";
+
 export interface FormInputBase {
   label: string;
   /** For fields which should only be set on creation, and not in the edit form. */
@@ -51,7 +53,11 @@ type ArrayInputs<T extends Resource> = Partial<
 
 export interface AbstractResourceFormInputs<T extends Resource> {
   /** Image upload inputs for image key fields. */
-  imageInputs?: FormInput<T, z.ZodString, { type: ImageType }>;
+  imageInputs?: FormInput<
+    T,
+    z.ZodString,
+    { type: ImageType; size?: ImageSize }
+  >;
   /** Standard text input fields. */
   textInputs?: FormInput<T>;
   /** Number input fields for numeric values. */
