@@ -22,6 +22,7 @@ import {
 } from "@/features/resources";
 import type {
   EditableResource,
+  ResourceDataType,
   ResourceDefaultValues,
   ResourceFormValues,
   ResourcePivotRelationData,
@@ -116,12 +117,17 @@ export function ArfController<T extends Resource>({
     const wasCreated = mutationOptions.method === "POST";
     // initially disables the save button after successful edit
     form.reset(wasCreated ? undefined : response.data);
-    if (relationContext == null && wasCreated) {
+    const newPrimaryKey = getResourcePkValue(resource, response.data);
+    const primaryKeyChanged =
+      !wasCreated &&
+      newPrimaryKey !==
+        getResourcePkValue(resource, defaultValues as ResourceDataType<T>);
+    if (relationContext == null && (wasCreated || primaryKeyChanged)) {
       router.push(
         // assume that creatable resources in non-embedded forms are routable/editable
         metadata.isSingleton === true
           ? `/${resource as RoutableResource}`
-          : `/${resource as EditableResource}/edit/${getResourcePkValue(resource, response.data)}`,
+          : `/${resource as EditableResource}/edit/${newPrimaryKey}`,
       );
     } else {
       if (wasCreated && relationContext != null) {
