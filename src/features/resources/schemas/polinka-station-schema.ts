@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { RequiredStringSchema } from "@/schemas";
 
-import { Branch, ExternalDigitalGuideMode } from "../enums";
+import { ExternalDigitalGuideMode, UniversityBranch } from "../enums";
 
 export const PolinkaStationSchema = z.object({
   name: RequiredStringSchema,
@@ -11,7 +11,7 @@ export const PolinkaStationSchema = z.object({
   addressLine2: z.string().nullish(),
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
-  branch: z.nativeEnum(Branch),
+  branch: z.nativeEnum(UniversityBranch),
   photoKey: z.string().nullish(),
   externalDigitalGuideMode: z.nativeEnum(ExternalDigitalGuideMode).nullish(),
   externalDigitalGuideIdOrUrl: z.string().nullish(),

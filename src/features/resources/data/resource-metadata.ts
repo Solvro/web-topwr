@@ -26,12 +26,12 @@ import {
 } from "lucide-react";
 import { lazy } from "react";
 
+import { DEFAULT_INPUT_COLOR } from "@/config/constants";
 import { ImageType, Weekday } from "@/config/enums";
 import { POLISH_WEEKDAYS } from "@/features/polish";
 import { getRoundedDate } from "@/utils";
 
 import {
-  Branch,
   ChangeType,
   ExternalDigitalGuideMode,
   GuideAuthorRole,
@@ -118,11 +118,11 @@ const SELECT_OPTION_LABELS = {
   },
   MAP: {
     BRANCH: {
-      [Branch.Main]: "Kampus główny",
-      [Branch.JeleniaGora]: "Jelenia Góra",
-      [Branch.Walbrzych]: "Wałbrzych",
-      [Branch.Legnica]: "Legnica",
-    } satisfies Record<Branch, string>,
+      [UniversityBranch.Main]: "Kampus główny",
+      [UniversityBranch.JeleniaGora]: "Jelenia Góra",
+      [UniversityBranch.Walbrzych]: "Wałbrzych",
+      [UniversityBranch.Legnica]: "Legnica",
+    } satisfies Record<UniversityBranch, string>,
     EXTERNAL_GUIDE_MODE: {
       [ExternalDigitalGuideMode.AppId]: "ID aplikacji",
       [ExternalDigitalGuideMode.Url]: "URL",
@@ -474,6 +474,13 @@ export const RESOURCE_METADATA = {
           gradientStart: { label: "Kolor początkowy gradientu" },
           gradientStop: { label: "Kolor końcowy gradientu" },
         },
+        selectInputs: {
+          branch: {
+            label: "Oddział",
+            optionEnum: UniversityBranch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
         relationInputs: {
           [Resource.Majors]: {
             type: RelationType.OneToMany,
@@ -492,10 +499,10 @@ export const RESOURCE_METADATA = {
         description: null,
         code: "",
         betterCode: "",
-        logoKey: "",
-        gradientStart: null,
-        gradientStop: null,
-        branch: UniversityBranch.MainCampus,
+        logoKey: null,
+        gradientStart: DEFAULT_INPUT_COLOR,
+        gradientStop: DEFAULT_INPUT_COLOR,
+        branch: UniversityBranch.Main,
       },
     },
   },
@@ -875,6 +882,11 @@ export const RESOURCE_METADATA = {
             optionEnum: OrganizationStatus,
             optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
           },
+          branch: {
+            label: "Oddział",
+            optionEnum: UniversityBranch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
         },
         checkboxInputs: {
           isStrategic: { label: "Czy jest kołem strategicznym?" },
@@ -907,7 +919,7 @@ export const RESOURCE_METADATA = {
         organizationType: OrganizationType.ScientificClub,
         organizationStatus: OrganizationStatus.Active,
         isStrategic: false,
-        branch: UniversityBranch.MainCampus,
+        branch: UniversityBranch.Main,
       },
     },
   },
@@ -922,6 +934,7 @@ export const RESOURCE_METADATA = {
       inputs: {
         textInputs: {
           link: { label: "Link" },
+          name: { label: "Nazwa" },
         },
         selectInputs: {
           linkType: {
@@ -933,6 +946,7 @@ export const RESOURCE_METADATA = {
       },
       defaultValues: {
         link: "",
+        name: "",
         linkType: LinkType.Default,
         studentOrganizationId: -1,
       },
@@ -1029,7 +1043,7 @@ export const RESOURCE_METADATA = {
         selectInputs: {
           branch: {
             label: "Oddział",
-            optionEnum: Branch,
+            optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
         },
@@ -1040,7 +1054,7 @@ export const RESOURCE_METADATA = {
       defaultValues: {
         name: "",
         coverKey: null,
-        branch: Branch.Main,
+        branch: UniversityBranch.Main,
       },
     },
   },
@@ -1068,7 +1082,7 @@ export const RESOURCE_METADATA = {
         selectInputs: {
           branch: {
             label: "Oddział",
-            optionEnum: Branch,
+            optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
           externalDigitalGuideMode: {
@@ -1098,7 +1112,7 @@ export const RESOURCE_METADATA = {
         addressLine2: null,
         ...DEFAULT_COORDINATES,
         haveFood: false,
-        branch: Branch.Main,
+        branch: UniversityBranch.Main,
         coverKey: null,
         externalDigitalGuideMode: null,
         externalDigitalGuideIdOrUrl: null,
@@ -1128,7 +1142,7 @@ export const RESOURCE_METADATA = {
         selectInputs: {
           branch: {
             label: "Oddział",
-            optionEnum: Branch,
+            optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
         },
@@ -1148,7 +1162,7 @@ export const RESOURCE_METADATA = {
         ...DEFAULT_COORDINATES,
         addressLine1: null,
         addressLine2: null,
-        branch: Branch.Main,
+        branch: UniversityBranch.Main,
         photoKey: null,
         buildingId: null,
       },
@@ -1176,7 +1190,7 @@ export const RESOURCE_METADATA = {
         selectInputs: {
           branch: {
             label: "Oddział",
-            optionEnum: Branch,
+            optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
         },
@@ -1194,7 +1208,7 @@ export const RESOURCE_METADATA = {
         ...DEFAULT_COORDINATES,
         addressLine1: null,
         addressLine2: null,
-        branch: Branch.Main,
+        branch: UniversityBranch.Main,
         instructions: null,
         photoKey: null,
         buildingId: null,
@@ -1221,7 +1235,7 @@ export const RESOURCE_METADATA = {
         selectInputs: {
           branch: {
             label: "Oddział",
-            optionEnum: Branch,
+            optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
         },
@@ -1240,7 +1254,7 @@ export const RESOURCE_METADATA = {
         addressLine1: null,
         addressLine2: null,
         ...DEFAULT_COORDINATES,
-        branch: Branch.Main,
+        branch: UniversityBranch.Main,
         photoKey: null,
         buildingId: null,
       },
@@ -1279,7 +1293,7 @@ export const RESOURCE_METADATA = {
         selectInputs: {
           branch: {
             label: "Oddział",
-            optionEnum: Branch,
+            optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
         },
@@ -1309,7 +1323,7 @@ export const RESOURCE_METADATA = {
         phone: null,
         email: null,
         ...DEFAULT_COORDINATES,
-        branch: Branch.Main,
+        branch: UniversityBranch.Main,
         photoKey: null,
         buildingId: null,
       },
@@ -1399,7 +1413,7 @@ export const RESOURCE_METADATA = {
         selectInputs: {
           branch: {
             label: "Oddział",
-            optionEnum: Branch,
+            optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
         },
@@ -1417,7 +1431,7 @@ export const RESOURCE_METADATA = {
         roomOrNearby: null,
         floor: null,
         ...DEFAULT_COORDINATES,
-        branch: Branch.Main,
+        branch: UniversityBranch.Main,
         photoKey: null,
         buildingId: null,
       },
@@ -1446,7 +1460,7 @@ export const RESOURCE_METADATA = {
         selectInputs: {
           branch: {
             label: "Oddział",
-            optionEnum: Branch,
+            optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
           externalDigitalGuideMode: {
@@ -1471,7 +1485,7 @@ export const RESOURCE_METADATA = {
         addressLine1: "",
         addressLine2: null,
         ...DEFAULT_COORDINATES,
-        branch: Branch.Main,
+        branch: UniversityBranch.Main,
         photoKey: null,
         externalDigitalGuideMode: null,
         externalDigitalGuideIdOrUrl: null,

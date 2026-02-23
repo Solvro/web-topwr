@@ -68,10 +68,6 @@ export enum ChangeType {
 
 /** Filia/oddział Politechniki */
 export enum UniversityBranch {
-  MainCampus = "main",
-}
-
-export enum Branch {
   Main = "main",
   JeleniaGora = "jelenia_gora",
   Walbrzych = "walbrzych",

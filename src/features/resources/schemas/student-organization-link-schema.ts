@@ -7,5 +7,6 @@ import { LinkType } from "../enums";
 export const StudentOrganizationLinkSchema = z.object({
   linkType: z.nativeEnum(LinkType),
   link: RequiredStringSchema.url(),
+  name: z.string().trim(),
   studentOrganizationId: NumericIdSchema,
 });
