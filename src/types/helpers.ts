@@ -17,3 +17,7 @@ export type OptionalPromise<T> = T | Promise<T>;
 export type NonNullableValues<T> = {
   [K in keyof T]: NonNullable<T[K]>;
 };
+
+export type Invert<T extends Record<PropertyKey, PropertyKey>> = {
+  [K in keyof T as T[K]]: K;
+};

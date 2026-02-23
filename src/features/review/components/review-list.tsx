@@ -7,12 +7,8 @@ import { getDraftResource } from "../utils/get-draft-resource";
 import { DraftItem } from "./draft-item";
 
 export async function ReviewList() {
-  const data = await fetchDrafts();
-  const drafts = data.map((draft) => ({
-    ...draft,
-    resource: getDraftResource(draft),
-  }));
-  const resources = new Set(drafts.map((draft) => draft.resource));
+  const drafts = await fetchDrafts();
+  const resources = new Set(drafts.map((draft) => getDraftResource(draft)));
   const relatedResourcesMap: DraftableResourceRelationMap = typedFromEntries(
     await Promise.all(
       [...resources].map(async (resource) => [

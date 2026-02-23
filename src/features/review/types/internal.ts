@@ -4,8 +4,9 @@ import type {
   SpecificResourceMetadata,
 } from "@/features/resources/types";
 import type { ResourceRelations } from "@/types/components";
+import type { Invert } from "@/types/helpers";
 
-import type { RESOURCE_DRAFT_TYPES } from "../data/resource-draft-types";
+import type { DRAFT_TYPE_RESOURCES } from "../data/draft-type-resources";
 
 export type DraftableResource = {
   [R in Resource]: SpecificResourceMetadata<R> extends { apiDraftPath: string }
@@ -13,10 +14,11 @@ export type DraftableResource = {
     : never;
 }[Resource];
 
+type ResourceDraftTypes = Invert<typeof DRAFT_TYPE_RESOURCES>;
 export interface ResourceDraft<
   T extends DraftableResource = DraftableResource,
 > {
-  resourceType: (typeof RESOURCE_DRAFT_TYPES)[T];
+  resourceType: ResourceDraftTypes[T];
   data: ResourceDataType<T>;
 }
 
