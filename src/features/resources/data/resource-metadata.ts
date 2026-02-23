@@ -1,4 +1,29 @@
-import { SendHorizonal } from "lucide-react";
+import {
+  Bath,
+  Bell,
+  BellPlus,
+  BookOpen,
+  Building,
+  Calendar,
+  CalendarCog,
+  CircleQuestionMark,
+  Clock,
+  Library,
+  Link,
+  Map,
+  Megaphone,
+  Notebook,
+  ScrollText,
+  SendHorizonal,
+  ShieldUser,
+  Slice,
+  SquareActivity,
+  Train,
+  University,
+  UsersRound,
+  UtensilsCrossed,
+  Wrench,
+} from "lucide-react";
 import { lazy } from "react";
 
 import { ImageType, Weekday } from "@/config/enums";
@@ -124,6 +149,7 @@ export const RESOURCE_METADATA = {
     apiVersion: 2,
     isSingleton: true,
     itemMapper: () => ({}),
+    icon: CircleQuestionMark,
     form: {
       inputs: {
         richTextInputs: {
@@ -145,6 +171,7 @@ export const RESOURCE_METADATA = {
       name: item.linkType,
       shortDescription: item.link,
     }),
+    icon: Link,
     form: {
       inputs: {
         textInputs: {
@@ -170,6 +197,7 @@ export const RESOURCE_METADATA = {
     itemMapper: (item) => ({
       name: item.name,
     }),
+    icon: CalendarCog,
     form: {
       inputs: {
         textInputs: {
@@ -216,6 +244,7 @@ export const RESOURCE_METADATA = {
       name: item.title,
       shortDescription: item.description,
     }),
+    icon: Megaphone,
     form: {
       inputs: {
         textInputs: {
@@ -254,6 +283,7 @@ export const RESOURCE_METADATA = {
       name: item.name,
       shortDescription: item.location ?? "Brak lokalizacji",
     }),
+    icon: Calendar,
     form: {
       inputs: {
         textInputs: {
@@ -342,6 +372,7 @@ export const RESOURCE_METADATA = {
     itemMapper: (item) => ({
       name: item.name,
     }),
+    icon: UsersRound,
     form: {
       inputs: {
         textInputs: {
@@ -426,6 +457,7 @@ export const RESOURCE_METADATA = {
       name: item.name,
       shortDescription: `${item.code} (${item.betterCode})`,
     }),
+    icon: University,
     form: {
       inputs: {
         textInputs: {
@@ -503,6 +535,7 @@ export const RESOURCE_METADATA = {
       name: item.title,
       shortDescription: item.shortDesc,
     }),
+    icon: BookOpen,
     form: {
       inputs: {
         imageInputs: {
@@ -643,6 +676,7 @@ export const RESOURCE_METADATA = {
       name: item.name,
       shortDescription: "",
     }),
+    icon: ScrollText,
     form: {
       inputs: {
         textInputs: { name: { label: "Nazwa" } },
@@ -665,6 +699,7 @@ export const RESOURCE_METADATA = {
     apiPath: "mobile_config",
     isSingleton: true,
     itemMapper: () => ({}),
+    icon: Wrench,
     form: {
       inputs: {
         numberInputs: {
@@ -695,6 +730,7 @@ export const RESOURCE_METADATA = {
       name: item.notification.title,
       shortDescription: item.notification.body,
     }),
+    icon: Bell,
     form: {
       inputs: {
         textInputs: {
@@ -735,6 +771,7 @@ export const RESOURCE_METADATA = {
       name: item.topicName,
       shortDescription: item.description,
     }),
+    icon: BellPlus,
     form: {
       inputs: {
         textInputs: {
@@ -756,6 +793,7 @@ export const RESOURCE_METADATA = {
     itemMapper: (item) => ({
       name: item.name,
     }),
+    icon: ShieldUser,
     form: {
       inputs: {
         textInputs: {
@@ -774,6 +812,7 @@ export const RESOURCE_METADATA = {
       name: SELECT_OPTION_LABELS.SKS_OPENING_HOURS.LANGUAGE[item.language],
       shortDescription: `${item.canteen} | ${item.cafe}`,
     }),
+    icon: Clock,
     form: {
       inputs: {
         textInputs: {
@@ -801,6 +840,7 @@ export const RESOURCE_METADATA = {
       name: item.name,
       shortDescription: item.shortDescription,
     }),
+    icon: Building,
     form: {
       inputs: {
         imageInputs: {
@@ -922,6 +962,7 @@ export const RESOURCE_METADATA = {
       name: item.name,
       shortDescription: item.description,
     }),
+    icon: Notebook,
     form: {
       inputs: {
         textInputs: { name: { label: "Nazwa" } },
@@ -979,6 +1020,7 @@ export const RESOURCE_METADATA = {
       name: item.name,
       shortDescription: SELECT_OPTION_LABELS.MAP.BRANCH[item.branch],
     }),
+    icon: Map,
     form: {
       inputs: {
         textInputs: {
@@ -1008,6 +1050,7 @@ export const RESOURCE_METADATA = {
       name: `${item.identifier}${item.specialName == null ? "" : ` - ${item.specialName}`}`,
       shortDescription: item.addressLine1,
     }),
+    icon: Building,
     form: {
       inputs: {
         textInputs: {
@@ -1068,6 +1111,7 @@ export const RESOURCE_METADATA = {
       name: item.room ?? "Prysznic rowerowy",
       shortDescription: item.addressLine1 ?? null,
     }),
+    icon: Bath,
     form: {
       inputs: {
         textInputs: {
@@ -1116,6 +1160,7 @@ export const RESOURCE_METADATA = {
       name: "Defibrylator AED",
       shortDescription: item.addressLine1 ?? null,
     }),
+    icon: SquareActivity,
     form: {
       inputs: {
         textInputs: {
@@ -1162,6 +1207,7 @@ export const RESOURCE_METADATA = {
       name: item.name,
       shortDescription: item.addressLine1 ?? null,
     }),
+    icon: UtensilsCrossed,
     form: {
       inputs: {
         textInputs: {
@@ -1204,6 +1250,7 @@ export const RESOURCE_METADATA = {
     // Map is a grouping resource for navigation, not an actual data resource
     apiPath: "map",
     itemMapper: () => ({ name: "Mapa", shortDescription: null }),
+    icon: Map,
     form: {
       inputs: {},
       defaultValues: {},
@@ -1215,6 +1262,7 @@ export const RESOURCE_METADATA = {
       name: item.title,
       shortDescription: item.addressLine1 ?? null,
     }),
+    icon: Library,
     form: {
       inputs: {
         textInputs: {
@@ -1337,6 +1385,7 @@ export const RESOURCE_METADATA = {
       name: item.roomOrNearby ?? "Różowa skrzynka",
       shortDescription: item.floor ?? null,
     }),
+    icon: Slice,
     form: {
       inputs: {
         textInputs: {
@@ -1380,6 +1429,7 @@ export const RESOURCE_METADATA = {
       name: item.name,
       shortDescription: item.addressLine1,
     }),
+    icon: Train,
     form: {
       inputs: {
         textInputs: {

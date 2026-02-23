@@ -28,6 +28,11 @@ export type EditableResource = {
 }[Resource];
 export type SpecificResourceMetadata<R extends Resource> =
   (typeof RESOURCE_METADATA)[R];
+export type DisplayableResource = {
+  [R in Resource]: SpecificResourceMetadata<R> extends { icon: LucideIcon }
+    ? R
+    : never;
+}[Resource];
 export type OrderableResource = {
   [R in Resource]: SpecificResourceMetadata<R> extends { orderable: true }
     ? R
@@ -106,6 +111,8 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
   deletable?: boolean;
   /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */
   itemMapper: (item: UnorderableResourceDataType<R>) => Omit<ListItem, "id">; // use the UnorderableResourceDataType here to avoid circular type reference
+  /** The icon to be used next to the resource name in dashboard buttons. */
+  icon?: LucideIcon;
   form: {
     /** The inputs to be used in the form for the resource. */
     inputs: AbstractResourceFormInputs<R>;

@@ -7,13 +7,19 @@ import { Button } from "@/components/ui/button";
 import { permit } from "@/features/authentication/server";
 import type { RoutePermission } from "@/features/authentication/types";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
-import { getManagingResourceLabel } from "@/features/resources";
-import type { RoutableResource } from "@/features/resources/types";
+import {
+  getManagingResourceLabel,
+  getResourceMetadata,
+} from "@/features/resources";
+import type {
+  DisplayableResource,
+  RoutableResource,
+} from "@/features/resources/types";
 import { cn } from "@/lib/utils";
 import { toTitleCase } from "@/utils";
 
 export async function DashboardButton({
-  icon: Icon,
+  icon,
   variant = "default",
   className,
   href: hrefOverride,
@@ -22,27 +28,28 @@ export async function DashboardButton({
   longLabel = false,
   preserveCase = false,
 }: VariantProps<typeof Button> & {
-  icon: LucideIcon;
   className?: string;
 } & (
     | {
         href?: Route;
         label?: string;
-        resource: RoutableResource;
+        icon?: LucideIcon;
+        resource: RoutableResource & DisplayableResource;
         longLabel?: boolean;
         preserveCase?: boolean;
       }
     | {
         href: Route & RoutePermission;
         label: string;
+        icon: LucideIcon;
         resource?: never;
         longLabel?: never;
         preserveCase?: never;
       }
   )) {
-  const [route, label] =
+  const [route, label, Icon] =
     resource == null
-      ? [hrefOverride, labelOverride]
+      ? [hrefOverride, labelOverride, icon]
       : [
           `/${resource}` as const,
           longLabel
@@ -52,7 +59,13 @@ export async function DashboardButton({
                 case: GrammaticalCase.Nominative,
                 plural: true,
               })),
+          icon ?? getResourceMetadata(resource).icon,
         ];
+  if (Icon == null) {
+    throw new Error(
+      `Displayable resource ${resource ?? route} has no icon defined in metadata`,
+    );
+  }
 
   const hasPermission = await permit(route);
   if (!hasPermission) {

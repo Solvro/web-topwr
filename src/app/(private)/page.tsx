@@ -1,17 +1,4 @@
-import {
-  Bell,
-  BookOpen,
-  Building,
-  Calendar,
-  CalendarCog,
-  CircleQuestionMark,
-  Map,
-  Megaphone,
-  Notebook,
-  RefreshCcw,
-  University,
-  Wrench,
-} from "lucide-react";
+import { RefreshCcw } from "lucide-react";
 
 import { DashboardButton } from "@/components/presentation/dashboard-button";
 import { getUserDisplayName } from "@/features/authentication";
@@ -41,27 +28,17 @@ export default async function Home() {
           />
         </div>
         <div className="col-span-full grid grid-cols-subgrid gap-4">
-          <DashboardButton
-            resource={Resource.StudentOrganizations}
-            icon={Building}
-          />
-          <DashboardButton resource={Resource.GuideArticles} icon={BookOpen} />
-          <DashboardButton resource={Resource.Banners} icon={Megaphone} />
-          <DashboardButton resource={Resource.CalendarEvents} icon={Calendar} />
-          <DashboardButton resource={Resource.Departments} icon={University} />
-          <DashboardButton resource={Resource.Map} icon={Map} />
-          <DashboardButton resource={Resource.Versions} icon={Notebook} />
-          <DashboardButton
-            resource={Resource.AboutUs}
-            icon={CircleQuestionMark}
-            label="Sekcja o nas"
-          />
-          <DashboardButton resource={Resource.Notifications} icon={Bell} />
-          <DashboardButton
-            resource={Resource.AcademicSemesters}
-            icon={CalendarCog}
-          />
-          <DashboardButton resource={Resource.MobileConfig} icon={Wrench} />
+          <DashboardButton resource={Resource.StudentOrganizations} />
+          <DashboardButton resource={Resource.GuideArticles} />
+          <DashboardButton resource={Resource.Banners} />
+          <DashboardButton resource={Resource.CalendarEvents} />
+          <DashboardButton resource={Resource.Departments} />
+          <DashboardButton resource={Resource.Map} />
+          <DashboardButton resource={Resource.Versions} />
+          <DashboardButton resource={Resource.AboutUs} label="Sekcja o nas" />
+          <DashboardButton resource={Resource.Notifications} />
+          <DashboardButton resource={Resource.AcademicSemesters} />
+          <DashboardButton resource={Resource.MobileConfig} />
         </div>
       </div>
     </div>

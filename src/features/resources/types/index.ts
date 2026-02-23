@@ -3,6 +3,7 @@ export type {
   CreatableResource,
   EditableResource,
   ResourcePk,
+  DisplayableResource,
   OrderableResource,
   ResourceDataType,
   ResourceDefaultValues,

@@ -1,10 +1,4 @@
-import {
-  Link,
-  ScrollText,
-  Settings,
-  ShieldUser,
-  UsersRound,
-} from "lucide-react";
+import { Settings } from "lucide-react";
 
 import { DashboardButton } from "@/components/presentation/dashboard-button";
 import {
@@ -26,7 +20,6 @@ export default function AboutUsPage(_props: ResourcePageProps) {
       />
       <DashboardButton
         resource={Resource.AboutUsLinks}
-        icon={Link}
         label={getManagingResourceLabel(Resource.AboutUsLinks, {
           firstWordOnly: false,
         })}
@@ -34,22 +27,15 @@ export default function AboutUsPage(_props: ResourcePageProps) {
       />
       <DashboardButton
         resource={Resource.Milestones}
-        icon={ScrollText}
         longLabel
         variant="outline"
       />
       <DashboardButton
         resource={Resource.Contributors}
-        icon={UsersRound}
         longLabel
         variant="outline"
       />
-      <DashboardButton
-        resource={Resource.Roles}
-        icon={ShieldUser}
-        longLabel
-        variant="outline"
-      />
+      <DashboardButton resource={Resource.Roles} longLabel variant="outline" />
     </AbstractResourceGroup>
   );
 }
