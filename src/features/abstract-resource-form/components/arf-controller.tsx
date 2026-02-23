@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import { ReturnButton } from "@/components/presentation/return-button";
 import { Form } from "@/components/ui/form";
+import { isSolvroAdmin, useAuthentication } from "@/features/authentication";
 import { fetchMutation, useMutationWrapper } from "@/features/backend";
 import type { ModifyResourceResponse } from "@/features/backend/types";
 import { declineNoun } from "@/features/polish";
@@ -67,6 +68,7 @@ export function ArfController<T extends Resource>({
   const schema = RESOURCE_SCHEMAS[resource];
   const router = useRouter();
   const relationContext = useArfRelation();
+  const { user } = useAuthentication();
   const form = useForm<ResourceFormValues<T>>({
     // Maybe try extracting the id from the defaultValues and passing it as an editedResourceId prop
     resolver: zodResolver(schema) as Resolver<ResourceFormValues<T>>,
@@ -112,6 +114,7 @@ export function ArfController<T extends Resource>({
     const response = await fetchMutation<ModifyResourceResponse<T>>(endpoint, {
       body,
       resource,
+      draft: !isSolvroAdmin(user),
       ...mutationOptions,
     });
     const wasCreated = mutationOptions.method === "POST";
