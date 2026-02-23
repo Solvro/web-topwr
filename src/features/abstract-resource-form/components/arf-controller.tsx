@@ -22,7 +22,6 @@ import {
 } from "@/features/resources";
 import type {
   EditableResource,
-  ResourceDataType,
   ResourceDefaultValues,
   ResourceFormValues,
   ResourcePivotRelationData,
@@ -119,9 +118,8 @@ export function ArfController<T extends Resource>({
     form.reset(wasCreated ? undefined : response.data);
     const newPrimaryKey = getResourcePkValue(resource, response.data);
     const primaryKeyChanged =
-      !wasCreated &&
-      newPrimaryKey !==
-        getResourcePkValue(resource, defaultValues as ResourceDataType<T>);
+      isEditing &&
+      newPrimaryKey !== getResourcePkValue(resource, defaultValues);
     if (relationContext == null && wasCreated) {
       router.push(
         // assume that creatable resources in non-embedded forms are routable/editable
