@@ -1,4 +1,4 @@
-import { BellPlus, BellRing } from "lucide-react";
+import { BellRing } from "lucide-react";
 
 import { DashboardButton } from "@/components/presentation/dashboard-button";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
@@ -10,7 +10,6 @@ export default function NotificationsPage() {
       <DashboardButton
         resource={Resource.NotificationTopics}
         variant="outline"
-        icon={BellPlus}
         longLabel
       />
       <DashboardButton

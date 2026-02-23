@@ -17,11 +17,15 @@ export function CreateButton<T extends CreatableResource>({
 }) {
   const searchParameters = new URLSearchParams(
     prefillAttributes as Record<string, string>,
-  ).toString();
+  );
 
+  const searchQuery =
+    searchParameters.size === 0
+      ? ""
+      : (`?${searchParameters.toString()}` as const);
   return (
     <Button className={className} asChild>
-      <Link href={`/${resource}/create?${searchParameters}`}>
+      <Link href={`/${resource}/create${searchQuery}`}>
         <CreateButtonLabel resource={resource} plural={plural} />
       </Link>
     </Button>
