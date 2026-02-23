@@ -922,6 +922,7 @@ export const RESOURCE_METADATA = {
       inputs: {
         textInputs: {
           link: { label: "Link" },
+          name: { label: "Nazwa" },
         },
         selectInputs: {
           linkType: {
@@ -933,6 +934,7 @@ export const RESOURCE_METADATA = {
       },
       defaultValues: {
         link: "",
+        name: "",
         linkType: LinkType.Default,
         studentOrganizationId: -1,
       },

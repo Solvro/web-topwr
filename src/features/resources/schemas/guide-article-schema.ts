@@ -6,5 +6,5 @@ export const GuideArticleSchema = z.object({
   title: RequiredStringSchema,
   imageKey: RequiredStringSchema,
   shortDesc: RequiredStringSchema,
-  description: RequiredStringSchema,
+  description: z.string().trim(),
 });

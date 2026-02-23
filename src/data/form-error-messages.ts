@@ -2,6 +2,7 @@ export const FORM_ERROR_MESSAGES = {
   REQUIRED: "To pole jest wymagane",
   NONEMPTY: "To pole jest wymagane",
   INVALID_EMAIL: "Niepoprawny adres email",
+  INVALID_URL: "Niepoprawny adres URL",
   CONDITIONALLY_REQUIRED: "Należy wypełnić oba pola lub żadne z nich",
   INVALID_DEPARTMENT_CODE:
     "Niepoprawny kod wydziału. Musi zaczynać się od litery 'W' i zawierać 1-2 cyfry.",
