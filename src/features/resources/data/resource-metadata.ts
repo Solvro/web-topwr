@@ -474,6 +474,13 @@ export const RESOURCE_METADATA = {
           gradientStart: { label: "Kolor początkowy gradientu" },
           gradientStop: { label: "Kolor końcowy gradientu" },
         },
+        selectInputs: {
+          branch: {
+            label: "Oddział",
+            optionEnum: UniversityBranch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
         relationInputs: {
           [Resource.Majors]: {
             type: RelationType.OneToMany,
@@ -874,6 +881,11 @@ export const RESOURCE_METADATA = {
             label: "Status",
             optionEnum: OrganizationStatus,
             optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
+          },
+          branch: {
+            label: "Oddział",
+            optionEnum: UniversityBranch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
         },
         checkboxInputs: {
