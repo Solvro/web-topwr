@@ -499,7 +499,7 @@ export const RESOURCE_METADATA = {
         description: null,
         code: "",
         betterCode: "",
-        logoKey: "",
+        logoKey: null,
         gradientStart: DEFAULT_INPUT_COLOR,
         gradientStop: DEFAULT_INPUT_COLOR,
         branch: UniversityBranch.Main,
