@@ -11,7 +11,7 @@ env:
   NEXT_PUBLIC_API_URL: https://test.api.topwr.solvro.pl
 
 jobs:
-  lint-and-vitest:
+  lint-and-unit-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -81,7 +81,7 @@ jobs:
           include-hidden-files: true
           path: .next
 
-  playwright-tests:
+  e2e-test:
     needs: build
     runs-on: ubuntu-latest
 
