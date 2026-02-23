@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { Branch } from "../enums";
+import { UniversityBranch } from "../enums";
 
 export const BicycleShowerSchema = z.object({
   room: z.string().nullish(),
@@ -9,7 +9,7 @@ export const BicycleShowerSchema = z.object({
   longitude: z.number().min(-180).max(180),
   addressLine1: z.string().nullish(),
   addressLine2: z.string().nullish(),
-  branch: z.nativeEnum(Branch),
+  branch: z.nativeEnum(UniversityBranch),
   photoKey: z.string().nullish(),
   buildingId: z.number().nullish(),
 });

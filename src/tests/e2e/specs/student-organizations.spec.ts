@@ -75,7 +75,7 @@ const generateTestOrganization = (
     organizationType: OrganizationType.ScientificClub,
     organizationStatus: OrganizationStatus.Active,
     isStrategic: false,
-    branch: UniversityBranch.MainCampus,
+    branch: UniversityBranch.Main,
     ...propertyOverrides,
   }) satisfies ResourceFormValues<ResourceType>;
 

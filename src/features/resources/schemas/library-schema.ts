@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { EmailSchema, RequiredStringSchema } from "@/schemas";
 
-import { Branch } from "../enums";
+import { UniversityBranch } from "../enums";
 
 export const LibrarySchema = z.object({
   title: RequiredStringSchema,
@@ -13,7 +13,7 @@ export const LibrarySchema = z.object({
   email: EmailSchema.nullish(),
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
-  branch: z.nativeEnum(Branch),
+  branch: z.nativeEnum(UniversityBranch),
   photoKey: z.string().nullish(),
   buildingId: z.number().nullish(),
 });

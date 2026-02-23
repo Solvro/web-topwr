@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { RequiredStringSchema } from "@/schemas";
 
-import { Branch, ExternalDigitalGuideMode } from "../enums";
+import { ExternalDigitalGuideMode, UniversityBranch } from "../enums";
 
 export const BuildingSchema = z.object({
   identifier: RequiredStringSchema,
@@ -13,7 +13,7 @@ export const BuildingSchema = z.object({
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
   haveFood: z.boolean(),
-  branch: z.nativeEnum(Branch),
+  branch: z.nativeEnum(UniversityBranch),
   coverKey: z.string().nullish(),
   externalDigitalGuideMode: z.nativeEnum(ExternalDigitalGuideMode).nullish(),
   externalDigitalGuideIdOrUrl: z.string().nullish(),

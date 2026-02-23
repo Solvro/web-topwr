@@ -15,12 +15,10 @@ const getBackgroundColor = (
   if (resourceData == null) {
     return {};
   }
-  if ("gradientStart" in resourceData && resourceData.gradientStart != null) {
-    return "gradientStop" in resourceData && resourceData.gradientStop != null
-      ? {
-          background: `linear-gradient(to bottom right, ${resourceData.gradientStart}, ${resourceData.gradientStop})`,
-        }
-      : { background: resourceData.gradientStart };
+  if ("gradientStart" in resourceData && "gradientStop" in resourceData) {
+    return {
+      background: `linear-gradient(to bottom right, ${resourceData.gradientStart}, ${resourceData.gradientStop})`,
+    };
   }
   return {};
 };

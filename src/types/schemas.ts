@@ -11,6 +11,7 @@ type BaseZodType<T extends z.ZodTypeAny> = T extends
   | z.ZodNullable<infer U>
   | z.ZodDefault<infer U>
   | z.ZodOptional<infer U>
+  | z.ZodUnion<[infer U, ...z.ZodTypeAny[]]>
   ? BaseZodType<U>
   : T;
 

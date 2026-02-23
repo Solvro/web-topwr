@@ -17,7 +17,7 @@ export const DepartmentSchema = z.object({
   }),
   logoKey: z.string(),
   description: z.string().nullish(),
-  gradientStart: ColorValueSchema,
-  gradientStop: ColorValueSchema,
+  gradientStart: ColorValueSchema.min(1, FORM_ERROR_MESSAGES.REQUIRED),
+  gradientStop: ColorValueSchema.min(1, FORM_ERROR_MESSAGES.REQUIRED),
   branch: z.nativeEnum(UniversityBranch),
 });
