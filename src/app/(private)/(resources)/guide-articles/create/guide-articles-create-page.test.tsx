@@ -37,7 +37,8 @@ describe("Create Guide Articles Page", () => {
     await form.user.click(form.submitButton);
     const formMessages = form.screen.getAllByText(FORM_ERROR_MESSAGES.REQUIRED);
 
-    // TODO: change to 1 after backend allows omitting the description
+    // TODO: change to 2 after backend allows omitting the description
+    // https://github.com/Solvro/backend-topwr/issues/281
     expect(formMessages).toHaveLength(3);
   });
 
@@ -52,7 +53,9 @@ describe("Create Guide Articles Page", () => {
     expect(form.input.image.files[0]).toEqual(MOCK_IMAGE_FILE);
   });
 
-  it("should allow correct input", async () => {
+  // TODO: unskip
+  // https://github.com/Solvro/backend-topwr/issues/281
+  it.skip("should allow correct input", async () => {
     const form = await renderCreationForm();
     expect(form.submitButton).toBeDisabled();
 
@@ -74,11 +77,9 @@ describe("Create Guide Articles Page", () => {
 
     await form.user.click(form.submitButton);
 
-    // TODO: negate expectation after backend allows omitting the description
     expect(
       form.screen.queryByText(FORM_ERROR_MESSAGES.REQUIRED),
-    ).toBeInTheDocument();
-    // TODO: uncomment
-    // expect(getToaster()).toHaveTextContent(/pomyślnie zapisano/i);
+    ).not.toBeInTheDocument();
+    expect(getToaster()).toHaveTextContent(/pomyślnie zapisano/i);
   });
 });
