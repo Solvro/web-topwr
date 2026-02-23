@@ -561,6 +561,7 @@ export const RESOURCE_METADATA = {
   },
   [Resource.GuideArticles]: {
     apiPath: "guide_articles",
+    apiDraftPath: "guide_article_drafts",
     orderable: true,
     itemMapper: (item) => ({
       name: item.title,
@@ -877,6 +878,7 @@ export const RESOURCE_METADATA = {
   },
   [Resource.StudentOrganizations]: {
     apiPath: "student_organizations",
+    apiDraftPath: "student_organization_drafts",
     itemMapper: (item) => ({
       name: item.name,
       description: item.shortDescription,
