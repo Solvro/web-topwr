@@ -12,6 +12,7 @@ interface BaseRequestOptions<T extends Resource> extends Omit<
   headers?: Record<string, string>;
   accessTokenOverride?: string;
   resource?: T;
+  draft?: boolean;
 }
 export interface QueryRequestOptions<
   T extends Resource,

@@ -11,6 +11,7 @@ export type {
   ResourceSchemaKey,
   RoutableResource,
   SubmitFormConfirmationMessage,
+  SpecificResourceMetadata,
 } from "./internal";
 
 export type {
