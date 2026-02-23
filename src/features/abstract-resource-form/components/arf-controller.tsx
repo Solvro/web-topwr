@@ -122,13 +122,16 @@ export function ArfController<T extends Resource>({
       !wasCreated &&
       newPrimaryKey !==
         getResourcePkValue(resource, defaultValues as ResourceDataType<T>);
-    if (relationContext == null && (wasCreated || primaryKeyChanged)) {
+    if (relationContext == null && wasCreated) {
       router.push(
         // assume that creatable resources in non-embedded forms are routable/editable
         metadata.isSingleton === true
           ? `/${resource as RoutableResource}`
           : `/${resource as EditableResource}/edit/${newPrimaryKey}`,
       );
+    } else if (relationContext == null && primaryKeyChanged) {
+      // cast is safe as the resource has to be editable in order for the pk to change
+      router.replace(`/${resource as EditableResource}/edit/${newPrimaryKey}`);
     } else {
       if (wasCreated && relationContext != null) {
         relationContext.closeSheet();
