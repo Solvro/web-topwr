@@ -6,4 +6,5 @@ export * from "./constants";
 export * from "./hooks/use-authentication";
 
 export * from "./utils/get-user-display-name";
+export * from "./utils/is-solvro-admin";
 export * from "./utils/parse-auth-cookie";
