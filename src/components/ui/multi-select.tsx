@@ -447,6 +447,7 @@ function SortableOptionItem({
           option.disabled && "cursor-not-allowed opacity-50",
         )}
         disabled={option.disabled}
+        value={option.label}
       >
         {isReadOnly ? null : (
           <div
