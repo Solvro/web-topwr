@@ -16,7 +16,6 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 
 import { getResourcePkValue } from "@/features/resources";
@@ -41,9 +40,6 @@ interface OrderableItemWrapperProps<T extends OrderableResource> {
   relatedResources: ResourceRelations<T>;
   items: ResourceDataType<T>[];
   onReorder: (event: ReorderEvent) => void;
-  onReorderError?: () => void;
-  contextId?: string;
-  renderDragOverlay?: (activeItem: ResourceDataType<T>) => ReactNode;
 }
 
 export function OrderableItemWrapper<T extends OrderableResource>({
@@ -51,9 +47,6 @@ export function OrderableItemWrapper<T extends OrderableResource>({
   relatedResources,
   items: data,
   onReorder,
-  onReorderError,
-  contextId,
-  renderDragOverlay,
 }: OrderableItemWrapperProps<T>) {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [items, setItems] = useState<ResourceDataType<T>[]>(data);
@@ -111,25 +104,14 @@ export function OrderableItemWrapper<T extends OrderableResource>({
       return;
     }
 
-    try {
-      onReorder({ id: eventActiveId, oldIndex, newIndex });
-    } catch {
-      setItems(data);
-      onReorderError?.();
-    }
+    onReorder({ id: eventActiveId, oldIndex, newIndex });
   }
 
   const itemProps = { resource, relatedResources };
 
-  const defaultRenderDragOverlay = (activeItem: ResourceDataType<T>) => (
-    <div className="opacity-80 drop-shadow-xl">
-      <ArlItem item={activeItem} {...itemProps} />
-    </div>
-  );
-
   return (
     <DndContext
-      id={contextId ?? `dnd-context-${resource}`}
+      id={`dnd-context-${resource}`}
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragStart={(event) => {
@@ -155,9 +137,11 @@ export function OrderableItemWrapper<T extends OrderableResource>({
         />
       </SortableContext>
       <DragOverlay>
-        {activeId == null
-          ? null
-          : (renderDragOverlay ?? defaultRenderDragOverlay)(getActiveItem())}
+        {activeId == null ? null : (
+          <div className="opacity-80 drop-shadow-xl">
+            <ArlItem item={getActiveItem()} {...itemProps} />
+          </div>
+        )}
       </DragOverlay>
     </DndContext>
   );
