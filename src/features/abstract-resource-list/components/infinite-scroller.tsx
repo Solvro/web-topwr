@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import type { GetResourcesResponsePaginated } from "@/features/backend/types";
 import { isOrderableResource } from "@/features/resources";
 import type {
   EditableResource,
+  OrderableResource,
   ResourceDataType,
 } from "@/features/resources/types";
 import type {
@@ -17,10 +18,46 @@ import type {
   SortFiltersFormValuesNarrowed,
 } from "@/features/sort-filters/types";
 import type { ResourceRelations } from "@/types/components";
+import { sanitizeId } from "@/utils";
 
 import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
+import { useOrderMutation } from "../hooks/use-order-mutation";
+import { calculateNewSortValue } from "../utils/calculate-new-sort-value";
 import { ArlItems } from "./arl-items";
+import type { ReorderEvent } from "./orderable-item-wrapper";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
+
+function OrderableItems<T extends OrderableResource>({
+  resource,
+  items,
+  relatedResources,
+}: {
+  resource: T;
+  items: ResourceDataType<T>[];
+  relatedResources: ResourceRelations<T>;
+}) {
+  const itemsRef = useRef(items);
+  itemsRef.current = items;
+
+  const { mutateOrder } = useOrderMutation({
+    resource,
+    buildPath: (id) => sanitizeId(id),
+  });
+
+  const handleReorder = ({ id, oldIndex, newIndex }: ReorderEvent) => {
+    const order = calculateNewSortValue(itemsRef.current, oldIndex, newIndex);
+    void mutateOrder(id, order);
+  };
+
+  return (
+    <OrderableItemWrapper
+      items={items}
+      resource={resource}
+      relatedResources={relatedResources}
+      onReorder={handleReorder}
+    />
+  );
+}
 
 export function InfiniteScroller<T extends EditableResource>({
   resource,
@@ -73,7 +110,7 @@ export function InfiniteScroller<T extends EditableResource>({
   return (
     <section className="flex flex-col gap-4">
       {isOrderableResource(resource) ? (
-        <OrderableItemWrapper
+        <OrderableItems
           items={flatData as ResourceDataType<typeof resource>[]}
           resource={resource}
           relatedResources={relatedResources}

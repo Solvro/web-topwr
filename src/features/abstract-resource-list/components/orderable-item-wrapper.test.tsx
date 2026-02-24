@@ -10,6 +10,7 @@ import { mockDatedResource } from "@/tests/shared";
 import { renderWithProviders } from "@/tests/unit";
 import type { ResourceRelations } from "@/types/components";
 
+import type { ReorderEvent } from "./orderable-item-wrapper";
 import { OrderableItemWrapper } from "./orderable-item-wrapper";
 
 const resource = Resource.GuideArticles;
@@ -38,13 +39,16 @@ const MOCK_DATA: ResourceDataType<ResourceType>[] = [
   generateGuideArticle({ title: "[2]>" }),
 ];
 
-function renderOrderableList() {
+function renderOrderableList(
+  onReorder: (event: ReorderEvent) => void = vi.fn(),
+) {
   const user = userEvent.setup();
   const screen = renderWithProviders(
     <OrderableItemWrapper
       items={MOCK_DATA}
       resource={resource}
       relatedResources={relatedResources}
+      onReorder={onReorder}
     />,
   );
   const draggableItems = screen.getAllByRole("button", {

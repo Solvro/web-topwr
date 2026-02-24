@@ -1,6 +1,3 @@
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-
 import { getResourcePkValue } from "@/features/resources";
 import type {
   EditableResource,
@@ -9,6 +6,7 @@ import type {
 import type { ResourceRelations } from "@/types/components";
 
 import { ArlItem } from "./arl-item";
+import { SortableItemWrapper } from "./sortable-item-wrapper";
 
 export function SortableItem<T extends EditableResource>({
   item,
@@ -19,24 +17,21 @@ export function SortableItem<T extends EditableResource>({
   resource: T;
   relatedResources: ResourceRelations<T>;
 }) {
-  const { setNodeRef, transform, transition } = useSortable({
-    id: getResourcePkValue(resource, item),
-  });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  const id = getResourcePkValue(resource, item);
 
   return (
-    <div style={style}>
-      <ArlItem
-        ref={setNodeRef}
-        item={item}
-        resource={resource}
-        relatedResources={relatedResources}
-        orderable
-      />
-    </div>
+    <SortableItemWrapper id={id}>
+      {({ dragHandleProps, style, setNodeRef }) => (
+        <div style={style}>
+          <ArlItem
+            ref={setNodeRef}
+            item={item}
+            resource={resource}
+            relatedResources={relatedResources}
+            dragHandleProps={dragHandleProps}
+          />
+        </div>
+      )}
+    </SortableItemWrapper>
   );
 }
