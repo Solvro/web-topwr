@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { get } from "react-hook-form";
 import type { Control } from "react-hook-form";
 import { toast } from "sonner";
@@ -10,10 +9,6 @@ import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import type { SetOptionSelected } from "@/components/ui/multi-select";
 import { SelectItem } from "@/components/ui/select";
-import {
-  calculateNewSortValue,
-  useOrderMutation,
-} from "@/features/abstract-resource-list";
 import { logger } from "@/features/logging";
 import { declineNoun } from "@/features/polish";
 import {
@@ -45,47 +40,7 @@ import { getMutationConfig } from "../utils/get-mutation-config";
 import { isExistingItem } from "../utils/is-existing-item";
 import { ArfInput } from "./arf-input";
 import { ArfPivotData } from "./arf-pivot-data";
-
-function useRelationOrderMutation<T extends OrderableResource>({
-  resourceRelation,
-}: {
-  resourceRelation: T;
-}) {
-  return useOrderMutation({
-    resource: resourceRelation,
-    buildPath: (id) => sanitizeId(id),
-  });
-}
-
-interface OrderableMultiSelectProps<T extends OrderableResource> {
-  resourceRelation: T;
-  items: ResourceDataType<T>[];
-  multiSelectProps: React.ComponentProps<typeof MultiSelect>;
-}
-
-function OrderableMultiSelect<T extends OrderableResource>({
-  resourceRelation,
-  items,
-  multiSelectProps,
-}: OrderableMultiSelectProps<T>) {
-  const itemsRef = useRef(items);
-  itemsRef.current = items;
-
-  const { mutateOrder } = useRelationOrderMutation({
-    resourceRelation,
-  });
-
-  const handleReorder = (id: string, oldIndex: number, newIndex: number) => {
-    const order = calculateNewSortValue(
-      itemsRef.current as ResourceDataType<OrderableResource>[],
-      oldIndex,
-      newIndex,
-    );
-    void mutateOrder(id, order);
-  };
-
-  return <MultiSelect {...multiSelectProps} onReorder={handleReorder} />;
-}
+import { OrderableMultiSelect } from "./orderable-multi-select";
 
 export function ArfRelationInput<
   T extends Resource,
