@@ -17,7 +17,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { getResourcePkValue } from "@/features/resources";
 import type {
@@ -57,6 +57,7 @@ export function OrderableItemWrapper<T extends OrderableResource>({
 }: OrderableItemWrapperProps<T>) {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [items, setItems] = useState<ResourceDataType<T>[]>(data);
+  const dragStartIndex = useRef<number | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -68,6 +69,12 @@ export function OrderableItemWrapper<T extends OrderableResource>({
     setItems(data);
   }, [data]);
 
+  const itemIds = items.map((item) => getResourcePkValue(resource, item));
+
+  function getItemIndex(id: UniqueIdentifier) {
+    return itemIds.indexOf(id as string);
+  }
+
   function getActiveItem() {
     const activeItem = items.find(
       (item) => getResourcePkValue(resource, item) === activeId,
@@ -78,28 +85,30 @@ export function OrderableItemWrapper<T extends OrderableResource>({
     return activeItem;
   }
 
+  function handleDragOver(
+    activeIdParameter: UniqueIdentifier,
+    overId?: UniqueIdentifier,
+  ) {
+    if (overId == null || activeIdParameter === overId) {
+      return;
+    }
+    const oldIndex = getItemIndex(activeIdParameter);
+    const newIndex = getItemIndex(overId);
+    if (oldIndex !== -1 && newIndex !== -1) {
+      setItems((current) => arrayMove(current, oldIndex, newIndex));
+    }
+  }
+
   function handleDragEnd(
     eventActiveId: UniqueIdentifier,
     overId?: UniqueIdentifier,
   ) {
-    let oldIndex = -1;
-    let newIndex = -1;
-    for (const [index, item] of items.entries()) {
-      const itemId = getResourcePkValue(resource, item);
-      if (itemId === eventActiveId) {
-        oldIndex = index;
-        if (newIndex !== -1) {
-          break;
-        }
-      } else if (itemId === overId) {
-        newIndex = index;
-        if (oldIndex !== -1) {
-          break;
-        }
-      }
+    const oldIndex = dragStartIndex.current;
+    const newIndex = getItemIndex(eventActiveId);
+
+    if (oldIndex == null || overId == null || oldIndex === newIndex) {
+      return;
     }
-    const newItems = arrayMove(items, oldIndex, newIndex);
-    setItems(newItems);
 
     try {
       onReorder({ id: eventActiveId, oldIndex, newIndex });
@@ -125,16 +134,19 @@ export function OrderableItemWrapper<T extends OrderableResource>({
       onDragStart={(event) => {
         document.body.style.cursor = "grabbing";
         setActiveId(event.active.id);
+        dragStartIndex.current = getItemIndex(event.active.id);
+      }}
+      onDragOver={(event) => {
+        handleDragOver(event.active.id, event.over?.id);
       }}
       onDragEnd={(event) => {
-        if (event.active.id !== event.over?.id) {
-          handleDragEnd(event.active.id, event.over?.id);
-        }
+        handleDragEnd(event.active.id, event.over?.id);
         document.body.style.cursor = "auto";
         setActiveId(null);
+        dragStartIndex.current = null;
       }}
     >
-      <SortableContext items={items} strategy={verticalListSortingStrategy}>
+      <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
         <ArlItems<T>
           items={items}
           ItemComponent={SortableItem}
