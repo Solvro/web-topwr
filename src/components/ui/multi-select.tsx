@@ -333,6 +333,12 @@ interface MultiSelectProps
    * Optional, defaults to false.
    */
   closeOnSelect?: boolean;
+
+  /**
+   * If true, allows users to reorder selected items via drag-and-drop in the popover.
+   * Optional, defaults to false.
+   */
+  orderable?: boolean;
 }
 
 /**
@@ -460,6 +466,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       resetOnDefaultValueChange = true,
       closeOnSelect = false,
       showClearButton = false,
+      orderable = false,
       ...props
     },
     ref,
@@ -921,6 +928,19 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       badgeAnimation: animationConfig?.badgeAnimation,
     });
 
+    const multiSelectOptions = (options: MultiSelectOption[]) =>
+      options.map((option) => (
+        <MultiSelectOptionItem
+          key={option.value}
+          option={option}
+          isReadOnly={isReadOnly}
+          selectedValues={selectedValues}
+          toggleOption={toggleOption}
+          setOptionSelected={setOptionSelected}
+          onEditItem={onEditItem}
+        />
+      ));
+
     return (
       <>
         <div className="sr-only">
@@ -1259,32 +1279,12 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                 {isGroupedOptions(filteredOptions) ? (
                   filteredOptions.map((group) => (
                     <CommandGroup key={group.heading} heading={group.heading}>
-                      {group.options.map((option) => (
-                        <MultiSelectOptionItem
-                          key={option.value}
-                          option={option}
-                          isReadOnly={isReadOnly}
-                          selectedValues={selectedValues}
-                          toggleOption={toggleOption}
-                          setOptionSelected={setOptionSelected}
-                          onEditItem={onEditItem}
-                        />
-                      ))}
+                      {multiSelectOptions(group.options)}
                     </CommandGroup>
                   ))
                 ) : (
                   <CommandGroup>
-                    {filteredOptions.map((option) => (
-                      <MultiSelectOptionItem
-                        key={option.value}
-                        option={option}
-                        isReadOnly={isReadOnly}
-                        selectedValues={selectedValues}
-                        toggleOption={toggleOption}
-                        setOptionSelected={setOptionSelected}
-                        onEditItem={onEditItem}
-                      />
-                    ))}
+                    {multiSelectOptions(filteredOptions)}
                   </CommandGroup>
                 )}
               </CommandList>

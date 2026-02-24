@@ -42,8 +42,8 @@ function renderOrderableList() {
   const user = userEvent.setup();
   const screen = renderWithProviders(
     <OrderableItemWrapper
+      items={MOCK_DATA}
       resource={resource}
-      data={MOCK_DATA}
       relatedResources={relatedResources}
     />,
   );

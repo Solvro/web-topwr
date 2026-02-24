@@ -10,7 +10,6 @@ import type { GetResourcesResponsePaginated } from "@/features/backend/types";
 import { isOrderableResource } from "@/features/resources";
 import type {
   EditableResource,
-  OrderableResource,
   ResourceDataType,
 } from "@/features/resources/types";
 import type {
@@ -75,11 +74,9 @@ export function InfiniteScroller<T extends EditableResource>({
     <section className="flex flex-col gap-4">
       {isOrderableResource(resource) ? (
         <OrderableItemWrapper
+          items={flatData as ResourceDataType<typeof resource>[]}
           resource={resource}
-          relatedResources={
-            relatedResources as ResourceRelations<OrderableResource>
-          }
-          data={flatData as ResourceDataType<OrderableResource>[]}
+          relatedResources={relatedResources}
         />
       ) : (
         <ArlItems

@@ -117,7 +117,6 @@ export enum Language {
 export enum RelationType {
   /** e.g. Each student organization has many links, and the foreign key is stored on the related resource (links) */
   OneToMany = "one_to_many",
-
   /**
    * e.g. Each student organization has one department, but many organizations can share the same department;
    * the foreign key is stored on the main resource (student organizations)
