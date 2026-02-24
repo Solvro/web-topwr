@@ -9,19 +9,19 @@ import type { ResourceRelations } from "@/types/components";
 import { ArlItem } from "./arl-item";
 import type { ItemProps } from "./arl-item";
 
+interface ArlItemsProps<T extends EditableResource> {
+  items: ResourceDataType<T>[];
+  resource: T;
+  relatedResources: ResourceRelations<T>;
+  ItemComponent?: ComponentType<Omit<ItemProps<T>, "dragHandleProps">>;
+}
+
 export function ArlItems<T extends EditableResource>({
   items,
   resource,
   relatedResources,
-  orderable = false,
   ItemComponent = ArlItem,
-}: {
-  items: ResourceDataType<T>[];
-  resource: T;
-  relatedResources: ResourceRelations<T>;
-  orderable?: boolean;
-  ItemComponent?: ComponentType<ItemProps<T>>;
-}) {
+}: ArlItemsProps<T>) {
   return (
     <ul className="flex flex-col gap-4">
       {items.map((item) => (
@@ -30,7 +30,6 @@ export function ArlItems<T extends EditableResource>({
           item={item}
           resource={resource}
           relatedResources={relatedResources}
-          orderable={orderable}
         />
       ))}
     </ul>

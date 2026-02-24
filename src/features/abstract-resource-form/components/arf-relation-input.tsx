@@ -16,9 +16,11 @@ import {
   getResourceMetadata,
   getResourcePk,
   getResourceQueryName,
+  isOrderableResource,
 } from "@/features/resources";
 import type { Resource } from "@/features/resources";
 import type {
+  OrderableResource,
   RelationDefinition,
   ResourceDataType,
   ResourceDefaultValues,
@@ -38,6 +40,7 @@ import { getMutationConfig } from "../utils/get-mutation-config";
 import { isExistingItem } from "../utils/is-existing-item";
 import { ArfInput } from "./arf-input";
 import { ArfPivotData } from "./arf-pivot-data";
+import { OrderableMultiSelect } from "./orderable-multi-select";
 
 export function ArfRelationInput<
   T extends Resource,
@@ -139,121 +142,135 @@ export function ArfRelationInput<
     );
   }
   const queriedRelations = unsafeQueriedRelations ?? [];
-  const selectedValues = queriedRelations.flatMap((item) => {
+  const isRelationOrderable = isOrderableResource(resourceRelation);
+  const sortedQueriedRelations = isRelationOrderable
+    ? [...queriedRelations].toSorted((a, b) =>
+        "order" in a && "order" in b ? a.order - b.order : 1,
+      )
+    : queriedRelations;
+  const selectedValues = sortedQueriedRelations.flatMap((item) => {
     const value = get(item, primaryKeyField, null) as ResourcePk | null;
     return value == null ? [] : String(value);
   });
   const relationDataOptions =
     relationDefinition.type === RelationType.OneToMany
-      ? queriedRelations
+      ? sortedQueriedRelations
       : allRelatedData;
   const formProps = {
     resource: resourceRelation,
     className: "w-full px-4",
   } satisfies ResourceFormProps<L>;
-  const multiselect = (
-    <MultiSelect
-      deduplicateOptions
-      hideSelectAll
-      isReadOnly={
-        relationDefinition.type === RelationType.OneToMany ||
-        relationDefinition.pivotData != null
-      }
-      animationConfig={{
-        badgeAnimation: "none",
-      }}
-      placeholder={inputPlaceholder}
-      emptyIndicator={`Brak ${relationDeclined.plural.genitive} spełniających wyszukanie.`}
-      options={relationDataOptions.map((option, index) => {
-        const label = config.itemMapper(option).name ?? JSON.stringify(option);
-        const value = String(
-          get(option, primaryKeyField, `item-${String(index)}`),
-        );
-        const queriedRelationData =
-          relationDefinition.type === RelationType.OneToMany
-            ? option
-            : queriedRelations.find(
-                (queriedRelation) => queriedRelation.id === option.id,
-              );
-        return {
-          label,
-          value,
-          action: (setOptionSelected: SetOptionSelected) => (
-            <ArfPivotData
-              resource={resource}
-              endpoint={endpoint}
-              resourceRelation={resourceRelation}
-              pivotResources={pivotResources}
-              queriedRelationData={queriedRelationData}
-              optionValue={value}
-              setOptionSelected={setOptionSelected}
-              aria-label={`Ustaw relację między ${declensions.instrumental} a ${relationDeclined.singular.instrumental} ${label}`}
-            />
-          ),
-        };
-      })}
-      onOptionToggled={async (id, deleted) => {
-        if (relationDefinition.type !== RelationType.ManyToMany) {
-          toast.error(
-            `Nastąpił nieoczekiwany błąd: dodanie ${relationDeclined.singular.genitive} obecnie nie jest możliwe. Proszę zgłosić ten błąd deweloperom.`,
-          );
-          return false;
-        }
-        try {
-          await mutateRelation({
-            id,
-            deleted,
-            body: undefined,
-          });
-          return true;
-        } catch {
-          return false;
-        }
-      }}
-      onValueChange={() => {
-        toast.info(
-          "Zmiana wszystkich wartości na raz nie jest jeszcze dostępna. Dodawaj lub usuwaj pojedynczo.",
+  const multiSelectProps = {
+    deduplicateOptions: true,
+    hideSelectAll: true,
+    isReadOnly:
+      relationDefinition.type === RelationType.OneToMany ||
+      relationDefinition.pivotData != null,
+    animationConfig: {
+      badgeAnimation: "none" as const,
+    },
+    placeholder: inputPlaceholder,
+    emptyIndicator: `Brak ${relationDeclined.plural.genitive} spełniających wyszukanie.`,
+    options: relationDataOptions.map((option, index) => {
+      const label = config.itemMapper(option).name ?? JSON.stringify(option);
+      const value = String(
+        get(option, primaryKeyField, `item-${String(index)}`),
+      );
+      const queriedRelationData =
+        relationDefinition.type === RelationType.OneToMany
+          ? option
+          : queriedRelations.find(
+              (queriedRelation) => queriedRelation.id === option.id,
+            );
+      return {
+        label,
+        value,
+        action: (setOptionSelected: SetOptionSelected) => (
+          <ArfPivotData
+            resource={resource}
+            endpoint={endpoint}
+            resourceRelation={resourceRelation}
+            pivotResources={pivotResources}
+            queriedRelationData={queriedRelationData}
+            optionValue={value}
+            setOptionSelected={setOptionSelected}
+            aria-label={`Ustaw relację między ${declensions.instrumental} a ${relationDeclined.singular.instrumental} ${label}`}
+          />
+        ),
+      };
+    }),
+    onOptionToggled: async (id: string, deleted: boolean) => {
+      if (relationDefinition.type !== RelationType.ManyToMany) {
+        toast.error(
+          `Nastąpił nieoczekiwany błąd: dodanie ${relationDeclined.singular.genitive} obecnie nie jest możliwe. Proszę zgłosić ten błąd deweloperom.`,
         );
         return false;
-      }}
-      onCreateItem={() => {
-        showSheet(
-          {
-            item: null,
-            childResource: resourceRelation,
-            parentResourceData: defaultValues,
+      }
+      try {
+        await mutateRelation({
+          id,
+          deleted,
+          body: undefined,
+        });
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    onValueChange: () => {
+      toast.info(
+        "Zmiana wszystkich wartości na raz nie jest jeszcze dostępna. Dodawaj lub usuwaj pojedynczo.",
+      );
+      return false;
+    },
+    onCreateItem: () => {
+      showSheet(
+        {
+          item: null,
+          childResource: resourceRelation,
+          parentResourceData: defaultValues,
+        },
+        formProps,
+      );
+    },
+    onEditItem: (value: string) => {
+      const relationDefaultValues = relationDataOptions.find(
+        (option) => value === String(get(option, primaryKeyField)),
+      );
+      const label =
+        relationDefaultValues == null
+          ? undefined
+          : config.itemMapper(relationDefaultValues).name;
+      showSheet(
+        {
+          item: {
+            name: label,
+            id: value,
           },
-          formProps,
-        );
-      }}
-      onEditItem={(value) => {
-        const relationDefaultValues = relationDataOptions.find(
-          (option) => value === String(get(option, primaryKeyField)),
-        );
-        const label =
-          relationDefaultValues == null
-            ? undefined
-            : config.itemMapper(relationDefaultValues).name;
-        showSheet(
-          {
-            item: {
-              name: label,
-              id: value,
-            },
-            childResource: resourceRelation,
-            parentResourceData: defaultValues,
-          },
-          {
-            ...formProps,
-            defaultValues: {
-              ...relationDefaultValues,
-              [getResourcePk(resourceRelation)]: value,
-            } as ResourceDefaultValues<Resource>,
-          },
-        );
-      }}
-      defaultValue={[...new Set(selectedValues)]}
+          childResource: resourceRelation,
+          parentResourceData: defaultValues,
+        },
+        {
+          ...formProps,
+          defaultValues: {
+            ...relationDefaultValues,
+            [getResourcePk(resourceRelation)]: value,
+          } as ResourceDefaultValues<Resource>,
+        },
+      );
+    },
+    defaultValue: [...new Set(selectedValues)],
+  } satisfies React.ComponentProps<typeof MultiSelect>;
+
+  const multiselect = isRelationOrderable ? (
+    <OrderableMultiSelect
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- type guard doesn't narrow generics
+      resourceRelation={resourceRelation as OrderableResource}
+      items={sortedQueriedRelations as ResourceDataType<OrderableResource>[]}
+      multiSelectProps={multiSelectProps}
     />
+  ) : (
+    <MultiSelect {...multiSelectProps} />
   );
   return relationDefinition.type === RelationType.ManyToMany ? (
     // TODO: allow m:n relation inputs to be immutable

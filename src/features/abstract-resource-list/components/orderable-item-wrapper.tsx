@@ -14,62 +14,43 @@ import {
   SortableContext,
   arrayMove,
   sortableKeyboardCoordinates,
-  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { useEffect, useRef, useState } from "react";
 
-import { fetchMutation, useMutationWrapper } from "@/features/backend";
-import type { ModifyResourceResponse } from "@/features/backend/types";
 import { getResourcePkValue } from "@/features/resources";
 import type {
-  EditableResource,
   OrderableResource,
   ResourceDataType,
-  ResourcePk,
 } from "@/features/resources/types";
-import { getToastMessages } from "@/lib/get-toast-messages";
 import type { ResourceRelations } from "@/types/components";
-import { sanitizeId } from "@/utils";
 
 import { ArlItem } from "./arl-item";
 import { ArlItems } from "./arl-items";
+import { SortableItem } from "./sortable-item";
 
-/**
- * Given the indices of an item's old and new position, calculate its new sort value using the average of its neighbours' sort values.
- */
-function calculateNewSortValue(
-  items: ResourceDataType<OrderableResource>[],
-  oldIndex: number,
-  newIndex: number,
-): number {
-  if (newIndex === 0) {
-    return items[0].order - 1;
-  }
-  if (newIndex === items.length - 1) {
-    // arbitrary large-ish number which facilitates inserting new items, 64 is a power of 2 so easy to halve
-    const lastItem = items.at(-1);
-    return lastItem == null ? 64 : lastItem.order + 1;
-  }
-  const first = items[newIndex];
-  const second =
-    oldIndex < newIndex ? items[newIndex + 1] : items[newIndex - 1];
-  return (first.order + second.order) / 2;
+export interface ReorderEvent {
+  id: UniqueIdentifier;
+  oldIndex: number;
+  newIndex: number;
+}
+
+interface OrderableItemWrapperProps<T extends OrderableResource> {
+  resource: T;
+  relatedResources: ResourceRelations<T>;
+  items: ResourceDataType<T>[];
+  onReorder: (event: ReorderEvent) => void;
 }
 
 export function OrderableItemWrapper<T extends OrderableResource>({
   resource,
   relatedResources,
-  data,
-}: {
-  resource: T;
-  relatedResources: ResourceRelations<T>;
-  data: ResourceDataType<T>[];
-}) {
+  items: data,
+  onReorder,
+}: OrderableItemWrapperProps<T>) {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [items, setItems] = useState<ResourceDataType<T>[]>(data);
+  const dragStartIndex = useRef<number | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -77,35 +58,16 @@ export function OrderableItemWrapper<T extends OrderableResource>({
     }),
   );
 
-  const { mutateAsync } = useMutationWrapper<
-    unknown,
-    { id: ResourcePk; order: number }
-  >(
-    `update__${resource}__order`,
-    async ({ id, order }) => {
-      const response = await fetchMutation<ModifyResourceResponse<T>>(
-        sanitizeId(id),
-        {
-          body: { order },
-          resource,
-          method: "PATCH",
-        },
-      );
-      return response;
-    },
-    {
-      onError: () => {
-        // revert the change
-        setItems(data);
-      },
-    },
-  );
-
   useEffect(() => {
-    // TODO: check if there is a better way to do this
     // eslint-disable-next-line react-you-might-not-need-an-effect/no-derived-state
     setItems(data);
   }, [data]);
+
+  const itemIds = items.map((item) => getResourcePkValue(resource, item));
+
+  function getItemIndex(id: UniqueIdentifier) {
+    return itemIds.indexOf(id as string);
+  }
 
   function getActiveItem() {
     const activeItem = items.find(
@@ -117,36 +79,35 @@ export function OrderableItemWrapper<T extends OrderableResource>({
     return activeItem;
   }
 
-  function updateItemOrder(
+  function handleDragOver(
+    activeIdParameter: UniqueIdentifier,
+    overId?: UniqueIdentifier,
+  ) {
+    if (overId == null || activeIdParameter === overId) {
+      return;
+    }
+    const oldIndex = getItemIndex(activeIdParameter);
+    const newIndex = getItemIndex(overId);
+    if (oldIndex !== -1 && newIndex !== -1) {
+      setItems((current) => arrayMove(current, oldIndex, newIndex));
+    }
+  }
+
+  function handleDragEnd(
     eventActiveId: UniqueIdentifier,
     overId?: UniqueIdentifier,
   ) {
-    let oldIndex = -1;
-    let newIndex = -1;
-    for (const [index, item] of items.entries()) {
-      const itemId = getResourcePkValue(resource, item);
-      if (itemId === eventActiveId) {
-        oldIndex = index;
-        if (newIndex !== -1) {
-          break;
-        }
-      } else if (itemId === overId) {
-        newIndex = index;
-        if (oldIndex !== -1) {
-          break;
-        }
-      }
+    const oldIndex = dragStartIndex.current;
+    const newIndex = getItemIndex(eventActiveId);
+
+    if (oldIndex == null || overId == null || oldIndex === newIndex) {
+      return;
     }
-    const newItems = arrayMove(items, oldIndex, newIndex);
-    setItems(newItems);
-    const order = calculateNewSortValue(items, oldIndex, newIndex);
-    toast.promise(
-      mutateAsync({ id: getResourcePkValue(resource, getActiveItem()), order }),
-      getToastMessages.resource(resource).modify,
-    );
+
+    onReorder({ id: eventActiveId, oldIndex, newIndex });
   }
 
-  const itemProps = { resource, relatedResources, orderable: true };
+  const itemProps = { resource, relatedResources };
 
   return (
     <DndContext
@@ -156,16 +117,19 @@ export function OrderableItemWrapper<T extends OrderableResource>({
       onDragStart={(event) => {
         document.body.style.cursor = "grabbing";
         setActiveId(event.active.id);
+        dragStartIndex.current = getItemIndex(event.active.id);
+      }}
+      onDragOver={(event) => {
+        handleDragOver(event.active.id, event.over?.id);
       }}
       onDragEnd={(event) => {
-        if (event.active.id !== event.over?.id) {
-          updateItemOrder(event.active.id, event.over?.id);
-        }
+        handleDragEnd(event.active.id, event.over?.id);
         document.body.style.cursor = "auto";
         setActiveId(null);
+        dragStartIndex.current = null;
       }}
     >
-      <SortableContext items={items} strategy={verticalListSortingStrategy}>
+      <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
         <ArlItems<T>
           items={items}
           ItemComponent={SortableItem}
@@ -180,36 +144,5 @@ export function OrderableItemWrapper<T extends OrderableResource>({
         )}
       </DragOverlay>
     </DndContext>
-  );
-}
-
-function SortableItem<T extends EditableResource>({
-  item,
-  resource,
-  relatedResources,
-}: {
-  item: ResourceDataType<T>;
-  resource: T;
-  relatedResources: ResourceRelations<T>;
-}) {
-  const { setNodeRef, transform, transition } = useSortable({
-    id: getResourcePkValue(resource, item),
-  });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  return (
-    <div style={style}>
-      <ArlItem
-        ref={setNodeRef}
-        item={item}
-        resource={resource}
-        relatedResources={relatedResources}
-        orderable
-      />
-    </div>
   );
 }

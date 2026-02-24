@@ -596,6 +596,7 @@ export const RESOURCE_METADATA = {
   [Resource.GuideQuestions]: {
     queryName: "guideQuestions",
     apiPath: "guide_questions",
+    orderable: true,
     itemMapper: (item) => ({
       name: item.title,
       shortDescription: item.answer,

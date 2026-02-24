@@ -1,5 +1,7 @@
 import type { Ref } from "react";
 
+import { DragHandle } from "@/components/core/drag-handle";
+import type { DragHandleProps } from "@/components/core/drag-handle";
 import { Badge } from "@/components/ui/badge";
 import {
   EditButton,
@@ -17,7 +19,6 @@ import type { ResourceRelations } from "@/types/components";
 import { getItemBadges } from "../lib/get-item-badges";
 import type { ListItem } from "../types/internal";
 import { getBadgeStyles } from "../utils/get-badge-styles";
-import { ArlItemDragHandle } from "./arl-item-drag-handle";
 import { ToggleOrganizationStatusButton } from "./toggle-status-button";
 
 export interface ItemProps<T extends EditableResource> {
@@ -25,7 +26,7 @@ export interface ItemProps<T extends EditableResource> {
   item: ResourceDataType<T>;
   resource: T;
   relatedResources: ResourceRelations<T>;
-  orderable?: boolean;
+  dragHandleProps?: Omit<DragHandleProps, "className">;
 }
 
 /** TODO: pass custom delete functionality as a prop, which would eliminate this helper */
@@ -37,7 +38,7 @@ const isStudentOrganizationProps = <T extends EditableResource>(
 } => props.resource === Resource.StudentOrganizations;
 
 export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
-  const { ref, item, resource, relatedResources, orderable = false } = props;
+  const { ref, item, resource, relatedResources, dragHandleProps } = props;
 
   const metadata = getResourceMetadata(resource);
   const id = getResourcePkValue(resource, item);
@@ -53,7 +54,7 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
     >
       <article className="flex flex-row gap-x-4">
         <div className="flex items-center gap-1 sm:gap-2">
-          {orderable ? <ArlItemDragHandle item={listItem} /> : null}
+          {dragHandleProps == null ? null : <DragHandle {...dragHandleProps} />}
           <Badge className="w-11">{listItem.id}</Badge>
         </div>
         <div className="flex min-w-0 grow flex-col justify-center gap-0.5">

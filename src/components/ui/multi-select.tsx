@@ -7,12 +7,31 @@
  * Modified by: kguzek
  * License: MIT
  */
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { type VariantProps, cva } from "class-variance-authority";
 import {
   BrushCleaningIcon,
   CheckIcon,
   ChevronDown,
   EditIcon,
+  GripVertical,
   PlusIcon,
   WandSparkles,
   XCircle,
@@ -333,6 +352,13 @@ interface MultiSelectProps
    * Optional, defaults to false.
    */
   closeOnSelect?: boolean;
+
+  /**
+   * Callback function triggered when items are reordered via drag-and-drop.
+   * Receives the item id, old index, and new index.
+   * When provided, enables drag-and-drop reordering of selected items.
+   */
+  onReorder?: (id: string, oldIndex: number, newIndex: number) => void;
 }
 
 /**
@@ -359,6 +385,103 @@ interface MultiSelectRef {
    * Focus the component
    */
   focus: () => void;
+}
+
+interface SortableOptionItemProps
+  extends Pick<MultiSelectProps, "onEditItem" | "isReadOnly"> {
+  option: MultiSelectOption;
+  selectedValues: string[];
+  toggleOption: (optionValue: string) => void;
+  setOptionSelected: SetOptionSelected;
+}
+
+function SortableOptionItem({
+  option,
+  selectedValues,
+  onEditItem,
+  toggleOption,
+  setOptionSelected,
+  isReadOnly = false,
+}: SortableOptionItemProps) {
+  const isSelected = selectedValues.includes(option.value);
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: option.value, disabled: !isSelected });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="flex items-center">
+      {isSelected ? (
+        <GripVertical
+          className={cn("text-muted-foreground mr-1 h-4 w-4 shrink-0", {
+            "cursor-grab": !isDragging,
+            "cursor-grabbing": isDragging,
+          })}
+          {...attributes}
+          {...listeners}
+        />
+      ) : (
+        <div className="mr-1 h-4 w-4 shrink-0" />
+      )}
+      <CommandItem
+        onSelect={isReadOnly ? undefined : () => toggleOption(option.value)}
+        role="option"
+        aria-selected={isSelected}
+        aria-disabled={option.disabled}
+        aria-label={`${option.label}${
+          isSelected ? ", selected" : ", not selected"
+        }${option.disabled ? ", disabled" : ""}`}
+        className={cn(
+          "w-full",
+          isReadOnly ? "bg-transparent!" : "cursor-pointer",
+          option.disabled && "cursor-not-allowed opacity-50",
+        )}
+        disabled={option.disabled}
+      >
+        {isReadOnly ? null : (
+          <div
+            className={cn(
+              "border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
+              isSelected ? "bg-primary" : "opacity-50 [&_svg]:invisible",
+            )}
+            aria-hidden="true"
+          >
+            <CheckIcon className="text-primary-foreground h-4 w-4" />
+          </div>
+        )}
+        {option.icon == null ? null : (
+          <option.icon
+            className="text-muted-foreground mr-2 h-4 w-4"
+            aria-hidden="true"
+          />
+        )}
+        <label className="flex w-full items-center justify-between gap-2">
+          {option.label}
+          {option.action?.(setOptionSelected)}
+        </label>
+      </CommandItem>
+      {onEditItem == null ? null : (
+        <Button
+          variant="icon"
+          size="sm"
+          onClick={() => onEditItem(option.value)}
+          aria-label={`Edytuj opcję ${option.label}`}
+        >
+          <EditIcon />
+        </Button>
+      )}
+    </div>
+  );
 }
 
 function MultiSelectOptionItem({
@@ -460,6 +583,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       resetOnDefaultValueChange = true,
       closeOnSelect = false,
       showClearButton = false,
+      onReorder,
       ...props
     },
     ref,
@@ -469,6 +593,20 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
     const [searchValue, setSearchValue] = React.useState("");
+    const [activeId, setActiveId] = React.useState<UniqueIdentifier | null>(
+      null,
+    );
+
+    const sensors = useSensors(
+      useSensor(PointerSensor, {
+        activationConstraint: {
+          distance: 5,
+        },
+      }),
+      useSensor(KeyboardSensor, {
+        coordinateGetter: sortableKeyboardCoordinates,
+      }),
+    );
 
     const [politeMessage, setPoliteMessage] = React.useState("");
     const [assertiveMessage, setAssertiveMessage] = React.useState("");
@@ -712,29 +850,62 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       [getAllOptions],
     );
 
+    const sortBySelectedOrder = React.useCallback(
+      (opts: MultiSelectOption[]) => {
+        if (onReorder == null) return opts;
+        const selectedSet = new Set(selectedValues);
+        const selected = selectedValues
+          .map((value) => opts.find((opt) => opt.value === value))
+          .filter((opt): opt is MultiSelectOption => opt != null);
+        const unselected = opts.filter((opt) => !selectedSet.has(opt.value));
+        return [...selected, ...unselected];
+      },
+      [onReorder, selectedValues],
+    );
+
     const filteredOptions = React.useMemo(() => {
-      if (!searchable || !searchValue) return options;
+      if (!searchable || !searchValue) {
+        if (isGroupedOptions(options)) {
+          return options.map((group) => ({
+            ...group,
+            options: sortBySelectedOrder(group.options),
+          }));
+        }
+        return sortBySelectedOrder(options);
+      }
       if (options.length === 0) return [];
       if (isGroupedOptions(options)) {
         return options
           .map((group) => ({
             ...group,
-            options: group.options.filter(
-              (option) =>
-                option.label
-                  .toLowerCase()
-                  .includes(searchValue.toLowerCase()) ||
-                option.value.toLowerCase().includes(searchValue.toLowerCase()),
+            options: sortBySelectedOrder(
+              group.options.filter(
+                (option) =>
+                  option.label
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase()) ||
+                  option.value
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase()),
+              ),
             ),
           }))
           .filter((group) => group.options.length > 0);
       }
-      return options.filter(
-        (option) =>
-          option.label.toLowerCase().includes(searchValue.toLowerCase()) ||
-          option.value.toLowerCase().includes(searchValue.toLowerCase()),
+      return sortBySelectedOrder(
+        options.filter(
+          (option) =>
+            option.label.toLowerCase().includes(searchValue.toLowerCase()) ||
+            option.value.toLowerCase().includes(searchValue.toLowerCase()),
+        ),
       );
-    }, [options, searchValue, searchable, isGroupedOptions]);
+    }, [
+      options,
+      searchValue,
+      searchable,
+      isGroupedOptions,
+      sortBySelectedOrder,
+    ]);
 
     const handleInputKeyDown = (
       event: React.KeyboardEvent<HTMLInputElement>,
@@ -788,6 +959,27 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       if (onValueChange([]) !== false) {
         setSelectedValues([]);
       }
+    };
+
+    const handleDragEnd = (event: DragEndEvent) => {
+      const { active, over } = event;
+      document.body.style.cursor = "auto";
+      setActiveId(null);
+
+      if (over == null || active.id === over.id) {
+        return;
+      }
+
+      const oldIndex = selectedValues.indexOf(String(active.id));
+      const newIndex = selectedValues.indexOf(String(over.id));
+
+      if (oldIndex === -1 || newIndex === -1) {
+        return;
+      }
+
+      const newSelectedValues = arrayMove(selectedValues, oldIndex, newIndex);
+      setSelectedValues(newSelectedValues);
+      onReorder?.(String(active.id), oldIndex, newIndex);
     };
 
     const handleTogglePopover = () => {
@@ -921,7 +1113,175 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       badgeAnimation: animationConfig?.badgeAnimation,
     });
 
-    return (
+    const multiSelectOptions = (options: MultiSelectOption[]) =>
+      options.map((option) =>
+        onReorder != null ? (
+          <SortableOptionItem
+            key={option.value}
+            option={option}
+            isReadOnly={isReadOnly}
+            selectedValues={selectedValues}
+            toggleOption={toggleOption}
+            setOptionSelected={setOptionSelected}
+            onEditItem={onEditItem}
+          />
+        ) : (
+          <MultiSelectOptionItem
+            key={option.value}
+            option={option}
+            isReadOnly={isReadOnly}
+            selectedValues={selectedValues}
+            toggleOption={toggleOption}
+            setOptionSelected={setOptionSelected}
+            onEditItem={onEditItem}
+          />
+        ),
+      );
+
+    const renderBadgeContent = (value: string, option: MultiSelectOption) => {
+      const IconComponent = option.icon;
+      const customStyle = option.style;
+
+      return (
+        <>
+          {IconComponent && !responsiveSettings.hideIcons && (
+            <IconComponent
+              className={cn(
+                "mr-2 h-4 w-4",
+                responsiveSettings.compactMode && "mr-1 h-3 w-3",
+                customStyle?.iconColor && "text-current",
+              )}
+              {...(customStyle?.iconColor && {
+                style: { color: customStyle.iconColor },
+              })}
+            />
+          )}
+          <span className={cn(screenSize === "mobile" && "truncate")}>
+            {option.label}
+          </span>
+          {isReadOnly ? null : (
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={(event) => {
+                event.stopPropagation();
+                toggleOption(value);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  toggleOption(value);
+                }
+              }}
+              aria-label={`Remove ${option.label} from selection`}
+              className="-m-0.5 ml-2 size-4 cursor-pointer rounded-sm hover:bg-white/20 focus:ring-1 focus:ring-white/50 focus:outline-none"
+            >
+              <XCircle
+                className={cn(
+                  "h-3 w-3",
+                  responsiveSettings.compactMode && "h-2.5 w-2.5",
+                )}
+              />
+            </div>
+          )}
+        </>
+      );
+    };
+
+    const getBadgeClassAndStyle = (option: MultiSelectOption) => {
+      const customStyle = option.style;
+      const badgeStyle: React.CSSProperties = {
+        animationDuration: `${animation}s`,
+        ...(customStyle?.badgeColor && {
+          backgroundColor: customStyle.badgeColor,
+        }),
+        ...(customStyle?.gradient && {
+          background: customStyle.gradient,
+          color: "white",
+        }),
+        animationDelay: `${animationConfig?.delay || 0}s`,
+      };
+      const badgeClassName = cn(
+        getBadgeAnimationClass(),
+        variants,
+        customStyle?.gradient && "border-transparent text-white",
+        responsiveSettings.compactMode && "px-1.5 py-0.5 text-xs",
+        screenSize === "mobile" && "max-w-[120px] truncate",
+        singleLine && "shrink-0 whitespace-nowrap",
+        "[&>svg]:pointer-events-auto",
+      );
+      return { badgeClassName, badgeStyle };
+    };
+
+    const renderBadges = () => {
+      const visibleValues = selectedValues.slice(
+        0,
+        responsiveSettings.maxCount,
+      );
+
+      const badges = visibleValues.map((value) => {
+        const option = getOptionByValue(value);
+        if (!option) return null;
+        const { badgeClassName, badgeStyle } = getBadgeClassAndStyle(option);
+
+        return (
+          <Badge key={value} className={badgeClassName} style={badgeStyle}>
+            {renderBadgeContent(value, option)}
+          </Badge>
+        );
+      });
+
+      const extraCountBadge =
+        selectedValues.length > responsiveSettings.maxCount ? (
+          <Badge
+            className={cn(
+              "text-foreground border-foreground/1 bg-transparent hover:bg-transparent",
+              getBadgeAnimationClass(),
+              variants,
+              responsiveSettings.compactMode && "px-1.5 py-0.5 text-xs",
+              singleLine && "shrink-0 whitespace-nowrap",
+              "[&>svg]:pointer-events-auto",
+            )}
+            style={{
+              animationDuration: `${animationConfig?.duration || animation}s`,
+              animationDelay: `${animationConfig?.delay || 0}s`,
+            }}
+          >
+            {`+ ${selectedValues.length - responsiveSettings.maxCount} więcej`}
+            {isReadOnly ? null : (
+              <XCircle
+                className={cn(
+                  "ml-2 h-4 w-4 cursor-pointer",
+                  responsiveSettings.compactMode && "ml-1 h-3 w-3",
+                )}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  clearExtraOptions();
+                }}
+              />
+            )}
+          </Badge>
+        ) : null;
+
+      return (
+        <div
+          className={cn(
+            "flex items-center gap-1",
+            singleLine
+              ? "multiselect-singleline-scroll overflow-x-auto"
+              : "flex-wrap",
+            responsiveSettings.compactMode && "gap-0.5",
+          )}
+          style={singleLine ? { paddingBottom: "4px" } : {}}
+        >
+          {badges.filter(Boolean)}
+          {extraCountBadge}
+        </div>
+      );
+    };
+
+    const popoverContent = (
       <>
         <div className="sr-only">
           <div aria-live="polite" aria-atomic="true" role="status">
@@ -982,154 +1342,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
             >
               {selectedValues.length > 0 ? (
                 <div className="flex w-full items-center justify-between">
-                  <div
-                    className={cn(
-                      "flex items-center gap-1",
-                      singleLine
-                        ? "multiselect-singleline-scroll overflow-x-auto"
-                        : "flex-wrap",
-                      responsiveSettings.compactMode && "gap-0.5",
-                    )}
-                    style={
-                      singleLine
-                        ? {
-                            paddingBottom: "4px",
-                          }
-                        : {}
-                    }
-                  >
-                    {selectedValues
-                      .slice(0, responsiveSettings.maxCount)
-                      .map((value) => {
-                        const option = getOptionByValue(value);
-                        const IconComponent = option?.icon;
-                        const customStyle = option?.style;
-                        if (!option) {
-                          return null;
-                        }
-                        const badgeStyle: React.CSSProperties = {
-                          animationDuration: `${animation}s`,
-                          ...(customStyle?.badgeColor && {
-                            backgroundColor: customStyle.badgeColor,
-                          }),
-                          ...(customStyle?.gradient && {
-                            background: customStyle.gradient,
-                            color: "white",
-                          }),
-                        };
-                        return (
-                          <Badge
-                            key={value}
-                            className={cn(
-                              getBadgeAnimationClass(),
-                              variants,
-                              customStyle?.gradient &&
-                                "border-transparent text-white",
-                              responsiveSettings.compactMode &&
-                                "px-1.5 py-0.5 text-xs",
-                              screenSize === "mobile" &&
-                                "max-w-[120px] truncate",
-                              singleLine && "shrink-0 whitespace-nowrap",
-                              "[&>svg]:pointer-events-auto",
-                            )}
-                            style={{
-                              ...badgeStyle,
-                              animationDuration: `${
-                                animationConfig?.duration || animation
-                              }s`,
-                              animationDelay: `${animationConfig?.delay || 0}s`,
-                            }}
-                          >
-                            {IconComponent && !responsiveSettings.hideIcons && (
-                              <IconComponent
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  responsiveSettings.compactMode &&
-                                    "mr-1 h-3 w-3",
-                                  customStyle?.iconColor && "text-current",
-                                )}
-                                {...(customStyle?.iconColor && {
-                                  style: { color: customStyle.iconColor },
-                                })}
-                              />
-                            )}
-                            <span
-                              className={cn(
-                                screenSize === "mobile" && "truncate",
-                              )}
-                            >
-                              {option.label}
-                            </span>
-                            {isReadOnly ? null : (
-                              <div
-                                role="button"
-                                tabIndex={0}
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  toggleOption(value);
-                                }}
-                                onKeyDown={(event) => {
-                                  if (
-                                    event.key === "Enter" ||
-                                    event.key === " "
-                                  ) {
-                                    event.preventDefault();
-                                    event.stopPropagation();
-                                    toggleOption(value);
-                                  }
-                                }}
-                                aria-label={`Remove ${option.label} from selection`}
-                                className="-m-0.5 ml-2 size-4 cursor-pointer rounded-sm hover:bg-white/20 focus:ring-1 focus:ring-white/50 focus:outline-none"
-                              >
-                                <XCircle
-                                  className={cn(
-                                    "h-3 w-3",
-                                    responsiveSettings.compactMode &&
-                                      "h-2.5 w-2.5",
-                                  )}
-                                />
-                              </div>
-                            )}
-                          </Badge>
-                        );
-                      })
-                      .filter(Boolean)}
-                    {selectedValues.length > responsiveSettings.maxCount && (
-                      <Badge
-                        className={cn(
-                          "text-foreground border-foreground/1 bg-transparent hover:bg-transparent",
-                          getBadgeAnimationClass(),
-                          variants,
-                          responsiveSettings.compactMode &&
-                            "px-1.5 py-0.5 text-xs",
-                          singleLine && "shrink-0 whitespace-nowrap",
-                          "[&>svg]:pointer-events-auto",
-                        )}
-                        style={{
-                          animationDuration: `${
-                            animationConfig?.duration || animation
-                          }s`,
-                          animationDelay: `${animationConfig?.delay || 0}s`,
-                        }}
-                      >
-                        {`+ ${
-                          selectedValues.length - responsiveSettings.maxCount
-                        } więcej`}
-                        {isReadOnly ? null : (
-                          <XCircle
-                            className={cn(
-                              "ml-2 h-4 w-4 cursor-pointer",
-                              responsiveSettings.compactMode && "ml-1 h-3 w-3",
-                            )}
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              clearExtraOptions();
-                            }}
-                          />
-                        )}
-                      </Badge>
-                    )}
-                  </div>
+                  {renderBadges()}
                   <div className="flex items-center justify-between">
                     {showClearButton ? (
                       <>
@@ -1256,35 +1469,35 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                     </CommandItem>
                   </CommandGroup>
                 )}
-                {isGroupedOptions(filteredOptions) ? (
+                {onReorder != null ? (
+                  <SortableContext
+                    items={selectedValues}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {isGroupedOptions(filteredOptions) ? (
+                      filteredOptions.map((group) => (
+                        <CommandGroup
+                          key={group.heading}
+                          heading={group.heading}
+                        >
+                          {multiSelectOptions(group.options)}
+                        </CommandGroup>
+                      ))
+                    ) : (
+                      <CommandGroup>
+                        {multiSelectOptions(filteredOptions)}
+                      </CommandGroup>
+                    )}
+                  </SortableContext>
+                ) : isGroupedOptions(filteredOptions) ? (
                   filteredOptions.map((group) => (
                     <CommandGroup key={group.heading} heading={group.heading}>
-                      {group.options.map((option) => (
-                        <MultiSelectOptionItem
-                          key={option.value}
-                          option={option}
-                          isReadOnly={isReadOnly}
-                          selectedValues={selectedValues}
-                          toggleOption={toggleOption}
-                          setOptionSelected={setOptionSelected}
-                          onEditItem={onEditItem}
-                        />
-                      ))}
+                      {multiSelectOptions(group.options)}
                     </CommandGroup>
                   ))
                 ) : (
                   <CommandGroup>
-                    {filteredOptions.map((option) => (
-                      <MultiSelectOptionItem
-                        key={option.value}
-                        option={option}
-                        isReadOnly={isReadOnly}
-                        selectedValues={selectedValues}
-                        toggleOption={toggleOption}
-                        setOptionSelected={setOptionSelected}
-                        onEditItem={onEditItem}
-                      />
-                    ))}
+                    {multiSelectOptions(filteredOptions)}
                   </CommandGroup>
                 )}
               </CommandList>
@@ -1340,6 +1553,32 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
           )}
         </Popover>
       </>
+    );
+
+    if (onReorder == null) {
+      return popoverContent;
+    }
+
+    return (
+      <DndContext
+        id={`multiselect-dnd-${multiSelectId}`}
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={(event) => {
+          document.body.style.cursor = "grabbing";
+          setActiveId(event.active.id);
+        }}
+        onDragEnd={handleDragEnd}
+      >
+        {popoverContent}
+        <DragOverlay>
+          {activeId != null ? (
+            <div className="bg-accent rounded-md px-2 py-1 opacity-80 drop-shadow-xl">
+              {getOptionByValue(String(activeId))?.label}
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
     );
   },
 );
