@@ -66,6 +66,7 @@ export function OrderableItemWrapper<T extends OrderableResource>({
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-you-might-not-need-an-effect/no-derived-state
     setItems(data);
   }, [data]);
 
