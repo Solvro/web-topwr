@@ -347,7 +347,6 @@ export const RESOURCE_METADATA = {
     apiPath: "change_screenshots",
     itemMapper: (item) => ({
       name: item.subtitle ?? `Zdjęcie ${String(item.id)}`,
-      shortDescription: null,
     }),
     form: {
       inputs: {
@@ -1011,7 +1010,6 @@ export const RESOURCE_METADATA = {
     apiPath: "version_screenshots",
     itemMapper: (item) => ({
       name: item.subtitle ?? `Zdjęcie ${String(item.id)}`,
-      shortDescription: null,
     }),
     form: {
       inputs: {
@@ -1264,7 +1262,7 @@ export const RESOURCE_METADATA = {
   [Resource.Map]: {
     // Map is a grouping resource for navigation, not an actual data resource
     apiPath: "map",
-    itemMapper: () => ({ name: "Mapa", shortDescription: null }),
+    itemMapper: () => ({ name: "Mapa" }),
     icon: Map,
     form: {
       inputs: {},

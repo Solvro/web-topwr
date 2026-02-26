@@ -45,6 +45,11 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
     id,
     ...metadata.itemMapper(item),
   };
+  const badges = getItemBadges(item, resource, relatedResources);
+  const shortDescription =
+    listItem.shortDescription == null
+      ? listItem.shortDescription
+      : listItem.shortDescription.trim();
 
   return (
     <li
@@ -58,23 +63,29 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
         </div>
         <div className="flex min-w-0 grow flex-col justify-center gap-0.5">
           <header className="flex flex-col gap-y-1">
-            <div className="hidden space-x-2 overflow-hidden md:block">
-              {getItemBadges(item, resource, relatedResources).map((badge) => {
-                return <ResourceBadge key={badge.displayField} badge={badge} />;
-              })}
-            </div>
+            {badges.length > 0 && (
+              <div className="hidden space-x-2 overflow-hidden md:block">
+                {badges.map((badge) => {
+                  return (
+                    <ResourceBadge key={badge.displayField} badge={badge} />
+                  );
+                })}
+              </div>
+            )}
             <h2 className="text-lg font-semibold text-balance">
               {listItem.name}
             </h2>
           </header>
-          <p className="hidden truncate md:block">
-            {listItem.shortDescription == null ||
-            listItem.shortDescription.trim() === "" ? (
-              <span className="text-muted-foreground">Brak opisu</span>
-            ) : (
-              listItem.shortDescription
-            )}
-          </p>
+
+          {shortDescription === undefined ? null : (
+            <p className="hidden truncate md:block">
+              {shortDescription == null || shortDescription === "" ? (
+                <span className="text-muted-foreground">Brak opisu</span>
+              ) : (
+                shortDescription
+              )}
+            </p>
+          )}
         </div>
         <footer className="flex items-center gap-0.5 sm:gap-2">
           <EditButton resource={resource} id={listItem.id} />
