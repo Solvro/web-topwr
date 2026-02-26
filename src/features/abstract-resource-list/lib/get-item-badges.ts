@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import type { ZodNumber, ZodString } from "zod";
 
 import { logger } from "@/features/logging";
@@ -57,8 +58,11 @@ function getManyToOneRelationBadge<
     return null;
   }
 
+  const editRoute =
+    `/${relationResource}/edit/${String(foreignKeyValue)}` as Route;
+
   if (badgeConfig.colorField == null) {
-    return { displayField: labelValue };
+    return { displayField: labelValue, editRoute };
   }
 
   const colorFieldValue = getFieldValue(
@@ -71,7 +75,7 @@ function getManyToOneRelationBadge<
     return null;
   }
 
-  return { displayField: labelValue, color: colorFieldValue };
+  return { displayField: labelValue, color: colorFieldValue, editRoute };
 }
 
 function getManyToManyRelationBadge<
