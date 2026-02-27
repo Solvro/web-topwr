@@ -14,6 +14,7 @@ import type {
   ResourceDataType,
 } from "@/features/resources/types";
 import type { ResourceRelations } from "@/types/components";
+import { isEmptyValue } from "@/utils";
 
 import { getItemBadges } from "../lib/get-item-badges";
 import type { ListItem } from "../types/internal";
@@ -77,7 +78,7 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
 
           {shortDescription === undefined ? null : (
             <p className="hidden truncate md:block">
-              {shortDescription == null || shortDescription === "" ? (
+              {isEmptyValue(shortDescription) ? (
                 <span className="text-muted-foreground">Brak opisu</span>
               ) : (
                 shortDescription
