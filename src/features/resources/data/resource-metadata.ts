@@ -681,7 +681,6 @@ export const RESOURCE_METADATA = {
     apiPath: "milestones",
     itemMapper: (item) => ({
       name: item.name,
-      shortDescription: "",
     }),
     icon: ScrollText,
     form: {
