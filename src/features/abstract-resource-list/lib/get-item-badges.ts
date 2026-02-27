@@ -36,9 +36,6 @@ function createBadge<R extends Resource>(
   badgeConfig: BadgeConfig<R>,
 ): ItemBadge | null {
   const labelValue = getFieldValue(relatedResource, badgeConfig.displayField);
-  if (typeof labelValue !== "string") {
-    return null;
-  }
 
   const editRoute =
     badgeConfig.link === true
@@ -159,7 +156,7 @@ function getManyToManyRelationBadge<
  * @param relationDefinition - The relation metadata defining the foreign key.
  * @param relatedResources - A dictionary containing arrays of related resource data.
  * @param badgeConfig - Configuration of badge styling and display.
- * @returns An array of unique ItemBadge objects.
+ * @returns An array of ItemBadge objects.
  */
 function getOneToManyRelationBadge<
   T extends Resource,
@@ -178,8 +175,6 @@ function getOneToManyRelationBadge<
     return retrievedBadges;
   }
 
-  const itemId = getResourcePkValue(resource, item);
-
   const linkedResources = relatedResources[relationResource].filter(
     (relatedItem) => {
       const foreignKeyValue = getFieldValue(
@@ -189,11 +184,9 @@ function getOneToManyRelationBadge<
           ZodString | ZodNumber
         >,
       );
-      return String(foreignKeyValue) === itemId;
+      return String(foreignKeyValue) === getResourcePkValue(resource, item);
     },
   );
-
-  const seenLabels = new Set<string>();
 
   for (const relatedResource of linkedResources) {
     const badge = createBadge(
@@ -202,8 +195,7 @@ function getOneToManyRelationBadge<
       badgeConfig,
     );
 
-    if (badge != null && !seenLabels.has(badge.badgeText)) {
-      seenLabels.add(badge.badgeText);
+    if (badge != null) {
       retrievedBadges.push(badge);
     }
   }
@@ -215,11 +207,11 @@ function getOneToManyRelationBadge<
  * Retrieve all badges for a specific resource item.
  * Iterates through configured badge definitions for the resource, checks the relationship
  * type (ManyToOne, ManyToMany, OneToMany), delegates to the corresponding helper function,
- * and aggregates the resulting badges into a single array.
+ * and aggregates the resulting badges into a single array while removing duplicates by text.
  * @param item - The primary resource data item to parse for badges.
  * @param resource - The identifier of the primary resource.
  * @param relatedResources - A dictionary of all fetched related resource data to draw from.
- * @returns A consolidated array of all valid ItemBadge objects.
+ * @returns A consolidated array of all valid, deduplicated ItemBadge objects.
  */
 export function getItemBadges<T extends Resource>(
   item: ResourceDataType<T>,
@@ -231,8 +223,16 @@ export function getItemBadges<T extends Resource>(
     return [];
   }
 
-  const badges = new Set<ItemBadge>();
+  const badges: ItemBadge[] = [];
+  const seenLabels = new Set<string>();
   const relationDefinitions = getResourceRelationDefinitions(resource);
+
+  const addUniqueBadge = (badge: ItemBadge) => {
+    if (!seenLabels.has(badge.badgeText)) {
+      seenLabels.add(badge.badgeText);
+      badges.push(badge);
+    }
+  };
 
   for (const [badgeResource, badgeConfig] of typedEntries(badgeDefinitions)) {
     if (badgeConfig == null) {
@@ -262,7 +262,7 @@ export function getItemBadges<T extends Resource>(
           badgeConfig as BadgeConfig<typeof relationResource>,
         );
         if (newBadge !== null) {
-          badges.add(newBadge);
+          addUniqueBadge(newBadge);
         }
         break;
       }
@@ -273,7 +273,7 @@ export function getItemBadges<T extends Resource>(
           badgeConfig as BadgeConfig<typeof relationResource>,
         );
         for (const newBadge of newBadges) {
-          badges.add(newBadge);
+          addUniqueBadge(newBadge);
         }
         break;
       }
@@ -287,21 +287,19 @@ export function getItemBadges<T extends Resource>(
           badgeConfig as BadgeConfig<typeof relationResource>,
         );
         for (const newBadge of newBadges) {
-          badges.add(newBadge);
+          addUniqueBadge(newBadge);
         }
         break;
       }
     }
   }
 
-  const badgesArray = [...badges];
-
-  if (badgesArray.length <= 3) {
-    return badgesArray;
+  if (badges.length <= 3) {
+    return badges;
   }
 
   return [
-    ...badgesArray.slice(0, 3),
-    { badgeText: `+${String(badges.size - 3)}` },
+    ...badges.slice(0, 3),
+    { badgeText: `+${String(badges.length - 3)}` },
   ];
 }
