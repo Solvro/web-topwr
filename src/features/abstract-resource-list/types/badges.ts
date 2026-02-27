@@ -8,7 +8,7 @@ import type {
 } from "@/features/resources/types";
 
 export interface ItemBadge {
-  displayField: string;
+  badgeText: string;
   color?: string;
   editRoute?: Route;
 }

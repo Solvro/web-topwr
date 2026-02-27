@@ -17,7 +17,7 @@ export function getBadgeStyles(badge: ItemBadge) {
   return {
     className: cn(
       "bg-[var(--color-light-bg)] text-[var(--color-light-text)] border-[var(--color-light-border)] hover:bg-[var(--color-light-bg)]!",
-      "dark:bg-[var(--color-dark-bg)] dark:text-[var(--color-dark-text)] dark:border-[var(--color-dark-border)] hover:bg-[var(--color-dark-bg)]!",
+      "dark:bg-[var(--color-dark-bg)] dark:text-[var(--color-dark-text)] dark:border-[var(--color-dark-border)] dark:hover:bg-[var(--color-dark-bg)]!",
     ),
     style: {
       "--badge-base": badge.color,

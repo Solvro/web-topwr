@@ -1,5 +1,4 @@
-import Link from "next/link";
-
+import { Link } from "@/components/core/link";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -14,7 +13,7 @@ export function ResourceBadge({ badge }: { badge: ItemBadge }) {
   if (badge.editRoute == null) {
     return (
       <Badge className={badgeClasses} style={style}>
-        {badge.displayField}
+        {badge.badgeText}
       </Badge>
     );
   }
@@ -25,7 +24,7 @@ export function ResourceBadge({ badge }: { badge: ItemBadge }) {
         href={badge.editRoute}
         className="transition-opacity hover:opacity-75"
       >
-        {badge.displayField}
+        {badge.badgeText}
       </Link>
     </Badge>
   );

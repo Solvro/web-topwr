@@ -66,9 +66,7 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
             {badges.length > 0 && (
               <div className="hidden space-x-2 overflow-hidden md:block">
                 {badges.map((badge) => {
-                  return (
-                    <ResourceBadge key={badge.displayField} badge={badge} />
-                  );
+                  return <ResourceBadge key={badge.badgeText} badge={badge} />;
                 })}
               </div>
             )}

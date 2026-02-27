@@ -56,7 +56,7 @@ function createBadge<R extends Resource>(
   }
 
   return {
-    displayField: labelValue,
+    badgeText: labelValue,
     editRoute,
     color,
   };
@@ -202,8 +202,8 @@ function getOneToManyRelationBadge<
       badgeConfig,
     );
 
-    if (badge != null && !seenLabels.has(badge.displayField)) {
-      seenLabels.add(badge.displayField);
+    if (badge != null && !seenLabels.has(badge.badgeText)) {
+      seenLabels.add(badge.badgeText);
       retrievedBadges.push(badge);
     }
   }
@@ -302,6 +302,6 @@ export function getItemBadges<T extends Resource>(
 
   return [
     ...badgesArray.slice(0, 3),
-    { displayField: `+${String(badges.size - 3)}` },
+    { badgeText: `+${String(badges.size - 3)}` },
   ];
 }
