@@ -1,6 +1,5 @@
 import { fetchResources } from "@/features/backend";
 import {
-  RelationType,
   getResourceArrayInputResources,
   getResourceRelationDefinitions,
 } from "@/features/resources";
@@ -24,16 +23,9 @@ export async function fetchRelatedResources<T extends Resource>(
   ]);
   const relationDefinitionResourcePromises = typedEntries(
     getResourceRelationDefinitions(resource),
-  ).map(async ([relation, relationDefinition]) =>
-    relationDefinition.type === RelationType.OneToMany
-      ? []
-      : [
-          [
-            relation,
-            await fetchResources(relation, true),
-          ] as RelationDataTuple<T>,
-        ],
-  );
+  ).map(async ([relation]) => [
+    [relation, await fetchResources(relation, true)] as RelationDataTuple<T>,
+  ]);
   const responses = await Promise.all([
     ...arrayInputResources,
     ...relationDefinitionResourcePromises,

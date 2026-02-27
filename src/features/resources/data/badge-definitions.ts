@@ -7,9 +7,15 @@ export const RESOURCE_BADGE_DEFINITIONS = {
     [Resource.Departments]: {
       displayField: "code",
       colorField: "gradientStop",
+      link: true,
     },
     [Resource.StudentOrganizationTags]: {
       displayField: "tag",
+    },
+  },
+  [Resource.Departments]: {
+    [Resource.Majors]: {
+      displayField: "name",
     },
   },
 } satisfies {

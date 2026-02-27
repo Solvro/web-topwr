@@ -16,6 +16,7 @@ export interface ItemBadge {
 export interface BadgeConfig<R extends Resource> {
   displayField: ResourceSchemaKey<R, ZodString | ZodNumber>;
   colorField?: ResourceSchemaKey<R, ZodString>;
+  link?: boolean;
 }
 
 export type ResourceBadgeDefinitions<R extends Resource> = {
