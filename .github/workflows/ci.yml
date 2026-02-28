@@ -83,6 +83,7 @@ jobs:
 
   e2e-test:
     needs: build
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
 
     env:
