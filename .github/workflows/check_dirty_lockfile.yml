@@ -2,7 +2,11 @@ name: Ensure clean package-lock.json
 
 on:
   pull_request:
-    branches: main
+    branches:
+      - main
+    paths:
+      - "**/package.json"
+      - "**/package-lock.json"
 
 permissions:
   contents: read
@@ -27,7 +31,6 @@ jobs:
           if git diff --exit-code package-lock.json; then
             echo "package-lock.json is clean"
           else
-            echo "package-lock.json changed after npm install. Please commit the updated lockfile."
-            git diff package-lock.json
+            echo "package-lock.json changed after npm install. Please commit the updated lockfile." >&2
             exit 1
           fi
