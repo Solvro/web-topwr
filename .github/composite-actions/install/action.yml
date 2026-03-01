@@ -16,12 +16,6 @@ runs:
         node-version-file: "package.json"
         check-latest: true
 
-    - name: Setup corepack
-      shell: bash
-      run: |
-        corepack enable
-        corepack prepare --activate
-
     - name: Validate input options
       shell: bash
       if: ${{ inputs.frozen-lockfile != 'false' && inputs.frozen-lockfile != 'true' }}
