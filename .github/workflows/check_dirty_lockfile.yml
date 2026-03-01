@@ -1,0 +1,30 @@
+name: Ensure clean package-lock.json
+
+on:
+  pull_request:
+    branches: main
+
+jobs:
+  check-lockfile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        uses: ./.github/composite-actions/install
+        with:
+          frozen-lockfile: false
+
+      - name: Check for package-lock.json changes
+        run: |
+          if git diff --exit-code package-lock.json; then
+            echo "package-lock.json is clean"
+          else
+            echo "package-lock.json changed after npm install. Please commit the updated lockfile."
+            git diff package-lock.json
+            exit 1
+          fi

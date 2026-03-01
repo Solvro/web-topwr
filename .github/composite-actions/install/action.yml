@@ -1,5 +1,12 @@
 name: "Install"
 description: "Sets up Node, and installs dependencies"
+
+inputs:
+  frozen-lockfile:
+    description: "Use frozen lockfile (npm ci). Set to false to allow lockfile updates."
+    required: false
+    default: "true"
+
 runs:
   using: composite
   steps:
@@ -8,6 +15,12 @@ runs:
       with:
         node-version-file: "package.json"
 
-    - name: Install dependencies
+    - name: Install dependencies (frozen)
       shell: bash
+      if: ${{ inputs.frozen-lockfile != 'false' }}
       run: npm ci
+
+    - name: Install dependencies (non-frozen)
+      shell: bash
+      if: ${{ inputs.frozen-lockfile == 'false' }}
+      run: npm install
