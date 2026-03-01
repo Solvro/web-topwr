@@ -51,8 +51,10 @@ export interface GetResourcesResponsePaginated<T extends Resource> {
   meta: PaginationMetadata;
 }
 
-export interface ModifyResourceResponse<T extends Resource, Data = undefined>
-  extends MessageResponse {
+export interface ModifyResourceResponse<
+  T extends Resource,
+  Data = undefined,
+> extends MessageResponse {
   data: Data extends undefined
     ? ResourceDataType<T>
     : ResourceDataType<T> & Data;

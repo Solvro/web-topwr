@@ -20,8 +20,9 @@ export function SortableItem<T extends EditableResource>({
   const id = getResourcePkValue(resource, item);
 
   return (
-    <SortableItemWrapper id={id}>
-      {({ dragHandleProps, style, setNodeRef }) => (
+    <SortableItemWrapper
+      id={id}
+      render={({ dragHandleProps, style, setNodeRef }) => (
         <div style={style}>
           <ArlItem
             ref={setNodeRef}
@@ -32,6 +33,6 @@ export function SortableItem<T extends EditableResource>({
           />
         </div>
       )}
-    </SortableItemWrapper>
+    />
   );
 }
