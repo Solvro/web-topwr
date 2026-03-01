@@ -28,9 +28,9 @@ jobs:
 
       - name: Check for package-lock.json changes
         run: |
-          if git diff --exit-code package-lock.json; then
-            echo "package-lock.json is clean"
+          if git diff --exit-code package-lock.json >/dev/null; then
+            echo "package-lock.json is clean :)"
           else
-            echo "package-lock.json changed after npm install. Please commit the updated lockfile." >&2
-            exit 1
+            echo "package-lock.json changed after running npm install. Please commit the updated lockfile." >&2
+            git diff --exit-code package-lock.json
           fi

@@ -14,6 +14,7 @@ runs:
       uses: actions/setup-node@v6
       with:
         node-version-file: "package.json"
+        check-latest: true
 
     - name: Setup corepack
       shell: bash
