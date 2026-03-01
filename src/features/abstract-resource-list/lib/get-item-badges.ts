@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import type { ZodNumber, ZodString } from "zod";
 
 import { logger } from "@/features/logging";
@@ -7,6 +8,7 @@ import {
   getFieldValue,
   getResourceBadgeDefinitions,
   getResourceMetadata,
+  getResourcePkValue,
   getResourceRelationDefinitions,
 } from "@/features/resources";
 import type {
@@ -21,6 +23,53 @@ import { typedEntries } from "@/utils";
 
 import type { BadgeConfig, ItemBadge } from "../types/badges";
 
+/**
+ * Helper to construct a badge consistently across all relation types.
+ * @param relationResource - Resource to which the badge points.
+ * @param relatedResource - The data of the related resource used to populate the badge.
+ * @param badgeConfig - Configuration of badge styling and display.
+ * @returns An ItemBadge object or null if part of badge configuration is invalid.
+ */
+function createBadge<R extends Resource>(
+  relationResource: R,
+  relatedResource: ResourceDataType<R>,
+  badgeConfig: BadgeConfig<R>,
+): ItemBadge | null {
+  const labelValue = getFieldValue(relatedResource, badgeConfig.displayField);
+
+  const editRoute =
+    badgeConfig.link === true
+      ? (`/${relationResource}/edit/${getResourcePkValue(relationResource, relatedResource)}` as Route)
+      : undefined;
+
+  let color: string | undefined;
+  if (badgeConfig.colorField != null) {
+    color = getFieldValue(relatedResource, badgeConfig.colorField);
+
+    if (!ColorValueSchema.safeParse(color).success) {
+      logger.warn({ labelValue }, "Invalid color value for badge");
+      return null;
+    }
+  }
+
+  return {
+    badgeText: labelValue,
+    editRoute,
+    color,
+  };
+}
+
+/**
+ * Generates a badge for a Many-To-One relationship.
+ * Extracts the foreign key from the primary item, finds the matching related resource
+ * from the provided pool, and constructs a badge for it.
+ * @param item - The primary resource data item.
+ * @param relationResource - The identifier for the relation type.
+ * @param relationDefinition - The relation metadata defining the foreign key.
+ * @param relatedResources - A dictionary containing arrays of related resource data.
+ * @param badgeConfig - Configuration of badge styling and display.
+ * @returns An ItemBadge object, or null for incomplete/incorrect data.
+ */
 function getManyToOneRelationBadge<
   T extends Resource,
   R extends ResourceRelation<T>,
@@ -51,35 +100,28 @@ function getManyToOneRelationBadge<
     return null;
   }
 
-  const labelValue = getFieldValue(relatedResource, badgeConfig.displayField);
-
-  if (typeof labelValue !== "string") {
-    return null;
-  }
-
-  if (badgeConfig.colorField == null) {
-    return { displayField: labelValue };
-  }
-
-  const colorFieldValue = getFieldValue(
-    relatedResource,
-    badgeConfig.colorField,
+  return createBadge(
+    relationResource,
+    relatedResource as ResourceDataType<R>,
+    badgeConfig,
   );
-
-  if (!ColorValueSchema.safeParse(colorFieldValue).success) {
-    logger.warn({ labelValue }, "Invalid color value for badge");
-    return null;
-  }
-
-  return { displayField: labelValue, color: colorFieldValue };
 }
 
+/**
+ * Generates an array of badges for a Many-To-Many relationship.
+ * Retrieves nested relation items directly from the primary item
+ * and iterates over them to construct a badge for each.
+ * @param item - The primary resource data item.
+ * @param badgeResource - The identifier for the badge resource.
+ * @param badgeConfig - Configuration of badge styling and display.
+ * @returns An array of valid ItemBadge objects.
+ */
 function getManyToManyRelationBadge<
   T extends Resource,
   R extends ResourceRelation<T>,
 >(
   item: ResourceDataType<T>,
-  badgeResource: Resource,
+  badgeResource: R,
   badgeConfig: BadgeConfig<R>,
 ): ItemBadge[] {
   const retrievedBadges: ItemBadge[] = [];
@@ -91,22 +133,86 @@ function getManyToManyRelationBadge<
 
   if (Array.isArray(relationItems)) {
     for (const relationItem of relationItems) {
-      const labelValue = getFieldValue(
-        relationItem as ResourceDataType<Resource>,
-        badgeConfig.displayField as ResourceSchemaKey<
-          Resource,
-          ZodString | ZodNumber
-        >,
+      const badge = createBadge(
+        badgeResource,
+        relationItem as ResourceDataType<R>,
+        badgeConfig,
       );
-
-      if (typeof labelValue === "string") {
-        retrievedBadges.push({ displayField: labelValue });
+      if (badge != null) {
+        retrievedBadges.push(badge);
       }
     }
   }
   return retrievedBadges;
 }
 
+/**
+ * Generates an array of badges for a One-To-Many relationship.
+ * Scans the pre-fetched related resources to find entries where the foreign key matches
+ * the primary item's ID, generating unique badges.
+ * @param item - The primary resource data item.
+ * @param resource - The identifier of the primary resource.
+ * @param relationResource - The identifier of the related resource type.
+ * @param relationDefinition - The relation metadata defining the foreign key.
+ * @param relatedResources - A dictionary containing arrays of related resource data.
+ * @param badgeConfig - Configuration of badge styling and display.
+ * @returns An array of ItemBadge objects.
+ */
+function getOneToManyRelationBadge<
+  T extends Resource,
+  R extends ResourceRelation<T>,
+>(
+  item: ResourceDataType<T>,
+  resource: T,
+  relationResource: R,
+  relationDefinition: RelationDefinition<T, R>,
+  relatedResources: ResourceRelations<T>,
+  badgeConfig: BadgeConfig<R>,
+): ItemBadge[] {
+  const retrievedBadges: ItemBadge[] = [];
+
+  if (relationDefinition.foreignKey == null) {
+    return retrievedBadges;
+  }
+
+  const linkedResources = relatedResources[relationResource].filter(
+    (relatedItem) => {
+      const foreignKeyValue = getFieldValue(
+        relatedItem as ResourceDataType<R>,
+        relationDefinition.foreignKey as ResourceSchemaKey<
+          R,
+          ZodString | ZodNumber
+        >,
+      );
+      return String(foreignKeyValue) === getResourcePkValue(resource, item);
+    },
+  );
+
+  for (const relatedResource of linkedResources) {
+    const badge = createBadge(
+      relationResource,
+      relatedResource as ResourceDataType<R>,
+      badgeConfig,
+    );
+
+    if (badge != null) {
+      retrievedBadges.push(badge);
+    }
+  }
+
+  return retrievedBadges;
+}
+
+/**
+ * Retrieve all badges for a specific resource item.
+ * Iterates through configured badge definitions for the resource, checks the relationship
+ * type (ManyToOne, ManyToMany, OneToMany), delegates to the corresponding helper function,
+ * and aggregates the resulting badges into a single array while removing duplicates by text.
+ * @param item - The primary resource data item to parse for badges.
+ * @param resource - The identifier of the primary resource.
+ * @param relatedResources - A dictionary of all fetched related resource data to draw from.
+ * @returns A consolidated array of all valid, deduplicated ItemBadge objects.
+ */
 export function getItemBadges<T extends Resource>(
   item: ResourceDataType<T>,
   resource: T,
@@ -117,8 +223,16 @@ export function getItemBadges<T extends Resource>(
     return [];
   }
 
-  const badges = new Set<ItemBadge>();
+  const badges: ItemBadge[] = [];
+  const seenLabels = new Set<string>();
   const relationDefinitions = getResourceRelationDefinitions(resource);
+
+  const addUniqueBadge = (badge: ItemBadge) => {
+    if (!seenLabels.has(badge.badgeText)) {
+      seenLabels.add(badge.badgeText);
+      badges.push(badge);
+    }
+  };
 
   for (const [badgeResource, badgeConfig] of typedEntries(badgeDefinitions)) {
     if (badgeConfig == null) {
@@ -148,32 +262,44 @@ export function getItemBadges<T extends Resource>(
           badgeConfig as BadgeConfig<typeof relationResource>,
         );
         if (newBadge !== null) {
-          badges.add(newBadge);
+          addUniqueBadge(newBadge);
         }
         break;
       }
       case RelationType.ManyToMany: {
         const newBadges = getManyToManyRelationBadge(
           item,
-          badgeResource,
+          relationResource,
           badgeConfig as BadgeConfig<typeof relationResource>,
         );
         for (const newBadge of newBadges) {
-          badges.add(newBadge);
+          addUniqueBadge(newBadge);
         }
         break;
       }
       case RelationType.OneToMany: {
-        logger.error(
-          { resource, item, relatedResources },
-          "Badges for one to many relations are not implemented yet - possible configuration error",
+        const newBadges = getOneToManyRelationBadge(
+          item,
+          resource,
+          relationResource,
+          relationDefinition,
+          relatedResources,
+          badgeConfig as BadgeConfig<typeof relationResource>,
         );
-        break;
-      }
-      default: {
+        for (const newBadge of newBadges) {
+          addUniqueBadge(newBadge);
+        }
         break;
       }
     }
   }
-  return [...badges];
+
+  if (badges.length <= 3) {
+    return badges;
+  }
+
+  return [
+    ...badges.slice(0, 3),
+    { badgeText: `+${String(badges.length - 3)}` },
+  ];
 }

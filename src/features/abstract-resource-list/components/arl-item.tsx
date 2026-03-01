@@ -13,12 +13,12 @@ import type {
   EditableResource,
   ResourceDataType,
 } from "@/features/resources/types";
-import { cn } from "@/lib/utils";
 import type { ResourceRelations } from "@/types/components";
+import { isEmptyValue } from "@/utils";
 
 import { getItemBadges } from "../lib/get-item-badges";
 import type { ListItem } from "../types/internal";
-import { getBadgeStyles } from "../utils/get-badge-styles";
+import { ResourceBadge } from "./resource-badge";
 import { ToggleOrganizationStatusButton } from "./toggle-status-button";
 
 export interface ItemProps<T extends EditableResource> {
@@ -46,6 +46,11 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
     id,
     ...metadata.itemMapper(item),
   };
+  const badges = getItemBadges(item, resource, relatedResources);
+  const shortDescription =
+    listItem.shortDescription == null
+      ? listItem.shortDescription
+      : listItem.shortDescription.trim();
 
   return (
     <li
@@ -59,32 +64,27 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
         </div>
         <div className="flex min-w-0 grow flex-col justify-center gap-0.5">
           <header className="flex flex-col gap-y-1">
-            <div className="hidden space-x-2 overflow-hidden md:block">
-              {getItemBadges(item, resource, relatedResources).map((badge) => {
-                const { className, style } = getBadgeStyles(badge);
-                return (
-                  <Badge
-                    key={badge.displayField}
-                    className={cn("py-0.5", className)}
-                    style={style}
-                  >
-                    {badge.displayField}
-                  </Badge>
-                );
-              })}
-            </div>
+            {badges.length > 0 && (
+              <div className="hidden space-x-2 overflow-hidden md:block">
+                {badges.map((badge) => (
+                  <ResourceBadge key={badge.badgeText} badge={badge} />
+                ))}
+              </div>
+            )}
             <h2 className="text-lg font-semibold text-balance">
               {listItem.name}
             </h2>
           </header>
-          <p className="hidden truncate md:block">
-            {listItem.shortDescription == null ||
-            listItem.shortDescription.trim() === "" ? (
-              <span className="text-muted-foreground">Brak opisu</span>
-            ) : (
-              listItem.shortDescription
-            )}
-          </p>
+
+          {shortDescription === undefined ? null : (
+            <p className="hidden truncate md:block">
+              {isEmptyValue(shortDescription) ? (
+                <span className="text-muted-foreground">Brak opisu</span>
+              ) : (
+                shortDescription
+              )}
+            </p>
+          )}
         </div>
         <footer className="flex items-center gap-0.5 sm:gap-2">
           <EditButton resource={resource} id={listItem.id} />

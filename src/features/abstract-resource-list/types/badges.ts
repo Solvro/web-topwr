@@ -1,4 +1,5 @@
-import type { ZodNumber, ZodString } from "zod";
+import type { Route } from "next";
+import type { ZodString } from "zod";
 
 import type { Resource } from "@/features/resources";
 import type {
@@ -7,13 +8,15 @@ import type {
 } from "@/features/resources/types";
 
 export interface ItemBadge {
-  displayField: string;
+  badgeText: string;
   color?: string;
+  editRoute?: Route;
 }
 
 export interface BadgeConfig<R extends Resource> {
-  displayField: ResourceSchemaKey<R, ZodString | ZodNumber>;
+  displayField: ResourceSchemaKey<R, ZodString>;
   colorField?: ResourceSchemaKey<R, ZodString>;
+  link?: boolean;
 }
 
 export type ResourceBadgeDefinitions<R extends Resource> = {
