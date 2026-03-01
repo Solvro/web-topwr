@@ -1,18 +1,20 @@
 import { UserRound } from "lucide-react";
 
 import { Link } from "@/components/core/link";
+import { ThemeToggle } from "@/components/core/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { AuthState, User } from "@/features/authentication/types";
+import { FooterAuthor, FooterSource } from "@/features/footer";
 
-import { ThemeToggle } from "../core/theme-toggle";
 import { Logo } from "./logo";
 import { LogoutButton } from "./logout-button";
 
@@ -24,13 +26,22 @@ function UserProfileMenu({ user }: { user: User }) {
           <UserRound />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Moje konto</DropdownMenuLabel>
+      <DropdownMenuContent className="w-56" align="start">
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Moje konto</DropdownMenuLabel>
+          <DropdownMenuItem className="font-normal">
+            {user.fullName ?? user.email}
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="font-normal">
-            {user.fullName ?? user.email}
-          </DropdownMenuLabel>
+          <DropdownMenuLabel>O aplikacji</DropdownMenuLabel>
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <FooterAuthor compact />
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <FooterSource compact />
+          </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
