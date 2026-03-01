@@ -70,7 +70,7 @@
     "@tiptap/extensions": "~3.8.0",
     "@tiptap/pm": "~3.8.0",
     "@tiptap/react": "~3.8.0",
-    "@tiptap/starter-kit": "~3.8.0",
+    "@tiptap/starter-kit": "~3.20.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
