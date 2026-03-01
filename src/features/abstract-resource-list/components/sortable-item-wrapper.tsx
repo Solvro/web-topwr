@@ -7,21 +7,19 @@ import type { CSSProperties, ReactNode } from "react";
 
 import type { DragHandleProps } from "@/components/core/drag-handle";
 
-export interface SortableChildrenProps {
+interface SortableChildrenProps {
   dragHandleProps: Omit<DragHandleProps, "className">;
   style: CSSProperties;
   setNodeRef: (node: HTMLElement | null) => void;
 }
 
-interface SortableItemWrapperProps {
-  id: UniqueIdentifier;
-  children: (props: SortableChildrenProps) => ReactNode;
-}
-
 export function SortableItemWrapper({
   id,
-  children,
-}: SortableItemWrapperProps): ReactNode {
+  render,
+}: {
+  id: UniqueIdentifier;
+  render: (props: SortableChildrenProps) => ReactNode;
+}): ReactNode {
   const {
     attributes,
     listeners,
@@ -42,5 +40,5 @@ export function SortableItemWrapper({
     isDragging,
   };
 
-  return children({ dragHandleProps, style, setNodeRef });
+  return render({ dragHandleProps, style, setNodeRef });
 }
