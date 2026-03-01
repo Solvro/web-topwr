@@ -136,9 +136,9 @@
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
   },
-  "packageManager": "npm@11.9.0",
+  "packageManager": "npm@11.11.0+sha512.f36811c4aae1fde639527368ae44c571d050006a608d67a191f195a801a52637a312d259186254aa3a3799b05335b7390539cf28656d18f0591a1125ba35f973",
   "engines": {
     "node": ">=22",
-    "npm": "^11.9.0"
+    "npm": "^11.11.0"
   }
 }
