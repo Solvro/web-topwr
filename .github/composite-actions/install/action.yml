@@ -1,5 +1,12 @@
 name: "Install"
 description: "Sets up Node, and installs dependencies"
+
+inputs:
+  frozen-lockfile:
+    description: "Use frozen lockfile (npm ci). Set to false to allow lockfile updates."
+    required: false
+    default: "true"
+
 runs:
   using: composite
   steps:
@@ -7,7 +14,30 @@ runs:
       uses: actions/setup-node@v6
       with:
         node-version-file: "package.json"
+        check-latest: true
 
-    - name: Install dependencies
+    - name: Install package manager
       shell: bash
+      run: |
+        PACKAGE_MANAGER_VERSION="$(node -p 'require(`./package.json`).packageManager')"
+        echo "Installing package manager: $PACKAGE_MANAGER_VERSION"
+        npm install --global "$PACKAGE_MANAGER_VERSION"
+
+    - name: Validate input options
+      shell: bash
+      if: ${{ inputs.frozen-lockfile != 'false' && inputs.frozen-lockfile != 'true' }}
+      env:
+        FROZEN_LOCKFILE_OPTION: ${{ inputs.frozen-lockfile }}
+      run: |
+        echo "Invalid boolean value provided to frozen-lockfile option: $FROZEN_LOCKFILE_OPTION" >&2
+        exit 1
+
+    - name: Install dependencies (frozen)
+      shell: bash
+      if: ${{ inputs.frozen-lockfile == 'true' }}
       run: npm ci
+
+    - name: Install dependencies (non-frozen)
+      shell: bash
+      if: ${{ inputs.frozen-lockfile == 'false' }}
+      run: npm install
