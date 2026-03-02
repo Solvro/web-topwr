@@ -1,5 +1,6 @@
 import type { Route } from "next";
 import Image from "next/image";
+import type { LinkProps } from "next/link";
 
 import { Link } from "@/components/core/link";
 
@@ -7,24 +8,25 @@ import { DEFAULT_IMAGE_HEIGHT } from "../constants";
 import { constructImages } from "../lib/construct-images";
 import type { FooterSectionProps, ImageTuple } from "../types/internal";
 
-export function FooterLink({
+export function FooterLink<T extends string>({
   images,
-  href,
   label,
   compact = false,
   invertColors = false,
-}: FooterSectionProps & {
-  images: ImageTuple;
-  href: Route;
-  label: string;
-}) {
+  ...props
+}: Omit<LinkProps<T>, "children" | "href"> &
+  FooterSectionProps & {
+    href: Route<T>;
+    images: ImageTuple;
+    label: string;
+  }) {
   const [imageLight, imageDark] = constructImages(
     images,
     invertColors,
     compact,
   );
   return (
-    <Link className="group relative flex items-center gap-1" href={href}>
+    <Link<T> className="group relative flex items-center gap-1" {...props}>
       <Image
         height={DEFAULT_IMAGE_HEIGHT}
         {...imageLight}
