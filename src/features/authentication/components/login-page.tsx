@@ -1,9 +1,5 @@
-import Image from "next/image";
-
-import SolvroLogo from "@/assets/logo-solvro.png";
-import { Link } from "@/components/core/link";
 import { Logo } from "@/components/presentation/logo";
-import { SOLVRO_WEBPAGE_URL } from "@/config/constants";
+import { Footer } from "@/features/footer";
 
 import { LoginForm } from "./login-form";
 
@@ -16,11 +12,7 @@ export function LoginPage() {
         </figure>
         <LoginForm />
       </div>
-      <footer className="mt-auto mb-4 h-6 md:mb-8">
-        <Link href={SOLVRO_WEBPAGE_URL} target="_blank" rel="noreferrer">
-          <Image src={SolvroLogo} alt="Logo Solvro" className="size-full" />
-        </Link>
-      </footer>
+      <Footer invertColors className="absolute inset-0 top-[unset] mb-10" />
     </div>
   );
 }

@@ -2,8 +2,8 @@ import Image from "next/image";
 import type { StaticImageData } from "next/image";
 import type { ComponentProps } from "react";
 
-import LogoToPWRColor from "@/assets/logo-topwr-color.svg";
-import LogoToPWRWhite from "@/assets/logo-topwr-white.svg";
+import LogoToPWRColor from "@/assets/logos/topwr-color.svg";
+import LogoToPWRWhite from "@/assets/logos/topwr-white.svg";
 import { cn } from "@/lib/utils";
 
 export function Logo({
