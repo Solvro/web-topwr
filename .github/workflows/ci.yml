@@ -40,7 +40,7 @@ jobs:
         if: always()
 
       - name: Lint code
-        run: npm run lint
+        run: npm run lint:check
         if: always()
 
       - name: Check for unused dependencies
