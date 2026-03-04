@@ -47,6 +47,7 @@ import { isExistingItem } from "../utils/is-existing-item";
 import { isFormStateDirty } from "../utils/is-form-state-dirty";
 import { ArfBody } from "./arf-body";
 import { ArfConfirmationModal } from "./arf-confirmation-modal";
+import { ResetButton } from "./arf-reset-button";
 import { CancelButton } from "./cancel-button";
 
 /** Controller component for Abstract Resource Form. Sets up form context and handles submission. */
@@ -218,24 +219,27 @@ export function ArfController<T extends Resource>({
 
             {isEmbedded ? null : (
               <>
-                <CancelButton
-                  resource={resource as RoutableResource}
-                  isEditing={isEditing}
-                  onClearData={clearPersistedData}
-                  onResetForm={resetForm}
-                  disabled={isPending}
-                />
                 {isEditing ? (
-                  // It would be too complex to relate `isEmbedded` to `resource` being a `RoutableResource`,
-                  // so I'm going to assume the codebase won't use `AbstractResourceForm` anywhere except for
-                  // routable resources with `isEmbedded` set to `false` and otherwise with it set to `true`.
-                  <ReturnButton
-                    className="lg:mr-auto"
-                    resource={resource as RoutableResource}
-                    returnLabel="Wróć do"
-                    icon={ChevronLeft}
+                  <ResetButton
+                    onResetForm={resetForm}
+                    disabled={!isFormStateDirty(form.formState)}
                   />
-                ) : null}
+                ) : (
+                  <CancelButton
+                    resource={resource as RoutableResource}
+                    onClearData={clearPersistedData}
+                    disabled={!isFormStateDirty(form.formState)}
+                  />
+                )}
+                {/* // It would be too complex to relate `isEmbedded` to `resource` being a `RoutableResource`,
+                  // so I'm going to assume the codebase won't use `AbstractResourceForm` anywhere except for
+                  // routable resources with `isEmbedded` set to `false` and otherwise with it set to `true`. */}
+                <ReturnButton
+                  className="lg:mr-auto"
+                  resource={resource as RoutableResource}
+                  returnLabel="Wróć do"
+                  icon={ChevronLeft}
+                />
               </>
             )}
           </footer>
