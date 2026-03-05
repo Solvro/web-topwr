@@ -89,7 +89,7 @@ export function ArfController<T extends Resource>({
   const { clearPersistedData, resetForm } = useFormWithPersistence({
     storageKey,
     form,
-    excludeFields: ["id"],
+    excludedFields: ["id"],
     isEditing,
   });
 
@@ -116,11 +116,11 @@ export function ArfController<T extends Resource>({
     });
     const wasCreated = mutationOptions.method === "POST";
 
-    // Clear persisted data after successful submission
-    clearPersistedData();
-
     // initially disables the save button after successful edit
     form.reset(wasCreated ? undefined : response.data);
+
+    clearPersistedData();
+
     const newPrimaryKey = getResourcePkValue(resource, response.data);
     const primaryKeyChanged =
       isEditing &&

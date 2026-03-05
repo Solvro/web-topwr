@@ -21,7 +21,7 @@ export function useFormWithPersistence<T extends Resource>({
   form,
   enabled = true,
   debounceMs = 1000,
-  excludeFields = [],
+  excludedFields: excludeFields = [],
   autoPromptRestore = true,
   onUnsavedChangesChange,
   isEditing = false,
@@ -34,7 +34,7 @@ export function useFormWithPersistence<T extends Resource>({
       form,
       enabled: enabled && !isEditing,
       debounceMs,
-      excludeFields,
+      excludedFields: excludeFields,
     });
 
   useEffect(() => {
