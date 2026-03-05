@@ -8,10 +8,9 @@ import type { Resource } from "@/features/resources";
 import type { ResourceFormValues } from "@/features/resources/types";
 import { typedEntries } from "@/utils";
 
-import type {
-  FormPersistenceOptions,
-  PersistedFormData,
-} from "../types/internal";
+import type { FormPersistenceOptions } from "../types/internal";
+import { debouncedSave } from "../utils/debounced-save";
+import { loadFromStorage } from "../utils/load-from-starage";
 
 const STORAGE_PREFIX = "topwr_form_";
 
@@ -23,65 +22,11 @@ export function useFormPersistence<T extends Resource>({
   form,
   enabled = true,
   debounceMs = 1000,
-  excludeFields = [],
+  excludedFields = [],
 }: FormPersistenceOptions<T>) {
   const fullStorageKey = `${STORAGE_PREFIX}${storageKey}`;
   const debounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const hasRestoredRef = useRef(false);
-
-  const filterValues = (values: ResourceFormValues<T>) =>
-    Object.fromEntries(
-      Object.entries(values).filter(([key]) => !excludeFields.includes(key)),
-    );
-
-  const saveToStorage = (values: ResourceFormValues<T>) => {
-    if (!enabled) {
-      return;
-    }
-
-    try {
-      const filteredValues = filterValues(values) as ResourceFormValues<T>;
-      const persistedData: PersistedFormData<T> = {
-        values: filteredValues,
-        timestamp: Date.now(),
-      };
-      localStorage.setItem(fullStorageKey, JSON.stringify(persistedData));
-    } catch (error) {
-      logger.error(
-        parseError(error),
-        "Failed to save form data to localStorage",
-      );
-    }
-  };
-
-  const loadFromStorage = (): PersistedFormData<T> | null => {
-    if (!enabled) {
-      return null;
-    }
-
-    try {
-      const stored = localStorage.getItem(fullStorageKey);
-      if (stored == null) {
-        return null;
-      }
-
-      const parsed = JSON.parse(stored) as PersistedFormData<T>;
-
-      const maxAge = 24 * 60 * 60 * 1000;
-      if (Date.now() - parsed.timestamp > maxAge) {
-        localStorage.removeItem(fullStorageKey);
-        return null;
-      }
-
-      return parsed;
-    } catch (error) {
-      logger.error(
-        parseError(error),
-        "Failed to load form data from localStorage",
-      );
-      return null;
-    }
-  };
 
   const clearStoredData = () => {
     try {
@@ -95,7 +40,7 @@ export function useFormPersistence<T extends Resource>({
   };
 
   const hasStoredData = () => {
-    const stored = loadFromStorage();
+    const stored = loadFromStorage(enabled, fullStorageKey);
     return stored !== null;
   };
 
@@ -104,32 +49,18 @@ export function useFormPersistence<T extends Resource>({
       return false;
     }
 
-    const stored = loadFromStorage();
+    const stored = loadFromStorage(enabled, fullStorageKey);
     if (stored != null) {
       for (const [key, value] of typedEntries(stored.values)) {
-        form.setValue(
-          key as unknown as Path<ResourceFormValues<T>>,
-          value as never,
-          {
-            shouldDirty: true,
-            shouldValidate: false,
-          },
-        );
+        form.setValue(key as unknown as Path<ResourceFormValues<T>>, value, {
+          shouldDirty: true,
+          shouldValidate: false,
+        });
       }
       hasRestoredRef.current = true;
       return true;
     }
     return false;
-  };
-
-  const debouncedSave = (values: ResourceFormValues<T>) => {
-    if (debounceTimerRef.current != null) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    debounceTimerRef.current = setTimeout(() => {
-      saveToStorage(values);
-    }, debounceMs);
   };
 
   useEffect(() => {
@@ -138,22 +69,27 @@ export function useFormPersistence<T extends Resource>({
     }
     const subscription = form.watch((values) => {
       if (form.formState.isDirty) {
-        debouncedSave(values as ResourceFormValues<T>);
+        debouncedSave(
+          values,
+          debounceTimerRef,
+          debounceMs,
+          enabled,
+          fullStorageKey,
+          excludedFields,
+        );
       }
     });
 
+    const timerId = debounceTimerRef.current;
     return () => {
       subscription.unsubscribe();
-      if (debounceTimerRef.current != null) {
-        clearTimeout(debounceTimerRef.current);
+      if (timerId != null) {
+        clearTimeout(timerId);
       }
     };
-  }, [form, enabled, debounceMs, debouncedSave]);
+  }, [form, enabled, debounceMs, fullStorageKey, excludedFields]);
 
   return {
-    saveToStorage: () => {
-      saveToStorage(form.getValues());
-    },
     clearStoredData,
     restoreFormData,
     hasStoredData,

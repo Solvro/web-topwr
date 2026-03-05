@@ -71,7 +71,7 @@ export interface FormPersistenceOptions<T extends Resource> {
   form: UseFormReturn<ResourceFormValues<T>>;
   enabled?: boolean;
   debounceMs?: number;
-  excludeFields?: string[];
+  excludedFields?: string[];
   autoPromptRestore?: boolean;
   onUnsavedChangesChange?: (hasChanges: boolean) => void;
   isEditing?: boolean;
