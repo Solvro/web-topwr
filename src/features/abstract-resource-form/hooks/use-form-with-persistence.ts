@@ -21,7 +21,7 @@ export function useFormWithPersistence<T extends Resource>({
   form,
   enabled = true,
   debounceMs = 1000,
-  excludedFields: excludeFields = [],
+  excludedFields,
   autoPromptRestore = true,
   onUnsavedChangesChange,
   isEditing = false,
@@ -34,7 +34,8 @@ export function useFormWithPersistence<T extends Resource>({
       form,
       enabled: enabled && !isEditing,
       debounceMs,
-      excludedFields: excludeFields,
+      excludedFields,
+      isEditing,
     });
 
   useEffect(() => {
@@ -43,21 +44,23 @@ export function useFormWithPersistence<T extends Resource>({
     }
 
     const subscription = form.watch(() => {
-      const isDirty = form.formState.isDirty;
-
-      const defaultValues = form.control._defaultValues;
       const currentValues = form.getValues();
+      const defaultValues = form.formState.defaultValues;
 
-      const valuesChanged =
-        JSON.stringify(currentValues) !== JSON.stringify(defaultValues);
+      let hasRealChanges = false;
+      defaultValues == null
+        ? (hasRealChanges = form.formState.isDirty)
+        : (hasRealChanges =
+            JSON.stringify(currentValues) !== JSON.stringify(defaultValues));
 
-      const hasChanges = isDirty || valuesChanged;
-      setHasUnsavedChanges(hasChanges);
-      onUnsavedChangesChange?.(hasChanges);
+      setHasUnsavedChanges(hasRealChanges);
+      onUnsavedChangesChange?.(hasRealChanges);
     });
 
     return () => {
       subscription.unsubscribe();
+      setHasUnsavedChanges(false);
+      onUnsavedChangesChange?.(false);
     };
   }, [form, isEditing, setHasUnsavedChanges, onUnsavedChangesChange]);
 

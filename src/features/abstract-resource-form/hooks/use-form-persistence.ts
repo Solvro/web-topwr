@@ -22,7 +22,7 @@ export function useFormPersistence<T extends Resource>({
   form,
   enabled = true,
   debounceMs = 1000,
-  excludedFields = [],
+  excludedFields,
 }: FormPersistenceOptions<T>) {
   const fullStorageKey = `${STORAGE_PREFIX}${storageKey}`;
   const debounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);

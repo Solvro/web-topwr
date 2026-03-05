@@ -3,8 +3,10 @@ import type { ComponentProps } from "react";
 
 import { Button } from "@/components/ui/button";
 
-interface ResetButtonProps
-  extends Omit<ComponentProps<typeof Button>, "onClick"> {
+interface ResetButtonProps extends Omit<
+  ComponentProps<typeof Button>,
+  "onClick"
+> {
   onResetForm?: () => void;
 }
 
