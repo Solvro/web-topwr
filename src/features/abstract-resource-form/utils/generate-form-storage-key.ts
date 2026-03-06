@@ -18,9 +18,9 @@ export function generateFormStorageKey<T extends Resource>(
       : hasDate
         ? defaultValues.date
         : "";
-  const embeddedPart = isEmbedded ? `-embedded-${datePart}` : "";
+  const identifier = isEmbedded ? `embedded-${datePart}` : datePart;
   const storageKey = isEditing
     ? `${resource}-edit-${getResourcePkValue(resource, defaultValues)}`
-    : `${resource}-create${embeddedPart}`;
+    : `${resource}-create-${identifier}`;
   return storageKey;
 }
