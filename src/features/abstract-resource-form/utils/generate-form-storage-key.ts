@@ -3,7 +3,7 @@ import type { Resource } from "@/features/resources";
 import type { ResourceDataWithRelations } from "@/features/resources/types";
 
 export function generateFormStorageKey<T extends Resource>(
-  resource: Resource,
+  resource: T,
   defaultValues: ResourceDataWithRelations<T>,
   isEditing: boolean,
   isEmbedded: boolean,
