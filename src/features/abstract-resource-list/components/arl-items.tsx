@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 
+import { getResourcePkValue } from "@/features/resources";
 import type {
   EditableResource,
   ResourceDataType,
@@ -26,7 +27,7 @@ export function ArlItems<T extends EditableResource>({
     <ul className="flex flex-col gap-4">
       {items.map((item) => (
         <ItemComponent
-          key={String(item.id)}
+          key={getResourcePkValue(resource, item)}
           item={item}
           resource={resource}
           relatedResources={relatedResources}
