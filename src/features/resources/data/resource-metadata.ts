@@ -169,7 +169,7 @@ export const RESOURCE_METADATA = {
     apiPath: "about_us_links",
     itemMapper: (item) => ({
       name: item.linkType,
-      shortDescription: item.link,
+      description: item.link,
     }),
     icon: Link,
     form: {
@@ -242,7 +242,7 @@ export const RESOURCE_METADATA = {
     itemMapper: (item) => ({
       id: item.id,
       name: item.title,
-      shortDescription: item.description,
+      description: item.description,
     }),
     icon: Megaphone,
     form: {
@@ -281,7 +281,7 @@ export const RESOURCE_METADATA = {
     apiPath: "event_calendar",
     itemMapper: (item) => ({
       name: item.name,
-      shortDescription: item.location ?? "Brak lokalizacji",
+      description: item.location ?? "Brak lokalizacji",
     }),
     icon: Calendar,
     form: {
@@ -314,7 +314,7 @@ export const RESOURCE_METADATA = {
     apiPath: "changes",
     itemMapper: (item) => ({
       name: item.name,
-      shortDescription: item.description,
+      description: item.description,
     }),
     form: {
       inputs: {
@@ -398,7 +398,7 @@ export const RESOURCE_METADATA = {
     apiPath: "contributor_social_links",
     itemMapper: (item) => ({
       name: item.link,
-      shortDescription: item.linkType,
+      description: item.linkType,
     }),
     form: {
       inputs: {
@@ -454,7 +454,7 @@ export const RESOURCE_METADATA = {
     apiPath: "departments",
     itemMapper: (item) => ({
       name: item.name,
-      shortDescription: `${item.code} (${item.betterCode})`,
+      description: `${item.code} (${item.betterCode})`,
     }),
     icon: University,
     form: {
@@ -510,7 +510,7 @@ export const RESOURCE_METADATA = {
     apiPath: "department_links",
     itemMapper: (item) => ({
       name: item.name,
-      shortDescription: item.link,
+      description: item.link,
     }),
     form: {
       inputs: {
@@ -539,7 +539,7 @@ export const RESOURCE_METADATA = {
     orderable: true,
     itemMapper: (item) => ({
       name: item.title,
-      shortDescription: item.shortDesc,
+      description: item.shortDesc,
     }),
     icon: BookOpen,
     form: {
@@ -598,7 +598,7 @@ export const RESOURCE_METADATA = {
     orderable: true,
     itemMapper: (item) => ({
       name: item.title,
-      shortDescription: item.answer,
+      description: item.answer,
     }),
     form: {
       inputs: {
@@ -621,7 +621,7 @@ export const RESOURCE_METADATA = {
     apiPath: "holidays",
     itemMapper: (item) => ({
       name: item.description,
-      shortDescription: `${item.startDate} - ${item.lastDate}`,
+      description: `${item.startDate} - ${item.lastDate}`,
     }),
     form: {
       inputs: {
@@ -646,7 +646,7 @@ export const RESOURCE_METADATA = {
     queryName: "fieldsOfStudy",
     itemMapper: (item) => ({
       name: `${item.name} (${SELECT_OPTION_LABELS.MAJORS.STUDIES_TYPE[item.studiesType]})`,
-      shortDescription: item.url,
+      description: item.url,
     }),
     form: {
       inputs: {
@@ -734,7 +734,7 @@ export const RESOURCE_METADATA = {
     isSingleton: true,
     itemMapper: (item) => ({
       name: item.notification.title,
-      shortDescription: item.notification.body,
+      description: item.notification.body,
     }),
     icon: Bell,
     form: {
@@ -775,7 +775,7 @@ export const RESOURCE_METADATA = {
     deletable: false,
     itemMapper: (item) => ({
       name: item.topicName,
-      shortDescription: item.description,
+      description: item.description,
     }),
     icon: BellPlus,
     form: {
@@ -816,7 +816,7 @@ export const RESOURCE_METADATA = {
     pk: "language",
     itemMapper: (item) => ({
       name: SELECT_OPTION_LABELS.SKS_OPENING_HOURS.LANGUAGE[item.language],
-      shortDescription: `${item.canteen} | ${item.cafe}`,
+      description: `${item.canteen} | ${item.cafe}`,
     }),
     icon: Clock,
     form: {
@@ -844,7 +844,7 @@ export const RESOURCE_METADATA = {
     apiPath: "student_organizations",
     itemMapper: (item) => ({
       name: item.name,
-      shortDescription: item.shortDescription,
+      description: item.shortDescription,
     }),
     icon: Building,
     form: {
@@ -927,7 +927,7 @@ export const RESOURCE_METADATA = {
     apiPath: "student_organization_links",
     itemMapper: (item) => ({
       name: item.link,
-      shortDescription: item.linkType,
+      description: item.linkType,
     }),
     form: {
       inputs: {
@@ -973,7 +973,7 @@ export const RESOURCE_METADATA = {
     apiPath: "versions",
     itemMapper: (item) => ({
       name: item.name,
-      shortDescription: item.description,
+      description: item.description,
     }),
     icon: Notebook,
     form: {
@@ -1030,7 +1030,7 @@ export const RESOURCE_METADATA = {
     apiPath: "campuses",
     itemMapper: (item) => ({
       name: item.name,
-      shortDescription: SELECT_OPTION_LABELS.MAP.BRANCH[item.branch],
+      description: SELECT_OPTION_LABELS.MAP.BRANCH[item.branch],
     }),
     icon: Map,
     form: {
@@ -1059,8 +1059,9 @@ export const RESOURCE_METADATA = {
   [Resource.Buildings]: {
     apiPath: "buildings",
     itemMapper: (item) => ({
-      name: `${item.identifier}${item.specialName == null ? "" : ` - ${item.specialName}`}`,
-      shortDescription: item.addressLine1,
+      name: item.identifier,
+      descriptor: item.specialName,
+      description: item.addressLine1,
     }),
     icon: Building,
     form: {
@@ -1121,7 +1122,7 @@ export const RESOURCE_METADATA = {
     apiPath: "bicycle_showers",
     itemMapper: (item) => ({
       name: item.room ?? "Prysznic rowerowy",
-      shortDescription: item.addressLine1 ?? null,
+      description: item.addressLine1 ?? null,
     }),
     icon: Bath,
     form: {
@@ -1170,7 +1171,7 @@ export const RESOURCE_METADATA = {
     apiPath: "aeds",
     itemMapper: (item) => ({
       name: "Defibrylator AED",
-      shortDescription: item.addressLine1 ?? null,
+      description: item.addressLine1 ?? null,
     }),
     icon: SquareActivity,
     form: {
@@ -1217,7 +1218,7 @@ export const RESOURCE_METADATA = {
     apiPath: "food_spots",
     itemMapper: (item) => ({
       name: item.name,
-      shortDescription: item.addressLine1 ?? null,
+      description: item.addressLine1 ?? null,
     }),
     icon: UtensilsCrossed,
     form: {
@@ -1272,7 +1273,7 @@ export const RESOURCE_METADATA = {
     apiPath: "libraries",
     itemMapper: (item) => ({
       name: item.title,
-      shortDescription: item.addressLine1 ?? null,
+      description: item.addressLine1 ?? null,
     }),
     icon: Library,
     form: {
@@ -1331,7 +1332,7 @@ export const RESOURCE_METADATA = {
     apiPath: "library_regular_hours",
     itemMapper: (item) => ({
       name: POLISH_WEEKDAYS[item.weekDay],
-      shortDescription: `${item.openTime} - ${item.closeTime}`,
+      description: `${item.openTime} - ${item.closeTime}`,
     }),
     form: {
       inputs: {
@@ -1365,7 +1366,7 @@ export const RESOURCE_METADATA = {
     apiPath: "library_special_hours",
     itemMapper: (item) => ({
       name: item.specialDate,
-      shortDescription: `${item.openTime} - ${item.closeTime}`,
+      description: `${item.openTime} - ${item.closeTime}`,
     }),
     form: {
       inputs: {
@@ -1395,7 +1396,7 @@ export const RESOURCE_METADATA = {
     apiPath: "pink_boxes",
     itemMapper: (item) => ({
       name: item.roomOrNearby ?? "Różowa skrzynka",
-      shortDescription: item.floor ?? null,
+      description: item.floor ?? null,
     }),
     icon: Slice,
     form: {
@@ -1439,7 +1440,7 @@ export const RESOURCE_METADATA = {
     apiPath: "polinka_stations",
     itemMapper: (item) => ({
       name: item.name,
-      shortDescription: item.addressLine1,
+      description: item.addressLine1,
     }),
     icon: Train,
     form: {

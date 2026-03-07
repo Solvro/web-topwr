@@ -115,7 +115,7 @@ describe("OrderableItemWrapper for AbstractResourceList", () => {
     for (const item of MOCK_DATA) {
       const mappedData = RESOURCE_METADATA[resource].itemMapper(item);
       expect(screen.getByText(mappedData.name)).toBeInTheDocument();
-      expect(screen.getByText(mappedData.shortDescription)).toBeInTheDocument();
+      expect(screen.getByText(mappedData.description)).toBeInTheDocument();
     }
     expect(draggableItems).toHaveLength(MOCK_DATA.length);
   });

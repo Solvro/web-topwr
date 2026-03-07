@@ -48,9 +48,9 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
   };
   const badges = getItemBadges(item, resource, relatedResources);
   const shortDescription =
-    listItem.shortDescription == null
-      ? listItem.shortDescription
-      : listItem.shortDescription.trim();
+    listItem.description == null
+      ? listItem.description
+      : listItem.description.trim();
 
   return (
     <li
@@ -72,7 +72,14 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
               </div>
             )}
             <h2 className="text-lg font-semibold text-balance">
-              {listItem.name}
+              {isEmptyValue(listItem.descriptor) ? (
+                listItem.name
+              ) : (
+                <>
+                  {listItem.name}{" "}
+                  <i className="font-normal">– {listItem.descriptor}</i>
+                </>
+              )}
             </h2>
           </header>
 
