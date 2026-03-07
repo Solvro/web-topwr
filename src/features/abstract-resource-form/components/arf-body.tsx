@@ -363,15 +363,15 @@ export function ArfBody<T extends Resource>({
                     key={name}
                     control={control}
                     name={name}
-                    render={() => (
+                    render={({ field }) => (
                       <ArfInput
                         declensions={declensions}
                         isEditing={isEditing}
                         inputDefinition={{ label, ...options }}
                       >
                         <ArrayInput
-                          control={control}
-                          name={name}
+                          {...field}
+                          value={field.value as string[]}
                           label={label}
                           inputOptions={options}
                           relatedResources={relatedResources}

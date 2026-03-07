@@ -45,7 +45,10 @@ import {
   StudiesType,
   UniversityBranch,
 } from "../enums";
-import type { ResourceMetadata } from "../types/internal";
+import type {
+  ResourceMetadata,
+  UnorderableResourceDataType,
+} from "../types/internal";
 
 // lazy import needed due to circular dependency
 const NotificationConfirmationMessage = lazy(
@@ -748,6 +751,9 @@ export const RESOURCE_METADATA = {
           topics: {
             label: "Kategorie",
             itemsResource: Resource.NotificationTopics,
+            itemFilter: (
+              item: UnorderableResourceDataType<Resource.NotificationTopics>,
+            ) => item.isActive,
           },
         },
       },

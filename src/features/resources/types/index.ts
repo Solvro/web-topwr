@@ -6,6 +6,7 @@ export type {
   DisplayableResource,
   OrderableResource,
   ResourceDataType,
+  UnorderableResourceDataType,
   ResourceDefaultValues,
   ResourceFormValues,
   ResourceSchemaKey,

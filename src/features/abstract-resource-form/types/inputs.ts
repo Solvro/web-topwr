@@ -7,6 +7,7 @@ import type {
   RelationDefinitions,
   ResourceFormValues,
   ResourceSchemaKey,
+  UnorderableResourceDataType,
 } from "@/features/resources/types";
 
 export interface FormInputBase {
@@ -41,8 +42,9 @@ export type ArrayInputField<T extends Resource> = ArrayPath<
   ResourceSchemaKey<T, z.ZodArray<z.ZodString>>;
 
 // this can be extended to support other item types in the future
-export interface ArrayInputOptions {
-  itemsResource: Resource;
+export interface ArrayInputOptions<R extends Resource = Resource> {
+  itemsResource: R;
+  itemFilter?: (item: UnorderableResourceDataType<R>) => boolean;
 }
 
 type ArrayInputs<T extends Resource> = Partial<

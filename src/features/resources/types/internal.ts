@@ -44,7 +44,7 @@ export type ResourceFormValues<T extends Resource> = z.infer<ResourceSchema<T>>;
 type PossiblyOrderable<T extends Resource, U> = T extends OrderableResource
   ? U & { order: number }
   : U;
-type UnorderableResourceDataType<T extends Resource> = DatedResource &
+export type UnorderableResourceDataType<T extends Resource> = DatedResource &
   ResourceFormValues<T> & { id: ResourcePk };
 export type ResourceDataType<T extends Resource> = PossiblyOrderable<
   T,
