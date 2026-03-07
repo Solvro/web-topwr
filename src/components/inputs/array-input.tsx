@@ -5,7 +5,7 @@ import type { ComponentProps } from "react";
 import { MultiSelect } from "@/components/ui/multi-select";
 import type { ArrayInputOptions } from "@/features/abstract-resource-form/types";
 import type { Resource } from "@/features/resources";
-import { getResourceMetadata } from "@/features/resources";
+import { getResourceMetadata, getResourcePkValue } from "@/features/resources";
 import type { ArrayResources } from "@/features/resources/types";
 import type { ResourceRelations } from "@/types/components";
 
@@ -28,21 +28,21 @@ export function ArrayInput<T extends Resource>({
     // This cast is safe as ArrayResources<T> derives from ArrayInputOptions["itemsResource"]
     relatedResources[inputOptions.itemsResource as ArrayResources<T>];
 
-  const optionNames = items
-    .filter((item) => {
-      const name =
-        itemsResourceMetadata.itemMapper(item).name ?? String(item.id);
-      if (value.includes(name)) {
-        return true;
-      }
-      if (inputOptions.itemFilter == null) {
-        return true;
-      }
-      return inputOptions.itemFilter(item);
-    })
-    .map(
-      (item) => itemsResourceMetadata.itemMapper(item).name ?? String(item.id),
-    );
+  const optionNames = items.reduce((accumulator: string[], item) => {
+    const name =
+      itemsResourceMetadata.itemMapper(item).name ??
+      getResourcePkValue(inputOptions.itemsResource, item);
+
+    if (
+      value.includes(name) ||
+      inputOptions.itemFilter == null ||
+      inputOptions.itemFilter(item)
+    ) {
+      accumulator.push(name);
+    }
+
+    return accumulator;
+  }, []);
 
   const multiSelectOptions = optionNames.map((optionName) => ({
     value: optionName,
