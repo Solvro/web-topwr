@@ -48,6 +48,27 @@ export const REUSABLE_DECLENSIONS = {
       vocative: "linki",
     },
   },
+  notification: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "powiadomienie",
+      genitive: "powiadomienia",
+      dative: "powiadomieniu",
+      accusative: "powiadomienie",
+      instrumental: "powiadomieniem",
+      locative: "powiadomieniu",
+      vocative: "powiadomienie",
+    },
+    plural: {
+      nominative: "powiadomienia",
+      genitive: "powiadomień",
+      dative: "powiadomieniom",
+      accusative: "powiadomienia",
+      instrumental: "powiadomieniami",
+      locative: "powiadomieniach",
+      vocative: "powiadomienia",
+    },
+  },
   screenshot: {
     gender: GrammaticalGender.Masculine,
     singular: {

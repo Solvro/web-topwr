@@ -27,6 +27,7 @@ import { MajorSchema } from "../schemas/major-schema";
 import { MapSchema } from "../schemas/map-schema";
 import { MilestonesSchema } from "../schemas/milestones-schema";
 import { MobileConfigSchema } from "../schemas/mobile-config-schema";
+import { NotificationEntrySchema } from "../schemas/notification-entry-schema";
 import { NotificationSchema } from "../schemas/notification-schema";
 import { NotificationTopicSchema } from "../schemas/notification-topic-schema";
 import { PinkBoxSchema } from "../schemas/pink-box-schema";
@@ -69,6 +70,7 @@ export const RESOURCE_SCHEMAS = {
   [Resource.Milestones]: MilestonesSchema,
   [Resource.MobileConfig]: MobileConfigSchema,
   [Resource.Notifications]: NotificationSchema,
+  [Resource.NotificationEntries]: NotificationEntrySchema,
   [Resource.NotificationTopics]: NotificationTopicSchema,
   [Resource.PinkBoxes]: PinkBoxSchema,
   [Resource.PolinkaStations]: PolinkaStationSchema,

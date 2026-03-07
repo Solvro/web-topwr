@@ -89,10 +89,14 @@ export function InfiniteScroller<T extends EditableResource>({
           filterDefinitions,
         ),
       initialPageParam: 1,
-      getPreviousPageParam: ({ meta }) =>
-        meta.currentPage > meta.firstPage ? meta.currentPage - 1 : undefined,
-      getNextPageParam: ({ meta }) =>
-        meta.currentPage < meta.lastPage ? meta.currentPage + 1 : undefined,
+      getPreviousPageParam: (result) =>
+        "meta" in result && result.meta.currentPage > result.meta.firstPage
+          ? result.meta.currentPage - 1
+          : undefined,
+      getNextPageParam: (result) =>
+        "meta" in result && result.meta.currentPage < result.meta.lastPage
+          ? result.meta.currentPage + 1
+          : undefined,
       initialData: { pageParams: [1], pages: [initialData] },
     });
 
@@ -103,7 +107,7 @@ export function InfiniteScroller<T extends EditableResource>({
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const flatData = useMemo(
-    () => data.pages.flatMap((page) => page.data),
+    () => data.pages.flatMap((page) => ("data" in page ? page.data : page)),
     [data],
   );
 

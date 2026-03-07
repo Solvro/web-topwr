@@ -771,6 +771,18 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.NotificationEntries]: {
+    apiPath: "notification",
+    itemMapper: (item) => ({
+      name: item.title,
+      description: item.body,
+    }),
+    icon: Bell,
+    form: {
+      inputs: {},
+      defaultValues: { title: "", body: "", data: {} },
+    },
+  },
   [Resource.NotificationTopics]: {
     apiPath: "firebase/topics",
     pk: "topicName",

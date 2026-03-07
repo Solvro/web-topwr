@@ -31,6 +31,7 @@ export const ROUTE_PERMISSIONS = {
   [`/${Resource.Milestones}`]: ANY_AUTHENTICATED_ROLE,
   [`/${Resource.MobileConfig}`]: ANY_AUTHENTICATED_ROLE,
   [`/${Resource.Notifications}`]: ANY_AUTHENTICATED_ROLE,
+  [`/${Resource.NotificationEntries}`]: ANY_AUTHENTICATED_ROLE,
   [`/${Resource.NotificationTopics}`]: ANY_AUTHENTICATED_ROLE,
   [`/${Resource.PinkBoxes}`]: ANY_AUTHENTICATED_ROLE,
   [`/${Resource.PolinkaStations}`]: ANY_AUTHENTICATED_ROLE,

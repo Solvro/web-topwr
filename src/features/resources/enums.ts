@@ -26,6 +26,7 @@ export enum Resource {
   Milestones = "about-us/versions",
   MobileConfig = "misc",
   Notifications = "notifications",
+  NotificationEntries = "notifications/history", // for listing sent notifications
   NotificationTopics = "notifications/topics",
   PinkBoxes = "map/pink-boxes",
   PolinkaStations = "map/polinka-stations",

@@ -13,6 +13,11 @@ export default function NotificationsPage() {
         longLabel
       />
       <DashboardButton
+        resource={Resource.NotificationEntries}
+        variant="outline"
+        label="Historia wysłanych powiadomień"
+      />
+      <DashboardButton
         resource={Resource.Notifications}
         variant="outline"
         icon={BellRing}
