@@ -48,9 +48,9 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
   };
   const badges = getItemBadges(item, resource, relatedResources);
   const shortDescription =
-    listItem.shortDescription == null
-      ? listItem.shortDescription
-      : listItem.shortDescription.trim();
+    listItem.description == null
+      ? listItem.description
+      : listItem.description.trim();
 
   return (
     <li

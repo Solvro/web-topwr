@@ -7,5 +7,5 @@ export interface ListItem {
   /** The value shown in italics next to the name in the resource list */
   descriptor?: string | null;
   /** The optional value shown under the name in the resource list */
-  shortDescription?: string | null;
+  description?: string | null;
 }
