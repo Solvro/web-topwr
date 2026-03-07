@@ -1,12 +1,12 @@
 import { z } from "zod";
 
-import { NumericIdSchema, RequiredStringSchema } from "@/schemas";
+import { NumericIdSchema, RequiredUrlSchema } from "@/schemas";
 
 import { LinkType } from "../enums";
 
 export const StudentOrganizationLinkSchema = z.object({
   linkType: z.nativeEnum(LinkType),
-  link: RequiredStringSchema.url(),
-  name: z.string().trim(),
+  link: RequiredUrlSchema,
+  name: z.string().trim().nullish(),
   studentOrganizationId: NumericIdSchema,
 });
