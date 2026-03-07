@@ -742,6 +742,7 @@ export const RESOURCE_METADATA = {
         textInputs: {
           "notification.title": { label: "Tytuł powiadomienia" },
           "notification.body": { label: "Treść powiadomienia" },
+          "notification.data.route": { label: "URL do aplikacji (deeplink)" },
         },
         arrayInputs: {
           topics: {
@@ -754,6 +755,7 @@ export const RESOURCE_METADATA = {
         notification: {
           title: "",
           body: "",
+          data: {},
         },
         topics: [],
       },
