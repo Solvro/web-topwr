@@ -1059,7 +1059,8 @@ export const RESOURCE_METADATA = {
   [Resource.Buildings]: {
     apiPath: "buildings",
     itemMapper: (item) => ({
-      name: `${item.identifier}${item.specialName == null ? "" : ` - ${item.specialName}`}`,
+      name: item.identifier,
+      descriptor: item.specialName,
       shortDescription: item.addressLine1,
     }),
     icon: Building,
