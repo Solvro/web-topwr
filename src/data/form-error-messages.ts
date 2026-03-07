@@ -5,9 +5,9 @@ export const FORM_ERROR_MESSAGES = {
   INVALID_URL: "Niepoprawny adres URL",
   CONDITIONALLY_REQUIRED: "Należy wypełnić oba pola lub żadne z nich",
   INVALID_DEPARTMENT_CODE:
-    "Niepoprawny kod wydziału. Musi zaczynać się od litery 'W' i zawierać 1-2 cyfry.",
+    "Kod wydziału z numerem może zawierać co najwyżej 3 znaki",
   INVALID_DEPARTMENT_BETTER_CODE:
-    "Niepoprawny kod wydziału. Musi zawierać tylko duże litery i zaczynać się od 'W'.",
+    "Kod wydziału ze skrótem może zawierać co najwyżej 5 znaków",
   INVALID_TOPIC_NAME:
     "Niepoprawna nazwa. Dozwolone są tylko litery, cyfry oraz znaki - _ . ~ %",
   SELECTION_REQUIRED: "Należy wybrać przynajmniej jedną opcję",
