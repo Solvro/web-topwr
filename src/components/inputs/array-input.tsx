@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import type { ComponentProps } from "react";
 
 import { MultiSelect } from "@/components/ui/multi-select";
@@ -24,35 +23,31 @@ export function ArrayInput<T extends Resource>({
   inputOptions: ArrayInputOptions;
   relatedResources: ResourceRelations<T>;
 }) {
-  const optionNames = useMemo(() => {
-    const itemsResourceMetadata = getResourceMetadata(
-      inputOptions.itemsResource,
+  const itemsResourceMetadata = getResourceMetadata(inputOptions.itemsResource);
+  const items =
+    // This cast is safe as ArrayResources<T> derives from ArrayInputOptions["itemsResource"]
+    relatedResources[inputOptions.itemsResource as ArrayResources<T>];
+
+  const optionNames = items
+    .filter((item) => {
+      const name =
+        itemsResourceMetadata.itemMapper(item).name ?? String(item.id);
+      if (value.includes(name)) {
+        return true;
+      }
+      if (inputOptions.itemFilter == null) {
+        return true;
+      }
+      return inputOptions.itemFilter(item);
+    })
+    .map(
+      (item) => itemsResourceMetadata.itemMapper(item).name ?? String(item.id),
     );
-    const items =
-      // This cast is safe as ArrayResources<T> derives from ArrayInputOptions["itemsResource"]
-      relatedResources[inputOptions.itemsResource as ArrayResources<T>];
 
-    return items
-      .filter((item) => {
-        if (inputOptions.itemFilter == null) {
-          return true;
-        }
-        return inputOptions.itemFilter(item);
-      })
-      .map(
-        (item) =>
-          itemsResourceMetadata.itemMapper(item).name ?? String(item.id),
-      );
-  }, [relatedResources, inputOptions]);
-
-  const multiSelectOptions = useMemo(
-    () =>
-      optionNames.map((optionName) => ({
-        value: optionName,
-        label: optionName,
-      })),
-    [optionNames],
-  );
+  const multiSelectOptions = optionNames.map((optionName) => ({
+    value: optionName,
+    label: optionName,
+  }));
 
   return (
     <MultiSelect
@@ -61,17 +56,6 @@ export function ArrayInput<T extends Resource>({
       }}
       options={multiSelectOptions}
       defaultValue={value}
-      onOptionToggled={(optionValue) => {
-        const currentValues = [...(value as string[])];
-        const itemIndex = currentValues.indexOf(optionValue);
-
-        if (itemIndex === -1) {
-          onChange([...currentValues, optionValue]);
-        } else {
-          currentValues.splice(itemIndex, 1);
-          onChange(currentValues);
-        }
-      }}
       onValueChange={(values) => {
         onChange(values);
       }}

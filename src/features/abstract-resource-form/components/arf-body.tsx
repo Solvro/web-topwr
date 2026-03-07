@@ -370,8 +370,9 @@ export function ArfBody<T extends Resource>({
                         inputDefinition={{ label, ...options }}
                       >
                         <ArrayInput
-                          {...field}
+                          name={field.name}
                           value={field.value as string[]}
+                          onChange={field.onChange}
                           label={label}
                           inputOptions={options}
                           relatedResources={relatedResources}
