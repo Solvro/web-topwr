@@ -773,6 +773,7 @@ export const RESOURCE_METADATA = {
     apiPath: "firebase/topics",
     pk: "topicName",
     deletable: false,
+    showItemId: false,
     itemMapper: (item) => ({
       name: item.topicName,
       description: item.description,

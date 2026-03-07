@@ -58,10 +58,16 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
       className="bg-accent text-accent-foreground rounded-xl p-4 marker:content-none max-sm:text-xs"
     >
       <article className="flex flex-row gap-x-4">
-        <div className="flex items-center gap-1 sm:gap-2">
-          {dragHandleProps == null ? null : <DragHandle {...dragHandleProps} />}
-          <Badge className="w-11">{listItem.id}</Badge>
-        </div>
+        {metadata.showItemId === false && dragHandleProps == null ? null : (
+          <div className="flex items-center gap-1 sm:gap-2">
+            {dragHandleProps == null ? null : (
+              <DragHandle {...dragHandleProps} />
+            )}
+            {metadata.showItemId === false ? null : (
+              <Badge className="w-11">{listItem.id}</Badge>
+            )}
+          </div>
+        )}
         <div className="flex min-w-0 grow flex-col justify-center gap-0.5">
           <header className="flex flex-col gap-y-1">
             {badges.length > 0 && (
@@ -97,7 +103,7 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
           <EditButton resource={resource} id={listItem.id} />
           {isStudentOrganizationProps(props) ? (
             <ToggleOrganizationStatusButton
-              id={Number(listItem.id)}
+              id={listItem.id}
               resource={resource}
               organizationStatus={props.item.organizationStatus}
             />

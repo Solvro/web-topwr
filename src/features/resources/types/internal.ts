@@ -107,8 +107,10 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
   isSingleton?: boolean;
   /** Whether the resource is orderable within the Abstract Resource List. */
   orderable?: boolean;
-  /** Whether the resource can be deleted by the user. Defaults to true. */
+  /** Whether the resource can be deleted by the user. Defaults to `true`. */
   deletable?: boolean;
+  /** Whether or not each item's primary key value should be displayed in the resource list. Defaults to `true`. */
+  showItemId?: boolean;
   /** A function that maps the API response to the client-side component rendered as `AbstractResourceListItem`. */
   itemMapper: (item: UnorderableResourceDataType<R>) => Omit<ListItem, "id">; // use the UnorderableResourceDataType here to avoid circular type reference
   /** The icon to be used next to the resource name in dashboard buttons. */

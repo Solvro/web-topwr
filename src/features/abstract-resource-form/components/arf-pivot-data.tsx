@@ -15,6 +15,7 @@ import {
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import {
   getResourceMetadata,
+  getResourcePkValue,
   getResourceRelationDefinitions,
 } from "@/features/resources";
 import type { Resource } from "@/features/resources";
@@ -126,14 +127,18 @@ export function ArfPivotData<
         {isRelationPivotDefinition(pivotData) ? (
           pivotResources[
             pivotData.relatedResource as ResourcePivotRelation<T>
-          ].map((item) => (
-            <SelectItem key={item.id} value={String(item.id)}>
-              {
-                getResourceMetadata(pivotData.relatedResource).itemMapper(item)
-                  .name
-              }
-            </SelectItem>
-          ))
+          ].map((item) => {
+            const pkValue = getResourcePkValue(pivotData.relatedResource, item);
+            return (
+              <SelectItem key={pkValue} value={pkValue}>
+                {
+                  getResourceMetadata(pivotData.relatedResource).itemMapper(
+                    item,
+                  ).name
+                }
+              </SelectItem>
+            );
+          })
         ) : (
           <SelectOptions input={pivotData} />
         )}

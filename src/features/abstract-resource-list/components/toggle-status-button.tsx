@@ -8,6 +8,7 @@ import type { ModifyResourceResponse } from "@/features/backend/types";
 import { declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
 import { OrganizationStatus } from "@/features/resources";
+import type { ResourcePk } from "@/features/resources/types";
 import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import { sanitizeId } from "@/utils";
@@ -19,7 +20,7 @@ export function ToggleOrganizationStatusButton({
   organizationStatus,
   onStatusChange,
 }: {
-  id: number;
+  id: ResourcePk;
   resource: Resource;
   organizationStatus: OrganizationStatus;
   onStatusChange?: (newStatus: OrganizationStatus) => void;
