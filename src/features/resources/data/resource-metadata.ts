@@ -475,7 +475,7 @@ export const RESOURCE_METADATA = {
         },
         selectInputs: {
           branch: {
-            label: "Oddział",
+            label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
@@ -882,7 +882,7 @@ export const RESOURCE_METADATA = {
             optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
           },
           branch: {
-            label: "Oddział",
+            label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
@@ -1040,7 +1040,7 @@ export const RESOURCE_METADATA = {
         },
         selectInputs: {
           branch: {
-            label: "Oddział",
+            label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
@@ -1079,7 +1079,7 @@ export const RESOURCE_METADATA = {
         },
         selectInputs: {
           branch: {
-            label: "Oddział",
+            label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
@@ -1139,7 +1139,7 @@ export const RESOURCE_METADATA = {
         },
         selectInputs: {
           branch: {
-            label: "Oddział",
+            label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
@@ -1187,7 +1187,7 @@ export const RESOURCE_METADATA = {
         },
         selectInputs: {
           branch: {
-            label: "Oddział",
+            label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
@@ -1232,7 +1232,7 @@ export const RESOURCE_METADATA = {
         },
         selectInputs: {
           branch: {
-            label: "Oddział",
+            label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
@@ -1290,7 +1290,7 @@ export const RESOURCE_METADATA = {
         },
         selectInputs: {
           branch: {
-            label: "Oddział",
+            label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
@@ -1410,7 +1410,7 @@ export const RESOURCE_METADATA = {
         },
         selectInputs: {
           branch: {
-            label: "Oddział",
+            label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
@@ -1457,7 +1457,7 @@ export const RESOURCE_METADATA = {
         },
         selectInputs: {
           branch: {
-            label: "Oddział",
+            label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },

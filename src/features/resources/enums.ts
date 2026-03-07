@@ -66,7 +66,7 @@ export enum ChangeType {
   Fix = "FIX",
 }
 
-/** Filia/oddział Politechniki */
+/** Filia Politechniki */
 export enum UniversityBranch {
   Main = "main",
   JeleniaGora = "jelenia_gora",
