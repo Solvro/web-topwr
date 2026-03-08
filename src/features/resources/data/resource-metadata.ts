@@ -28,6 +28,7 @@ import { lazy } from "react";
 
 import { DEFAULT_INPUT_COLOR } from "@/config/constants";
 import { ImageType, Weekday } from "@/config/enums";
+import type { ArrayInputDefinition } from "@/features/abstract-resource-form/types";
 import { POLISH_WEEKDAYS } from "@/features/polish";
 import { getRoundedDate } from "@/utils";
 
@@ -141,6 +142,11 @@ const ADDRESS_LINE_INPUTS = {
   addressLine1: { label: "Adres — linia 1" },
   addressLine2: { label: "Adres — linia 2" },
 } as const;
+
+/** Helper identity function to define array inputs with correct types */
+const defineArrayInput = <R extends Resource>(
+  options: ArrayInputDefinition<R>,
+) => options;
 
 /** Required metadata for each resource. */
 export const RESOURCE_METADATA = {
@@ -745,10 +751,11 @@ export const RESOURCE_METADATA = {
           "notification.data.route": { label: "URL do aplikacji (deeplink)" },
         },
         arrayInputs: {
-          topics: {
+          topics: defineArrayInput({
             label: "Kategorie",
             itemsResource: Resource.NotificationTopics,
-          },
+            itemFilter: (item) => item.isActive,
+          }),
         },
       },
       defaultValues: {
