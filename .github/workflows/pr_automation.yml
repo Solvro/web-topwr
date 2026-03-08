@@ -10,7 +10,7 @@ permissions:
 jobs:
   assign_to_author:
     name: Assign author if no assignee set
-    if: ${{ github.event.pull_request.assignee == null }}
+    if: github.event.pull_request.assignee == null && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     env:
       PR_NUM: ${{ github.event.pull_request.number }}
@@ -26,6 +26,7 @@ jobs:
 
   link-reminder:
     name: Remind to link issues
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Check linking
