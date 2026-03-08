@@ -3,7 +3,7 @@
 import type { ComponentProps } from "react";
 
 import { MultiSelect } from "@/components/ui/multi-select";
-import type { AnyArrayInputOptions } from "@/features/abstract-resource-form/types";
+import type { ArrayInputOptions } from "@/features/abstract-resource-form/types";
 import type { Resource } from "@/features/resources";
 import { getResourceMetadata, getResourcePkValue } from "@/features/resources";
 import type {
@@ -23,7 +23,7 @@ export function ArrayInput<T extends Resource>({
   value: string[];
   onChange: (value: string[]) => void;
   label: string;
-  inputOptions: AnyArrayInputOptions;
+  inputOptions: ArrayInputOptions;
   relatedResources: ResourceRelations<T>;
 }) {
   const itemsResourceMetadata = getResourceMetadata(inputOptions.itemsResource);

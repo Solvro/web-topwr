@@ -50,13 +50,9 @@ export interface ArrayInputOptions<R extends Resource = Resource> {
 export type ArrayInputDefinition<R extends Resource = Resource> =
   FormInputBase & ArrayInputOptions<R>;
 
-export type AnyArrayInputOptions = {
-  [R in Resource]: ArrayInputDefinition<R>;
-}[Resource];
-
 type ArrayInputs<T extends Resource> = Record<
   ArrayInputField<T>,
-  AnyArrayInputOptions
+  ArrayInputDefinition
 >;
 
 export interface AbstractResourceFormInputs<T extends Resource> {
