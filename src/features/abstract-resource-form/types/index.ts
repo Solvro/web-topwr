@@ -1,5 +1,7 @@
 export type {
   AbstractResourceFormInputs,
+  AnyArrayInputOptions,
+  ArrayInputDefinition,
   ArrayInputField,
   ArrayInputOptions,
   FormInputBase,

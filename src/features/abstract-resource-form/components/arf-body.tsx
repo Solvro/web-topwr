@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 import type { ExistingImages, ResourceRelations } from "@/types/components";
 
 import { useArfRelation } from "../hooks/use-arf-relation";
+import type { AnyArrayInputOptions } from "../types";
 import { isExistingItem } from "../utils/is-existing-item";
 import { ArfInput } from "./arf-input";
 import { ArfInputSet } from "./arf-input-set";
@@ -374,7 +375,7 @@ export function ArfBody<T extends Resource>({
                           value={field.value as string[]}
                           onChange={field.onChange}
                           label={label}
-                          inputOptions={options}
+                          inputOptions={options as AnyArrayInputOptions}
                           relatedResources={relatedResources}
                         />
                       </ArfInput>

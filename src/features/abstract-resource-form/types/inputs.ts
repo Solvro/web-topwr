@@ -47,8 +47,16 @@ export interface ArrayInputOptions<R extends Resource = Resource> {
   itemFilter?: (item: UnorderableResourceDataType<R>) => boolean;
 }
 
-type ArrayInputs<T extends Resource> = Partial<
-  Record<ArrayInputField<T>, FormInputBase & ArrayInputOptions>
+export type ArrayInputDefinition<R extends Resource = Resource> =
+  FormInputBase & ArrayInputOptions<R>;
+
+export type AnyArrayInputOptions = {
+  [R in Resource]: ArrayInputDefinition<R>;
+}[Resource];
+
+type ArrayInputs<T extends Resource> = Record<
+  ArrayInputField<T>,
+  AnyArrayInputOptions
 >;
 
 export interface AbstractResourceFormInputs<T extends Resource> {

@@ -3,10 +3,13 @@
 import type { ComponentProps } from "react";
 
 import { MultiSelect } from "@/components/ui/multi-select";
-import type { ArrayInputOptions } from "@/features/abstract-resource-form/types";
+import type { AnyArrayInputOptions } from "@/features/abstract-resource-form/types";
 import type { Resource } from "@/features/resources";
 import { getResourceMetadata, getResourcePkValue } from "@/features/resources";
-import type { ArrayResources } from "@/features/resources/types";
+import type {
+  ArrayResources,
+  UnorderableResourceDataType,
+} from "@/features/resources/types";
 import type { ResourceRelations } from "@/types/components";
 
 export function ArrayInput<T extends Resource>({
@@ -20,7 +23,7 @@ export function ArrayInput<T extends Resource>({
   value: string[];
   onChange: (value: string[]) => void;
   label: string;
-  inputOptions: ArrayInputOptions;
+  inputOptions: AnyArrayInputOptions;
   relatedResources: ResourceRelations<T>;
 }) {
   const itemsResourceMetadata = getResourceMetadata(inputOptions.itemsResource);
@@ -36,7 +39,11 @@ export function ArrayInput<T extends Resource>({
     if (
       value.includes(name) ||
       inputOptions.itemFilter == null ||
-      inputOptions.itemFilter(item)
+      (
+        inputOptions.itemFilter as (
+          item: UnorderableResourceDataType<Resource>,
+        ) => boolean
+      )(item)
     ) {
       accumulator.push(name);
     }
