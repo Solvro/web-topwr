@@ -73,7 +73,6 @@ export interface FormPersistenceOptions<T extends Resource> {
   debounceMs?: number;
   excludedFields: string[];
   autoPromptRestore?: boolean;
-  onUnsavedChangesChange?: (hasChanges: boolean) => void;
   isEditing?: boolean;
 }
 

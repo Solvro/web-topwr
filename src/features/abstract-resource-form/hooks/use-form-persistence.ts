@@ -11,6 +11,7 @@ import { typedEntries } from "@/utils";
 import { LOCAL_STORAGE_ENTRY_PREFIX } from "../constants";
 import type { FormPersistenceOptions } from "../types/internal";
 import { debouncedSave } from "../utils/debounced-save";
+import { isFormStateDirty } from "../utils/is-form-state-dirty";
 import { loadFromStorage } from "../utils/load-from-storage";
 
 /**
@@ -42,7 +43,7 @@ export function useFormPersistence<T extends Resource>({
   };
 
   const hasStoredData = () => {
-    const stored = loadFromStorage(true, fullStorageKey);
+    const stored = loadFromStorage(isPersistenceActive, fullStorageKey);
     return stored !== null;
   };
 
@@ -70,7 +71,7 @@ export function useFormPersistence<T extends Resource>({
       return;
     }
     const subscription = form.watch((values) => {
-      if (form.formState.isDirty) {
+      if (isFormStateDirty(form.formState)) {
         debouncedSave(
           values,
           debounceTimerRef,
