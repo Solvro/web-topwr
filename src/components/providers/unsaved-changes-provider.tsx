@@ -3,7 +3,7 @@
 import { Link } from "@solvro/next-view-transitions";
 import { CircleX } from "lucide-react";
 import type { Route } from "next";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   AlertDialog,
@@ -27,8 +27,10 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
   const [confirmNavigationTo, setConfirmNavigationTo] = useState<Route | null>(
     null,
   );
+  const hasUnsavedChangesRef = useRef(hasUnsavedChanges);
 
   useEffect(() => {
+    hasUnsavedChangesRef.current = hasUnsavedChanges;
     const handleBeforeUnload = (event_: BeforeUnloadEvent) => {
       if (
         hasUnsavedChanges &&
@@ -45,6 +47,32 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [hasUnsavedChanges]);
+
+  useEffect(() => {
+    const handlePopState = (_event: PopStateEvent) => {
+      if (
+        hasUnsavedChangesRef.current &&
+        !env.NEXT_PUBLIC_DISABLE_NAVIGATION_CONFIRMATION
+      ) {
+        window.history.pushState(null, "", window.location.href);
+        // eslint-disable-next-line no-alert
+        const shouldNavigate = window.confirm(
+          "Masz niezapisane zmiany. Czy na pewno chcesz opuścić tę stronę? Wszelkie niezapisane zmiany będą utracone.",
+        );
+
+        if (shouldNavigate) {
+          setHasUnsavedChanges(false);
+          window.history.back();
+        }
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   return (
     <UnsavedChangesContext.Provider

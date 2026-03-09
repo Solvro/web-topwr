@@ -50,7 +50,7 @@ export function useFormWithPersistence<T extends Resource>({
     const subscription = form.watch(() => {
       const hasChanges = form.formState.isDirty;
 
-      setHasUnsavedChanges(hasChanges);
+      setHasUnsavedChanges(isEditing && hasChanges);
       onUnsavedChangesChange?.(hasChanges);
     });
 

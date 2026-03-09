@@ -55,7 +55,7 @@ export function useFormPersistence<T extends Resource>({
     if (stored != null) {
       for (const [key, value] of typedEntries(stored.values)) {
         form.setValue(key as unknown as Path<ResourceFormValues<T>>, value, {
-          shouldDirty: false,
+          shouldDirty: true,
           shouldValidate: false,
         });
       }
