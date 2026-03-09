@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 
 import type { Resource } from "@/features/resources";
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
@@ -12,7 +12,7 @@ import { useFormPersistence } from "./use-form-persistence";
  * Hook that combines unsaved changes detection with automatic form persistence.
  * Handles:
  * - Detecting unsaved changes for navigation prevention
- * - Automatically saving form data to localStorage (only for creation)
+ * - Automatically saving form data to localStorage when not editing
  * - Prompting user to restore data when revisiting the form
  * - Clearing saved data on successful submission
  */
@@ -28,33 +28,29 @@ export function useFormWithPersistence<T extends Resource>({
 }: FormPersistenceOptions<T>) {
   const { setHasUnsavedChanges } = useUnsavedChanges();
 
-  const { clearStoredData, restoreFormData, hasStoredData } =
+  const { clearLocalStorageData, restoreFormData, hasStoredData } =
     useFormPersistence({
       storageKey,
       form,
       enabled: enabled && !isEditing,
       debounceMs,
       excludedFields,
-      isEditing,
     });
 
   useEffect(() => {
-    if (!isEditing) {
-      return;
+    if (isEditing) {
+      if (hasStoredData()) {
+        clearLocalStorageData();
+      }
+      form.reset();
+    } else if (enabled && autoPromptRestore && hasStoredData()) {
+      restoreFormData();
     }
-
     const subscription = form.watch(() => {
-      const currentValues = form.getValues();
-      const defaultValues = form.formState.defaultValues;
+      const hasChanges = form.formState.isDirty;
 
-      let hasRealChanges = false;
-      defaultValues == null
-        ? (hasRealChanges = form.formState.isDirty)
-        : (hasRealChanges =
-            JSON.stringify(currentValues) !== JSON.stringify(defaultValues));
-
-      setHasUnsavedChanges(hasRealChanges);
-      onUnsavedChangesChange?.(hasRealChanges);
+      setHasUnsavedChanges(hasChanges);
+      onUnsavedChangesChange?.(hasChanges);
     });
 
     return () => {
@@ -62,41 +58,25 @@ export function useFormWithPersistence<T extends Resource>({
       setHasUnsavedChanges(false);
       onUnsavedChangesChange?.(false);
     };
-  }, [form, isEditing, setHasUnsavedChanges, onUnsavedChangesChange]);
+  }, [form, isEditing, enabled]);
 
-  useEffect(() => {
-    if (!enabled || !autoPromptRestore || isEditing) {
-      return;
-    }
-    const timeoutId = setTimeout(() => {
-      if (hasStoredData()) {
-        restoreFormData();
-      }
-    }, 100);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [enabled, autoPromptRestore, isEditing, hasStoredData, restoreFormData]);
-
-  const clearPersistedData = useCallback(() => {
-    clearStoredData();
+  const clearPersistedData = () => {
+    clearLocalStorageData();
     setHasUnsavedChanges(false);
     onUnsavedChangesChange?.(false);
-  }, [clearStoredData, setHasUnsavedChanges, onUnsavedChangesChange]);
+  };
 
-  const resetForm = useCallback(() => {
+  const resetForm = () => {
     if (isEditing) {
       form.reset();
       setHasUnsavedChanges(false);
       onUnsavedChangesChange?.(false);
     }
-  }, [form, isEditing, setHasUnsavedChanges, onUnsavedChangesChange]);
+  };
 
   return {
     clearPersistedData,
     hasStoredData,
-    clearStoredData,
     resetForm,
   };
 }

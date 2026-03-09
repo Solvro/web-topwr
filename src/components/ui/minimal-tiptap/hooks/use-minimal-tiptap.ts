@@ -246,7 +246,7 @@ export const useMinimalTiptapEditor = ({
     ...props,
   });
 
-  // needed to update the editor content when the form is reset, reverting its value
+  // Needed to update the editor content when the form is reset, reverting its value
   React.useEffect(() => {
     if (editor && value !== undefined) {
       const currentContent = getOutput(editor, output);
