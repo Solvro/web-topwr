@@ -22,7 +22,9 @@ export function useFormPersistence<T extends Resource>({
   enabled = true,
   debounceMs = 1000,
   excludedFields,
+  isEditing = false,
 }: FormPersistenceOptions<T>) {
+  const isPersistenceActive = enabled && !isEditing;
   const fullStorageKey = `${LOCAL_STORAGE_ENTRY_PREFIX}${storageKey}`;
   const debounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const hasRestoredRef = useRef(false);
@@ -40,7 +42,7 @@ export function useFormPersistence<T extends Resource>({
   };
 
   const hasStoredData = () => {
-    const stored = loadFromStorage(enabled, fullStorageKey);
+    const stored = loadFromStorage(true, fullStorageKey);
     return stored !== null;
   };
 
@@ -49,7 +51,7 @@ export function useFormPersistence<T extends Resource>({
       return false;
     }
 
-    const stored = loadFromStorage(enabled, fullStorageKey);
+    const stored = loadFromStorage(isPersistenceActive, fullStorageKey);
     if (stored != null) {
       for (const [key, value] of typedEntries(stored.values)) {
         form.setValue(key as unknown as Path<ResourceFormValues<T>>, value, {
@@ -64,7 +66,7 @@ export function useFormPersistence<T extends Resource>({
   };
 
   useEffect(() => {
-    if (!enabled) {
+    if (!isPersistenceActive) {
       return;
     }
     const subscription = form.watch((values) => {
@@ -87,7 +89,14 @@ export function useFormPersistence<T extends Resource>({
         clearTimeout(timerId);
       }
     };
-  }, [form, enabled, debounceMs, fullStorageKey, excludedFields]);
+  }, [
+    form,
+    isPersistenceActive,
+    debounceMs,
+    fullStorageKey,
+    excludedFields,
+    enabled,
+  ]);
 
   return {
     clearLocalStorageData,
