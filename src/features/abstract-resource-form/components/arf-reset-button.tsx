@@ -10,7 +10,7 @@ interface ResetButtonProps extends Omit<
   onResetForm?: () => void;
 }
 
-export function ResetButton({ onResetForm, ...props }: ResetButtonProps) {
+export function ArfResetButton({ onResetForm, ...props }: ResetButtonProps) {
   return (
     <Button type="button" variant="outline" onClick={onResetForm} {...props}>
       Resetuj formularz <RotateCcw />

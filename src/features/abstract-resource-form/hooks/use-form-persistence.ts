@@ -8,11 +8,10 @@ import type { Resource } from "@/features/resources";
 import type { ResourceFormValues } from "@/features/resources/types";
 import { typedEntries } from "@/utils";
 
+import { LOCAL_STORAGE_ENTRY_PREFIX } from "../constants";
 import type { FormPersistenceOptions } from "../types/internal";
 import { debouncedSave } from "../utils/debounced-save";
-import { loadFromStorage } from "../utils/load-from-starage";
-
-const STORAGE_PREFIX = "topwr_form_";
+import { loadFromStorage } from "../utils/load-from-storage";
 
 /**
  * Hook that automatically persists form data to localStorage and restores it on component mount.
@@ -24,13 +23,14 @@ export function useFormPersistence<T extends Resource>({
   debounceMs = 1000,
   excludedFields,
 }: FormPersistenceOptions<T>) {
-  const fullStorageKey = `${STORAGE_PREFIX}${storageKey}`;
+  const fullStorageKey = `${LOCAL_STORAGE_ENTRY_PREFIX}${storageKey}`;
   const debounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const hasRestoredRef = useRef(false);
 
-  const clearStoredData = () => {
+  const clearLocalStorageData = () => {
     try {
       localStorage.removeItem(fullStorageKey);
+      hasRestoredRef.current = false;
     } catch (error) {
       logger.error(
         parseError(error),
@@ -53,7 +53,7 @@ export function useFormPersistence<T extends Resource>({
     if (stored != null) {
       for (const [key, value] of typedEntries(stored.values)) {
         form.setValue(key as unknown as Path<ResourceFormValues<T>>, value, {
-          shouldDirty: true,
+          shouldDirty: false,
           shouldValidate: false,
         });
       }
@@ -90,7 +90,7 @@ export function useFormPersistence<T extends Resource>({
   }, [form, enabled, debounceMs, fullStorageKey, excludedFields]);
 
   return {
-    clearStoredData,
+    clearLocalStorageData,
     restoreFormData,
     hasStoredData,
   };

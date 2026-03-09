@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { declineNoun } from "@/features/polish";
 import type { RoutableResource } from "@/features/resources/types";
 
-export function CancelButton({
+export function ArfCancelButton({
   resource,
   onClearData,
   disabled = false,

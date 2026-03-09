@@ -1,6 +1,7 @@
 import { logger, parseError } from "@/features/logging";
 import type { Resource } from "@/features/resources";
 
+import { MAX_PERSISTED_DATA_AGE_MS } from "../constants";
 import type { PersistedFormData } from "../types/internal";
 
 export function loadFromStorage<T extends Resource>(
@@ -19,8 +20,7 @@ export function loadFromStorage<T extends Resource>(
 
     const parsed = JSON.parse(stored) as PersistedFormData<T>;
 
-    const maxAge = 24 * 60 * 60 * 1000;
-    if (Date.now() - parsed.timestamp > maxAge) {
+    if (Date.now() - parsed.timestamp > MAX_PERSISTED_DATA_AGE_MS) {
       localStorage.removeItem(fullStorageKey);
       return null;
     }
@@ -31,6 +31,7 @@ export function loadFromStorage<T extends Resource>(
       parseError(error),
       "Failed to load form data from localStorage",
     );
+    localStorage.removeItem(fullStorageKey);
     return null;
   }
 }
