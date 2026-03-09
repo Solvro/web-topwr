@@ -3,14 +3,14 @@ import type { ComponentProps } from "react";
 
 import { Button } from "@/components/ui/button";
 
-interface ResetButtonProps extends Omit<
+interface ArfResetButtonProps extends Omit<
   ComponentProps<typeof Button>,
   "onClick"
 > {
   onResetForm?: () => void;
 }
 
-export function ArfResetButton({ onResetForm, ...props }: ResetButtonProps) {
+export function ArfResetButton({ onResetForm, ...props }: ArfResetButtonProps) {
   return (
     <Button type="button" variant="outline" onClick={onResetForm} {...props}>
       Resetuj formularz <RotateCcw />

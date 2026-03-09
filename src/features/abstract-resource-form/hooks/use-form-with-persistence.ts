@@ -32,9 +32,10 @@ export function useFormWithPersistence<T extends Resource>({
     useFormPersistence({
       storageKey,
       form,
-      enabled: enabled && !isEditing,
+      enabled,
       debounceMs,
       excludedFields,
+      isEditing,
     });
 
   useEffect(() => {
