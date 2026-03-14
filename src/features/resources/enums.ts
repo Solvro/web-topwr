@@ -75,8 +75,9 @@ export enum UniversityBranch {
 }
 
 export enum ExternalDigitalGuideMode {
-  AppId = "APP_ID",
-  Url = "URL",
+  WebUrl = "web_url",
+  DigitalGuideBuilding = "digital_guide_building",
+  OtherDigitalGuidePlace = "other_digital_guide_place",
 }
 
 // from https://github.com/Solvro/backend-topwr/blob/main/app/enums/link_type.ts
