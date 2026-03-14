@@ -125,8 +125,11 @@ const SELECT_OPTION_LABELS = {
       [UniversityBranch.Legnica]: "Legnica",
     } satisfies Record<UniversityBranch, string>,
     EXTERNAL_GUIDE_MODE: {
-      [ExternalDigitalGuideMode.AppId]: "ID aplikacji",
-      [ExternalDigitalGuideMode.Url]: "URL",
+      [ExternalDigitalGuideMode.DigitalGuideBuilding]:
+        "Budynek w Cyfrowym Przewodniku",
+      [ExternalDigitalGuideMode.WebUrl]: "Web URL lub ToPWR deeplink",
+      [ExternalDigitalGuideMode.OtherDigitalGuidePlace]:
+        '"Obiekt" w Cyfrowym Przewodniku',
     } satisfies Record<ExternalDigitalGuideMode, string>,
   },
 };
