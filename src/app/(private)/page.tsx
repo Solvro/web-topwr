@@ -1,4 +1,4 @@
-import { RefreshCcw } from "lucide-react";
+import { Map, RefreshCcw } from "lucide-react";
 
 import { DashboardButton } from "@/components/presentation/dashboard-button";
 import { getUserDisplayName } from "@/features/authentication";
@@ -39,6 +39,11 @@ export default async function Home() {
           <DashboardButton resource={Resource.Notifications} />
           <DashboardButton resource={Resource.AcademicSemesters} />
           <DashboardButton resource={Resource.MobileConfig} />
+          <DashboardButton
+            href="/interactive-map"
+            icon={Map}
+            label="Mapa obiektów"
+          />
         </div>
       </div>
     </div>
