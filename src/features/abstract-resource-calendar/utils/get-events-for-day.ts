@@ -1,16 +1,11 @@
-import type {
-  DateObject,
-  EventCardType,
-  MappedCalendarData,
-} from "../types/internal";
-import { formatDateObject } from "./format-date-object";
+import type { EventCardType, MappedCalendarData } from "../types/internal";
+import { formatDateKey } from "./format-date-key";
 
 export function getEventsForDay(
-  dateObject: DateObject,
+  date: Date,
   events: MappedCalendarData,
 ): EventCardType[] {
-  const formattedDateObject = formatDateObject(dateObject);
-  const dayEvents = events.dayEvents[formattedDateObject] ?? [];
+  const dayEvents = events.dayEvents[formatDateKey(date)] ?? [];
 
   return dayEvents;
 }

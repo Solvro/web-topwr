@@ -1,13 +1,14 @@
 "use client";
 
+import { formatDate } from "date-fns";
+import { pl } from "date-fns/locale";
+
 import type { Resource } from "@/features/resources";
 import { DeleteButtonWithDialog, EditButton } from "@/features/resources";
 import type {
   EditableResource,
   ResourceDataType,
 } from "@/features/resources/types";
-
-import { formatTime } from "../utils/format-time";
 
 export function EventCard({
   event,
@@ -27,11 +28,14 @@ export function EventCard({
       <header>
         <p className="font-medium">{event.name}</p>
         <p className="mt-1 text-xs">
-          {formatTime(event, "startTime")}
           {event.startTime === event.endTime ? (
-            ""
+            formatDate(event.startTime, "HH:mm", { locale: pl })
           ) : (
-            <>—{formatTime(event, "endTime")}</>
+            <>
+              {formatDate(event.endTime, "EEEE HH:mm", { locale: pl })}
+              {" — "}
+              {formatDate(event.endTime, "EEEE HH:mm", { locale: pl })}
+            </>
           )}
         </p>
       </header>
