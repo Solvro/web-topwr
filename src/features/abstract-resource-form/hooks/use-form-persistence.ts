@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import type { Path } from "react-hook-form";
 
 import { logger, parseError } from "@/features/logging";
@@ -30,7 +30,7 @@ export function useFormPersistence<T extends Resource>({
   const debounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const hasRestoredRef = useRef(false);
 
-  const clearLocalStorageData = () => {
+  const clearLocalStorageData = useCallback(() => {
     try {
       localStorage.removeItem(fullStorageKey);
       hasRestoredRef.current = false;
@@ -40,14 +40,14 @@ export function useFormPersistence<T extends Resource>({
         "Failed to clear form data from localStorage",
       );
     }
-  };
-
-  const hasStoredData = () => {
+  }, [fullStorageKey]);
+  // Callbacks needed for tests to pass
+  const hasStoredData = useCallback(() => {
     const stored = loadFromStorage(isPersistenceActive, fullStorageKey);
     return stored !== null;
-  };
+  }, [isPersistenceActive, fullStorageKey]);
 
-  const restoreFormData = () => {
+  const restoreFormData = useCallback(() => {
     if (hasRestoredRef.current) {
       return false;
     }
@@ -64,7 +64,7 @@ export function useFormPersistence<T extends Resource>({
       return true;
     }
     return false;
-  };
+  }, [isPersistenceActive, fullStorageKey, form]);
 
   useEffect(() => {
     if (!isPersistenceActive) {
