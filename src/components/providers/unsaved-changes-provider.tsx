@@ -62,6 +62,7 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
 
         if (shouldNavigate) {
           setHasUnsavedChanges(false);
+          hasUnsavedChangesRef.current = false;
           window.history.back();
         }
       }
