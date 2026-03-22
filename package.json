@@ -100,7 +100,7 @@
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
     "@faker-js/faker": "^10.1.0",
-    "@next/env": "^16.0.0",
+    "@next/env": "^16.2.1",
     "@next/eslint-plugin-next": "^15.5.6",
     "@playwright/test": "^1.56.1",
     "@solvro/config": "^2.2.0",
