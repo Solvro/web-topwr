@@ -126,7 +126,7 @@
     "jsdom": "^28.1.0",
     "knip": "^5.78.0",
     "lint-staged": "^16.4.0",
-    "msw": "^2.11.6",
+    "msw": "^2.12.14",
     "pino-pretty": "^13.1.2",
     "prettier": "^3.6.2",
     "resize-observer-polyfill": "^1.5.1",
