@@ -365,7 +365,6 @@ function PercentageInput({ className, ...props }: PercentageInputProps) {
   return (
     <div className="relative">
       <Input
-        readOnly
         type="text"
         {...props}
         className={cn(
@@ -380,119 +379,397 @@ function PercentageInput({ className, ...props }: PercentageInputProps) {
   );
 }
 
+function HexFormatInput({ className }: { className?: string }) {
+  const {
+    hue,
+    saturation,
+    lightness,
+    alpha,
+    setHue,
+    setSaturation,
+    setLightness,
+    setAlpha,
+  } = useColorPicker();
+
+  const currentHex = Color.hsl(hue, saturation, lightness).hex();
+
+  const [hexInput, setHexInput] = useState(currentHex);
+  const [alphaInput, setAlphaInput] = useState(String(Math.round(alpha)));
+  const [isHexFocused, setIsHexFocused] = useState(false);
+  const [isAlphaFocused, setIsAlphaFocused] = useState(false);
+
+  useEffect(() => {
+    if (!isHexFocused) setHexInput(currentHex);
+  }, [hue, saturation, lightness, isHexFocused]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!isAlphaFocused) setAlphaInput(String(Math.round(alpha)));
+  }, [alpha, isAlphaFocused]);
+
+  const commitHex = useCallback(() => {
+    try {
+      const parsed = Color(
+        hexInput.startsWith("#") ? hexInput : `#${hexInput}`,
+      );
+      const [h, s, l] = parsed.hsl().array();
+      setHue(h);
+      setSaturation(s);
+      setLightness(l);
+    } catch {
+      setHexInput(currentHex);
+    }
+  }, [hexInput, currentHex, setHue, setSaturation, setLightness]);
+
+  const commitAlpha = useCallback(() => {
+    const val = parseInt(alphaInput, 10);
+    if (!isNaN(val) && val >= 0 && val <= 100) {
+      setAlpha(val);
+    } else {
+      setAlphaInput(String(Math.round(alpha)));
+    }
+  }, [alphaInput, alpha, setAlpha]);
+
+  return (
+    <div
+      className={cn(
+        "relative flex w-full items-center -space-x-px rounded-md shadow-sm",
+        className,
+      )}
+    >
+      <Input
+        className="bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none"
+        type="text"
+        value={hexInput}
+        onChange={(event) => setHexInput(event.target.value)}
+        onFocus={() => setIsHexFocused(true)}
+        onBlur={() => {
+          setIsHexFocused(false);
+          commitHex();
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") commitHex();
+        }}
+      />
+      <PercentageInput
+        value={alphaInput}
+        onChange={(event) => setAlphaInput(event.target.value)}
+        onFocus={() => setIsAlphaFocused(true)}
+        onBlur={() => {
+          setIsAlphaFocused(false);
+          commitAlpha();
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") commitAlpha();
+        }}
+      />
+    </div>
+  );
+}
+
+function RgbFormatInput({ className }: { className?: string }) {
+  const {
+    hue,
+    saturation,
+    lightness,
+    alpha,
+    setHue,
+    setSaturation,
+    setLightness,
+    setAlpha,
+  } = useColorPicker();
+
+  const currentRgb = Color.hsl(hue, saturation, lightness)
+    .rgb()
+    .array()
+    .map((value) => Math.round(value));
+
+  const [rgbInputs, setRgbInputs] = useState(currentRgb.map(String));
+  const [alphaInput, setAlphaInput] = useState(String(Math.round(alpha)));
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const [isAlphaFocused, setIsAlphaFocused] = useState(false);
+
+  useEffect(() => {
+    if (focusedIndex === null) {
+      setRgbInputs(
+        Color.hsl(hue, saturation, lightness)
+          .rgb()
+          .array()
+          .map((value) => String(Math.round(value))),
+      );
+    }
+  }, [hue, saturation, lightness, focusedIndex]);
+
+  useEffect(() => {
+    if (!isAlphaFocused) setAlphaInput(String(Math.round(alpha)));
+  }, [alpha, isAlphaFocused]);
+
+  const commitRgb = useCallback(() => {
+    const values = rgbInputs.map((value) => parseInt(value, 10));
+    if (values.every((value) => !isNaN(value) && value >= 0 && value <= 255)) {
+      const parsed = Color.rgb(values[0], values[1], values[2]);
+      const [h, s, l] = parsed.hsl().array();
+      setHue(h);
+      setSaturation(s);
+      setLightness(l);
+    } else {
+      setRgbInputs(currentRgb.map(String));
+    }
+  }, [rgbInputs, currentRgb, setHue, setSaturation, setLightness]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const commitAlpha = useCallback(() => {
+    const value = parseInt(alphaInput, 10);
+    if (!isNaN(value) && value >= 0 && value <= 100) {
+      setAlpha(value);
+    } else {
+      setAlphaInput(String(Math.round(alpha)));
+    }
+  }, [alphaInput, alpha, setAlpha]);
+
+  return (
+    <div
+      className={cn(
+        "flex items-center -space-x-px rounded-md shadow-sm",
+        className,
+      )}
+    >
+      {rgbInputs.map((value, index) => (
+        <Input
+          className={cn(
+            "bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none",
+            index && "rounded-l-none",
+          )}
+          key={index}
+          type="text"
+          value={value}
+          onChange={(event) => {
+            const next = [...rgbInputs];
+            next[index] = event.target.value;
+            setRgbInputs(next);
+          }}
+          onFocus={() => setFocusedIndex(index)}
+          onBlur={() => {
+            setFocusedIndex(null);
+            commitRgb();
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") commitRgb();
+          }}
+        />
+      ))}
+      <PercentageInput
+        value={alphaInput}
+        onChange={(event) => setAlphaInput(event.target.value)}
+        onFocus={() => setIsAlphaFocused(true)}
+        onBlur={() => {
+          setIsAlphaFocused(false);
+          commitAlpha();
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") commitAlpha();
+        }}
+      />
+    </div>
+  );
+}
+
+function CssFormatInput({ className }: { className?: string }) {
+  const {
+    hue,
+    saturation,
+    lightness,
+    alpha,
+    setHue,
+    setSaturation,
+    setLightness,
+    setAlpha,
+  } = useColorPicker();
+
+  const currentRgb = Color.hsl(hue, saturation, lightness)
+    .rgb()
+    .array()
+    .map((value) => Math.round(value));
+  const currentCss = `rgba(${currentRgb.join(", ")}, ${String(Math.round(alpha))}%)`;
+
+  const [cssInput, setCssInput] = useState(currentCss);
+  const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    if (!isFocused) setCssInput(currentCss);
+  }, [hue, saturation, lightness, alpha, isFocused]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const commitCss = useCallback(() => {
+    const match = cssInput.match(
+      /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d.]+)(%?))?\s*\)/,
+    );
+    if (match) {
+      const [, r, g, b, a, pct] = match;
+      const parsed = Color.rgb(Number(r), Number(g), Number(b));
+      const [h, s, l] = parsed.hsl().array();
+      setHue(h);
+      setSaturation(s);
+      setLightness(l);
+      if (a !== undefined) {
+        const alphaValue = pct === "%" ? parseFloat(a) : parseFloat(a) * 100;
+        setAlpha(Math.min(100, Math.max(0, alphaValue)));
+      }
+    } else {
+      setCssInput(currentCss);
+    }
+  }, [cssInput, currentCss, setHue, setSaturation, setLightness, setAlpha]);
+
+  return (
+    <div className={cn("w-full rounded-md shadow-sm", className)}>
+      <Input
+        className="bg-secondary h-8 w-full px-2 text-xs shadow-none"
+        type="text"
+        value={cssInput}
+        onChange={(event) => setCssInput(event.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => {
+          setIsFocused(false);
+          commitCss();
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") commitCss();
+        }}
+      />
+    </div>
+  );
+}
+
+function HslFormatInput({ className }: { className?: string }) {
+  const {
+    hue,
+    saturation,
+    lightness,
+    alpha,
+    setHue,
+    setSaturation,
+    setLightness,
+    setAlpha,
+  } = useColorPicker();
+
+  const [hslInputs, setHslInputs] = useState([
+    String(Math.round(hue)),
+    String(Math.round(saturation)),
+    String(Math.round(lightness)),
+  ]);
+  const [alphaInput, setAlphaInput] = useState(String(Math.round(alpha)));
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const [isAlphaFocused, setIsAlphaFocused] = useState(false);
+
+  useEffect(() => {
+    if (focusedIndex === null) {
+      setHslInputs([
+        String(Math.round(hue)),
+        String(Math.round(saturation)),
+        String(Math.round(lightness)),
+      ]);
+    }
+  }, [hue, saturation, lightness, focusedIndex]);
+
+  useEffect(() => {
+    if (!isAlphaFocused) setAlphaInput(String(Math.round(alpha)));
+  }, [alpha, isAlphaFocused]);
+
+  const commitHsl = useCallback(() => {
+    const values = hslInputs.map((value) => parseInt(value, 10));
+    if (
+      !isNaN(values[0]) &&
+      values[0] >= 0 &&
+      values[0] <= 360 &&
+      !isNaN(values[1]) &&
+      values[1] >= 0 &&
+      values[1] <= 100 &&
+      !isNaN(values[2]) &&
+      values[2] >= 0 &&
+      values[2] <= 100
+    ) {
+      setHue(values[0]);
+      setSaturation(values[1]);
+      setLightness(values[2]);
+    } else {
+      setHslInputs([
+        String(Math.round(hue)),
+        String(Math.round(saturation)),
+        String(Math.round(lightness)),
+      ]);
+    }
+  }, [
+    hslInputs,
+    hue,
+    saturation,
+    lightness,
+    setHue,
+    setSaturation,
+    setLightness,
+  ]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const commitAlpha = useCallback(() => {
+    const value = parseInt(alphaInput, 10);
+    if (!isNaN(value) && value >= 0 && value <= 100) {
+      setAlpha(value);
+    } else {
+      setAlphaInput(String(Math.round(alpha)));
+    }
+  }, [alphaInput, alpha, setAlpha]);
+
+  return (
+    <div
+      className={cn(
+        "flex items-center -space-x-px rounded-md shadow-sm",
+        className,
+      )}
+    >
+      {hslInputs.map((value, index) => (
+        <Input
+          className={cn(
+            "bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none",
+            index && "rounded-l-none",
+          )}
+          key={index}
+          type="text"
+          value={value}
+          onChange={(event) => {
+            const next = [...hslInputs];
+            next[index] = event.target.value;
+            setHslInputs(next);
+          }}
+          onFocus={() => setFocusedIndex(index)}
+          onBlur={() => {
+            setFocusedIndex(null);
+            commitHsl();
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") commitHsl();
+          }}
+        />
+      ))}
+      <PercentageInput
+        value={alphaInput}
+        onChange={(event) => setAlphaInput(event.target.value)}
+        onFocus={() => setIsAlphaFocused(true)}
+        onBlur={() => {
+          setIsAlphaFocused(false);
+          commitAlpha();
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") commitAlpha();
+        }}
+      />
+    </div>
+  );
+}
+
 export type ColorPickerFormatProps = HTMLAttributes<HTMLDivElement>;
 
-export function ColorPickerFormat({
-  className,
-  ...props
-}: ColorPickerFormatProps) {
-  const { hue, saturation, lightness, alpha, mode } = useColorPicker();
-  const color = Color.hsl(hue, saturation, lightness, alpha / 100);
+export function ColorPickerFormat({ className }: ColorPickerFormatProps) {
+  const { mode } = useColorPicker();
 
-  if (mode === "hex") {
-    const hex = color.hex();
-
-    return (
-      <div
-        className={cn(
-          "relative flex w-full items-center -space-x-px rounded-md shadow-sm",
-          className,
-        )}
-        {...props}
-      >
-        <Input
-          className="bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none"
-          readOnly
-          type="text"
-          value={hex}
-        />
-        <PercentageInput value={alpha} />
-      </div>
-    );
-  }
-
-  if (mode === "rgb") {
-    const rgb = color
-      .rgb()
-      .array()
-      .map((value) => Math.round(value));
-
-    return (
-      <div
-        className={cn(
-          "flex items-center -space-x-px rounded-md shadow-sm",
-          className,
-        )}
-        {...props}
-      >
-        {rgb.map((value, index) => (
-          <Input
-            className={cn(
-              "bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none",
-              index && "rounded-l-none",
-              className,
-            )}
-            key={index}
-            readOnly
-            type="text"
-            value={value}
-          />
-        ))}
-        <PercentageInput value={alpha} />
-      </div>
-    );
-  }
-
-  if (mode === "css") {
-    const rgb = color
-      .rgb()
-      .array()
-      .map((value) => Math.round(value));
-
-    return (
-      <div className={cn("w-full rounded-md shadow-sm", className)} {...props}>
-        <Input
-          className="bg-secondary h-8 w-full px-2 text-xs shadow-none"
-          readOnly
-          type="text"
-          value={`rgba(${rgb.join(", ")}, ${String(alpha)}%)`}
-          {...props}
-        />
-      </div>
-    );
-  }
-
-  if (mode === "hsl") {
-    const hsl = color
-      .hsl()
-      .array()
-      .map((value) => Math.round(value));
-
-    return (
-      <div
-        className={cn(
-          "flex items-center -space-x-px rounded-md shadow-sm",
-          className,
-        )}
-        {...props}
-      >
-        {hsl.map((value, index) => (
-          <Input
-            className={cn(
-              "bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none",
-              index && "rounded-l-none",
-              className,
-            )}
-            key={index}
-            readOnly
-            type="text"
-            value={value}
-          />
-        ))}
-        <PercentageInput value={alpha} />
-      </div>
-    );
-  }
+  if (mode === "hex") return <HexFormatInput className={className} />;
+  if (mode === "rgb") return <RgbFormatInput className={className} />;
+  if (mode === "css") return <CssFormatInput className={className} />;
+  if (mode === "hsl") return <HslFormatInput className={className} />;
 
   return null;
 }
