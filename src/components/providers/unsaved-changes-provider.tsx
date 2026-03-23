@@ -49,12 +49,20 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
   }, [hasUnsavedChanges]);
 
   useEffect(() => {
+    let ignoreNextPopState = false;
+
     const handlePopState = (_event: PopStateEvent) => {
+      if (ignoreNextPopState) {
+        ignoreNextPopState = false;
+        return;
+      }
+
       if (
         hasUnsavedChangesRef.current &&
         !env.NEXT_PUBLIC_DISABLE_NAVIGATION_CONFIRMATION
       ) {
-        window.history.pushState(null, "", window.location.href);
+        ignoreNextPopState = true;
+        window.history.go(1);
         // eslint-disable-next-line no-alert
         const shouldNavigate = window.confirm(
           "Masz niezapisane zmiany. Czy na pewno chcesz opuścić tę stronę? Wszelkie niezapisane zmiany będą utracone.",
