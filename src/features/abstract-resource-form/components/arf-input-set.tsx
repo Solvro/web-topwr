@@ -29,9 +29,19 @@ export function ArfInputSet<
   if (inputs == null) {
     return null;
   }
-  const mapped = typedEntries(inputs).map(([key, options]) =>
-    options == null ? null : mapper([key, options]),
+
+  const mapped = typedEntries(inputs as Record<string, unknown>).map(
+    ([key, options]) => {
+      if (options == null) {
+        return null;
+      }
+      return mapper([
+        key as keyof NonNullable<Y>,
+        options as NonNullable<ValueOf<NonNullable<Y>>>,
+      ]);
+    },
   );
+
   return container ? (
     <InputRow className={className}>{mapped}</InputRow>
   ) : (

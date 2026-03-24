@@ -163,14 +163,23 @@ export function ArfController<T extends Resource>({
     >
       <Form {...form}>
         <form className="flex grow flex-col gap-4" onSubmit={onSubmit}>
-          <ArfBody
-            resource={resource}
-            control={form.control}
-            defaultValues={defaultValues}
-            existingImages={existingImages}
-            relatedResources={relatedResources}
-            pivotResources={pivotResources}
-          />
+          <div className="grow basis-0 overflow-y-auto">
+            <div
+              className={cn(
+                "bg-accent text-accent-foreground flex min-h-full flex-col gap-4 rounded-xl p-4",
+                { "md:flex-row": !isEmbedded },
+              )}
+            >
+              <ArfBody
+                resource={resource}
+                control={form.control}
+                defaultValues={defaultValues}
+                existingImages={existingImages}
+                relatedResources={relatedResources}
+                pivotResources={pivotResources}
+              />
+            </div>
+          </div>
           <footer
             className={cn(
               "flex w-full flex-col flex-wrap items-center gap-x-4 gap-y-2",
