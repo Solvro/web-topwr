@@ -37,9 +37,7 @@ describe("Create Guide Articles Page", () => {
     await form.user.click(form.submitButton);
     const formMessages = form.screen.getAllByText(FORM_ERROR_MESSAGES.REQUIRED);
 
-    // TODO: change to 2 after backend allows omitting the description
-    // https://github.com/Solvro/backend-topwr/issues/281
-    expect(formMessages).toHaveLength(3);
+    expect(formMessages).toHaveLength(2);
   });
 
   it("should allow me to select an image", async () => {
@@ -53,9 +51,7 @@ describe("Create Guide Articles Page", () => {
     expect(form.input.image.files[0]).toEqual(MOCK_IMAGE_FILE);
   });
 
-  // TODO: unskip
-  // https://github.com/Solvro/backend-topwr/issues/281
-  it.skip("should allow correct input", async () => {
+  it("should allow correct input", async () => {
     const form = await renderCreationForm();
     expect(form.submitButton).toBeDisabled();
 
