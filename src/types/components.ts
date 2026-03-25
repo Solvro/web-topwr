@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import type { ReactNode } from "react";
 import type { z } from "zod";
 
@@ -58,3 +59,7 @@ export type ResourceRelations<T extends Resource> = {
     | ResourceDataType<L>[]
     | ResourceDataWithRelations<L>[];
 };
+
+export type PendingNavigation =
+  | { type: "href"; href: Route }
+  | { type: "back" };
