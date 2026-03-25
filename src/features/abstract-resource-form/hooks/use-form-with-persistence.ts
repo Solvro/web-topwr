@@ -14,7 +14,7 @@ import { useFormPersistence } from "./use-form-persistence";
  * Handles:
  * - Detecting unsaved changes for navigation prevention when editing
  * - Automatically saving form data to localStorage when not editing
- * - Prompting user to restore data when revisiting the form
+ * - Restoring data when revisiting the form
  * - Clearing saved data on successful submission
  */
 export function useFormWithPersistence<T extends Resource>({
