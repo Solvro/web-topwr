@@ -217,20 +217,20 @@ export function ArfController<T extends Resource>({
               />
             ) : null}
 
+            {isEditing ? (
+              <ArfResetButton
+                onResetForm={resetForm}
+                disabled={!isFormStateDirty(form.formState)}
+              />
+            ) : isEmbedded ? null : (
+              <ArfCancelButton
+                resource={resource as RoutableResource}
+                onClearData={clearPersistedData}
+                disabled={!isFormStateDirty(form.formState)}
+              />
+            )}
             {isEmbedded ? null : (
               <>
-                {isEditing ? (
-                  <ArfResetButton
-                    onResetForm={resetForm}
-                    disabled={!isFormStateDirty(form.formState)}
-                  />
-                ) : (
-                  <ArfCancelButton
-                    resource={resource as RoutableResource}
-                    onClearData={clearPersistedData}
-                    disabled={!isFormStateDirty(form.formState)}
-                  />
-                )}
                 {/* It would be too complex to relate `isEmbedded` to `resource` being a `RoutableResource`,
                     so I'm going to assume the codebase won't use `AbstractResourceForm` anywhere except for
                     routable resources with `isEmbedded` set to `false` and otherwise with it set to `true`. */}
