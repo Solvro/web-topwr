@@ -291,3 +291,39 @@ test.describe("Guide Articles CRUD", () => {
     }
   });
 });
+
+test.describe("Guide Article create form persistence", () => {
+  test.afterEach(async ({ page }) => {
+    await page.evaluate((prefix: string) => {
+      for (const key of Object.keys(localStorage)) {
+        if (key.startsWith(prefix)) {
+          localStorage.removeItem(key);
+        }
+      }
+    }, `topwr_form_${resource}-create`);
+  });
+
+  test("should restore form values after navigating away and back into the form", async ({
+    page,
+  }) => {
+    const testTitle = faker.lorem.sentence();
+    await page.goto(`/${resource}/create`);
+
+    const titleInput = page.getByLabel("Tytuł");
+    await expect(titleInput).toBeVisible();
+    await titleInput.selectText();
+    await page.keyboard.type(testTitle);
+    await page.waitForFunction(
+      (prefix: string) =>
+        Object.keys(localStorage).some((key) => key.startsWith(prefix)),
+      `topwr_form_${resource}-create`,
+    );
+
+    await returnFromArf(page, resource);
+
+    await page.getByRole("link", { name: /dodaj artykuł/i }).click();
+    await page.waitForURL(`/${resource}/create`);
+
+    await expect(page.getByLabel("Tytuł")).toHaveValue(testTitle);
+  });
+});

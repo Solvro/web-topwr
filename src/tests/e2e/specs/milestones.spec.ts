@@ -94,7 +94,10 @@ test.describe("About Us Versions CRUD", () => {
     await getEditButton(page).click();
     const input = page.getByLabel(/nazwa/i);
     await expect(input).toBeVisible();
-    await input.fill("TEST");
+    await input.focus();
+    await input.selectText();
+    await page.keyboard.type("TEST");
+    await expect(input).toHaveValue("TEST");
     const backButton = page.getByRole("link", { name: /wróć/i });
 
     await backButton.click();

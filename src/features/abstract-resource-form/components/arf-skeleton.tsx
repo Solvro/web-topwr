@@ -29,9 +29,9 @@ function LabelSkeleton({
 }
 
 export function ArfSkeleton({
-  showDeleteButton = true,
+  showSecondaryButton = true,
 }: {
-  showDeleteButton?: boolean;
+  showSecondaryButton?: boolean;
 }) {
   return (
     <div className="mx-4 box-border flex h-full flex-col gap-4">
@@ -92,7 +92,7 @@ export function ArfSkeleton({
       <Button className="bg-primary/50 hover:bg-primary/50" asChild>
         <Skeleton />
       </Button>
-      {showDeleteButton ? (
+      {showSecondaryButton ? (
         <Button variant="secondary" className="hover:bg-secondary" asChild>
           <Skeleton />
         </Button>

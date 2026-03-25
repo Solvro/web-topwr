@@ -3,7 +3,7 @@
 import { Link } from "@solvro/next-view-transitions";
 import { CircleX } from "lucide-react";
 import type { Route } from "next";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   AlertDialog,
@@ -17,18 +17,23 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { env } from "@/config/env";
+import { useRouter } from "@/hooks/use-router";
 import { UnsavedChangesContext } from "@/hooks/use-unsaved-changes";
-import type { WrapperProps } from "@/types/components";
+import type { PendingNavigation, WrapperProps } from "@/types/components";
 
 const DEFAULT_CONFIRM_NAVIGATION_ROUTE: Route = "/";
 
 export function UnsavedChangesProvider({ children }: WrapperProps) {
+  const router = useRouter();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [confirmNavigationTo, setConfirmNavigationTo] = useState<Route | null>(
-    null,
-  );
+  const [pendingNavigation, setPendingNavigation] =
+    useState<PendingNavigation | null>(null);
+
+  const hasUnsavedChangesRef = useRef(hasUnsavedChanges);
+  const ignoreNextPopStateRef = useRef(false);
 
   useEffect(() => {
+    hasUnsavedChangesRef.current = hasUnsavedChanges;
     const handleBeforeUnload = (event_: BeforeUnloadEvent) => {
       if (
         hasUnsavedChanges &&
@@ -46,22 +51,65 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
     };
   }, [hasUnsavedChanges]);
 
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      if (ignoreNextPopStateRef.current) {
+        ignoreNextPopStateRef.current = false;
+        event.stopImmediatePropagation();
+        return;
+      }
+
+      if (
+        !hasUnsavedChangesRef.current ||
+        env.NEXT_PUBLIC_DISABLE_NAVIGATION_CONFIRMATION
+      ) {
+        return;
+      }
+
+      event.stopImmediatePropagation();
+      ignoreNextPopStateRef.current = true;
+      window.history.go(1);
+      setPendingNavigation({ type: "back" });
+    };
+
+    window.addEventListener("popstate", handlePopState, { capture: true });
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState, { capture: true });
+    };
+  }, []);
+
+  const clearNavState = () => {
+    hasUnsavedChangesRef.current = false;
+    setHasUnsavedChanges(false);
+    setPendingNavigation(null);
+  };
+
+  const handleConfirm = () => {
+    clearNavState();
+    router.back();
+  };
+
+  const handleCancel = () => {
+    setPendingNavigation(null);
+  };
+
   return (
     <UnsavedChangesContext.Provider
       value={{
         hasUnsavedChanges,
         setHasUnsavedChanges,
         showConfirmDialog: (value) => {
-          setConfirmNavigationTo(value as Route);
+          setPendingNavigation({ type: "href", href: value as Route });
         },
       }}
     >
       <AlertDialog
-        open={confirmNavigationTo != null}
+        open={pendingNavigation != null}
         onOpenChange={(open) => {
-          setConfirmNavigationTo(
-            open ? DEFAULT_CONFIRM_NAVIGATION_ROUTE : null,
-          );
+          if (!open) {
+            handleCancel();
+          }
         }}
       >
         <AlertDialogContent>
@@ -73,16 +121,27 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Anuluj</AlertDialogCancel>
-            <AlertDialogAction asChild>
-              <Button variant="destructive" asChild>
-                <Link
-                  href={confirmNavigationTo ?? DEFAULT_CONFIRM_NAVIGATION_ROUTE}
-                >
+            <AlertDialogCancel onClick={handleCancel}>Anuluj</AlertDialogCancel>
+            {pendingNavigation?.type === "back" ? (
+              <AlertDialogAction asChild>
+                <Button variant="destructive" onClick={handleConfirm}>
                   Kontynuuj <CircleX />
-                </Link>
-              </Button>
-            </AlertDialogAction>
+                </Button>
+              </AlertDialogAction>
+            ) : (
+              <AlertDialogAction asChild>
+                <Button variant="destructive" asChild onClick={clearNavState}>
+                  <Link
+                    href={
+                      pendingNavigation?.href ??
+                      DEFAULT_CONFIRM_NAVIGATION_ROUTE
+                    }
+                  >
+                    Kontynuuj <CircleX />
+                  </Link>
+                </Button>
+              </AlertDialogAction>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

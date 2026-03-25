@@ -71,11 +71,7 @@ export function ArfSheetContent<T extends Resource>({
         <SheetDescription>{sheetDescription}</SheetDescription>
       </SheetHeader>
       <ArfRelationContext.Provider value={relationContext}>
-        <Suspense
-          fallback={<ArfSkeleton showDeleteButton={content.item != null} />}
-        >
-          {content.form}
-        </Suspense>
+        <Suspense fallback={<ArfSkeleton />}>{content.form}</Suspense>
       </ArfRelationContext.Provider>
       <SheetFooter className="pt-0">
         <SheetClose asChild>
