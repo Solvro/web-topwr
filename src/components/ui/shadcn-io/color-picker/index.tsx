@@ -135,6 +135,11 @@ export function ColorPicker({
     >
       <div
         className={cn("flex size-full flex-col gap-4", className)}
+        onPointerDown={(event) => {
+          if (!(event.target instanceof HTMLInputElement)) {
+            (document.activeElement as HTMLElement | null)?.blur();
+          }
+        }}
         {...props}
       />
     </ColorPickerContext.Provider>
@@ -156,10 +161,10 @@ export const ColorPickerSelection = memo(
 
     useEffect(() => {
       const newX = saturation / 100;
-      setPositionX(newX);
-      setPositionY(1 - lightness / getTopLightness(newX));
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [setPositionX, setPositionY]);
+      const newY = 1 - lightness / getTopLightness(newX);
+      setPositionX(Math.max(0, Math.min(1, newX)));
+      setPositionY(Math.max(0, Math.min(1, newY)));
+    }, [setPositionX, setPositionY, saturation, lightness]);
 
     const backgroundGradient = useMemo(() => {
       return `linear-gradient(0deg, rgba(0,0,0,1), rgba(0,0,0,0)),
@@ -400,7 +405,7 @@ function HexFormatInput({ className }: { className?: string }) {
 
   useEffect(() => {
     if (!isHexFocused) setHexInput(currentHex);
-  }, [hue, saturation, lightness, isHexFocused]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [hue, saturation, lightness, isHexFocused]);
 
   useEffect(() => {
     if (!isAlphaFocused) setAlphaInput(String(Math.round(alpha)));
@@ -514,7 +519,7 @@ function RgbFormatInput({ className }: { className?: string }) {
     } else {
       setRgbInputs(currentRgb.map(String));
     }
-  }, [rgbInputs, currentRgb, setHue, setSaturation, setLightness]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [rgbInputs, currentRgb, setHue, setSaturation, setLightness]);
 
   const commitAlpha = useCallback(() => {
     const value = parseInt(alphaInput, 10);
@@ -595,7 +600,7 @@ function CssFormatInput({ className }: { className?: string }) {
 
   useEffect(() => {
     if (!isFocused) setCssInput(currentCss);
-  }, [hue, saturation, lightness, alpha, isFocused]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [hue, saturation, lightness, alpha, isFocused]);
 
   const commitCss = useCallback(() => {
     const match = cssInput.match(
@@ -703,7 +708,7 @@ function HslFormatInput({ className }: { className?: string }) {
     setHue,
     setSaturation,
     setLightness,
-  ]); // eslint-disable-line react-hooks/exhaustive-deps
+  ]);
 
   const commitAlpha = useCallback(() => {
     const value = parseInt(alphaInput, 10);
