@@ -218,15 +218,21 @@ export function ArfController<T extends Resource>({
             ) : null}
 
             {isEditing ? (
-              <ArfResetButton
-                onResetForm={resetForm}
-                disabled={!isFormStateDirty(form.formState)}
-              />
-            ) : isEmbedded ? null : (
+              isEmbedded ? null : (
+                <ArfResetButton
+                  onResetForm={resetForm}
+                  disabled={!isFormStateDirty(form.formState)}
+                />
+              )
+            ) : (
               <ArfCancelButton
                 resource={resource as RoutableResource}
-                onClearData={clearPersistedData}
                 disabled={!isFormStateDirty(form.formState)}
+                onClearData={() => {
+                  clearPersistedData();
+                  relationContext?.closeSheet();
+                }}
+                navigateOnClearData={!isEmbedded}
               />
             )}
             {isEmbedded ? null : (

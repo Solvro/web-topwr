@@ -20,14 +20,22 @@ import type { RoutableResource } from "@/features/resources/types";
 
 export function ArfCancelButton({
   resource,
-  onClearData,
   disabled = false,
+  onClearData,
+  navigateOnClearData,
 }: {
   resource: RoutableResource;
-  onClearData?: () => void;
   disabled?: boolean;
+  onClearData?: () => void;
+  navigateOnClearData: boolean;
 }) {
   const declensions = declineNoun(resource);
+
+  const cancelContent = (
+    <>
+      Tak, anuluj <CircleX />
+    </>
+  );
 
   return (
     <AlertDialog>
@@ -47,10 +55,16 @@ export function ArfCancelButton({
         <AlertDialogFooter>
           <AlertDialogCancel>Nie</AlertDialogCancel>
           <AlertDialogAction asChild>
-            <Button variant="destructive" asChild>
-              <Link href={`/${resource}`} onClick={onClearData}>
-                Tak, anuluj <CircleX />
-              </Link>
+            <Button
+              variant="destructive"
+              asChild={navigateOnClearData}
+              onClick={onClearData}
+            >
+              {navigateOnClearData ? (
+                <Link href={`/${resource}`}>{cancelContent}</Link>
+              ) : (
+                cancelContent
+              )}
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>
