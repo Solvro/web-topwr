@@ -260,7 +260,10 @@ export function ColorPickerHue({ className, ...props }: ColorPickerHueProps) {
       <Slider.Track className="relative my-0.5 h-3 w-full grow rounded-full bg-[linear-gradient(90deg,#FF0000,#FFFF00,#00FF00,#00FFFF,#0000FF,#FF00FF,#FF0000)]">
         <Slider.Range className="absolute h-full" />
       </Slider.Track>
-      <Slider.Thumb className="border-primary/50 bg-background focus-visible:ring-ring block h-4 w-4 rounded-full border shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50" />
+      <Slider.Thumb
+        aria-label="Hue"
+        className="border-primary/50 bg-background focus-visible:ring-ring block h-4 w-4 rounded-full border shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+      />
     </Slider.Root>
   );
 }
@@ -294,7 +297,10 @@ export function ColorPickerAlpha({
         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent to-black/50" />
         <Slider.Range className="absolute h-full rounded-full bg-transparent" />
       </Slider.Track>
-      <Slider.Thumb className="border-primary/50 bg-background focus-visible:ring-ring block h-4 w-4 rounded-full border shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50" />
+      <Slider.Thumb
+        aria-label="Alpha"
+        className="border-primary/50 bg-background focus-visible:ring-ring block h-4 w-4 rounded-full border shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+      />
     </Slider.Root>
   );
 }
@@ -326,6 +332,7 @@ export function ColorPickerEyeDropper({
 
   return (
     <Button
+      aria-label="Pick color from screen"
       className={cn("text-muted-foreground shrink-0", className)}
       onClick={handleEyeDropper}
       size="icon"
@@ -350,7 +357,11 @@ export function ColorPickerOutput({
 
   return (
     <Select onValueChange={setMode} value={mode}>
-      <SelectTrigger className="h-8 w-20 shrink-0 text-xs" {...props}>
+      <SelectTrigger
+        aria-label="Color format"
+        className="h-8 w-20 shrink-0 text-xs"
+        {...props}
+      >
         <SelectValue placeholder="Mode" />
       </SelectTrigger>
       <SelectContent>
@@ -442,6 +453,7 @@ function HexFormatInput({ className }: { className?: string }) {
       )}
     >
       <Input
+        aria-label="Hex color"
         className="bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none"
         type="text"
         value={hexInput}
@@ -456,6 +468,8 @@ function HexFormatInput({ className }: { className?: string }) {
         }}
       />
       <PercentageInput
+        aria-label="Alpha"
+        inputMode="numeric"
         value={alphaInput}
         onChange={(event) => setAlphaInput(event.target.value)}
         onFocus={() => setIsAlphaFocused(true)}
@@ -539,10 +553,12 @@ function RgbFormatInput({ className }: { className?: string }) {
     >
       {rgbInputs.map((value, index) => (
         <Input
+          aria-label={(["Red", "Green", "Blue"] as const)[index]}
           className={cn(
             "bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none",
             index && "rounded-l-none",
           )}
+          inputMode="numeric"
           key={index}
           type="text"
           value={value}
@@ -562,6 +578,8 @@ function RgbFormatInput({ className }: { className?: string }) {
         />
       ))}
       <PercentageInput
+        aria-label="Alpha"
+        inputMode="numeric"
         value={alphaInput}
         onChange={(event) => setAlphaInput(event.target.value)}
         onFocus={() => setIsAlphaFocused(true)}
@@ -616,6 +634,8 @@ function CssFormatInput({ className }: { className?: string }) {
       if (a !== undefined) {
         const alphaValue = pct === "%" ? parseFloat(a) : parseFloat(a) * 100;
         setAlpha(Math.min(100, Math.max(0, alphaValue)));
+      } else {
+        setAlpha(100);
       }
     } else {
       setCssInput(currentCss);
@@ -625,6 +645,7 @@ function CssFormatInput({ className }: { className?: string }) {
   return (
     <div className={cn("w-full rounded-md shadow-sm", className)}>
       <Input
+        aria-label="CSS color"
         className="bg-secondary h-8 w-full px-2 text-xs shadow-none"
         type="text"
         value={cssInput}
@@ -728,10 +749,12 @@ function HslFormatInput({ className }: { className?: string }) {
     >
       {hslInputs.map((value, index) => (
         <Input
+          aria-label={(["Hue", "Saturation", "Lightness"] as const)[index]}
           className={cn(
             "bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none",
             index && "rounded-l-none",
           )}
+          inputMode="numeric"
           key={index}
           type="text"
           value={value}
@@ -751,6 +774,8 @@ function HslFormatInput({ className }: { className?: string }) {
         />
       ))}
       <PercentageInput
+        aria-label="Alpha"
+        inputMode="numeric"
         value={alphaInput}
         onChange={(event) => setAlphaInput(event.target.value)}
         onFocus={() => setIsAlphaFocused(true)}
@@ -768,13 +793,20 @@ function HslFormatInput({ className }: { className?: string }) {
 
 export type ColorPickerFormatProps = HTMLAttributes<HTMLDivElement>;
 
-export function ColorPickerFormat({ className }: ColorPickerFormatProps) {
+export function ColorPickerFormat({
+  className,
+  ...props
+}: ColorPickerFormatProps) {
   const { mode } = useColorPicker();
 
-  if (mode === "hex") return <HexFormatInput className={className} />;
-  if (mode === "rgb") return <RgbFormatInput className={className} />;
-  if (mode === "css") return <CssFormatInput className={className} />;
-  if (mode === "hsl") return <HslFormatInput className={className} />;
+  if (mode === "hex")
+    return <HexFormatInput className={className} {...props} />;
+  if (mode === "rgb")
+    return <RgbFormatInput className={className} {...props} />;
+  if (mode === "css")
+    return <CssFormatInput className={className} {...props} />;
+  if (mode === "hsl")
+    return <HslFormatInput className={className} {...props} />;
 
   return null;
 }
