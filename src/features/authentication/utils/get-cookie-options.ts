@@ -12,7 +12,7 @@ export function getCookieOptions(
     cookie,
     {
       // TODO: add more secure cookie flag options
-      expires: Date.now() + 60 * 60 * 24 * 30 * 1000, // 30 days, will be removed if it expires early
+      expires: new Date(authState.refreshTokenExpiresAt), // cookie will expire when refresh token expires
       sameSite: "lax",
     },
   ] as const;
