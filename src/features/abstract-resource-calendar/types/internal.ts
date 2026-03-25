@@ -7,16 +7,6 @@ import type {
   ResourcePk,
 } from "@/features/resources/types";
 
-export interface DateObject {
-  year: number;
-  month: {
-    value: number;
-    name: string;
-    daysInMonth: number;
-  };
-  day: number;
-}
-
 export interface ResourceCalendarProps<T extends Resource> {
   resource: T;
 }
