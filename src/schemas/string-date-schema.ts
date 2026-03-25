@@ -1,3 +1,4 @@
-import { z } from "zod";
+import { RequiredStringSchema } from "@/schemas";
 
-export const StringDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+export const StringDateSchema =
+  RequiredStringSchema.regex(/^\d{4}-\d{2}-\d{2}$/);

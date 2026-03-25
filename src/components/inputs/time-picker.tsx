@@ -1,4 +1,4 @@
-import { formatDate, isValid, parse, toDate } from "date-fns";
+import { formatDate, parse, parseISO } from "date-fns";
 import { Clock } from "lucide-react";
 import type { ChangeEvent } from "react";
 
@@ -11,6 +11,20 @@ import { isEmptyValue } from "@/utils";
 
 import { InputSlot } from "./input-slot";
 
+function isISODatetime(value: string): boolean {
+  return value.includes("T");
+}
+
+function toBaseDate(value: Date | string | null): Date | null {
+  if (value instanceof Date) {
+    return value;
+  }
+  if (typeof value === "string" && isISODatetime(value)) {
+    return parseISO(value);
+  }
+  return null;
+}
+
 export function TimePicker({
   value,
   onChange,
@@ -20,15 +34,34 @@ export function TimePicker({
   onChange: (date: string | null) => void;
   disabled?: boolean;
 }) {
+  const inputValue = (() => {
+    if (isEmptyValue(value)) {
+      return "00:00:00";
+    }
+    if (value instanceof Date) {
+      return formatDate(value, "HH:mm:ss");
+    }
+    if (isISODatetime(value)) {
+      return formatDate(parseISO(value), "HH:mm:ss");
+    }
+    return value;
+  })();
+
   const handleTimeChange = (event_: ChangeEvent<HTMLInputElement>) => {
     const timeValue = event_.target.value;
-    const baseDate = value == null ? new Date() : toDate(value);
-    const parsedTime = parse(timeValue, "HH:mm:ss", baseDate);
-    if (isValid(parsedTime)) {
-      onChange(parsedTime.toISOString());
-    } else {
-      event_.preventDefault();
+    if (!timeValue) {
+      onChange(null);
+      return;
     }
+
+    const baseDate = toBaseDate(value);
+    if (baseDate != null) {
+      const parsedTime = parse(timeValue, "HH:mm:ss", baseDate);
+      onChange(parsedTime.toISOString());
+      return;
+    }
+
+    onChange(timeValue);
   };
 
   return (
@@ -39,7 +72,7 @@ export function TimePicker({
       <InputGroupInput
         type="time"
         step="1"
-        value={isEmptyValue(value) ? "00:00:00" : formatDate(value, "HH:mm:ss")}
+        value={inputValue}
         onChange={handleTimeChange}
         disabled={disabled}
       />

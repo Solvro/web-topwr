@@ -27,7 +27,9 @@ export function DatePicker({
 }) {
   const parsed = isEmptyValue(value)
     ? null
-    : parse(value, "yyyy-MM-dd", new Date());
+    : value.includes("T")
+      ? new Date(value)
+      : parse(value, "yyyy-MM-dd", new Date());
   const date = parsed != null && isValid(parsed) ? parsed : null;
 
   const [isOpen, setIsOpen] = useState(false);
