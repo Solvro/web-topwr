@@ -1,6 +1,6 @@
 "use client";
 
-import { format, parse } from "date-fns";
+import { format, isValid, parse } from "date-fns";
 import { pl } from "date-fns/locale/pl";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useState } from "react";
@@ -25,9 +25,10 @@ export function DatePicker({
   onChange: (date: string | null) => void;
   disabled?: boolean;
 }) {
-  const date = isEmptyValue(value)
+  const parsed = isEmptyValue(value)
     ? null
     : parse(value, "yyyy-MM-dd", new Date());
+  const date = parsed != null && isValid(parsed) ? parsed : null;
 
   const [isOpen, setIsOpen] = useState(false);
   return (
