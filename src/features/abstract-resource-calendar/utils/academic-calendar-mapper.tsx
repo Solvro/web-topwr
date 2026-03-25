@@ -39,7 +39,7 @@ export function academicCalendarMapper(
 
       const dayKeys: string[] = [];
       for (
-        let currentDate = new Date(startDate);
+        let currentDate = startDate;
         currentDate.getTime() <= lastDate.getTime();
         currentDate.setDate(currentDate.getDate() + 1)
       ) {

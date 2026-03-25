@@ -83,7 +83,7 @@ export function CalendarInternal({
           return <div key={cell.id} />;
         }
 
-        const cellDate = new Date(currentDisplayedMonth.setDate(cell.day));
+        const cellDate = new Date(displayedYear, displayedMonth - 1, cell.day);
         const dayEvents = getEventsForDay(cellDate, mappedData);
 
         return (

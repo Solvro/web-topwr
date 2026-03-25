@@ -32,7 +32,7 @@ export function EventCard({
             formatDate(event.startTime, "HH:mm", { locale: pl })
           ) : (
             <>
-              {formatDate(event.endTime, "EEEE HH:mm", { locale: pl })}
+              {formatDate(event.startTime, "EEEE HH:mm", { locale: pl })}
               {" — "}
               {formatDate(event.endTime, "EEEE HH:mm", { locale: pl })}
             </>

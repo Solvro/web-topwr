@@ -38,15 +38,17 @@ export function HolidayCard({
     >
       <div className="my-auto">
         <div className="font-medium">{event.description}</div>
-        {event.startDate === event.lastDate ? (
-          <>{formatDate(event.startDate, "dd MMMM yyyy", { locale: pl })}</>
-        ) : (
-          <>
-            {formatDate(event.startDate, "dd MMMM yyyy", { locale: pl })}
-            {" — "}
-            {formatDate(event.lastDate, "dd MMMM yyyy", { locale: pl })}
-          </>
-        )}
+        <div className="mt-1 text-xs">
+          {event.startDate === event.lastDate ? (
+            <>{formatDate(event.startDate, "dd MMMM yyyy", { locale: pl })}</>
+          ) : (
+            <>
+              {formatDate(event.startDate, "dd MMMM yyyy", { locale: pl })}
+              {" — "}
+              {formatDate(event.lastDate, "dd MMMM yyyy", { locale: pl })}
+            </>
+          )}
+        </div>
       </div>
     </SheetCard>
   );
