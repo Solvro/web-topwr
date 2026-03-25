@@ -21,6 +21,7 @@ beforeAll(() => {
 afterEach(() => {
   server.resetHandlers();
   vi.clearAllMocks();
+  localStorage.clear();
   cleanup();
 });
 afterAll(() => {
