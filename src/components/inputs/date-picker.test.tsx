@@ -33,6 +33,21 @@ now.setHours(0, 0, 0, 0);
 const today = now.getDate().toString();
 
 describe("DatePicker Component", () => {
+  it.each(["2026-03-25T12:00:00Z", "not-a-date", "25/03/2026", "2026-99-99"])(
+    "should render placeholder and not throw for invalid value %s",
+    (invalidValue) => {
+      const screen = render(
+        <InputComponentWrapper
+          component={DatePicker}
+          initialValue={invalidValue}
+        />,
+      );
+      expect(
+        screen.getByRole("button", { name: /wybierz datę/i }),
+      ).toBeInTheDocument();
+    },
+  );
+
   it("should allow date selection", async () => {
     const { screen, user, trigger } = renderDatePicker();
     await user.click(trigger);
