@@ -30,7 +30,6 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
     useState<PendingNavigation | null>(null);
 
   const hasUnsavedChangesRef = useRef(hasUnsavedChanges);
-  const isInterceptingBackRef = useRef(false);
   const ignoreNextPopStateRef = useRef(false);
 
   useEffect(() => {
@@ -67,16 +66,7 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
         return;
       }
 
-      if (isInterceptingBackRef.current) {
-        isInterceptingBackRef.current = false;
-        hasUnsavedChangesRef.current = false;
-        setHasUnsavedChanges(false);
-        setPendingNavigation(null);
-        return;
-      }
-
       event.stopImmediatePropagation();
-      isInterceptingBackRef.current = true;
       ignoreNextPopStateRef.current = true;
       window.history.go(1);
       setPendingNavigation({ type: "back" });
@@ -90,7 +80,6 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
   }, []);
 
   const clearNavState = () => {
-    isInterceptingBackRef.current = false;
     hasUnsavedChangesRef.current = false;
     setHasUnsavedChanges(false);
     setPendingNavigation(null);
@@ -102,7 +91,6 @@ export function UnsavedChangesProvider({ children }: WrapperProps) {
   };
 
   const handleCancel = () => {
-    isInterceptingBackRef.current = false;
     setPendingNavigation(null);
   };
 

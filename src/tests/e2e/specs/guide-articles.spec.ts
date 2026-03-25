@@ -313,7 +313,11 @@ test.describe("Guide Article create form persistence", () => {
     await expect(titleInput).toBeVisible();
     await titleInput.selectText();
     await page.keyboard.type(testTitle);
-    await page.waitForTimeout(1000);
+    await page.waitForFunction(
+      (prefix: string) =>
+        Object.keys(localStorage).some((key) => key.startsWith(prefix)),
+      `topwr_form_${resource}-create`,
+    );
 
     await returnFromArf(page, resource);
 
