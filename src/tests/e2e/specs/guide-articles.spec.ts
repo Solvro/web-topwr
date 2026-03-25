@@ -85,7 +85,7 @@ async function createTestArticle(
       accessTokenOverride,
     },
   );
-  return response.data;
+  return response.data as typeof response.data & typeof body;
 }
 
 /** Deletes the guide article with the given id from the backend.

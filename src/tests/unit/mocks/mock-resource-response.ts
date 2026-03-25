@@ -21,5 +21,5 @@ export async function mockResourceResponse<T extends Resource>(
     updatedAt: new Date().toISOString(),
   };
   const responseBody = { ...body, ...metadata } as ResourceDataType<T>;
-  return HttpResponse.json(responseBody, { status: 201 });
+  return HttpResponse.json({ data: responseBody }, { status: 201 });
 }
