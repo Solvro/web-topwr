@@ -8,6 +8,7 @@ import { isEmptyValue } from "@/utils";
 import { DatePicker } from "./date-picker";
 import { InputRow } from "./input-row";
 import { TimePicker } from "./time-picker";
+import { parseStringDate } from "./utils/parse-string-date";
 
 export function DateTimePicker({
   value,
@@ -27,11 +28,16 @@ export function DateTimePicker({
       return;
     }
 
-    const [year, month, day] = dateValue.split("-").map(Number);
+    const parsedDate = parseStringDate(dateValue);
+    if (parsedDate == null) {
+      onChange(null);
+      return;
+    }
+
     const newValue = set(date ?? new Date().setHours(0, 0, 0, 0), {
-      year,
-      month: month - 1,
-      date: day,
+      year: parsedDate.getFullYear(),
+      month: parsedDate.getMonth(),
+      date: parsedDate.getDate(),
     });
     onChange(newValue.toISOString());
   };

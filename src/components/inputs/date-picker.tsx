@@ -1,6 +1,6 @@
 "use client";
 
-import { format, isValid, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { pl } from "date-fns/locale/pl";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useState } from "react";
@@ -14,7 +14,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { StringDateSchema } from "@/schemas";
+
+import { parseStringDate } from "./utils/parse-string-date";
 
 export function DatePicker({
   value,
@@ -25,11 +26,7 @@ export function DatePicker({
   onChange: (date: string | null) => void;
   disabled?: boolean;
 }) {
-  const parsed =
-    value != null && StringDateSchema.safeParse(value).success
-      ? parseISO(value)
-      : null;
-  const date = parsed != null && isValid(parsed) ? parsed : null;
+  const date = parseStringDate(value);
 
   const [isOpen, setIsOpen] = useState(false);
   return (
