@@ -63,6 +63,75 @@ export const useColorPicker = () => {
   return context;
 };
 
+function useAlphaInput() {
+  const { alpha, setAlpha } = useColorPicker();
+  const [alphaInput, setAlphaInput] = useState(String(Math.round(alpha)));
+  const [isAlphaFocused, setIsAlphaFocused] = useState(false);
+
+  useEffect(() => {
+    if (!isAlphaFocused) setAlphaInput(String(Math.round(alpha)));
+  }, [alpha, isAlphaFocused]);
+
+  const commitAlpha = useCallback(() => {
+    const val = parseInt(alphaInput, 10);
+    if (!isNaN(val) && val >= 0 && val <= 100) {
+      setAlpha(val);
+    } else {
+      setAlphaInput(String(Math.round(alpha)));
+    }
+  }, [alphaInput, alpha, setAlpha]);
+
+  return { alphaInput, setAlphaInput, setIsAlphaFocused, commitAlpha };
+}
+
+type ColorChannelsType<T> = [T, T, T];
+
+type ChannelConfig = {
+  labels: ColorChannelsType<string>;
+  getChannelValues: (
+    h: number,
+    s: number,
+    l: number,
+  ) => ColorChannelsType<number>;
+  applyChannelValues: (
+    values: ColorChannelsType<number>,
+    setters: {
+      setHue: (h: number) => void;
+      setSaturation: (s: number) => void;
+      setLightness: (l: number) => void;
+    },
+  ) => void;
+  isValid: (values: number[]) => boolean;
+};
+
+const RGB_CONFIG: ChannelConfig = {
+  labels: ["Red", "Green", "Blue"],
+  getChannelValues: (h, s, l) =>
+    Color.hsl(h, s, l)
+      .rgb()
+      .array()
+      .map(Math.round) as ColorChannelsType<number>,
+  applyChannelValues: ([r, g, b], { setHue, setSaturation, setLightness }) => {
+    const [h, s, l] = Color.rgb(r, g, b).hsl().array();
+    setHue(h);
+    setSaturation(s);
+    setLightness(l);
+  },
+  isValid: (values) => values.every((v) => v >= 0 && v <= 255),
+};
+
+const HSL_CONFIG: ChannelConfig = {
+  labels: ["Hue", "Saturation", "Lightness"],
+  getChannelValues: (h, s, l) => [Math.round(h), Math.round(s), Math.round(l)],
+  applyChannelValues: ([h, s, l], { setHue, setSaturation, setLightness }) => {
+    setHue(h);
+    setSaturation(s);
+    setLightness(l);
+  },
+  isValid: ([h, s, l]) =>
+    h >= 0 && h <= 360 && s >= 0 && s <= 100 && l >= 0 && l <= 100,
+};
+
 type ColorValue = string;
 
 export type ColorPickerProps = Omit<
@@ -400,32 +469,120 @@ function PercentageInput({ className, ...props }: PercentageInputProps) {
   );
 }
 
-function HexFormatInput({ className }: { className?: string }) {
-  const {
+function MultiChannelFormatInput({
+  config,
+  className,
+}: {
+  config: ChannelConfig;
+  className?: string;
+}) {
+  const { hue, saturation, lightness, setHue, setSaturation, setLightness } =
+    useColorPicker();
+  const { alphaInput, setAlphaInput, setIsAlphaFocused, commitAlpha } =
+    useAlphaInput();
+
+  const currentChannelValues = config.getChannelValues(
     hue,
     saturation,
     lightness,
-    alpha,
+  );
+  const [channelInputs, setChannelInputs] = useState(
+    currentChannelValues.map(String),
+  );
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (focusedIndex === null) {
+      setChannelInputs(
+        config.getChannelValues(hue, saturation, lightness).map(String),
+      );
+    }
+  }, [hue, saturation, lightness, focusedIndex, config]);
+
+  const commitChannels = useCallback(() => {
+    const values = channelInputs.map((v) => parseInt(v, 10));
+    if (values.every((v) => !isNaN(v)) && config.isValid(values)) {
+      config.applyChannelValues(values as ColorChannelsType<number>, {
+        setHue,
+        setSaturation,
+        setLightness,
+      });
+    } else {
+      setChannelInputs(currentChannelValues.map(String));
+    }
+  }, [
+    channelInputs,
+    currentChannelValues,
+    config,
     setHue,
     setSaturation,
     setLightness,
-    setAlpha,
-  } = useColorPicker();
+  ]);
+
+  return (
+    <div
+      className={cn(
+        "flex items-center -space-x-px rounded-md shadow-sm",
+        className,
+      )}
+    >
+      {channelInputs.map((value, index) => (
+        <Input
+          aria-label={config.labels[index]}
+          className={cn(
+            "bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none",
+            index > 0 && "rounded-l-none",
+          )}
+          inputMode="numeric"
+          key={index}
+          type="text"
+          value={value}
+          onChange={(event) => {
+            const next = [...channelInputs];
+            next[index] = event.target.value;
+            setChannelInputs(next);
+          }}
+          onFocus={() => setFocusedIndex(index)}
+          onBlur={() => {
+            setFocusedIndex(null);
+            commitChannels();
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") commitChannels();
+          }}
+        />
+      ))}
+      <PercentageInput
+        aria-label="Alpha"
+        inputMode="numeric"
+        value={alphaInput}
+        onChange={(event) => setAlphaInput(event.target.value)}
+        onFocus={() => setIsAlphaFocused(true)}
+        onBlur={() => {
+          setIsAlphaFocused(false);
+          commitAlpha();
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") commitAlpha();
+        }}
+      />
+    </div>
+  );
+}
+
+function HexFormatInput({ className }: { className?: string }) {
+  const { hue, saturation, lightness, setHue, setSaturation, setLightness } =
+    useColorPicker();
+  const { alphaInput, setAlphaInput, setIsAlphaFocused, commitAlpha } =
+    useAlphaInput();
 
   const currentHex = Color.hsl(hue, saturation, lightness).hex();
-
   const [hexInput, setHexInput] = useState(currentHex);
-  const [alphaInput, setAlphaInput] = useState(String(Math.round(alpha)));
   const [isHexFocused, setIsHexFocused] = useState(false);
-  const [isAlphaFocused, setIsAlphaFocused] = useState(false);
 
   useEffect(() => {
     if (!isHexFocused) setHexInput(currentHex);
   }, [hue, saturation, lightness, isHexFocused]);
-
-  useEffect(() => {
-    if (!isAlphaFocused) setAlphaInput(String(Math.round(alpha)));
-  }, [alpha, isAlphaFocused]);
 
   const commitHex = useCallback(() => {
     try {
@@ -440,15 +597,6 @@ function HexFormatInput({ className }: { className?: string }) {
       setHexInput(currentHex);
     }
   }, [hexInput, currentHex, setHue, setSaturation, setLightness]);
-
-  const commitAlpha = useCallback(() => {
-    const val = parseInt(alphaInput, 10);
-    if (!isNaN(val) && val >= 0 && val <= 100) {
-      setAlpha(val);
-    } else {
-      setAlphaInput(String(Math.round(alpha)));
-    }
-  }, [alphaInput, alpha, setAlpha]);
 
   return (
     <div
@@ -472,116 +620,6 @@ function HexFormatInput({ className }: { className?: string }) {
           if (event.key === "Enter") commitHex();
         }}
       />
-      <PercentageInput
-        aria-label="Alpha"
-        inputMode="numeric"
-        value={alphaInput}
-        onChange={(event) => setAlphaInput(event.target.value)}
-        onFocus={() => setIsAlphaFocused(true)}
-        onBlur={() => {
-          setIsAlphaFocused(false);
-          commitAlpha();
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") commitAlpha();
-        }}
-      />
-    </div>
-  );
-}
-
-function RgbFormatInput({ className }: { className?: string }) {
-  const {
-    hue,
-    saturation,
-    lightness,
-    alpha,
-    setHue,
-    setSaturation,
-    setLightness,
-    setAlpha,
-  } = useColorPicker();
-
-  const currentRgb = Color.hsl(hue, saturation, lightness)
-    .rgb()
-    .array()
-    .map((value) => Math.round(value));
-
-  const [rgbInputs, setRgbInputs] = useState(currentRgb.map(String));
-  const [alphaInput, setAlphaInput] = useState(String(Math.round(alpha)));
-  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
-  const [isAlphaFocused, setIsAlphaFocused] = useState(false);
-
-  useEffect(() => {
-    if (focusedIndex === null) {
-      setRgbInputs(
-        Color.hsl(hue, saturation, lightness)
-          .rgb()
-          .array()
-          .map((value) => String(Math.round(value))),
-      );
-    }
-  }, [hue, saturation, lightness, focusedIndex]);
-
-  useEffect(() => {
-    if (!isAlphaFocused) setAlphaInput(String(Math.round(alpha)));
-  }, [alpha, isAlphaFocused]);
-
-  const commitRgb = useCallback(() => {
-    const values = rgbInputs.map((value) => parseInt(value, 10));
-    if (values.every((value) => !isNaN(value) && value >= 0 && value <= 255)) {
-      const parsed = Color.rgb(values[0], values[1], values[2]);
-      const [h, s, l] = parsed.hsl().array();
-      setHue(h);
-      setSaturation(s);
-      setLightness(l);
-    } else {
-      setRgbInputs(currentRgb.map(String));
-    }
-  }, [rgbInputs, currentRgb, setHue, setSaturation, setLightness]);
-
-  const commitAlpha = useCallback(() => {
-    const value = parseInt(alphaInput, 10);
-    if (!isNaN(value) && value >= 0 && value <= 100) {
-      setAlpha(value);
-    } else {
-      setAlphaInput(String(Math.round(alpha)));
-    }
-  }, [alphaInput, alpha, setAlpha]);
-
-  return (
-    <div
-      className={cn(
-        "flex items-center -space-x-px rounded-md shadow-sm",
-        className,
-      )}
-    >
-      {rgbInputs.map((value, index) => (
-        <Input
-          aria-label={(["Red", "Green", "Blue"] as const)[index]}
-          className={cn(
-            "bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none",
-            index && "rounded-l-none",
-          )}
-          inputMode="numeric"
-          key={index}
-          type="text"
-          value={value}
-          onChange={(event) => {
-            const next = [...rgbInputs];
-            next[index] = event.target.value;
-            setRgbInputs(next);
-          }}
-          onFocus={() => setFocusedIndex(index)}
-          onBlur={() => {
-            setFocusedIndex(null);
-            commitRgb();
-          }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") commitRgb();
-          }}
-        />
-      ))}
       <PercentageInput
         aria-label="Alpha"
         inputMode="numeric"
@@ -668,134 +706,6 @@ function CssFormatInput({ className }: { className?: string }) {
   );
 }
 
-function HslFormatInput({ className }: { className?: string }) {
-  const {
-    hue,
-    saturation,
-    lightness,
-    alpha,
-    setHue,
-    setSaturation,
-    setLightness,
-    setAlpha,
-  } = useColorPicker();
-
-  const [hslInputs, setHslInputs] = useState([
-    String(Math.round(hue)),
-    String(Math.round(saturation)),
-    String(Math.round(lightness)),
-  ]);
-  const [alphaInput, setAlphaInput] = useState(String(Math.round(alpha)));
-  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
-  const [isAlphaFocused, setIsAlphaFocused] = useState(false);
-
-  useEffect(() => {
-    if (focusedIndex === null) {
-      setHslInputs([
-        String(Math.round(hue)),
-        String(Math.round(saturation)),
-        String(Math.round(lightness)),
-      ]);
-    }
-  }, [hue, saturation, lightness, focusedIndex]);
-
-  useEffect(() => {
-    if (!isAlphaFocused) setAlphaInput(String(Math.round(alpha)));
-  }, [alpha, isAlphaFocused]);
-
-  const commitHsl = useCallback(() => {
-    const values = hslInputs.map((value) => parseInt(value, 10));
-    if (
-      !isNaN(values[0]) &&
-      values[0] >= 0 &&
-      values[0] <= 360 &&
-      !isNaN(values[1]) &&
-      values[1] >= 0 &&
-      values[1] <= 100 &&
-      !isNaN(values[2]) &&
-      values[2] >= 0 &&
-      values[2] <= 100
-    ) {
-      setHue(values[0]);
-      setSaturation(values[1]);
-      setLightness(values[2]);
-    } else {
-      setHslInputs([
-        String(Math.round(hue)),
-        String(Math.round(saturation)),
-        String(Math.round(lightness)),
-      ]);
-    }
-  }, [
-    hslInputs,
-    hue,
-    saturation,
-    lightness,
-    setHue,
-    setSaturation,
-    setLightness,
-  ]);
-
-  const commitAlpha = useCallback(() => {
-    const value = parseInt(alphaInput, 10);
-    if (!isNaN(value) && value >= 0 && value <= 100) {
-      setAlpha(value);
-    } else {
-      setAlphaInput(String(Math.round(alpha)));
-    }
-  }, [alphaInput, alpha, setAlpha]);
-
-  return (
-    <div
-      className={cn(
-        "flex items-center -space-x-px rounded-md shadow-sm",
-        className,
-      )}
-    >
-      {hslInputs.map((value, index) => (
-        <Input
-          aria-label={(["Hue", "Saturation", "Lightness"] as const)[index]}
-          className={cn(
-            "bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none",
-            index && "rounded-l-none",
-          )}
-          inputMode="numeric"
-          key={index}
-          type="text"
-          value={value}
-          onChange={(event) => {
-            const next = [...hslInputs];
-            next[index] = event.target.value;
-            setHslInputs(next);
-          }}
-          onFocus={() => setFocusedIndex(index)}
-          onBlur={() => {
-            setFocusedIndex(null);
-            commitHsl();
-          }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") commitHsl();
-          }}
-        />
-      ))}
-      <PercentageInput
-        aria-label="Alpha"
-        inputMode="numeric"
-        value={alphaInput}
-        onChange={(event) => setAlphaInput(event.target.value)}
-        onFocus={() => setIsAlphaFocused(true)}
-        onBlur={() => {
-          setIsAlphaFocused(false);
-          commitAlpha();
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") commitAlpha();
-        }}
-      />
-    </div>
-  );
-}
-
 export type ColorPickerFormatProps = HTMLAttributes<HTMLDivElement>;
 
 export function ColorPickerFormat({
@@ -807,11 +717,23 @@ export function ColorPickerFormat({
   if (mode === "hex")
     return <HexFormatInput className={className} {...props} />;
   if (mode === "rgb")
-    return <RgbFormatInput className={className} {...props} />;
+    return (
+      <MultiChannelFormatInput
+        config={RGB_CONFIG}
+        className={className}
+        {...props}
+      />
+    );
   if (mode === "css")
     return <CssFormatInput className={className} {...props} />;
   if (mode === "hsl")
-    return <HslFormatInput className={className} {...props} />;
+    return (
+      <MultiChannelFormatInput
+        config={HSL_CONFIG}
+        className={className}
+        {...props}
+      />
+    );
 
   return null;
 }
