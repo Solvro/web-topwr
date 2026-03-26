@@ -204,13 +204,13 @@ export function ColorPicker({
     >
       <div
         className={cn("flex size-full flex-col gap-4", className)}
+        {...props}
         onPointerDown={(event) => {
           if (!(event.target instanceof HTMLInputElement)) {
             (document.activeElement as HTMLElement | null)?.blur();
           }
           props.onPointerDown?.(event);
         }}
-        {...props}
       />
     </ColorPickerContext.Provider>
   );
@@ -472,9 +472,9 @@ function PercentageInput({ className, ...props }: PercentageInputProps) {
 function MultiChannelFormatInput({
   config,
   className,
-}: {
+  ...props
+}: HTMLAttributes<HTMLDivElement> & {
   config: ChannelConfig;
-  className?: string;
 }) {
   const { hue, saturation, lightness, setHue, setSaturation, setLightness } =
     useColorPicker();
@@ -525,6 +525,7 @@ function MultiChannelFormatInput({
         "flex items-center -space-x-px rounded-md shadow-sm",
         className,
       )}
+      {...props}
     >
       {channelInputs.map((value, index) => (
         <Input
@@ -570,7 +571,10 @@ function MultiChannelFormatInput({
   );
 }
 
-function HexFormatInput({ className }: { className?: string }) {
+function HexFormatInput({
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) {
   const { hue, saturation, lightness, setHue, setSaturation, setLightness } =
     useColorPicker();
   const { alphaInput, setAlphaInput, setIsAlphaFocused, commitAlpha } =
@@ -604,6 +608,7 @@ function HexFormatInput({ className }: { className?: string }) {
         "relative flex w-full items-center -space-x-px rounded-md shadow-sm",
         className,
       )}
+      {...props}
     >
       <Input
         aria-label="Hex color"
@@ -638,7 +643,10 @@ function HexFormatInput({ className }: { className?: string }) {
   );
 }
 
-function CssFormatInput({ className }: { className?: string }) {
+function CssFormatInput({
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) {
   const {
     hue,
     saturation,
@@ -686,7 +694,7 @@ function CssFormatInput({ className }: { className?: string }) {
   }, [cssInput, currentCss, setHue, setSaturation, setLightness, setAlpha]);
 
   return (
-    <div className={cn("w-full rounded-md shadow-sm", className)}>
+    <div className={cn("w-full rounded-md shadow-sm", className)} {...props}>
       <Input
         aria-label="CSS color"
         className="bg-secondary h-8 w-full px-2 text-xs shadow-none"
