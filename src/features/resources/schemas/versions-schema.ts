@@ -1,10 +1,14 @@
 import { z } from "zod";
 
-import { NumericIdSchema, RequiredStringSchema } from "@/schemas";
+import {
+  NumericIdSchema,
+  RequiredStringSchema,
+  StringDateSchema,
+} from "@/schemas";
 
 export const VersionsSchema = z.object({
   name: RequiredStringSchema,
   description: z.string().nullish(),
-  releaseDate: RequiredStringSchema.datetime(),
+  releaseDate: StringDateSchema,
   milestoneId: NumericIdSchema,
 });

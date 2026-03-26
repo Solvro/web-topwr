@@ -1401,8 +1401,8 @@ export const RESOURCE_METADATA = {
       },
       defaultValues: {
         specialDate: "",
-        openTime: "00:00:00",
-        closeTime: "00:00:00",
+        openTime: "08:00",
+        closeTime: "16:00",
         libraryId: -1,
       },
     },

@@ -2,6 +2,7 @@
 
 import { format, isValid, parseISO, set } from "date-fns";
 
+import { TooltipWrapper } from "@/components/core/tooltip-wrapper";
 import { isEmptyValue } from "@/utils";
 
 import { DatePicker } from "./date-picker";
@@ -42,7 +43,21 @@ export function DateTimePicker({
         disabled={disabled}
         onChange={handleDateChange}
       />
-      <TimePicker value={value} disabled={disabled} onChange={onChange} />
+      <TooltipWrapper
+        tooltip={
+          date == null
+            ? "Najpierw wybierz datę, aby ustawić godzinę"
+            : undefined
+        }
+      >
+        <div>
+          <TimePicker
+            value={value}
+            disabled={disabled || date == null}
+            onChange={onChange}
+          />
+        </div>
+      </TooltipWrapper>
     </InputRow>
   );
 }

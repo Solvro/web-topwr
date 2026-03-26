@@ -34,18 +34,13 @@ export function TimePicker({
   onChange: (date: string | null) => void;
   disabled?: boolean;
 }) {
-  const inputValue = (() => {
-    if (isEmptyValue(value)) {
-      return "00:00:00";
-    }
-    if (value instanceof Date) {
-      return formatDate(value, "HH:mm:ss");
-    }
-    if (isISODatetime(value)) {
-      return formatDate(parseISO(value), "HH:mm:ss");
-    }
-    return value;
-  })();
+  const base = toBaseDate(value);
+  const inputValue =
+    base == null
+      ? isEmptyValue(value)
+        ? "00:00:00"
+        : String(value)
+      : formatDate(base, "HH:mm:ss");
 
   const handleTimeChange = (event_: ChangeEvent<HTMLInputElement>) => {
     const timeValue = event_.target.value;
