@@ -1,4 +1,4 @@
-import { formatDate, parse, parseISO } from "date-fns";
+import { formatDate, isValid, parse, parseISO } from "date-fns";
 import { Clock } from "lucide-react";
 import type { ChangeEvent } from "react";
 
@@ -17,10 +17,11 @@ function isISODatetime(value: string): boolean {
 
 function toBaseDate(value: Date | string | null): Date | null {
   if (value instanceof Date) {
-    return value;
+    return isValid(value) ? value : null;
   }
   if (typeof value === "string" && isISODatetime(value)) {
-    return parseISO(value);
+    const parsedValue = parseISO(value);
+    return isValid(parsedValue) ? parsedValue : null;
   }
   return null;
 }
