@@ -139,6 +139,7 @@ export function ColorPicker({
           if (!(event.target instanceof HTMLInputElement)) {
             (document.activeElement as HTMLElement | null)?.blur();
           }
+          props.onPointerDown?.(event);
         }}
         {...props}
       />
@@ -172,11 +173,9 @@ export const ColorPickerSelection = memo(
             hsl(${String(hue)}, 100%, 50%)`;
     }, [hue]);
 
-    const handlePointerMove = useCallback(
+    const applyPointerPosition = useCallback(
       (event: PointerEvent) => {
-        if (!(isDragging && containerRef.current != null)) {
-          return;
-        }
+        if (containerRef.current == null) return;
         const rect = containerRef.current.getBoundingClientRect();
         const x = Math.max(
           0,
@@ -189,11 +188,17 @@ export const ColorPickerSelection = memo(
         setPositionX(x);
         setPositionY(y);
         setSaturation(x * 100);
-        const newLightness = getTopLightness(x) * (1 - y);
-
-        setLightness(newLightness);
+        setLightness(getTopLightness(x) * (1 - y));
       },
-      [isDragging, setSaturation, setLightness],
+      [setSaturation, setLightness],
+    );
+
+    const handlePointerMove = useCallback(
+      (event: PointerEvent) => {
+        if (!isDragging) return;
+        applyPointerPosition(event);
+      },
+      [isDragging, applyPointerPosition],
     );
 
     useEffect(() => {
@@ -218,7 +223,7 @@ export const ColorPickerSelection = memo(
         onPointerDown={(event_) => {
           event_.preventDefault();
           setIsDragging(true);
-          handlePointerMove(event_.nativeEvent);
+          applyPointerPosition(event_.nativeEvent);
         }}
         ref={containerRef}
         style={{
