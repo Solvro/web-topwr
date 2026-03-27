@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { IsoTimestampSchema, RequiredStringSchema } from "@/schemas";
+import { RequiredStringSchema, StringDateSchema } from "@/schemas";
 
 export const SpecialHourSchema = z.object({
-  specialDate: IsoTimestampSchema,
+  specialDate: StringDateSchema,
   openTime: RequiredStringSchema,
   closeTime: RequiredStringSchema,
   libraryId: z.number(),

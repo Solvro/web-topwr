@@ -1012,7 +1012,7 @@ export const RESOURCE_METADATA = {
       defaultValues: {
         name: "",
         description: null,
-        releaseDate: getRoundedDate(0),
+        releaseDate: "",
         milestoneId: -1,
       },
     },
@@ -1342,7 +1342,8 @@ export const RESOURCE_METADATA = {
     },
   },
   [Resource.RegularHours]: {
-    apiPath: "library_regular_hours",
+    queryName: "regularHours",
+    apiPath: "regular_hours",
     itemMapper: (item) => ({
       name: POLISH_WEEKDAYS[item.weekDay],
       description: `${item.openTime} - ${item.closeTime}`,
@@ -1369,14 +1370,15 @@ export const RESOURCE_METADATA = {
       },
       defaultValues: {
         weekDay: Weekday.Monday,
-        openTime: "08:00",
-        closeTime: "16:00",
+        openTime: "08:00:00",
+        closeTime: "16:00:00",
         libraryId: -1,
       },
     },
   },
   [Resource.SpecialHours]: {
-    apiPath: "library_special_hours",
+    queryName: "specialHours",
+    apiPath: "special_hours",
     itemMapper: (item) => ({
       name: item.specialDate,
       description: `${item.openTime} - ${item.closeTime}`,
@@ -1398,9 +1400,9 @@ export const RESOURCE_METADATA = {
         },
       },
       defaultValues: {
-        specialDate: getRoundedDate(0),
-        openTime: "08:00",
-        closeTime: "16:00",
+        specialDate: "",
+        openTime: "08:00:00",
+        closeTime: "16:00:00",
         libraryId: -1,
       },
     },
