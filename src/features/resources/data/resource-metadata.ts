@@ -717,6 +717,10 @@ export const RESOURCE_METADATA = {
     icon: Wrench,
     form: {
       inputs: {
+        textInputs: {
+          sksMicroserviceUrl: { label: "URL mikroserwisu SKS" },
+          parkingMicroserviceUrl: { label: "URL mikroserwisu parkingowego" },
+        },
         numberInputs: {
           daySwapLookahead: { label: "Horyzont czasowy zamiany dni" },
         },
@@ -732,6 +736,8 @@ export const RESOURCE_METADATA = {
         },
       },
       defaultValues: {
+        sksMicroserviceUrl: "",
+        parkingMicroserviceUrl: "",
         cmsReferenceNumber: -1,
         daySwapLookahead: -1,
         translatorReferenceNumber: -1,
