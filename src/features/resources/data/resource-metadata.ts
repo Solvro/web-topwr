@@ -1012,7 +1012,7 @@ export const RESOURCE_METADATA = {
       defaultValues: {
         name: "",
         description: null,
-        releaseDate: getRoundedDate(0),
+        releaseDate: "",
         milestoneId: -1,
       },
     },
