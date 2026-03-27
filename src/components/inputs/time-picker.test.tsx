@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import { formatDate, parseISO } from "date-fns";
 import { describe, expect, it } from "vitest";
 
 import { InputComponentWrapper } from "@/tests/unit";
@@ -28,8 +29,9 @@ describe("TimePicker Component", () => {
   });
 
   it("should render ISO datetime value correctly", () => {
-    const { input } = renderTimePicker("2026-03-25T12:30:45Z");
-    expect(input).toHaveValue("13:30:45");
+    const value = "2026-03-25T12:30:45Z";
+    const { input } = renderTimePicker(value);
+    expect(input).toHaveValue(formatDate(parseISO(value), "HH:mm:ss"));
   });
 
   it("should not throw for invalid string value", () => {
