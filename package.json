@@ -60,7 +60,7 @@
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@solvro/next-view-transitions": "^0.4.3",
-    "@t3-oss/env-nextjs": "^0.13.8",
+    "@t3-oss/env-nextjs": "^0.13.11",
     "@tanstack/react-query": "^5.90.5",
     "@tiptap/extension-code-block-lowlight": "~3.8.0",
     "@tiptap/extension-color": "~3.8.0",
