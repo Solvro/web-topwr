@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 
 import { env } from "@/config/env";
+import type { RefreshTokenResponse } from "@/features/backend/types";
 import { logger, parseError } from "@/features/logging";
 
 import { AUTH_STATE_COOKIE_NAME } from "../constants";
@@ -8,13 +9,6 @@ import { AuthStateSchema } from "../schemas/auth-state-schema";
 import type { AuthState } from "../types/internal";
 import { getAuthStateNode } from "./get-auth-state.node";
 import { getCookieOptions } from "./get-cookie-options";
-
-interface RefreshResponse {
-  newAccessToken: {
-    accessToken: string;
-    accessExpiresInMs: number;
-  };
-}
 
 export async function doRefreshToken(
   authState: AuthState,
@@ -32,7 +26,7 @@ export async function doRefreshToken(
       return null;
     }
 
-    const { newAccessToken } = (await response.json()) as RefreshResponse;
+    const { newAccessToken } = (await response.json()) as RefreshTokenResponse;
     const now = Date.now();
     const currentState = getAuthStateNode();
     if (currentState == null) {
