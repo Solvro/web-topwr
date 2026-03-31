@@ -18,6 +18,7 @@ import { DasLinkSchema } from "../schemas/das-link-schema";
 import { DasMapSchema } from "../schemas/das-map-schema";
 import { DasSchema } from "../schemas/das-schema";
 import { DasStandSchema } from "../schemas/das-stand-schema";
+import { DasTimetableEntrySchema } from "../schemas/das-timetable-entry.-schema";
 import { DasTimetableSchema } from "../schemas/das-timetable-schema";
 import { DaySwapSchema } from "../schemas/day-swap-schema";
 import { DepartmentLinkSchema } from "../schemas/department-link-schema";
@@ -65,6 +66,7 @@ export const RESOURCE_SCHEMAS = {
   [Resource.DasMap]: DasMapSchema,
   [Resource.DasStand]: DasStandSchema,
   [Resource.DasTimetable]: DasTimetableSchema,
+  [Resource.DasTimetableEntry]: DasTimetableEntrySchema,
   [Resource.DaySwaps]: DaySwapSchema,
   [Resource.Departments]: DepartmentSchema,
   [Resource.DepartmentLinks]: DepartmentLinkSchema,
