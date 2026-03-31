@@ -429,6 +429,36 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.DasLink]: {
+    queryName: "dasLink",
+    apiPath: "das_link",
+    itemMapper: (item) => ({
+      name: item.title,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          link: { label: "Link" },
+          title: { label: "Tytuł" },
+          subtitle: { label: "Podpis" },
+        },
+        selectInputs: {
+          type: {
+            label: "Rodzaj linku",
+            optionEnum: LinkType,
+            optionLabels: SELECT_OPTION_LABELS.LINK_TYPE,
+          },
+        },
+      },
+      defaultValues: {
+        dasId: -1,
+        link: "",
+        type: LinkType.Default,
+        title: "",
+        subtitle: null,
+      },
+    },
+  },
   [Resource.DaySwaps]: {
     queryName: "daySwaps",
     apiPath: "day_swaps",
