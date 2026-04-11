@@ -140,7 +140,7 @@ const DEFAULT_COORDINATES = {
   longitude: 17.038_538,
 } as const;
 
-/** Common address inputs configuration */
+/** Common address input configuration */
 const ADDRESS_LINE_INPUTS = {
   textInputs: {
     addressLine1: { label: "Adres — linia 1" },
@@ -148,7 +148,7 @@ const ADDRESS_LINE_INPUTS = {
   },
 } as const;
 
-/** Coordinates inputs configuration */
+/** Coordinate input configuration */
 const COORDINATES_INPUTS = {
   numberInputs: {
     latitude: { label: "Szerokość geograficzna" },

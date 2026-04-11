@@ -9,20 +9,25 @@ import type { AbstractResourceFormInputs } from "../types";
 
 type SynchronousReactNode = Exclude<ReactNode, Promise<ReactNode>>;
 
+type AbstractResourceFormInputSet<T extends Resource> = NonNullable<
+  Exclude<
+    ValueOf<AbstractResourceFormInputs<T>>,
+    AbstractResourceFormInputs<T>[]
+  >
+>;
+
 /** Renders all input components of a given type (e.g. text inputs). */
 export function ArfInputSet<
   T extends Resource,
-  Y extends ValueOf<AbstractResourceFormInputs<T>>,
+  Y extends AbstractResourceFormInputSet<T>,
 >({
   mapper,
   inputs,
   className,
   container = false,
 }: {
-  mapper: (
-    input: [keyof NonNullable<Y>, NonNullable<ValueOf<NonNullable<Y>>>],
-  ) => SynchronousReactNode;
-  inputs: Y;
+  mapper: (input: [keyof Y, NonNullable<Y[keyof Y]>]) => SynchronousReactNode;
+  inputs?: Y | null;
   className?: string;
   container?: boolean;
 }) {
@@ -30,17 +35,12 @@ export function ArfInputSet<
     return null;
   }
 
-  const mapped = typedEntries(inputs as Record<string, unknown>).map(
-    ([key, options]) => {
-      if (options == null) {
-        return null;
-      }
-      return mapper([
-        key as keyof NonNullable<Y>,
-        options as NonNullable<ValueOf<NonNullable<Y>>>,
-      ]);
-    },
-  );
+  const mapped = typedEntries(inputs).map(([key, options]) => {
+    if (options == null) {
+      return null;
+    }
+    return mapper([key, options as NonNullable<Y[keyof Y]>]);
+  });
 
   return container ? (
     <InputRow className={className}>{mapped}</InputRow>
