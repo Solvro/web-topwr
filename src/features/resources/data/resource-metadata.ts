@@ -142,8 +142,18 @@ const DEFAULT_COORDINATES = {
 
 /** Common address input configuration */
 const ADDRESS_LINE_INPUTS = {
-  addressLine1: { label: "Adres — linia 1" },
-  addressLine2: { label: "Adres — linia 2" },
+  textInputs: {
+    addressLine1: { label: "Adres — linia 1" },
+    addressLine2: { label: "Adres — linia 2" },
+  },
+} as const;
+
+/** Coordinate input configuration */
+const COORDINATES_INPUTS = {
+  numberInputs: {
+    latitude: { label: "Szerokość geograficzna" },
+    longitude: { label: "Długość geograficzna" },
+  },
 } as const;
 
 /** Helper identity function to define array inputs with correct types */
@@ -468,26 +478,32 @@ export const RESOURCE_METADATA = {
     icon: University,
     form: {
       inputs: {
-        textInputs: {
-          name: { label: "Nazwa" },
-          code: { label: "Kod wydziału (z numerem)" },
-          betterCode: { label: "Kod wydziału (ze skrótem)" },
-          ...ADDRESS_LINE_INPUTS,
-        },
         imageInputs: {
           logoKey: { label: "Logo", type: ImageType.Logo },
         },
-        richTextInputs: { description: { label: "Opis" } },
-        colorInputs: {
-          gradientStart: { label: "Kolor początkowy gradientu" },
-          gradientStop: { label: "Kolor końcowy gradientu" },
+        textInputs: {
+          name: { label: "Nazwa" },
         },
+        groupInputs: [
+          {
+            textInputs: {
+              code: { label: "Kod wydziału (z numerem)" },
+              betterCode: { label: "Kod wydziału (ze skrótem)" },
+            },
+          },
+          ADDRESS_LINE_INPUTS,
+        ],
         selectInputs: {
           branch: {
             label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
+        },
+        richTextInputs: { description: { label: "Opis" } },
+        colorInputs: {
+          gradientStart: { label: "Kolor początkowy gradientu" },
+          gradientStop: { label: "Kolor końcowy gradientu" },
         },
         relationInputs: {
           [Resource.Majors]: {
@@ -1085,17 +1101,33 @@ export const RESOURCE_METADATA = {
     icon: Building,
     form: {
       inputs: {
+        imageInputs: {
+          coverKey: { label: "Zdjęcie okładki", type: ImageType.Banner },
+        },
         textInputs: {
           identifier: { label: "Identyfikator budynku (np. A1, C13)" },
           specialName: { label: "Specjalna nazwa budynku" },
-          ...ADDRESS_LINE_INPUTS,
-          externalDigitalGuideIdOrUrl: {
-            label: "ID lub URL zewnętrznego przewodnika",
-          },
         },
-        numberInputs: {
-          latitude: { label: "Szerokość geograficzna" },
-          longitude: { label: "Długość geograficzna" },
+        groupInputs: [
+          {
+            textInputs: {
+              externalDigitalGuideIdOrUrl: {
+                label: "ID lub URL zewnętrznego przewodnika",
+              },
+            },
+            selectInputs: {
+              externalDigitalGuideMode: {
+                label: "Tryb przewodnika cyfrowego",
+                optionEnum: ExternalDigitalGuideMode,
+                optionLabels: SELECT_OPTION_LABELS.MAP.EXTERNAL_GUIDE_MODE,
+              },
+            },
+          },
+          ADDRESS_LINE_INPUTS,
+          COORDINATES_INPUTS,
+        ],
+        checkboxInputs: {
+          haveFood: { label: "Czy budynek ma miejsca z jedzeniem?" },
         },
         selectInputs: {
           branch: {
@@ -1103,17 +1135,6 @@ export const RESOURCE_METADATA = {
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
-          externalDigitalGuideMode: {
-            label: "Tryb przewodnika cyfrowego",
-            optionEnum: ExternalDigitalGuideMode,
-            optionLabels: SELECT_OPTION_LABELS.MAP.EXTERNAL_GUIDE_MODE,
-          },
-        },
-        checkboxInputs: {
-          haveFood: { label: "Czy budynek ma miejsca z jedzeniem?" },
-        },
-        imageInputs: {
-          coverKey: { label: "Zdjęcie okładki", type: ImageType.Banner },
         },
         relationInputs: {
           [Resource.Campuses]: {
@@ -1146,13 +1167,11 @@ export const RESOURCE_METADATA = {
     icon: Bath,
     form: {
       inputs: {
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
         textInputs: {
           room: { label: "Numer pokoju/pomieszczenia" },
-          ...ADDRESS_LINE_INPUTS,
-        },
-        numberInputs: {
-          latitude: { label: "Szerokość geograficzna" },
-          longitude: { label: "Długość geograficzna" },
         },
         textareaInputs: {
           instructions: { label: "Instrukcje użytkowania" },
@@ -1164,9 +1183,7 @@ export const RESOURCE_METADATA = {
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
         },
-        imageInputs: {
-          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
-        },
+        groupInputs: [ADDRESS_LINE_INPUTS, COORDINATES_INPUTS],
         relationInputs: {
           [Resource.Buildings]: {
             type: RelationType.ManyToOne,
@@ -1195,13 +1212,10 @@ export const RESOURCE_METADATA = {
     icon: SquareActivity,
     form: {
       inputs: {
-        textInputs: {
-          ...ADDRESS_LINE_INPUTS,
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
         },
-        numberInputs: {
-          latitude: { label: "Szerokość geograficzna" },
-          longitude: { label: "Długość geograficzna" },
-        },
+        groupInputs: [ADDRESS_LINE_INPUTS, COORDINATES_INPUTS],
         textareaInputs: {
           instructions: { label: "Instrukcje użytkowania" },
         },
@@ -1211,9 +1225,6 @@ export const RESOURCE_METADATA = {
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
-        },
-        imageInputs: {
-          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
         },
         relationInputs: {
           [Resource.Buildings]: {
@@ -1242,23 +1253,19 @@ export const RESOURCE_METADATA = {
     icon: UtensilsCrossed,
     form: {
       inputs: {
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
         textInputs: {
           name: { label: "Nazwa miejsca" },
-          ...ADDRESS_LINE_INPUTS,
         },
-        numberInputs: {
-          latitude: { label: "Szerokość geograficzna" },
-          longitude: { label: "Długość geograficzna" },
-        },
+        groupInputs: [ADDRESS_LINE_INPUTS, COORDINATES_INPUTS],
         selectInputs: {
           branch: {
             label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
-        },
-        imageInputs: {
-          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
         },
         relationInputs: {
           [Resource.Buildings]: {
@@ -1297,26 +1304,22 @@ export const RESOURCE_METADATA = {
     icon: Library,
     form: {
       inputs: {
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
         textInputs: {
           title: { label: "Nazwa biblioteki" },
           room: { label: "Numer pokoju" },
-          ...ADDRESS_LINE_INPUTS,
           phone: { label: "Numer telefonu" },
           email: { label: "Adres email" },
         },
-        numberInputs: {
-          latitude: { label: "Szerokość geograficzna" },
-          longitude: { label: "Długość geograficzna" },
-        },
+        groupInputs: [ADDRESS_LINE_INPUTS, COORDINATES_INPUTS],
         selectInputs: {
           branch: {
             label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
-        },
-        imageInputs: {
-          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
         },
         relationInputs: {
           [Resource.Buildings]: {
@@ -1422,23 +1425,20 @@ export const RESOURCE_METADATA = {
     icon: Slice,
     form: {
       inputs: {
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
         textInputs: {
           roomOrNearby: { label: "Numer pokoju lub opis lokalizacji" },
           floor: { label: "Piętro" },
         },
-        numberInputs: {
-          latitude: { label: "Szerokość geograficzna" },
-          longitude: { label: "Długość geograficzna" },
-        },
+        groupInputs: [COORDINATES_INPUTS],
         selectInputs: {
           branch: {
             label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
-        },
-        imageInputs: {
-          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
         },
         relationInputs: {
           [Resource.Buildings]: {
@@ -1466,31 +1466,36 @@ export const RESOURCE_METADATA = {
     icon: Train,
     form: {
       inputs: {
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
         textInputs: {
           name: { label: "Nazwa stacji" },
-          ...ADDRESS_LINE_INPUTS,
-          externalDigitalGuideIdOrUrl: {
-            label: "ID lub URL zewnętrznego przewodnika",
+        },
+        groupInputs: [
+          {
+            textInputs: {
+              externalDigitalGuideIdOrUrl: {
+                label: "ID lub URL zewnętrznego przewodnika",
+              },
+            },
+            selectInputs: {
+              externalDigitalGuideMode: {
+                label: "Tryb przewodnika cyfrowego",
+                optionEnum: ExternalDigitalGuideMode,
+                optionLabels: SELECT_OPTION_LABELS.MAP.EXTERNAL_GUIDE_MODE,
+              },
+            },
           },
-        },
-        numberInputs: {
-          latitude: { label: "Szerokość geograficzna" },
-          longitude: { label: "Długość geograficzna" },
-        },
+          ADDRESS_LINE_INPUTS,
+          COORDINATES_INPUTS,
+        ],
         selectInputs: {
           branch: {
             label: "Filia",
             optionEnum: UniversityBranch,
             optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
           },
-          externalDigitalGuideMode: {
-            label: "Tryb przewodnika cyfrowego",
-            optionEnum: ExternalDigitalGuideMode,
-            optionLabels: SELECT_OPTION_LABELS.MAP.EXTERNAL_GUIDE_MODE,
-          },
-        },
-        imageInputs: {
-          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
         },
         relationInputs: {
           [Resource.Campuses]: {

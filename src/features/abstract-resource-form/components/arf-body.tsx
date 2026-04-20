@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 import type { ExistingImages, ResourceRelations } from "@/types/components";
 
 import { useArfRelation } from "../hooks/use-arf-relation";
-import type { ArrayInputOptions } from "../types";
+import type { AbstractResourceFormInputs, ArrayInputOptions } from "../types";
 import { isExistingItem } from "../utils/is-existing-item";
 import { ArfInput } from "./arf-input";
 import { ArfInputSet } from "./arf-input-set";
@@ -46,6 +46,8 @@ export function ArfBody<T extends Resource>({
   existingImages,
   relatedResources,
   pivotResources,
+  inputs,
+  isGroup = false,
 }: {
   resource: T;
   control: Control<ResourceFormValues<T>>;
@@ -53,6 +55,8 @@ export function ArfBody<T extends Resource>({
   existingImages: ExistingImages<T>;
   relatedResources: ResourceRelations<T>;
   pivotResources: ResourcePivotRelationData<T>;
+  inputs?: AbstractResourceFormInputs<T>;
+  isGroup?: boolean;
 }) {
   const { setValue } = useFormContext<ResourceFormValues<T>>();
   const relationContext = useArfRelation();
@@ -77,20 +81,119 @@ export function ArfBody<T extends Resource>({
     checkboxInputs,
     arrayInputs,
     relationInputs,
-  } = metadata.form.inputs;
+    groupInputs,
+  } = inputs ?? metadata.form.inputs;
 
   return (
-    <div className="grow basis-0 overflow-y-auto">
-      <div
-        className={cn(
-          "bg-accent text-accent-foreground flex min-h-full flex-col gap-4 rounded-xl p-4",
-          { "md:flex-row": !isEmbedded },
+    <>
+      <ArfInputSet
+        container
+        className="flex-col flex-nowrap"
+        inputs={imageInputs}
+        mapper={([name, input]) => (
+          <FormField
+            key={name}
+            control={control}
+            name={name}
+            render={({ field }) => (
+              <ArfInput
+                declensions={declensions}
+                isEditing={isEditing}
+                inputDefinition={input}
+                noControl
+                noLabel
+              >
+                <ImageUpload
+                  {...field}
+                  value={(field.value ?? null) as string | null}
+                  {...input}
+                  existingImage={existingImages[field.name]}
+                />
+              </ArfInput>
+            )}
+          />
         )}
+      />
+      <div
+        className={
+          isGroup ? "grid grid-cols-1 gap-4 lg:grid-cols-2" : "w-full space-y-4"
+        }
       >
         <ArfInputSet
-          container
-          className="flex-col flex-nowrap"
-          inputs={imageInputs}
+          inputs={textInputs}
+          mapper={([name, input]) => (
+            <FormField
+              key={name}
+              control={control}
+              name={name}
+              render={({ field }) => (
+                <ArfInput
+                  declensions={declensions}
+                  isEditing={isEditing}
+                  inputDefinition={input}
+                >
+                  <Input
+                    placeholder="Wpisz tekst..."
+                    {...field}
+                    value={(field.value ?? "") as string}
+                  />
+                </ArfInput>
+              )}
+            />
+          )}
+        />
+        {groupInputs?.map((group, index) => {
+          const groupKey = `group-${String(
+            Object.values(group)
+              .flatMap((inputMap) => Object.keys((inputMap ?? {}) as object))
+              .join("-") || index,
+          )}`;
+
+          return (
+            <ArfBody
+              key={groupKey}
+              inputs={group}
+              resource={resource}
+              control={control}
+              defaultValues={defaultValues}
+              existingImages={existingImages}
+              relatedResources={relatedResources}
+              pivotResources={pivotResources}
+              isGroup
+            />
+          );
+        })}
+        <ArfInputSet
+          inputs={numberInputs}
+          mapper={([name, input]) => (
+            <FormField
+              key={name}
+              control={control}
+              name={name}
+              render={({ field }) => (
+                <ArfInput
+                  declensions={declensions}
+                  isEditing={isEditing}
+                  inputDefinition={input}
+                >
+                  <Input
+                    type="number"
+                    step="any"
+                    placeholder="Wpisz liczbę..."
+                    {...field}
+                    value={field.value as number | ""}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      field.onChange(value === "" ? null : Number(value));
+                    }}
+                  />
+                </ArfInput>
+              )}
+            />
+          )}
+        />
+        <ArfInputSet
+          inputs={timeInputs}
           mapper={([name, input]) => (
             <FormField
               key={name}
@@ -102,371 +205,285 @@ export function ArfBody<T extends Resource>({
                   isEditing={isEditing}
                   inputDefinition={input}
                   noControl
-                  noLabel
                 >
-                  <ImageUpload
-                    {...field}
-                    value={(field.value ?? null) as string | null}
-                    {...input}
-                    existingImage={existingImages[field.name]}
+                  <TimePicker
+                    value={field.value as string | null}
+                    onChange={field.onChange}
                   />
                 </ArfInput>
               )}
             />
           )}
         />
-        <div className="w-full space-y-4">
-          <ArfInputSet
-            inputs={textInputs}
-            mapper={([name, input]) => (
-              <FormField
-                key={name}
-                control={control}
-                name={name}
-                render={({ field }) => (
-                  <ArfInput
-                    declensions={declensions}
-                    isEditing={isEditing}
-                    inputDefinition={input}
-                  >
-                    <Input
-                      placeholder="Wpisz tekst..."
-                      {...field}
-                      value={(field.value ?? "") as string}
-                    />
-                  </ArfInput>
-                )}
-              />
-            )}
-          />
-          <ArfInputSet
-            inputs={numberInputs}
-            mapper={([name, input]) => (
-              <FormField
-                key={name}
-                control={control}
-                name={name}
-                render={({ field }) => (
-                  <ArfInput
-                    declensions={declensions}
-                    isEditing={isEditing}
-                    inputDefinition={input}
-                  >
-                    <Input
-                      type="number"
-                      step="any"
-                      placeholder="Wpisz liczbę..."
-                      {...field}
-                      value={field.value as number | ""}
-                      onChange={(event) => {
-                        const value = event.target.value;
-                        field.onChange(value === "" ? null : Number(value));
-                      }}
-                    />
-                  </ArfInput>
-                )}
-              />
-            )}
-          />
-          <ArfInputSet
-            inputs={timeInputs}
-            mapper={([name, input]) => (
-              <FormField
-                key={name}
-                control={control}
-                name={name}
-                render={({ field }) => (
-                  <ArfInput
-                    declensions={declensions}
-                    isEditing={isEditing}
-                    inputDefinition={input}
-                    noControl
-                  >
-                    <TimePicker
-                      value={field.value as string | null}
-                      onChange={field.onChange}
-                    />
-                  </ArfInput>
-                )}
-              />
-            )}
-          />
-          <ArfInputSet
-            inputs={textareaInputs}
-            mapper={([name, input]) => (
-              <FormField
-                key={name}
-                control={control}
-                name={name}
-                render={({ field }) => (
-                  <ArfInput
-                    declensions={declensions}
-                    isEditing={isEditing}
-                    inputDefinition={input}
-                  >
-                    <Textarea
-                      placeholder="Wpisz tekst..."
-                      {...field}
-                      value={(field.value ?? "") as string}
-                    />
-                  </ArfInput>
-                )}
-              />
-            )}
-          />
-          <ArfInputSet
-            container
-            inputs={dateInputs}
-            mapper={([name, input]) => (
-              <FormField
-                key={name}
-                control={control}
-                name={name}
-                render={({ field }) => (
-                  <ArfInput
-                    declensions={declensions}
-                    isEditing={isEditing}
-                    inputDefinition={input}
-                    noControl
-                  >
-                    <DatePicker
-                      {...field}
-                      value={field.value as string | null}
-                    />
-                  </ArfInput>
-                )}
-              />
-            )}
-          />
-          <ArfInputSet
-            inputs={dateTimeInputs}
-            mapper={([name, input]) => (
-              <FormField
-                key={name}
-                control={control}
-                name={name}
-                render={({ field }) => (
-                  <ArfInput
-                    declensions={declensions}
-                    isEditing={isEditing}
-                    inputDefinition={input}
-                    noControl
-                  >
-                    <DateTimePicker
-                      value={field.value as string | null}
-                      onChange={field.onChange}
-                    />
-                  </ArfInput>
-                )}
-              />
-            )}
-          />
-          <ArfInputSet
-            inputs={richTextInputs}
-            mapper={([name, input]) => (
-              <FormField
-                key={name}
-                control={control}
-                name={name}
-                render={({ field }) => (
-                  <ArfInput
-                    declensions={declensions}
-                    isEditing={isEditing}
-                    inputDefinition={input}
-                  >
-                    <RichTextInput
-                      value={(field.value ?? "") as string}
-                      onChange={field.onChange}
-                      placeholder="Wpisz opis..."
-                      aria-label={input.label}
-                    />
-                  </ArfInput>
-                )}
-              />
-            )}
-          />
-          <ArfInputSet
-            container
-            inputs={colorInputs}
-            mapper={([name, input]) => (
-              <FormField
-                key={name}
-                control={control}
-                name={name}
-                render={({ field }) => (
-                  <ArfInput
-                    declensions={declensions}
-                    isEditing={isEditing}
-                    inputDefinition={input}
-                  >
-                    <ColorInput
-                      {...field}
-                      value={field.value as string | null}
-                    />
-                  </ArfInput>
-                )}
-              />
-            )}
-          />
-          <ArfInputSet
-            container
-            inputs={checkboxInputs}
-            mapper={([name, input]) => (
-              <FormField
-                key={name}
-                control={control}
-                name={name}
-                render={({ field }) => (
-                  // TODO: allow checkbox inputs to be disabled
-                  <CheckboxInput
-                    value={(field.value ?? false) as boolean}
-                    label={input.label}
+        <ArfInputSet
+          inputs={textareaInputs}
+          mapper={([name, input]) => (
+            <FormField
+              key={name}
+              control={control}
+              name={name}
+              render={({ field }) => (
+                <ArfInput
+                  declensions={declensions}
+                  isEditing={isEditing}
+                  inputDefinition={input}
+                >
+                  <Textarea
+                    placeholder="Wpisz tekst..."
+                    {...field}
+                    value={(field.value ?? "") as string}
+                  />
+                </ArfInput>
+              )}
+            />
+          )}
+        />
+        <ArfInputSet
+          container
+          inputs={dateInputs}
+          mapper={([name, input]) => (
+            <FormField
+              key={name}
+              control={control}
+              name={name}
+              render={({ field }) => (
+                <ArfInput
+                  declensions={declensions}
+                  isEditing={isEditing}
+                  inputDefinition={input}
+                  noControl
+                >
+                  <DatePicker {...field} value={field.value as string | null} />
+                </ArfInput>
+              )}
+            />
+          )}
+        />
+        <ArfInputSet
+          inputs={dateTimeInputs}
+          mapper={([name, input]) => (
+            <FormField
+              key={name}
+              control={control}
+              name={name}
+              render={({ field }) => (
+                <ArfInput
+                  declensions={declensions}
+                  isEditing={isEditing}
+                  inputDefinition={input}
+                  noControl
+                >
+                  <DateTimePicker
+                    value={field.value as string | null}
                     onChange={field.onChange}
                   />
-                )}
-              />
-            )}
-          />
-          {(selectInputs ?? arrayInputs ?? relationInputs) == null ? null : (
-            <div
-              className={cn("grid grid-cols-1 items-start gap-4", {
-                "lg:grid-cols-2": !isEmbedded,
-              })}
-            >
-              <ArfInputSet
-                inputs={selectInputs}
-                mapper={([name, input]) => (
-                  <FormField
-                    key={name}
-                    control={control}
-                    name={name}
-                    render={({ field }) => (
-                      <ArfInput
-                        declensions={declensions}
-                        isEditing={isEditing}
-                        inputDefinition={input}
-                      >
-                        <SelectInput
-                          {...field}
-                          key={name}
-                          label={input.label}
-                          options={<SelectOptions input={input} />}
-                        />
-                      </ArfInput>
-                    )}
-                  />
-                )}
-              />
-              <ArfInputSet
-                inputs={arrayInputs}
-                mapper={([name, { label, ...options }]) => (
-                  <FormField
-                    key={name}
-                    control={control}
-                    name={name}
-                    render={({ field }) => (
-                      <ArfInput
-                        declensions={declensions}
-                        isEditing={isEditing}
-                        inputDefinition={{ label, ...options }}
-                      >
-                        <ArrayInput
-                          name={field.name}
-                          value={field.value as string[]}
-                          onChange={field.onChange}
-                          label={label}
-                          inputOptions={options as ArrayInputOptions}
-                          relatedResources={relatedResources}
-                        />
-                      </ArfInput>
-                    )}
-                  />
-                )}
-              />
-              <ArfInputSet
-                inputs={relationInputs}
-                mapper={([
-                  untypedResourceRelation,
-                  untypedRelationDefinition,
-                ]) => {
-                  // these type assertions are needed because the values are extracted from RESOURCE_METADATA
-                  // the types are inferred from the structure of RESOURCE_METADATA, so they are fundamentally equivalent
-                  const resourceRelation =
-                    untypedResourceRelation as ResourceRelation<T>;
-                  const relationDefinition =
-                    untypedRelationDefinition as RelationDefinition<
-                      T,
-                      typeof resourceRelation
-                    >;
-                  return (
-                    <ArfRelationInput
-                      key={`${resource}-multiselect-${resourceRelation}`}
-                      resource={resource}
-                      resourceRelation={resourceRelation}
-                      relationDefinition={relationDefinition}
-                      relatedResources={relatedResources}
-                      pivotResources={pivotResources}
-                      control={control}
-                      defaultValues={defaultValues}
-                    />
-                  );
-                }}
-              />
-            </div>
+                </ArfInput>
+              )}
+            />
           )}
-          {bumpInputs != null && Object.keys(bumpInputs).length > 0 ? (
-            <div className="text-muted-foreground flex gap-1 text-xs">
-              <Info className="size-4" />
-              <p>
-                Zmiana poniższych wartości możliwa tylko za pomocą przycisku
-                podbicia.
-              </p>
-            </div>
-          ) : null}
-          <ArfInputSet
-            inputs={bumpInputs}
-            mapper={([name, input]) => (
-              <FormField
-                key={name}
-                control={control}
-                name={name}
-                render={({ field }) => (
-                  <ArfInput
-                    declensions={declensions}
-                    isEditing={isEditing}
-                    inputDefinition={{ ...input, immutable: true }}
-                    tooltip={null}
-                    actionButton={
-                      <BumpValueButton
-                        resource={resource}
-                        field={name}
-                        bumpPath={input.bumpPath}
-                        currentValue={field.value as number}
-                        onSuccess={(newValue) => {
-                          setValue(
-                            name,
-                            newValue as FieldPathValue<
-                              ResourceFormValues<T>,
-                              typeof name
-                            >,
-                          );
-                        }}
+        />
+        <ArfInputSet
+          inputs={richTextInputs}
+          mapper={([name, input]) => (
+            <FormField
+              key={name}
+              control={control}
+              name={name}
+              render={({ field }) => (
+                <ArfInput
+                  declensions={declensions}
+                  isEditing={isEditing}
+                  inputDefinition={input}
+                >
+                  <RichTextInput
+                    value={(field.value ?? "") as string}
+                    onChange={field.onChange}
+                    placeholder="Wpisz opis..."
+                    aria-label={input.label}
+                  />
+                </ArfInput>
+              )}
+            />
+          )}
+        />
+        <ArfInputSet
+          container
+          inputs={colorInputs}
+          mapper={([name, input]) => (
+            <FormField
+              key={name}
+              control={control}
+              name={name}
+              render={({ field }) => (
+                <ArfInput
+                  declensions={declensions}
+                  isEditing={isEditing}
+                  inputDefinition={input}
+                >
+                  <ColorInput {...field} value={field.value as string | null} />
+                </ArfInput>
+              )}
+            />
+          )}
+        />
+        <ArfInputSet
+          container
+          inputs={checkboxInputs}
+          mapper={([name, input]) => (
+            <FormField
+              key={name}
+              control={control}
+              name={name}
+              render={({ field }) => (
+                // TODO: allow checkbox inputs to be disabled
+                <CheckboxInput
+                  value={(field.value ?? false) as boolean}
+                  label={input.label}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+          )}
+        />
+        {(selectInputs ?? arrayInputs ?? relationInputs) == null ? null : (
+          <div
+            className={cn("grid grid-cols-1 items-start gap-4", {
+              "lg:grid-cols-2": !isEmbedded && !isGroup,
+            })}
+          >
+            <ArfInputSet
+              inputs={selectInputs}
+              mapper={([name, input]) => (
+                <FormField
+                  key={name}
+                  control={control}
+                  name={name}
+                  render={({ field }) => (
+                    <ArfInput
+                      declensions={declensions}
+                      isEditing={isEditing}
+                      inputDefinition={input}
+                    >
+                      <SelectInput
+                        {...field}
+                        key={name}
+                        label={input.label}
+                        options={<SelectOptions input={input} />}
                       />
-                    }
-                  >
-                    <Input
-                      placeholder="Wpisz liczbę..."
-                      type="number"
-                      {...field}
-                      value={field.value as number}
+                    </ArfInput>
+                  )}
+                />
+              )}
+            />
+            <ArfInputSet
+              inputs={arrayInputs}
+              mapper={([name, { label, ...options }]) => (
+                <FormField
+                  key={name}
+                  control={control}
+                  name={name}
+                  render={({ field }) => (
+                    <ArfInput
+                      declensions={declensions}
+                      isEditing={isEditing}
+                      inputDefinition={{ label, ...options }}
+                    >
+                      <ArrayInput
+                        name={field.name}
+                        value={field.value as string[]}
+                        onChange={field.onChange}
+                        label={label}
+                        inputOptions={options as ArrayInputOptions}
+                        relatedResources={relatedResources}
+                      />
+                    </ArfInput>
+                  )}
+                />
+              )}
+            />
+            <ArfInputSet
+              inputs={relationInputs}
+              mapper={([
+                untypedResourceRelation,
+                untypedRelationDefinition,
+              ]) => {
+                // these type assertions are needed because the values are extracted from RESOURCE_METADATA
+                // the types are inferred from the structure of RESOURCE_METADATA, so they are fundamentally equivalent
+                const resourceRelation =
+                  untypedResourceRelation as ResourceRelation<T>;
+                const relationDefinition =
+                  untypedRelationDefinition as RelationDefinition<
+                    T,
+                    typeof resourceRelation
+                  >;
+                return (
+                  <ArfRelationInput
+                    key={`${resource}-multiselect-${resourceRelation}`}
+                    resource={resource}
+                    resourceRelation={resourceRelation}
+                    relationDefinition={relationDefinition}
+                    relatedResources={relatedResources}
+                    pivotResources={pivotResources}
+                    control={control}
+                    defaultValues={defaultValues}
+                  />
+                );
+              }}
+            />
+          </div>
+        )}
+        {bumpInputs != null && Object.keys(bumpInputs).length > 0 ? (
+          <div className="text-muted-foreground flex gap-1 text-xs">
+            <Info className="size-4" />
+            <p>
+              Zmiana poniższych wartości możliwa tylko za pomocą przycisku
+              podbicia.
+            </p>
+          </div>
+        ) : null}
+        <ArfInputSet
+          inputs={bumpInputs}
+          mapper={([name, input]) => (
+            <FormField
+              key={name}
+              control={control}
+              name={name}
+              render={({ field }) => (
+                <ArfInput
+                  declensions={declensions}
+                  isEditing={isEditing}
+                  inputDefinition={{ ...input, immutable: true }}
+                  tooltip={null}
+                  actionButton={
+                    <BumpValueButton
+                      resource={resource}
+                      field={name}
+                      bumpPath={input.bumpPath}
+                      currentValue={field.value as number}
+                      onSuccess={(newValue) => {
+                        setValue(
+                          name,
+                          newValue as FieldPathValue<
+                            ResourceFormValues<T>,
+                            typeof name
+                          >,
+                        );
+                      }}
                     />
-                  </ArfInput>
-                )}
-              />
-            )}
-          />
-        </div>
+                  }
+                >
+                  <Input
+                    placeholder="Wpisz liczbę..."
+                    type="number"
+                    {...field}
+                    value={field.value as number}
+                  />
+                </ArfInput>
+              )}
+            />
+          )}
+        />
       </div>
-    </div>
+    </>
   );
 }

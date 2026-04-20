@@ -60,6 +60,8 @@ export interface AbstractResourceFormInputs<T extends Resource> {
   imageInputs?: FormInput<T, z.ZodString, { type: ImageType }>;
   /** Standard text input fields. */
   textInputs?: FormInput<T>;
+  /** Used for grouping related input fields together. */
+  groupInputs?: AbstractResourceFormInputs<T>[];
   /** Number input fields for numeric values. */
   numberInputs?: FormInput<T, z.ZodNumber>;
   /** Number input fields that can only be incremented, not directly edited */
