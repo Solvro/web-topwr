@@ -175,7 +175,11 @@ export const RESOURCE_METADATA = {
           description: { label: "Opis" },
         },
         imageInputs: {
-          coverPhotoKey: { label: "Zdjęcie w tle", type: ImageType.Banner },
+          coverPhotoKey: {
+            label: "Zdjęcie w tle",
+            type: ImageType.Banner,
+            size: "wide",
+          },
         },
       },
       defaultValues: {
@@ -570,7 +574,7 @@ export const RESOURCE_METADATA = {
     form: {
       inputs: {
         imageInputs: {
-          imageKey: { label: "Zdjęcie", type: ImageType.Banner },
+          imageKey: { label: "Zdjęcie", type: ImageType.Banner, size: "wide" },
         },
         textInputs: {
           title: { label: "Tytuł" },
@@ -885,8 +889,8 @@ export const RESOURCE_METADATA = {
     form: {
       inputs: {
         imageInputs: {
-          logoKey: { label: "Logo", type: ImageType.Logo },
-          coverKey: { label: "Baner", type: ImageType.Banner },
+          logoKey: { label: "Logo", type: ImageType.Logo, size: "small" },
+          coverKey: { label: "Baner", type: ImageType.Banner, size: "wide" },
         },
         textInputs: {
           name: { label: "Nazwa" },
