@@ -9,6 +9,7 @@ import { PasswordInput } from "@/components/inputs/password-input";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { FetchError } from "@/features/backend";
+import { getToastMessages } from "@/lib/get-toast-messages";
 
 import { changePassword } from "../api/change-password";
 import { ChangePasswordSchema } from "../schemas/change-password-schema";
@@ -24,52 +25,57 @@ export function ChangePasswordForm() {
     },
   });
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (data: ChangePasswordFormValues) =>
-      changePassword({
-        oldPassword: data.oldPassword,
-        newPassword: data.newPassword,
-        newPasswordConfirm: data.newPasswordConfirm,
-      }),
-    onSuccess: () => {
-      toast.success("Hasło zmienione poprawnie");
-      form.reset();
-    },
-    onError: (error) => {
-      if (error instanceof FetchError) {
-        const validationIssues = error.errorReport?.error.validationIssues;
-        if (Array.isArray(validationIssues)) {
-          for (const issue of validationIssues) {
-            const fieldName =
-              (issue as Record<string, unknown>).field ??
-              (issue as Record<string, unknown>).rule;
-            const message = (issue as Record<string, unknown>).message;
-            if (fieldName === "oldPassword" && typeof message === "string") {
-              form.setError("oldPassword", {
-                type: "server",
-                message,
-              });
-              toast.error(message);
-              return;
-            }
-          }
-        }
-        toast.error(error.getCodedMessage("Nie udało się zmienić hasła"));
-      } else if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Nie udało się zmienić hasła");
-      }
-    },
-    retry: false,
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: changePassword,
   });
+
+  function handleServerValidationErrors(error: unknown) {
+    if (!(error instanceof FetchError)) {
+      return false;
+    }
+    const validationIssues = error.errorReport?.error.validationIssues;
+    if (!Array.isArray(validationIssues)) {
+      return false;
+    }
+    for (const issue of validationIssues) {
+      const fieldName =
+        (issue as Record<string, unknown>).field ??
+        (issue as Record<string, unknown>).rule;
+      const message = (issue as Record<string, unknown>).message;
+      if (fieldName === "oldPassword" && typeof message === "string") {
+        form.setError("oldPassword", {
+          type: "server",
+          message,
+        });
+        return true;
+      }
+    }
+    return false;
+  }
 
   return (
     <Form {...form}>
       <form
         noValidate
-        onSubmit={form.handleSubmit((data) => {
-          mutate(data);
+        onSubmit={form.handleSubmit(async (data) => {
+          const messages = getToastMessages.changePassword;
+          const loadingToast = toast.loading(messages.loading);
+          try {
+            await mutateAsync(data);
+            toast.success(messages.success);
+            form.reset();
+          } catch (error: unknown) {
+            const handled = handleServerValidationErrors(error);
+            if (!handled) {
+              const errorMessage =
+                typeof messages.error === "function"
+                  ? messages.error(error)
+                  : (messages.error as string);
+              toast.error(errorMessage);
+            }
+          } finally {
+            toast.dismiss(loadingToast);
+          }
         })}
         className="bg-background w-full max-w-md space-y-4 rounded-xl px-6 py-8"
       >
