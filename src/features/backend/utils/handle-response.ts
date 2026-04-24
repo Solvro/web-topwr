@@ -30,7 +30,13 @@ export async function handleResponse<T>(
     };
     const code = errorReport?.error.code ?? String(response.status);
     const errorMessage = `Request failed with code ${code}: ${message}`;
-    logger.error(
+
+    const isValidationError =
+      code === "E_VALIDATION_ERROR" ||
+      Array.isArray(errorReport?.error.validationIssues);
+    const logFunction = isValidationError ? logger.warn : logger.error;
+
+    logFunction(
       {
         url: request.url,
         method: request.method,
