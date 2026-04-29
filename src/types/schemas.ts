@@ -1,7 +1,17 @@
 import type { Path } from "react-hook-form";
 import type { z } from "zod";
 
-export type AppSchema = z.ZodObject<z.ZodRawShape>;
+export type AppSchema = z.ZodObject<z.ZodRawShape> | z.ZodEffects<z.ZodTypeAny>;
+
+/**
+ * Extracts the ZodObject from an AppSchema, even if it is wrapped in ZodEffects.
+ */
+type GetObject<S extends z.ZodTypeAny> =
+  S extends z.ZodObject<z.ZodRawShape>
+    ? S
+    : S extends z.ZodEffects<infer U>
+      ? GetObject<U>
+      : never;
 
 /**
  * Extracts the base Zod type by unwrapping Nullable, Default, and Optional wrappers.
@@ -20,19 +30,19 @@ type BaseZodType<T extends z.ZodTypeAny> = T extends
  * Resolves the Zod type located at path P in schema S, included recursively nested paths.
  * @example type NotificationTitle = ResolvePath<ResourceSchema<Resource.Notifications>, "notification.title"> // yields ZodString
  */
-type ResolvePath<
-  S extends AppSchema,
-  P extends Path<z.infer<S>>,
-> = P extends `${infer K}.${infer V}`
-  ? K extends keyof S["shape"]
-    ? S["shape"][K] extends AppSchema
-      ? V extends Path<z.infer<S["shape"][K]>>
-        ? ResolvePath<S["shape"][K], V>
+type ResolvePath<S extends AppSchema, P extends Path<z.infer<S>>> =
+  GetObject<S> extends z.ZodObject<infer Shape>
+    ? P extends `${infer K}.${infer V}`
+      ? K extends keyof Shape
+        ? Shape[K] extends AppSchema
+          ? V extends Path<z.infer<Shape[K]>>
+            ? ResolvePath<Shape[K], V>
+            : never
+          : never
         : never
-      : never
-    : never
-  : P extends keyof S["shape"]
-    ? S["shape"][P]
+      : P extends keyof Shape
+        ? Shape[P]
+        : never
     : never;
 
 /**
