@@ -1,4 +1,4 @@
-import type { Ref } from "react";
+import type { ReactNode, Ref } from "react";
 
 import { DragHandle } from "@/components/core/drag-handle";
 import type { DragHandleProps } from "@/components/core/drag-handle";
@@ -27,6 +27,7 @@ export interface ItemProps<T extends EditableResource> {
   resource: T;
   relatedResources: ResourceRelations<T>;
   dragHandleProps?: Omit<DragHandleProps, "className">;
+  actions?: ReactNode;
 }
 
 /** TODO: pass custom delete functionality as a prop, which would eliminate this helper */
@@ -38,7 +39,8 @@ const isStudentOrganizationProps = <T extends EditableResource>(
 } => props.resource === Resource.StudentOrganizations;
 
 export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
-  const { ref, item, resource, relatedResources, dragHandleProps } = props;
+  const { ref, item, resource, relatedResources, dragHandleProps, actions } =
+    props;
 
   const metadata = getResourceMetadata(resource);
   const id = getResourcePkValue(resource, item);
@@ -100,14 +102,18 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
           )}
         </div>
         <footer className="flex items-center gap-0.5 sm:gap-2">
-          <EditButton resource={resource} id={listItem.id} />
-          {isStudentOrganizationProps(props) ? (
-            <ToggleOrganizationStatusButton
-              id={listItem.id}
-              resource={resource}
-              organizationStatus={props.item.organizationStatus}
-            />
-          ) : null}
+          {actions ?? (
+            <>
+              <EditButton resource={resource} id={listItem.id} />
+              {isStudentOrganizationProps(props) ? (
+                <ToggleOrganizationStatusButton
+                  id={listItem.id}
+                  resource={resource}
+                  organizationStatus={props.item.organizationStatus}
+                />
+              ) : null}
+            </>
+          )}
         </footer>
       </article>
     </li>
