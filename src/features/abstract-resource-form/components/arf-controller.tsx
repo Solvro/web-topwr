@@ -11,7 +11,7 @@ import { Form } from "@/components/ui/form";
 import { isSolvroAdmin, useAuthentication } from "@/features/authentication";
 import { fetchMutation, useMutationWrapper } from "@/features/backend";
 import type { ModifyResourceResponse } from "@/features/backend/types";
-import { declineNoun } from "@/features/polish";
+import { GrammaticalCase, declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
 import {
   DeleteButtonWithDialog,
@@ -29,6 +29,7 @@ import type {
   ResourcePk,
   RoutableResource,
 } from "@/features/resources/types";
+import { ApproveButton } from "@/features/review";
 import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import { cn } from "@/lib/utils";
@@ -59,11 +60,13 @@ export function ArfController<T extends Resource>({
   relatedResources,
   pivotResources,
   className,
+  draft = false,
 }: ResourceFormProps<T> & {
   defaultValues: ResourceDefaultValues<T>;
   existingImages: ExistingImages<T>;
   relatedResources: ResourceRelations<T>;
   pivotResources: ResourcePivotRelationData<T>;
+  draft?: boolean;
 }) {
   const schema = RESOURCE_SCHEMAS[resource];
   const router = useRouter();
@@ -114,7 +117,7 @@ export function ArfController<T extends Resource>({
     const response = await fetchMutation<ModifyResourceResponse<T>>(endpoint, {
       body,
       resource,
-      draft: !isSolvroAdmin(user),
+      draft: draft || !isSolvroAdmin(user),
       ...mutationOptions,
     });
     const wasCreated = mutationOptions.method === "POST";
@@ -198,8 +201,18 @@ export function ArfController<T extends Resource>({
               onSubmit={onSubmit}
               confirmationMessage={confirmationMessage}
             >
-              {submitLabel} {declensions.accusative} <SubmitIconComponent />
+              {draft
+                ? `Zapisz ${declineNoun("draft", { case: GrammaticalCase.Accusative })}`
+                : `${submitLabel} ${declensions.accusative}`}
+              <SubmitIconComponent />
             </ArfConfirmationModal>
+            {draft && isSolvroAdmin(user) ? (
+              <ApproveButton
+                id={get(defaultValues, getResourcePk(resource)) as ResourcePk}
+                resource={resource}
+                showLabel
+              />
+            ) : null}
             {isEditing && metadata.deletable !== false ? (
               <DeleteButtonWithDialog
                 resource={resource}

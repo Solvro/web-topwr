@@ -1,7 +1,11 @@
 import { RefreshCcw } from "lucide-react";
 
 import { DashboardButton } from "@/components/presentation/dashboard-button";
-import { getUserDisplayName } from "@/features/authentication";
+import {
+  getUserDisplayName,
+  isAdmin,
+  isSolvroAdmin,
+} from "@/features/authentication";
 import { getAuthStateServer } from "@/features/authentication/server";
 import { Resource } from "@/features/resources";
 
@@ -20,12 +24,21 @@ export default async function Home() {
       </h1>
       <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
         <div className="col-span-full grid grid-cols-subgrid gap-4">
-          <DashboardButton
-            href="/review"
-            icon={RefreshCcw}
-            label="Review zmian"
-            variant="outline"
-          />
+          {isSolvroAdmin(user) || isAdmin(user) ? (
+            <DashboardButton
+              href="/review"
+              icon={RefreshCcw}
+              label="Review"
+              variant="outline"
+            />
+          ) : (
+            <DashboardButton
+              href="/drafts"
+              icon={RefreshCcw}
+              label="Drafty"
+              variant="outline"
+            />
+          )}
         </div>
         <div className="col-span-full grid grid-cols-subgrid gap-4">
           <DashboardButton resource={Resource.StudentOrganizations} />
