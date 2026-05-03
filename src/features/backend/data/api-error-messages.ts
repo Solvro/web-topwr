@@ -4,4 +4,5 @@ export const API_ERROR_MESSAGES: Record<string, string> = {
   E_UNEXPECTED_ERROR: "Nastąpił nieoczekiwany błąd",
   E_VALIDATION_ERROR: "Wpisane dane są niekompletne lub nieprawidłowe",
   E_NOT_FOUND: "Nie znaleziono podanego zasobu",
+  E_UNAUTHORIZED_ACCESS: "Brak uprawnień do wyświetlenia tego zasobu",
 };
