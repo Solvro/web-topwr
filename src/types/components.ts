@@ -19,6 +19,7 @@ export type WrapperProps = Readonly<{
 export interface ResourceFormProps<T extends Resource> {
   resource: T;
   className?: string;
+  draft?: boolean;
 }
 
 export type SearchParameters = Record<string, string | undefined>;

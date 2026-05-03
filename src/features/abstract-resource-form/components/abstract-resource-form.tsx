@@ -1,9 +1,17 @@
 import { get } from "react-hook-form";
 
 import { ApiImage } from "@/features/backend/server";
-import { getResourceMetadata } from "@/features/resources";
+import {
+  RelationType,
+  getResourceMetadata,
+  getResourceQueryName,
+  getResourceRelationDefinitions,
+} from "@/features/resources";
 import type { Resource } from "@/features/resources";
-import type { ResourceDefaultValues } from "@/features/resources/types";
+import type {
+  ResourceDefaultValues,
+  XToManyResource,
+} from "@/features/resources/types";
 import type {
   ExistingImages,
   ResourceCreatePageProps,
@@ -58,6 +66,17 @@ export async function AbstractResourceForm<T extends Resource>({
     }
     const parsed = tryParseNumber(value);
     (defaultValues as Record<string, string | number>)[key] = parsed;
+  }
+
+  const relationDefinitions = getResourceRelationDefinitions(resource);
+  for (const [relation, definition] of typedEntries(relationDefinitions)) {
+    if (definition.type === RelationType.ManyToOne) {
+      continue;
+    }
+    const queryName = getResourceQueryName(relation as XToManyResource);
+    if (!(queryName in (defaultValues as Record<string, unknown>))) {
+      (defaultValues as Record<string, unknown>)[queryName] = [];
+    }
   }
 
   const relatedResources = await fetchRelatedResources(resource);

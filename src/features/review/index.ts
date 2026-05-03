@@ -1,1 +1,1 @@
-export * from "./components/review-list";
+export * from "./components/approve-button";

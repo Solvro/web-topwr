@@ -20,6 +20,7 @@ export interface ResourceDraft<
 > {
   resourceType: ResourceDraftTypes[T];
   data: ResourceDataType<T>;
+  userId: number;
 }
 
 export type DraftableResourceRelationMap = Partial<{
