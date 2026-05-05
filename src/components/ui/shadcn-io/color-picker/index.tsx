@@ -144,11 +144,10 @@ export function ColorPicker({
   // Update color when controlled value changes
   useEffect(() => {
     if (value != null) {
-      const color = Color.rgb(value).rgb().object();
-
-      setHue(color.r);
-      setSaturation(color.g);
-      setLightness(color.b);
+      const [h, s, l] = Color(value).hsl().array();
+      setHue(h);
+      setSaturation(s);
+      setLightness(l);
     }
   }, [value]);
 
@@ -441,8 +440,9 @@ function MultiChannelFormatInput({
         <Input
           aria-label={config.labels[index]}
           className={cn(
-            "bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none",
+            "bg-secondary h-8 px-2 text-xs shadow-none",
             index > 0 && "rounded-l-none",
+            index < channelInputs.length - 1 && "rounded-r-none",
           )}
           inputMode="numeric"
           key={index}
@@ -459,7 +459,11 @@ function MultiChannelFormatInput({
             commitChannels();
           }}
           onKeyDown={(event) => {
-            if (event.key === "Enter") commitChannels();
+            if (event.key === "Enter") {
+              event.preventDefault();
+              commitChannels();
+              event.currentTarget.blur();
+            }
           }}
         />
       ))}
@@ -505,7 +509,7 @@ function HexFormatInput({
     >
       <Input
         aria-label="Hex color"
-        className="bg-secondary h-8 rounded-r-none px-2 text-xs shadow-none"
+        className="bg-secondary h-8 px-2 text-xs shadow-none"
         type="text"
         value={hexInput}
         onChange={(event) => setHexInput(event.target.value)}
@@ -515,7 +519,11 @@ function HexFormatInput({
           commitHex();
         }}
         onKeyDown={(event) => {
-          if (event.key === "Enter") commitHex();
+          if (event.key === "Enter") {
+            event.preventDefault();
+            commitHex();
+            event.currentTarget.blur();
+          }
         }}
       />
     </div>
