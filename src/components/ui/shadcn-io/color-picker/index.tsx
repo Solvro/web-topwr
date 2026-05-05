@@ -354,7 +354,7 @@ export function ColorPickerEyeDropper({
 
 export type ColorPickerOutputProps = ComponentProps<typeof SelectTrigger>;
 
-const formats = ["hex", "rgb", "css", "hsl"];
+const formats = ["hex", "rgb", "hsl"];
 
 export function ColorPickerOutput({
   className,
@@ -522,63 +522,6 @@ function HexFormatInput({
   );
 }
 
-function CssFormatInput({
-  className,
-  ...props
-}: HTMLAttributes<HTMLDivElement>) {
-  const { hue, saturation, lightness, setHue, setSaturation, setLightness } =
-    useColorPicker();
-
-  const currentRgb = Color.hsl(hue, saturation, lightness)
-    .rgb()
-    .array()
-    .map((value) => Math.round(value));
-  const currentCss = `rgb(${currentRgb.join(", ")})`;
-
-  const [cssInput, setCssInput] = useState(currentCss);
-  const [isFocused, setIsFocused] = useState(false);
-
-  useEffect(() => {
-    if (!isFocused) setCssInput(currentCss);
-  }, [hue, saturation, lightness, isFocused]);
-
-  const commitCss = useCallback(() => {
-    const match = cssInput.match(
-      /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*[\d.]+%?)?\s*\)/,
-    );
-    if (match) {
-      const [, r, g, b] = match;
-      const parsed = Color.rgb(Number(r), Number(g), Number(b));
-      const [h, s, l] = parsed.hsl().array();
-      setHue(h);
-      setSaturation(s);
-      setLightness(l);
-    } else {
-      setCssInput(currentCss);
-    }
-  }, [cssInput, currentCss, setHue, setSaturation, setLightness]);
-
-  return (
-    <div className={cn("w-full rounded-md shadow-sm", className)} {...props}>
-      <Input
-        aria-label="CSS color"
-        className="bg-secondary h-8 w-full px-2 text-xs shadow-none"
-        type="text"
-        value={cssInput}
-        onChange={(event) => setCssInput(event.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => {
-          setIsFocused(false);
-          commitCss();
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") commitCss();
-        }}
-      />
-    </div>
-  );
-}
-
 export type ColorPickerFormatProps = HTMLAttributes<HTMLDivElement>;
 
 export function ColorPickerFormat({
@@ -597,8 +540,6 @@ export function ColorPickerFormat({
         {...props}
       />
     );
-  if (mode === "css")
-    return <CssFormatInput className={className} {...props} />;
   if (mode === "hsl")
     return (
       <MultiChannelFormatInput
