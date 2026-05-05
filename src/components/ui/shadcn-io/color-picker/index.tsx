@@ -40,12 +40,10 @@ interface ColorPickerContextValue {
   hue: number;
   saturation: number;
   lightness: number;
-  alpha: number;
   mode: string;
   setHue: (hue: number) => void;
   setSaturation: (saturation: number) => void;
   setLightness: (lightness: number) => void;
-  setAlpha: (alpha: number) => void;
   setMode: (mode: string) => void;
 }
 
@@ -62,27 +60,6 @@ export const useColorPicker = () => {
 
   return context;
 };
-
-function useAlphaInput() {
-  const { alpha, setAlpha } = useColorPicker();
-  const [alphaInput, setAlphaInput] = useState(String(Math.round(alpha)));
-  const [isAlphaFocused, setIsAlphaFocused] = useState(false);
-
-  useEffect(() => {
-    if (!isAlphaFocused) setAlphaInput(String(Math.round(alpha)));
-  }, [alpha, isAlphaFocused]);
-
-  const commitAlpha = useCallback(() => {
-    const val = parseInt(alphaInput, 10);
-    if (!isNaN(val) && val >= 0 && val <= 100) {
-      setAlpha(val);
-    } else {
-      setAlphaInput(String(Math.round(alpha)));
-    }
-  }, [alphaInput, alpha, setAlpha]);
-
-  return { alphaInput, setAlphaInput, setIsAlphaFocused, commitAlpha };
-}
 
 type ColorChannelsType<T> = [T, T, T];
 
@@ -162,9 +139,6 @@ export function ColorPicker({
   const [lightness, setLightness] = useState(
     selectedColor.lightness() || defaultColor.lightness() || 100,
   );
-  const [alpha, setAlpha] = useState(
-    selectedColor.alpha() * 100 || defaultColor.alpha() * 100,
-  );
   const [mode, setMode] = useState("hex");
 
   // Update color when controlled value changes
@@ -175,17 +149,16 @@ export function ColorPicker({
       setHue(color.r);
       setSaturation(color.g);
       setLightness(color.b);
-      setAlpha(color.a);
     }
   }, [value]);
 
   // Notify parent of changes
   useEffect(() => {
     if (onChange != null) {
-      const color = Color.hsl(hue, saturation, lightness).alpha(alpha / 100);
+      const color = Color.hsl(hue, saturation, lightness);
       onChange(color);
     }
-  }, [hue, saturation, lightness, alpha, onChange]);
+  }, [hue, saturation, lightness, onChange]);
 
   return (
     <ColorPickerContext.Provider
@@ -193,12 +166,10 @@ export function ColorPicker({
         hue,
         saturation,
         lightness,
-        alpha,
         mode,
         setHue,
         setSaturation,
         setLightness,
-        setAlpha,
         setMode,
       }}
     >
@@ -342,50 +313,13 @@ export function ColorPickerHue({ className, ...props }: ColorPickerHueProps) {
   );
 }
 
-export type ColorPickerAlphaProps = ComponentProps<typeof Slider.Root>;
-
-export function ColorPickerAlpha({
-  className,
-  ...props
-}: ColorPickerAlphaProps) {
-  const { alpha, setAlpha } = useColorPicker();
-
-  return (
-    <Slider.Root
-      className={cn("relative flex h-4 w-full touch-none", className)}
-      max={100}
-      onValueChange={([newAlpha]) => {
-        setAlpha(newAlpha);
-      }}
-      step={1}
-      value={[alpha]}
-      {...props}
-    >
-      <Slider.Track
-        className="relative my-0.5 h-3 w-full grow rounded-full"
-        style={{
-          background:
-            'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWAAJyRCgLaBCAAgXwixzAS0pgAAAABJRU5ErkJggg==") left center',
-        }}
-      >
-        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent to-black/50" />
-        <Slider.Range className="absolute h-full rounded-full bg-transparent" />
-      </Slider.Track>
-      <Slider.Thumb
-        aria-label="Alpha"
-        className="border-primary/50 bg-background focus-visible:ring-ring block h-4 w-4 rounded-full border shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-      />
-    </Slider.Root>
-  );
-}
-
 export type ColorPickerEyeDropperProps = ComponentProps<typeof Button>;
 
 export function ColorPickerEyeDropper({
   className,
   ...props
 }: ColorPickerEyeDropperProps) {
-  const { setHue, setSaturation, setLightness, setAlpha } = useColorPicker();
+  const { setHue, setSaturation, setLightness } = useColorPicker();
 
   const handleEyeDropper = async () => {
     try {
@@ -398,7 +332,6 @@ export function ColorPickerEyeDropper({
       setHue(h);
       setSaturation(s);
       setLightness(l);
-      setAlpha(100);
     } catch (error) {
       console.error("EyeDropper failed:", error);
     }
@@ -449,26 +382,6 @@ export function ColorPickerOutput({
   );
 }
 
-type PercentageInputProps = ComponentProps<typeof Input>;
-
-function PercentageInput({ className, ...props }: PercentageInputProps) {
-  return (
-    <div className="relative">
-      <Input
-        type="text"
-        {...props}
-        className={cn(
-          "bg-secondary h-8 w-[3.25rem] rounded-l-none px-2 text-xs shadow-none",
-          className,
-        )}
-      />
-      <span className="text-muted-foreground absolute top-1/2 right-2 -translate-y-1/2 text-xs">
-        %
-      </span>
-    </div>
-  );
-}
-
 function MultiChannelFormatInput({
   config,
   className,
@@ -478,9 +391,6 @@ function MultiChannelFormatInput({
 }) {
   const { hue, saturation, lightness, setHue, setSaturation, setLightness } =
     useColorPicker();
-  const { alphaInput, setAlphaInput, setIsAlphaFocused, commitAlpha } =
-    useAlphaInput();
-
   const currentChannelValues = config.getChannelValues(
     hue,
     saturation,
@@ -553,20 +463,6 @@ function MultiChannelFormatInput({
           }}
         />
       ))}
-      <PercentageInput
-        aria-label="Alpha"
-        inputMode="numeric"
-        value={alphaInput}
-        onChange={(event) => setAlphaInput(event.target.value)}
-        onFocus={() => setIsAlphaFocused(true)}
-        onBlur={() => {
-          setIsAlphaFocused(false);
-          commitAlpha();
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") commitAlpha();
-        }}
-      />
     </div>
   );
 }
@@ -577,9 +473,6 @@ function HexFormatInput({
 }: HTMLAttributes<HTMLDivElement>) {
   const { hue, saturation, lightness, setHue, setSaturation, setLightness } =
     useColorPicker();
-  const { alphaInput, setAlphaInput, setIsAlphaFocused, commitAlpha } =
-    useAlphaInput();
-
   const currentHex = Color.hsl(hue, saturation, lightness).hex();
   const [hexInput, setHexInput] = useState(currentHex);
   const [isHexFocused, setIsHexFocused] = useState(false);
@@ -625,20 +518,6 @@ function HexFormatInput({
           if (event.key === "Enter") commitHex();
         }}
       />
-      <PercentageInput
-        aria-label="Alpha"
-        inputMode="numeric"
-        value={alphaInput}
-        onChange={(event) => setAlphaInput(event.target.value)}
-        onFocus={() => setIsAlphaFocused(true)}
-        onBlur={() => {
-          setIsAlphaFocused(false);
-          commitAlpha();
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") commitAlpha();
-        }}
-      />
     </div>
   );
 }
@@ -647,51 +526,37 @@ function CssFormatInput({
   className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
-  const {
-    hue,
-    saturation,
-    lightness,
-    alpha,
-    setHue,
-    setSaturation,
-    setLightness,
-    setAlpha,
-  } = useColorPicker();
+  const { hue, saturation, lightness, setHue, setSaturation, setLightness } =
+    useColorPicker();
 
   const currentRgb = Color.hsl(hue, saturation, lightness)
     .rgb()
     .array()
     .map((value) => Math.round(value));
-  const currentCss = `rgba(${currentRgb.join(", ")}, ${String(Math.round(alpha))}%)`;
+  const currentCss = `rgb(${currentRgb.join(", ")})`;
 
   const [cssInput, setCssInput] = useState(currentCss);
   const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     if (!isFocused) setCssInput(currentCss);
-  }, [hue, saturation, lightness, alpha, isFocused]);
+  }, [hue, saturation, lightness, isFocused]);
 
   const commitCss = useCallback(() => {
     const match = cssInput.match(
-      /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d.]+)(%?))?\s*\)/,
+      /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*[\d.]+%?)?\s*\)/,
     );
     if (match) {
-      const [, r, g, b, a, pct] = match;
+      const [, r, g, b] = match;
       const parsed = Color.rgb(Number(r), Number(g), Number(b));
       const [h, s, l] = parsed.hsl().array();
       setHue(h);
       setSaturation(s);
       setLightness(l);
-      if (a !== undefined) {
-        const alphaValue = pct === "%" ? parseFloat(a) : parseFloat(a) * 100;
-        setAlpha(Math.min(100, Math.max(0, alphaValue)));
-      } else {
-        setAlpha(100);
-      }
     } else {
       setCssInput(currentCss);
     }
-  }, [cssInput, currentCss, setHue, setSaturation, setLightness, setAlpha]);
+  }, [cssInput, currentCss, setHue, setSaturation, setLightness]);
 
   return (
     <div className={cn("w-full rounded-md shadow-sm", className)} {...props}>
