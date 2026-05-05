@@ -442,7 +442,7 @@ function SortableOptionItem({
           isSelected ? ", selected" : ", not selected"
         }${option.disabled ? ", disabled" : ""}`}
         className={cn(
-          "w-full",
+          "min-w-0 flex-1",
           isReadOnly ? "bg-transparent!" : "cursor-pointer",
           option.disabled && "cursor-not-allowed opacity-50",
         )}
@@ -452,7 +452,7 @@ function SortableOptionItem({
         {isReadOnly ? null : (
           <div
             className={cn(
-              "border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
+              "border-primary mr-2 flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border",
               isSelected ? "bg-primary" : "opacity-50 [&_svg]:invisible",
             )}
             aria-hidden="true"
@@ -462,14 +462,14 @@ function SortableOptionItem({
         )}
         {option.icon == null ? null : (
           <option.icon
-            className="text-muted-foreground mr-2 h-4 w-4"
+            className="text-muted-foreground mr-2 h-4 w-4 shrink-0"
             aria-hidden="true"
           />
         )}
-        <label className="flex w-full items-center justify-between gap-2">
-          {option.label}
+        <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
+          <span className="truncate">{option.label}</span>
           {option.action?.(setOptionSelected)}
-        </label>
+        </div>
       </CommandItem>
       {onEditItem == null ? null : (
         <Button
@@ -510,7 +510,7 @@ function MultiSelectOptionItem({
           isSelected ? ", selected" : ", not selected"
         }${option.disabled ? ", disabled" : ""}`}
         className={cn(
-          "w-full",
+          "min-w-0 flex-1",
           isReadOnly ? "bg-transparent!" : "cursor-pointer",
           option.disabled && "cursor-not-allowed opacity-50",
         )}
@@ -520,7 +520,7 @@ function MultiSelectOptionItem({
         {isReadOnly ? null : (
           <div
             className={cn(
-              "border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
+              "border-primary mr-2 flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border",
               isSelected ? "bg-primary" : "opacity-50 [&_svg]:invisible",
             )}
             aria-hidden="true"
@@ -530,14 +530,14 @@ function MultiSelectOptionItem({
         )}
         {option.icon && (
           <option.icon
-            className="text-muted-foreground mr-2 h-4 w-4"
+            className="text-muted-foreground mr-2 h-4 w-4 shrink-0"
             aria-hidden="true"
           />
         )}
-        <label className="flex w-full items-center justify-between gap-2">
-          {option.label}
+        <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
+          <span className="truncate">{option.label}</span>
           {option.action?.(setOptionSelected)}
-        </label>
+        </div>
       </CommandItem>
       {onEditItem == null ? null : (
         <Button
@@ -1158,9 +1158,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
               })}
             />
           )}
-          <span className={cn(screenSize === "mobile" && "truncate")}>
-            {option.label}
-          </span>
+          <span className="truncate">{option.label}</span>
           {isReadOnly ? null : (
             <div
               role="button"
@@ -1209,7 +1207,8 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
         variants,
         customStyle?.gradient && "border-transparent text-white",
         responsiveSettings.compactMode && "px-1.5 py-0.5 text-xs",
-        screenSize === "mobile" && "max-w-[120px] truncate",
+        "truncate max-w-48",
+        screenSize === "mobile" && "max-w-36",
         singleLine && "shrink-0 whitespace-nowrap",
         "[&>svg]:pointer-events-auto",
       );
