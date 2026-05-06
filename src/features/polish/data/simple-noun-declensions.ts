@@ -679,6 +679,27 @@ export const SIMPLE_NOUN_DECLENSIONS = {
     },
   },
   [Resource.VersionScreenshots]: REUSABLE_DECLENSIONS.screenshot,
+  draft: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "draft",
+      genitive: "draftu",
+      dative: "draftowi",
+      accusative: "draft",
+      instrumental: "draftem",
+      locative: "drafcie",
+      vocative: "drafcie",
+    },
+    plural: {
+      nominative: "drafty",
+      genitive: "draftów",
+      dative: "draftom",
+      accusative: "drafty",
+      instrumental: "draftami",
+      locative: "draftach",
+      vocative: "drafty",
+    },
+  },
   image: {
     gender: GrammaticalGender.Neuter,
     singular: {

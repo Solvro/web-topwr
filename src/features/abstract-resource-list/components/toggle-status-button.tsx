@@ -1,3 +1,5 @@
+"use client";
+
 import { useQueryClient } from "@tanstack/react-query";
 import { Archive, ArchiveRestore } from "lucide-react";
 import { toast } from "sonner";
