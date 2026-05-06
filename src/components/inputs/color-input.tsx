@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/popover";
 import {
   ColorPicker,
-  ColorPickerAlpha,
   ColorPickerEyeDropper,
   ColorPickerFormat,
   ColorPickerHue,
@@ -85,7 +84,6 @@ export function ColorInput({
               <ColorPickerEyeDropper />
               <div className="grid h-full w-full gap-1">
                 <ColorPickerHue />
-                <ColorPickerAlpha />
               </div>
             </div>
             <div className="flex items-center gap-2">
