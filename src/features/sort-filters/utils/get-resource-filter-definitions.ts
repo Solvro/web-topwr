@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import type {
   FormInputBase,
   SelectInputOptions,
@@ -54,14 +56,23 @@ export const getResourceFilterDefinitions = async <T extends Resource>(
     );
   });
   const simpleInputs = typedFromEntries<FilterDefinitions<T>>(inputEntries);
+
   if (logMissingFields) {
     const schema = RESOURCE_SCHEMAS[resource];
-    for (const field in schema.shape) {
-      if (!(field in simpleInputs)) {
-        logger.warn({ resource, field }, "Missing label for filter field");
+    let baseSchema: z.ZodTypeAny = schema;
+    while (baseSchema instanceof z.ZodEffects) {
+      baseSchema = baseSchema._def.schema as z.ZodTypeAny;
+    }
+
+    if (baseSchema instanceof z.ZodObject) {
+      for (const field in baseSchema.shape) {
+        if (!(field in simpleInputs)) {
+          logger.warn({ resource, field }, "Missing label for filter field");
+        }
       }
     }
   }
+
   if (includeRelations) {
     // TODO: handle relation inputs
   }
