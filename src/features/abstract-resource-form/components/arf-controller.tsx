@@ -99,6 +99,7 @@ export function ArfController<T extends Resource>({
     submitLabel,
     submitIcon: SubmitIconComponent,
     confirmationMessage,
+    onAfterCreate,
     ...mutationOptions
   } = getMutationConfig(resource, defaultValues, relationContext);
 
@@ -120,6 +121,10 @@ export function ArfController<T extends Resource>({
     form.reset(wasCreated ? undefined : response.data);
 
     clearPersistedData();
+
+    if (wasCreated && onAfterCreate != null) {
+      await onAfterCreate(response.data as Parameters<typeof onAfterCreate>[0]);
+    }
 
     const newPrimaryKey = getResourcePkValue(resource, response.data);
     const primaryKeyChanged =

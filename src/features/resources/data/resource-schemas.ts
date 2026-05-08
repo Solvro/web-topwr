@@ -14,6 +14,7 @@ import { ChangeScreenshotsSchema } from "../schemas/change-screenshots-schema";
 import { ChangesSchema } from "../schemas/changes-schema";
 import { ContributorSchema } from "../schemas/contributor-schema";
 import { ContributorSocialLinkSchema } from "../schemas/contributor-social-link-schema";
+import { DasConfigSchema } from "../schemas/das-config-schema";
 import { DasLinkSchema } from "../schemas/das-link-schema";
 import { DasMapSchema } from "../schemas/das-map-schema";
 import { DasSchema } from "../schemas/das-schema";
@@ -63,12 +64,13 @@ export const RESOURCE_SCHEMAS = {
   [Resource.Contributors]: ContributorSchema,
   [Resource.ContributorSocialLinks]: ContributorSocialLinkSchema,
   [Resource.Das]: DasSchema,
+  [Resource.DasConfig]: DasConfigSchema,
   [Resource.Dashboard]: DashboardSchema,
-  [Resource.DasLink]: DasLinkSchema,
-  [Resource.DasMap]: DasMapSchema,
-  [Resource.DasStand]: DasStandSchema,
-  [Resource.DasTimetable]: DasTimetableSchema,
-  [Resource.DasTimetableEntry]: DasTimetableEntrySchema,
+  [Resource.DasLinks]: DasLinkSchema,
+  [Resource.DasMaps]: DasMapSchema,
+  [Resource.DasStands]: DasStandSchema,
+  [Resource.DasTimetables]: DasTimetableSchema,
+  [Resource.DasTimetableEntries]: DasTimetableEntrySchema,
   [Resource.DaySwaps]: DaySwapSchema,
   [Resource.Departments]: DepartmentSchema,
   [Resource.DepartmentLinks]: DepartmentLinkSchema,

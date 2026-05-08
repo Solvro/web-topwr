@@ -13,12 +13,12 @@ export enum Resource {
   Contributors = "dashboard/about-us/contributors",
   ContributorSocialLinks = "dashboard/contributor-social-links",
   Dashboard = "dashboard",
-  Das = "dashboard/das",
-  DasLink = "dashboard/das_link",
-  DasMap = "dashboard/das_map",
-  DasStand = "dashboard/das_stand",
-  DasTimetable = "dashboard/das_timetable",
-  DasTimetableEntry = "dashboard/das_timetable_entry",
+  Das = "dashboard/das-config/das",
+  DasLink = "dashboard/das-config/das_link",
+  DasMap = "dashboard/das-config/das_map",
+  DasStand = "dashboard/das-config/das_stand",
+  DasTimetable = "dashboard/das-config/das_timetable",
+  DasTimetableEntry = "dashboard/das-config/das_timetable_entry",
   DaySwaps = "dashboard/day-swaps",
   Departments = "dashboard/departments",
   DepartmentLinks = "dashboard/department-links",
@@ -132,4 +132,7 @@ export enum RelationType {
   ManyToOne = "many_to_one",
   /** e.g. Student organization tags: many-to-many relation without foreign keys in either resource (pivot table used) */
   ManyToMany = "many_to_many",
+
+  /** e.g. One DAS can have one Timetable with the same ID */
+  OneToOne = "one_to_one",
 }
