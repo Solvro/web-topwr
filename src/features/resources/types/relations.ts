@@ -69,7 +69,13 @@ export type RelationDefinition<T extends Resource, L extends Resource> =
       foreignKey: ResourceSchemaKey<T, z.ZodString | z.ZodNumber>;
       immutable?: boolean;
       dateFields?: ResourceSchemaKey<L, z.ZodString>[];
-    };
+    }
+  | {
+      type: RelationType.OneToOne;
+      foreignKey: ResourceSchemaKey<T, z.ZodString | z.ZodNumber>;
+      immutable?: boolean;
+      dateFields?: ResourceSchemaKey<L, z.ZodString>[];
+    }
 export type RelationDefinitions<T extends Resource> = {
   [L in Resource]?: RelationDefinition<T, L>;
 };

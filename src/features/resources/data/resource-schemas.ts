@@ -46,6 +46,7 @@ import { StudentOrganizationSchema } from "../schemas/student-organization-schem
 import { StudentOrganizationTagSchema } from "../schemas/student-organization-tag-schema";
 import { VersionScreenshotsSchema } from "../schemas/version-screenshots-schema";
 import { VersionsSchema } from "../schemas/versions-schema";
+import { DasConfigSchema } from "../schemas/das-config-schema";
 
 export const RESOURCE_SCHEMAS = {
   [Resource.AboutUs]: AboutUsSchema,
@@ -62,11 +63,12 @@ export const RESOURCE_SCHEMAS = {
   [Resource.Contributors]: ContributorSchema,
   [Resource.ContributorSocialLinks]: ContributorSocialLinkSchema,
   [Resource.Das]: DasSchema,
-  [Resource.DasLink]: DasLinkSchema,
-  [Resource.DasMap]: DasMapSchema,
-  [Resource.DasStand]: DasStandSchema,
-  [Resource.DasTimetable]: DasTimetableSchema,
-  [Resource.DasTimetableEntry]: DasTimetableEntrySchema,
+  [Resource.DasConfig]: DasConfigSchema,
+  [Resource.DasLinks]: DasLinkSchema,
+  [Resource.DasMaps]: DasMapSchema,
+  [Resource.DasStands]: DasStandSchema,
+  [Resource.DasTimetables]: DasTimetableSchema,
+  [Resource.DasTimetableEntries]: DasTimetableEntrySchema,
   [Resource.DaySwaps]: DaySwapSchema,
   [Resource.Departments]: DepartmentSchema,
   [Resource.DepartmentLinks]: DepartmentLinkSchema,

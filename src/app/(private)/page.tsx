@@ -32,6 +32,7 @@ export default async function Home() {
           <DashboardButton resource={Resource.GuideArticles} />
           <DashboardButton resource={Resource.Banners} />
           <DashboardButton resource={Resource.CalendarEvents} />
+          <DashboardButton resource={Resource.DasConfig} />
           <DashboardButton resource={Resource.Departments} />
           <DashboardButton resource={Resource.Map} />
           <DashboardButton resource={Resource.Versions} />

@@ -8,8 +8,11 @@ import {
   CalendarCog,
   CircleQuestionMark,
   Clock,
+  ExternalLink,
+  FlaskConical,
   Library,
   Link,
+  List,
   Map,
   Megaphone,
   Notebook,
@@ -18,6 +21,7 @@ import {
   ShieldUser,
   Slice,
   SquareActivity,
+  Store,
   Train,
   University,
   UsersRound,
@@ -29,6 +33,7 @@ import { lazy } from "react";
 import { DEFAULT_INPUT_COLOR } from "@/config/constants";
 import { ImageType, Weekday } from "@/config/enums";
 import type { ArrayInputDefinition } from "@/features/abstract-resource-form/types";
+import { fetchMutation } from "@/features/backend/api/fetch-mutation";
 import { POLISH_WEEKDAYS } from "@/features/polish";
 import { getRoundedDate } from "@/utils";
 
@@ -429,9 +434,76 @@ export const RESOURCE_METADATA = {
       },
     },
   },
-  [Resource.DasLink]: {
-    queryName: "dasLink",
-    apiPath: "das_link",
+  [Resource.Das]: {
+    queryName: 'das',
+    apiPath: 'das',
+    icon: FlaskConical,
+    itemMapper: (item) => ({
+      name: item.name
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "" }
+        },
+        dateTimeInputs: {
+          startsAt: { label: "Czas rozpoczęcia" },
+          endsAt: { label: "Czas rozpoczęcia" },
+        },
+        relationInputs: {
+          [Resource.DasMaps]: {
+            type: RelationType.OneToMany,
+            foreignKey: "dasId"
+          },
+          [Resource.DasLinks]: {
+            type: RelationType.OneToMany,
+            foreignKey: "dasId"
+          },
+          [Resource.DasStands]: {
+            type: RelationType.OneToMany,
+            foreignKey: "dasId"
+          },
+          [Resource.DasTimetables]: {
+            type: RelationType.OneToOne,
+            foreignKey: "timetableId",
+          },
+        }
+      },
+      defaultValues: {
+        name: "",
+        startsAt: "",
+        endsAt: "",
+        timetableId: -1
+      },
+      submitConfiguration: {
+        create: {
+          submitLabel: "Utwórz",
+          submitIcon: FlaskConical,
+          onAfterCreate: async (item) => {
+            await fetchMutation("/", {
+              body: { id: item.id, name: item.name },
+              resource: Resource.DasTimetables,
+              method: "POST",
+            });
+          },
+        },
+      },
+    }
+  },
+  [Resource.DasConfig]: {
+    // DasConfig is a grouping resource for navigation, not an actual data resource
+    apiPath: "",
+    itemMapper: () => ({ name: "Zarządzanie DAS'em" }),
+    icon: Wrench,
+    form: {
+      inputs: {},
+      defaultValues: {},
+    },
+  },
+  [Resource.DasLinks]: {
+    queryName: 'dasLinks',
+    apiPath: 'das_links',
+    icon: ExternalLink,
     itemMapper: (item) => ({
       name: item.title,
     }),
@@ -440,7 +512,7 @@ export const RESOURCE_METADATA = {
         textInputs: {
           link: { label: "Link" },
           title: { label: "Tytuł" },
-          subtitle: { label: "Podpis" },
+          subtitle: { label: "Podpis" }
         },
         selectInputs: {
           type: {
@@ -455,9 +527,111 @@ export const RESOURCE_METADATA = {
         link: "",
         type: LinkType.Default,
         title: "",
-        subtitle: null,
-      },
+      }
     },
+  },
+  [Resource.DasMaps]: {
+    queryName: 'dasMaps',
+    apiPath: 'das_maps',
+    icon: Map,
+    itemMapper: (item) => ({
+      name: item.name
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa" }
+        }
+      },
+      defaultValues: {
+        dasId: -1,
+        name: "",
+        contentKey: "",
+      }
+    }
+  },
+  [Resource.DasStands]: {
+    queryName: 'dasStands',
+    apiPath: 'das_stands',
+    icon: Store,
+    itemMapper: (item) => ({
+      name: item.name
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa" },
+          floor: { label: "Piętro" },
+        },
+        richTextInputs: {
+          description: { label: "Opis" }
+        },
+        numberInputs: {
+          number: { label: "Numer" }
+        },
+        relationInputs: {
+          [Resource.StudentOrganizations]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "studentOrganizationId",
+          },
+        }
+      },
+      defaultValues: {
+        dasId: -1,
+        name: "",
+        number: 0,
+      }
+    }
+  },
+  [Resource.DasTimetables]: {
+    queryName: 'dasTimetables',
+    apiPath: 'das_timetables',
+    icon: Clock,
+    itemMapper: (item) => ({
+      name: item.name
+    }),
+    form: {
+      inputs: {
+        relationInputs: {
+          [Resource.Das]: {
+            type: RelationType.OneToOne,
+            foreignKey: "timetableId",
+          },
+        },
+        textInputs: {
+          name: { label: "Nazwa" }
+        }
+      },
+      defaultValues: {
+        id: -1,
+        name: ""
+      }
+    }
+  },
+  [Resource.DasTimetableEntries]: {
+    queryName: 'dasTimetableEntries',
+    apiPath: 'das_timetable_entries',
+    icon: List,
+    itemMapper: (item) => ({
+      name: item.name
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa" }
+        },
+        dateTimeInputs: {
+          startTime: { label: "Czas rozpoczęcia" },
+          endTime: { label: "Czas zakończenia" },
+        }
+      },
+      defaultValues: {
+        name: "",
+        startTime: "",
+        endTime: "",
+        timetableId: -1
+      }
+    }
   },
   [Resource.DaySwaps]: {
     queryName: "daySwaps",
