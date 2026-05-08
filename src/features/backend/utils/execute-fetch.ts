@@ -26,11 +26,19 @@ export const executeFetch = async <T, R extends Resource>(
           throw new Error("Session expired");
         }
         case "expired": {
-          await refreshAccessToken();
+          const refreshedAuthState = await refreshAccessToken();
+          if (refreshedAuthState == null) {
+            forceLogout();
+            throw new Error("Session expired");
+          }
           break;
         }
         case "expiring-soon": {
-          void refreshAccessToken();
+          void refreshAccessToken().then((refreshedAuthState) => {
+            if (refreshedAuthState == null) {
+              forceLogout();
+            }
+          });
           break;
         }
         case "ok": {

@@ -50,8 +50,9 @@ export async function doRefreshToken(
     }
 
     const newState = parsed.data;
-    Cookies.set(AUTH_STATE_COOKIE_NAME, ...getCookieOptions(newState));
-    return newState;
+    Object.assign(currentState, newState);
+    Cookies.set(AUTH_STATE_COOKIE_NAME, ...getCookieOptions(currentState));
+    return currentState;
   } catch (error) {
     logger.error(parseError(error), "Token refresh failed");
     return null;
