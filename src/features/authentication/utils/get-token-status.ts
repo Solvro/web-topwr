@@ -1,18 +1,6 @@
 import { REFRESH_THRESHOLD_PERCENT } from "../constants";
 import type { AuthState, TokenStatus } from "../types/internal";
-
-function decodeJwtPayload(token: string): { iat?: number } | null {
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 3) {
-      return null;
-    }
-    const decoded = atob(parts[1].replaceAll("-", "+").replaceAll("_", "/"));
-    return JSON.parse(decoded) as { iat?: number };
-  } catch {
-    return null;
-  }
-}
+import { decodeJwtPayload } from "./decode-jwt-payload";
 
 /**
  * Determines the validity status of the current access token.
