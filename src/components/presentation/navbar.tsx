@@ -27,7 +27,11 @@ function UserProfileMenu({ user }: { user: User | null }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" className="rounded-full">
+        <Button
+          size="icon"
+          className="rounded-full"
+          aria-label="Menu użytkownika"
+        >
           <UserRound />
         </Button>
       </DropdownMenuTrigger>

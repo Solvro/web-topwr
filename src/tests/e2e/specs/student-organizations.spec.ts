@@ -147,7 +147,7 @@ test.describe("Student Organizations CRUD", () => {
   });
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await page.goto(ADMIN_PATH);
   });
 
   test.afterAll(async () => {

@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
 
+import { ADMIN_PATH } from "@/config/constants";
 import { Resource } from "@/features/resources/node";
 
 import { setArlSortFilters } from "../utils/set-arl-filters";
@@ -50,7 +51,7 @@ const filterFirstVersion = async (page: Page) =>
 
 test.describe("About Us Versions CRUD", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await page.goto(ADMIN_PATH);
     await navigateToMilestones(page);
   });
 
