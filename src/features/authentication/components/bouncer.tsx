@@ -1,6 +1,7 @@
 import "server-only";
 
 import { ErrorMessage } from "@/components/presentation/error-message";
+import { ADMIN_PATH } from "@/config/constants";
 import { ApplicationError } from "@/config/enums";
 import type { RouteOrResource, WrapperProps } from "@/types/components";
 
@@ -15,7 +16,7 @@ export async function Bouncer({
   route,
   resource,
 }: WrapperProps & RouteOrResource) {
-  const routePermission = route ?? `/${resource}`;
+  const routePermission = route ?? `${ADMIN_PATH}/${resource}`;
   const hasPermission = await permit(routePermission);
 
   return hasPermission ? (

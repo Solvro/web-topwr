@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import { ReturnButton } from "@/components/presentation/return-button";
 import { Form } from "@/components/ui/form";
+import { ADMIN_PATH } from "@/config/constants";
 import { fetchMutation, useMutationWrapper } from "@/features/backend";
 import type { ModifyResourceResponse } from "@/features/backend/types";
 import { declineNoun } from "@/features/polish";
@@ -129,12 +130,14 @@ export function ArfController<T extends Resource>({
       router.push(
         // assume that creatable resources in non-embedded forms are routable/editable
         metadata.isSingleton === true
-          ? `/${resource as RoutableResource}`
-          : `/${resource as EditableResource}/edit/${newPrimaryKey}`,
+          ? `${ADMIN_PATH}/${resource as RoutableResource}`
+          : `${ADMIN_PATH}/${resource as EditableResource}/edit/${newPrimaryKey}`,
       );
     } else if (relationContext == null && primaryKeyChanged) {
       // cast is safe as the resource has to be editable in order for the pk to change
-      router.replace(`/${resource as EditableResource}/edit/${newPrimaryKey}`);
+      router.replace(
+        `${ADMIN_PATH}/${resource as EditableResource}/edit/${newPrimaryKey}`,
+      );
     } else {
       if (wasCreated && relationContext != null) {
         relationContext.closeSheet();
@@ -219,7 +222,9 @@ export function ArfController<T extends Resource>({
                   : {
                       onDeleteSuccess: () => {
                         // again, assume that only routable resources use non-embedded forms
-                        router.push(`/${resource as RoutableResource}`);
+                        router.push(
+                          `${ADMIN_PATH}/${resource as RoutableResource}`,
+                        );
                         return false;
                       },
                     })}

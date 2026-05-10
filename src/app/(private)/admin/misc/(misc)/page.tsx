@@ -1,4 +1,5 @@
 import { DashboardButton } from "@/components/presentation/dashboard-button";
+import { ADMIN_PATH } from "@/config/constants";
 import {
   AbstractResourceGroup,
   Resource,
@@ -11,7 +12,7 @@ export default function MobileConfigPage(_props: ResourcePageProps) {
     <AbstractResourceGroup>
       <DashboardButton
         resource={Resource.MobileConfig}
-        href={`/${Resource.MobileConfig}/edit`}
+        href={`${ADMIN_PATH}/${Resource.MobileConfig}/edit`}
         label="Zarządzanie ustawieniami"
         variant="outline"
       />

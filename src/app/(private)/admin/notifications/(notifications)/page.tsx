@@ -1,6 +1,7 @@
 import { BellRing } from "lucide-react";
 
 import { DashboardButton } from "@/components/presentation/dashboard-button";
+import { ADMIN_PATH } from "@/config/constants";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { AbstractResourceGroup, Resource } from "@/features/resources";
 
@@ -17,7 +18,7 @@ export default function NotificationsPage() {
         variant="outline"
         icon={BellRing}
         label={`Wyślij ${declineNoun(Resource.Notifications, { case: GrammaticalCase.Nominative })}`}
-        href={`/${Resource.Notifications}/create`}
+        href={`${ADMIN_PATH}/${Resource.Notifications}/create`}
       />
     </AbstractResourceGroup>
   );

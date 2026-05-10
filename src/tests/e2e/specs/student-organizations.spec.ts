@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import { expect, test } from "@playwright/test";
 import type { Locator, Page, Response } from "@playwright/test";
 
+import { ADMIN_PATH } from "@/config/constants";
 import { LIST_RESULTS_PER_PAGE } from "@/features/abstract-resource-list/node";
 import { FetchError, fetchMutation } from "@/features/backend/node";
 import type {
@@ -162,7 +163,7 @@ test.describe("Student Organizations CRUD", () => {
       await navigateToOrganizations(page);
 
       await page.getByRole("link", { name: /dodaj organizację/i }).click();
-      await page.waitForURL(`/${resource}/create`);
+      await page.waitForURL(`${ADMIN_PATH}/${resource}/create`);
 
       await page
         .getByLabel("Nazwa", { exact: true })
@@ -247,7 +248,7 @@ test.describe("Student Organizations CRUD", () => {
         await navigateToOrganizations(page);
         await filterSpecificOrganization(page, testOrganization);
         await getEditButton(page).click();
-        await page.waitForURL(`/${resource}/edit/*`);
+        await page.waitForURL(`${ADMIN_PATH}/${resource}/edit/*`);
         const submitButton = page.getByRole("button", { name: /zapisz/i });
         // TODO: for some reason the button is sometimes initially enabled
         // when the rich text editor is rendered

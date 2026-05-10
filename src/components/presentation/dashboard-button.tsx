@@ -4,6 +4,7 @@ import type { Route } from "next";
 
 import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
+import { ADMIN_PATH } from "@/config/constants";
 import { permit } from "@/features/authentication/server";
 import type { RoutePermission } from "@/features/authentication/types";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
@@ -51,7 +52,7 @@ export async function DashboardButton({
     resource == null
       ? [hrefOverride, labelOverride, icon]
       : [
-          `/${resource}` as const,
+          `${ADMIN_PATH}/${resource}` as const,
           longLabel
             ? getManagingResourceLabel(resource)
             : (labelOverride ??

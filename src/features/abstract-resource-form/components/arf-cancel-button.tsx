@@ -15,6 +15,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { ADMIN_PATH } from "@/config/constants";
 import { declineNoun } from "@/features/polish";
 import type { RoutableResource } from "@/features/resources/types";
 
@@ -61,7 +62,7 @@ export function ArfCancelButton({
               onClick={onClearData}
             >
               {navigateOnClearData ? (
-                <Link href={`/${resource}`}>{cancelContent}</Link>
+                <Link href={`${ADMIN_PATH}/${resource}`}>{cancelContent}</Link>
               ) : (
                 cancelContent
               )}

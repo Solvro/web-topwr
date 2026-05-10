@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import { expect, test } from "@playwright/test";
 import type { Locator, Page, Response } from "@playwright/test";
 
+import { ADMIN_PATH } from "@/config/constants";
 import { LIST_RESULTS_PER_PAGE } from "@/features/abstract-resource-list/node";
 import { FetchError, fetchMutation, uploadFile } from "@/features/backend/node";
 import type {
@@ -168,7 +169,7 @@ test.describe("Guide Articles CRUD", () => {
       await navigateToArticles(page);
 
       await page.getByRole("link", { name: /dodaj artykuł/i }).click();
-      await page.waitForURL(`/${resource}/create`);
+      await page.waitForURL(`${ADMIN_PATH}/${resource}/create`);
 
       await page.getByLabel("Tytuł").fill(testArticle.title);
       await page.getByLabel("Krótki opis").fill(testArticle.shortDesc);
@@ -237,7 +238,7 @@ test.describe("Guide Articles CRUD", () => {
         await navigateToArticles(page);
         await filterSpecificArticle(page, testArticle);
         await getEditButton(page).click();
-        await page.waitForURL(`/${resource}/edit/*`);
+        await page.waitForURL(`${ADMIN_PATH}/${resource}/edit/*`);
         const submitButton = page.getByRole("button", { name: /zapisz/i });
         // TODO: for some reason the button is sometimes initially enabled
         // when the rich text editor is rendered
@@ -307,7 +308,7 @@ test.describe("Guide Article create form persistence", () => {
     page,
   }) => {
     const testTitle = faker.lorem.sentence();
-    await page.goto(`/${resource}/create`);
+    await page.goto(`${ADMIN_PATH}/${resource}/create`);
 
     const titleInput = page.getByLabel("Tytuł");
     await expect(titleInput).toBeVisible();
@@ -322,7 +323,7 @@ test.describe("Guide Article create form persistence", () => {
     await returnFromArf(page, resource);
 
     await page.getByRole("link", { name: /dodaj artykuł/i }).click();
-    await page.waitForURL(`/${resource}/create`);
+    await page.waitForURL(`${ADMIN_PATH}/${resource}/create`);
 
     await expect(page.getByLabel("Tytuł")).toHaveValue(testTitle);
   });

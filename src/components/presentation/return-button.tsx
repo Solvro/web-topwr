@@ -4,6 +4,7 @@ import type { Route } from "next";
 
 import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
+import { ADMIN_PATH } from "@/config/constants";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import type { RoutableResource } from "@/features/resources/types";
 import { cn } from "@/lib/utils";
@@ -23,7 +24,7 @@ export function ReturnButton({
     resource == null
       ? [href, target]
       : ([
-          `/${resource}`,
+          `${ADMIN_PATH}/${resource}`,
           declineNoun(resource, {
             case: GrammaticalCase.Genitive,
             plural: true,

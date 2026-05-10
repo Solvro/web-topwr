@@ -1,6 +1,7 @@
 import type { Route } from "next";
 import type { ZodNumber, ZodString } from "zod";
 
+import { ADMIN_PATH } from "@/config/constants";
 import { logger } from "@/features/logging";
 import type { Resource } from "@/features/resources";
 import {
@@ -39,7 +40,7 @@ function createBadge<R extends Resource>(
 
   const editRoute =
     badgeConfig.link === true
-      ? (`/${relationResource}/edit/${getResourcePkValue(relationResource, relatedResource)}` as Route)
+      ? (`${ADMIN_PATH}/${relationResource}/edit/${getResourcePkValue(relationResource, relatedResource)}` as Route)
       : undefined;
 
   let color: string | undefined;

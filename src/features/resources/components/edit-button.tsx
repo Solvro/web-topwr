@@ -2,6 +2,7 @@ import { SquarePen } from "lucide-react";
 
 import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
+import { ADMIN_PATH } from "@/config/constants";
 import { sanitizeId } from "@/utils";
 
 import type { EditableResource, ResourcePk } from "../types/internal";
@@ -16,7 +17,7 @@ export function EditButton({
 }) {
   return (
     <Button asChild {...getEditButtonProps(resource)}>
-      <Link href={`/${resource}/edit/${sanitizeId(id)}`}>
+      <Link href={`${ADMIN_PATH}/${resource}/edit/${sanitizeId(id)}`}>
         <SquarePen />
       </Link>
     </Button>

@@ -1,5 +1,5 @@
 import { Counter } from "@/components/core/counter";
-import { BackToHomeButton } from "@/components/presentation/back-to-home-button";
+import { BackToDashboardButton } from "@/components/presentation/back-to-dashboard-button";
 import { ReturnButton } from "@/components/presentation/return-button";
 import { fetchRelatedResources } from "@/features/abstract-resource-form";
 import type { ResourceDeclinableField } from "@/features/polish/types";
@@ -78,7 +78,7 @@ export async function AbstractResourceList<
       <footer className="mt-2 flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
         <CreateButton resource={resource} />
         {parentResource == null ? (
-          <BackToHomeButton chevronsIcon />
+          <BackToDashboardButton chevronsIcon />
         ) : (
           <ReturnButton resource={parentResource} />
         )}

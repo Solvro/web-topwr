@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
+import { ADMIN_PATH } from "@/config/constants";
 import { declineNoun } from "@/features/polish";
 import type { ResourceLabelOptions } from "@/types/components";
 
@@ -13,7 +14,7 @@ function getTitle(
   pathname: string,
   labelOptions: ResourceLabelOptions,
 ): string {
-  const prefix = `/${resource}`;
+  const prefix = `${ADMIN_PATH}/${resource}`;
   if (!pathname.startsWith(prefix)) {
     return "";
   }
