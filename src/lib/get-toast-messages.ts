@@ -90,5 +90,6 @@ export const getToastMessages = {
     success: "Hasło zmienione poprawnie",
     error: (error: unknown) =>
       getErrorMessage(error, "Nie udało się zmienić hasła"),
+    invalidOldPassword: "Podane aktualne hasło jest niepoprawne",
   },
 };
