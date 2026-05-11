@@ -325,6 +325,7 @@ export const RESOURCE_METADATA = {
         startTime: getRoundedDate(0),
         endTime: getRoundedDate(24),
         accentColor: null,
+        hidden: false,
       },
     },
   },
