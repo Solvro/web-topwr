@@ -9,6 +9,7 @@ import { PasswordInput } from "@/components/inputs/password-input";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { FetchError } from "@/features/backend";
+import { logger, parseError } from "@/features/logging";
 import { getToastMessages } from "@/lib/get-toast-messages";
 
 import { changePassword } from "../api/change-password";
@@ -42,11 +43,34 @@ export function ChangePasswordForm() {
         (issue as Record<string, unknown>).field ??
         (issue as Record<string, unknown>).rule;
       const message = (issue as Record<string, unknown>).message;
-      if (fieldName === "oldPassword" && typeof message === "string") {
+      if (fieldName === "oldPassword") {
+        const serverMessage = typeof message === "string" ? message : undefined;
+        let toastMessage: string | undefined;
+        try {
+          toastMessage = (
+            getToastMessages.changePassword as { invalidOldPassword?: string }
+          ).invalidOldPassword;
+        } catch (error_) {
+          logger.error(
+            parseError(error_),
+            "ChangePasswordForm: failed to get invalidOldPassword message",
+          );
+        }
+
+        const fieldMessage =
+          typeof toastMessage === "string" && toastMessage.length > 0
+            ? toastMessage
+            : serverMessage;
+
         form.setError("oldPassword", {
           type: "server",
-          message,
+          message: fieldMessage,
         });
+
+        if (typeof toastMessage === "string" && toastMessage.length > 0) {
+          toast.error(toastMessage);
+        }
+
         return true;
       }
     }
@@ -108,8 +132,8 @@ export function ChangePasswordForm() {
           name="newPasswordConfirm"
           render={({ field }) => (
             <PasswordInput
-              label="Potwierdź nowe hasło"
-              placeholder="Potwierdź nowe hasło"
+              label="Powtórzone hasło"
+              placeholder="Powtórzone hasło"
               {...field}
             />
           )}
