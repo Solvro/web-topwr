@@ -14,4 +14,5 @@ export const CalendarEventSchema = z.object({
   location: z.string().nullish(),
   googleCalId: z.string().nullish(),
   accentColor: ColorValueSchema.nullish(),
+  hidden: z.boolean(),
 });

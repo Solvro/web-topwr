@@ -13,12 +13,16 @@ export async function fetchResources<
 >(
   resource: T,
   includeRelations: B = false as B,
+  searchParameters = "",
 ): Promise<
   B extends true ? ResourceDataWithRelations<T>[] : ResourceDataType<T>[]
 > {
-  const result = await fetchQuery<GetResourcesWithRelationsResponse<T>>("", {
-    resource,
-    includeRelations,
-  });
+  const result = await fetchQuery<GetResourcesWithRelationsResponse<T>>(
+    searchParameters,
+    {
+      resource,
+      includeRelations,
+    },
+  );
   return result.data;
 }

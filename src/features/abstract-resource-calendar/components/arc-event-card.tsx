@@ -10,6 +10,8 @@ import type {
   ResourceDataType,
 } from "@/features/resources/types";
 
+import { ArcHideButtonWithDialog } from "./arc-hide-button-with-dialog";
+
 export function EventCard({
   event,
   resource,
@@ -41,6 +43,14 @@ export function EventCard({
       </header>
       {clickable ? (
         <footer className="flex items-center">
+          {event.googleCalId == null ? null : (
+            <ArcHideButtonWithDialog
+              resource={resource as EditableResource}
+              id={event.id}
+              googleCalId={event.googleCalId}
+              hidden={event.hidden}
+            />
+          )}
           <EditButton resource={resource as EditableResource} id={event.id} />
           <DeleteButtonWithDialog
             resource={resource}

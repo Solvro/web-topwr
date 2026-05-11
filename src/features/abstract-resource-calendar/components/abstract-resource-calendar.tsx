@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import { getAuthStateServer } from "@/features/authentication/server";
 import { fetchResources } from "@/features/backend";
 import type { Resource } from "@/features/resources";
 import type { ResourcePageProps } from "@/types/components";
@@ -23,7 +24,14 @@ export async function AbstractResourceCalendar<T extends Resource>({
     dataMapper: CalendarDataMapper<T>;
     clickable: boolean;
   }) {
-  const resourceData = await fetchResources(resource, true);
+  const authState = await getAuthStateServer();
+  const isSolvroAdmin =
+    authState?.user.roles.some((role) => role.slug === "solvro_admin") ?? false;
+  const resourceData = await fetchResources(
+    resource,
+    true,
+    isSolvroAdmin ? "?showHidden=true" : "",
+  );
 
   const mappedData = dataMapper(resourceData, clickable);
   return (
