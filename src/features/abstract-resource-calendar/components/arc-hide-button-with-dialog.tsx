@@ -27,7 +27,7 @@ import type { ResourcePk } from "@/features/resources/types";
 import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import type { OptionalPromise } from "@/types/helpers";
-import { quoteText, sanitizeId } from "@/utils";
+import { quoteText } from "@/utils";
 
 export function ArcHideButtonWithDialog({
   resource,
@@ -53,11 +53,11 @@ export function ArcHideButtonWithDialog({
   const { mutateAsync, isPending, isSuccess } = useMutationWrapper<
     MessageResponse,
     string
-  >(getKey.mutation.hideResource(resource, googleCalId), async () => {
+  >(getKey.mutation.hideResource(resource, googleCalId), async (calId) => {
     const response = await fetchMutation<MessageResponse>(`hidden`, {
       resource,
       method: "POST",
-      body: { googleCalId, hide: !hidden },
+      body: { googleCalId: calId, hide: !hidden },
     });
     setIsAlertDialogOpen(false);
     await queryClient.invalidateQueries({
@@ -72,7 +72,7 @@ export function ArcHideButtonWithDialog({
 
   function handleHide() {
     toast.promise(
-      mutateAsync(sanitizeId(id)),
+      mutateAsync(googleCalId),
       getToastMessages.resource(resource).modify,
     );
   }
