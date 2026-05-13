@@ -9,7 +9,6 @@ const ADMINS_ONLY = ["admin", ...SOLVRO_ADMINS_ONLY] as const;
 const ANY_AUTHENTICATED_ROLE = ["user", ...ADMINS_ONLY] as const;
 
 export const ROUTE_PERMISSIONS = {
-  "/": ANY_AUTHENTICATED_ROLE,
   [`/${Resource.Dashboard}`]: ANY_AUTHENTICATED_ROLE,
   "/review": SOLVRO_ADMINS_ONLY,
   [`/${Resource.AboutUs}`]: ANY_AUTHENTICATED_ROLE,
