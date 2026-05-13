@@ -2,7 +2,6 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { ADMIN_PATH } from "@/config/constants";
 import { MOCK_USE_PATHNAME } from "@/tests/unit";
 
 import { Resource } from "../enums";
@@ -19,7 +18,7 @@ describe("Abstract Resource Layout", () => {
   }
 
   it("renders the correct title based on pathname", () => {
-    renderLayout(`${ADMIN_PATH}/${Resource.StudentOrganizations}`);
+    renderLayout(`/${Resource.StudentOrganizations}`);
     expect(screen.getByText("Zarządzanie organizacjami")).toBeInTheDocument();
   });
 

@@ -3,7 +3,6 @@ import type { Route } from "next";
 import type { ReactNode } from "react";
 import type { z } from "zod";
 
-import type { ADMIN_PATH } from "@/config/constants";
 import type { AbstractResourceFormInputs } from "@/features/abstract-resource-form/types";
 import type { ListItem } from "@/features/abstract-resource-list/types";
 import type { DatedResource } from "@/features/backend/types";
@@ -17,13 +16,13 @@ import type { ResourceDataWithRelations } from "./relations";
 export type ResourcePk = string | number;
 
 export type RoutableResource = {
-  [R in Resource]: `${typeof ADMIN_PATH}/${R}` extends Route ? R : never;
+  [R in Resource]: `/${R}` extends Route ? R : never;
 }[Resource];
 export type CreatableResource = {
-  [R in Resource]: `${typeof ADMIN_PATH}/${R}/create` extends Route ? R : never;
+  [R in Resource]: `/${R}/create` extends Route ? R : never;
 }[Resource];
 export type EditableResource = {
-  [R in Resource]: `${typeof ADMIN_PATH}/${R}/edit/${string}` extends Route<`${typeof ADMIN_PATH}/${R}/edit/${infer _}`>
+  [R in Resource]: `/${R}/edit/${string}` extends Route<`/${R}/edit/${infer _}`>
     ? R
     : never;
 }[Resource];

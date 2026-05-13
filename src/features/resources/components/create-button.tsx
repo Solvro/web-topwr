@@ -1,6 +1,5 @@
 import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
-import { ADMIN_PATH } from "@/config/constants";
 
 import type { CreatableResource, ResourceFormValues } from "../types/internal";
 import { CreateButtonLabel } from "./create-button-label";
@@ -26,7 +25,7 @@ export function CreateButton<T extends CreatableResource>({
       : (`?${searchParameters.toString()}` as const);
   return (
     <Button className={className} asChild>
-      <Link href={`${ADMIN_PATH}/${resource}/create${searchQuery}`}>
+      <Link href={`/${resource}/create${searchQuery}`}>
         <CreateButtonLabel resource={resource} plural={plural} />
       </Link>
     </Button>

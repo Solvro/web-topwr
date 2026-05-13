@@ -1,6 +1,5 @@
 import type { Page } from "@playwright/test";
 
-import { ADMIN_PATH } from "@/config/constants";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
 
@@ -13,5 +12,5 @@ export async function returnFromArf(page: Page, resource: Resource) {
       ),
     })
     .click();
-  await page.waitForURL(`${ADMIN_PATH}/${resource}`);
+  await page.waitForURL(`/${resource}`);
 }

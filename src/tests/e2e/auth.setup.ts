@@ -1,7 +1,7 @@
 import { expect, test as setup } from "@playwright/test";
 import path from "node:path";
 
-import { ADMIN_PATH } from "@/config/constants";
+import { Resource } from "@/features/resources";
 
 import { AUTH_STORAGE_STATE_PATH } from "./constants";
 import { getTestUserCredentials } from "./utils/get-test-user-credentials";
@@ -16,6 +16,6 @@ const authFilePath = path.join(
 
 setup("authenticate", async ({ page }) => {
   await login(page, credentials);
-  await expect(page).toHaveURL(ADMIN_PATH);
+  await expect(page).toHaveURL(`/${Resource.Dashboard}`);
   await page.context().storageState({ path: authFilePath });
 });

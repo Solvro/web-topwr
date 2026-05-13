@@ -14,6 +14,7 @@ import { ChangeScreenshotsSchema } from "../schemas/change-screenshots-schema";
 import { ChangesSchema } from "../schemas/changes-schema";
 import { ContributorSchema } from "../schemas/contributor-schema";
 import { ContributorSocialLinkSchema } from "../schemas/contributor-social-link-schema";
+import { DashboardSchema } from "../schemas/dashboard-schema";
 import { DaySwapSchema } from "../schemas/day-swap-schema";
 import { DepartmentLinkSchema } from "../schemas/department-link-schema";
 import { DepartmentSchema } from "../schemas/department-schema";
@@ -55,6 +56,7 @@ export const RESOURCE_SCHEMAS = {
   [Resource.ChangeScreenshots]: ChangeScreenshotsSchema,
   [Resource.Contributors]: ContributorSchema,
   [Resource.ContributorSocialLinks]: ContributorSocialLinkSchema,
+  [Resource.Dashboard]: DashboardSchema,
   [Resource.DaySwaps]: DaySwapSchema,
   [Resource.Departments]: DepartmentSchema,
   [Resource.DepartmentLinks]: DepartmentLinkSchema,

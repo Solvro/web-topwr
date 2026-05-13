@@ -6,10 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { ApplicationError } from "@/config/enums";
 import { APPLICATION_ERROR_MESSAGES } from "@/data/application-error-messages";
 import { useAuthentication } from "@/features/authentication";
+import { Resource } from "@/features/resources";
 import type { RoutableResource } from "@/features/resources/types";
 import type { WrapperProps } from "@/types/components";
 
-import { BackToDashboardButton } from "./back-to-dashboard-button";
 import { BackToHomeButton } from "./back-to-home-button";
 import { ReturnButton } from "./return-button";
 import { UserInfo } from "./user-info";
@@ -63,7 +63,7 @@ export function ErrorMessage({
             user == null ? (
               <BackToHomeButton />
             ) : (
-              <BackToDashboardButton />
+              <ReturnButton resource={Resource.Dashboard} />
             )
           ) : (
             <ReturnButton resource={returnToResource} />

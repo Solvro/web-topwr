@@ -1,6 +1,5 @@
 import type { Page } from "@playwright/test";
 
-import { ADMIN_PATH } from "@/config/constants";
 import { declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
 import type { ResourceSchemaKey } from "@/features/resources/types";
@@ -68,6 +67,6 @@ export async function setArlSortFilters<T extends Resource>(
   }
   await page.getByRole("button", { name: /zatwierdź/i }).click();
   await page.waitForURL(
-    `${ADMIN_PATH}/${resource}?${serializeSortFilters({ sortBy, sortDirection, filters })}`,
+    `/${resource}?${serializeSortFilters({ sortBy, sortDirection, filters })}`,
   );
 }

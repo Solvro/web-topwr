@@ -4,8 +4,8 @@ import type { Route } from "next";
 
 import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
-import { ADMIN_PATH } from "@/config/constants";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
+import { Resource } from "@/features/resources";
 import type { RoutableResource } from "@/features/resources/types";
 import { cn } from "@/lib/utils";
 
@@ -16,20 +16,25 @@ export function ReturnButton({
   resource,
   className,
   icon: Icon = ArrowLeft,
-}: { className?: string; returnLabel?: string; icon?: LucideIcon } & (
+}: {
+  className?: string;
+  returnLabel?: string;
+  icon?: LucideIcon;
+} & (
   | { target: string; href: Route; resource?: never }
-  | { target?: never; href?: never; resource: RoutableResource }
+  | { target?: never; href?: Route; resource: RoutableResource }
 )) {
   const [returnHref, returnTarget] =
     resource == null
       ? [href, target]
       : ([
-          `${ADMIN_PATH}/${resource}`,
+          href ?? (`/${resource}` as Route),
           declineNoun(resource, {
             case: GrammaticalCase.Genitive,
-            plural: true,
+            plural: resource !== Resource.Dashboard,
           }),
         ] as const);
+
   return (
     <Button variant="link" asChild>
       <Link

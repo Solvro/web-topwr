@@ -1,9 +1,10 @@
+import { ChevronsLeft } from "lucide-react";
+
 import { Counter } from "@/components/core/counter";
-import { BackToDashboardButton } from "@/components/presentation/back-to-dashboard-button";
 import { ReturnButton } from "@/components/presentation/return-button";
 import { fetchRelatedResources } from "@/features/abstract-resource-form";
 import type { ResourceDeclinableField } from "@/features/polish/types";
-import { CreateButton } from "@/features/resources";
+import { CreateButton, Resource } from "@/features/resources";
 import type {
   CreatableResource,
   EditableResource,
@@ -78,7 +79,7 @@ export async function AbstractResourceList<
       <footer className="mt-2 flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
         <CreateButton resource={resource} />
         {parentResource == null ? (
-          <BackToDashboardButton chevronsIcon />
+          <ReturnButton resource={Resource.Dashboard} icon={ChevronsLeft} />
         ) : (
           <ReturnButton resource={parentResource} />
         )}

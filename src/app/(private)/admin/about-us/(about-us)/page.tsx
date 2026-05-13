@@ -1,7 +1,6 @@
 import { Settings } from "lucide-react";
 
 import { DashboardButton } from "@/components/presentation/dashboard-button";
-import { ADMIN_PATH } from "@/config/constants";
 import {
   AbstractResourceGroup,
   Resource,
@@ -15,7 +14,7 @@ export default function AboutUsPage(_props: ResourcePageProps) {
       <DashboardButton
         resource={Resource.AboutUs}
         icon={Settings}
-        href={`${ADMIN_PATH}/${Resource.AboutUs}/edit`}
+        href={`/${Resource.AboutUs}/edit`}
         label={getManagingResourceLabel(Resource.AboutUs, { plural: false })}
         variant="outline"
       />

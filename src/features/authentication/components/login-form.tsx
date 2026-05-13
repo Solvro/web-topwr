@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ADMIN_PATH } from "@/config/constants";
+import { Resource } from "@/features/resources";
 import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
 
@@ -41,7 +41,7 @@ export function LoginForm() {
   const { mutateAsync, isPending, isSuccess } = useMutation({
     mutationFn: login,
     onSuccess: () => {
-      router.push(ADMIN_PATH);
+      router.push(`/${Resource.Dashboard}`);
     },
   });
 

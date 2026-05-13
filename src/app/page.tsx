@@ -4,7 +4,7 @@ import "server-only";
 import { Link } from "@/components/core/link";
 import { Logo } from "@/components/presentation/logo";
 import { Button } from "@/components/ui/button";
-import { ADMIN_PATH } from "@/config/constants";
+import { Resource } from "@/features/resources";
 
 export default function LandingPage() {
   return (
@@ -18,7 +18,7 @@ export default function LandingPage() {
         </p>
         <div className="mt-4">
           <Button asChild>
-            <Link href={ADMIN_PATH}>
+            <Link href={`/${Resource.Dashboard}`}>
               Przejdź do panelu admina <ArrowRight />
             </Link>
           </Button>

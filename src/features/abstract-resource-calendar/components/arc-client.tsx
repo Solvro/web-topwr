@@ -3,9 +3,9 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 
-import { BackToDashboardButton } from "@/components/presentation/back-to-dashboard-button";
+import { ReturnButton } from "@/components/presentation/return-button";
 import { ArfSheetProvider } from "@/features/abstract-resource-form";
-import type { Resource } from "@/features/resources";
+import { Resource } from "@/features/resources";
 import type { SearchParameters } from "@/types/components";
 
 import { CalendarModalContext } from "../context/calendar-modal-context";
@@ -61,7 +61,7 @@ export function AbstractResourceCalendarClient({
           onDayClick={handleOpenDayEvents}
         />
         {children}
-        <BackToDashboardButton className="self-start" />
+        <ReturnButton resource={Resource.Dashboard} className="self-start" />
         <AllEventsModal
           resource={resource}
           clickable={clickable}
