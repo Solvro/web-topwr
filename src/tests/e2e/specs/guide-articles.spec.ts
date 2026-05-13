@@ -146,7 +146,7 @@ test.describe("Guide Articles CRUD", () => {
   });
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await page.goto(`/${Resource.Dashboard}`);
   });
 
   test.afterAll(async () => {

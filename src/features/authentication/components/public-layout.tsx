@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 import "server-only";
 
-import { MainContent } from "@/components/main-content";
-import { Navbar } from "@/components/presentation/navbar";
+import { Resource } from "@/features/resources";
 import type { WrapperProps } from "@/types/components";
 
 import { getAuthStateServer } from "../utils/get-auth-state.server";
@@ -12,13 +11,8 @@ export async function PublicLayout({ children }: WrapperProps) {
 
   if (authState != null) {
     // TODO?: potential to add a redirect to chosen path via query params
-    return redirect("/");
+    return redirect(`/${Resource.Dashboard}`);
   }
 
-  return (
-    <>
-      <Navbar authState={null} />
-      <MainContent>{children}</MainContent>
-    </>
-  );
+  return children;
 }

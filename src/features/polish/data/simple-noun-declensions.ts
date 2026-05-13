@@ -227,6 +227,28 @@ export const SIMPLE_NOUN_DECLENSIONS = {
     },
   },
   [Resource.ContributorSocialLinks]: REUSABLE_DECLENSIONS.link,
+  [Resource.Dashboard]: {
+    gender: GrammaticalGender.Masculine,
+    singular: {
+      nominative: "panel administracyjny",
+      genitive: "panelu administracyjnego",
+      dative: "panelowi administracyjnemu",
+      accusative: "panel administracyjny",
+      instrumental: "panelem administracyjnym",
+
+      locative: "panelu administracyjnym",
+      vocative: "panelu administracyjny",
+    },
+    plural: {
+      nominative: "panele administracyjne",
+      genitive: "paneli administracyjnych",
+      dative: "panelom administracyjnym",
+      accusative: "panele administracyjne",
+      instrumental: "panelami administracyjnymi",
+      locative: "panelach administracyjnych",
+      vocative: "panele administracyjne",
+    },
+  },
   [Resource.DaySwaps]: {
     gender: GrammaticalGender.Feminine,
     singular: {

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 export function Logo({
   variant,
-  style,
+  className,
   ...props
 }: Omit<ComponentProps<typeof Image>, "src" | "alt"> & {
   variant: "color" | "white" | "dynamic";
@@ -19,12 +19,12 @@ export function Logo({
         <Logo
           {...props}
           variant="color"
-          className={cn("dark:hidden", props.className)}
+          className={cn("dark:hidden", className)}
         />
         <Logo
           {...props}
           variant="white"
-          className={cn("not-dark:hidden", props.className)}
+          className={cn("not-dark:hidden", className)}
         />
       </>
     );
@@ -37,7 +37,7 @@ export function Logo({
           : LogoToPWRWhite) as StaticImageData
       }
       alt="Logo ToPWR"
-      style={{ viewTransitionName: "topwr-logo", ...style }}
+      className={cn("h-auto w-auto", className)}
       {...props}
     />
   );

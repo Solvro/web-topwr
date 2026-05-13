@@ -6,6 +6,7 @@ import { AbstractResourceForm } from "@/features/abstract-resource-form";
 import { fetchQuery, getResourceApiBase } from "@/features/backend";
 import type { GetResourceWithRelationsResponse } from "@/features/backend/types";
 import { Resource } from "@/features/resources";
+import { getResourceMetadata } from "@/features/resources/node";
 import type { ResourceDataType } from "@/features/resources/types";
 import { mockDatedResource } from "@/tests/shared";
 import { renderWithProviders, server } from "@/tests/unit";
@@ -38,9 +39,11 @@ async function renderEditPage(bannerId: number) {
 
 describe("edit page for existing banner", () => {
   it("reads banner data and populates form", async () => {
+    const { apiPath } = getResourceMetadata(resource);
+
     server.use(
       http.get(
-        `${getResourceApiBase(resource)}/${resource}/${String(MOCK_BANNER.id)}`,
+        `${getResourceApiBase(resource)}/${apiPath}/${String(MOCK_BANNER.id)}`,
         () => HttpResponse.json({ data: MOCK_BANNER }),
       ),
     );

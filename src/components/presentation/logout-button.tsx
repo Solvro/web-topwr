@@ -3,7 +3,7 @@
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useAuthentication } from "@/features/authentication";
 import { useMutationWrapper } from "@/features/backend";
 import { logger, parseError } from "@/features/logging";
@@ -38,15 +38,13 @@ export function LogoutButton() {
   );
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="rounded-full"
+    <DropdownMenuItem
       onClick={() => toast.promise(mutateAsync(null), getToastMessages.logout)}
       disabled={isPending}
-      tooltip="Wyloguj się"
+      variant="destructive"
     >
-      <LogOut />
-    </Button>
+      <LogOut className="size-4" />
+      <span>Wyloguj się</span>
+    </DropdownMenuItem>
   );
 }
