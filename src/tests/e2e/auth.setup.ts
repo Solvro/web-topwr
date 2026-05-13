@@ -1,7 +1,7 @@
 import { expect, test as setup } from "@playwright/test";
 import path from "node:path";
 
-import { Resource } from "@/features/resources";
+import { Resource } from "@/features/resources/node";
 
 import { AUTH_STORAGE_STATE_PATH } from "./constants";
 import { getTestUserCredentials } from "./utils/get-test-user-credentials";

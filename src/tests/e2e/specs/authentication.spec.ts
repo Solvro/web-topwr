@@ -1,6 +1,6 @@
 import test, { expect } from "@playwright/test";
 
-import { Resource } from "@/features/resources";
+import { Resource } from "@/features/resources/node";
 
 import { getTestUserCredentials } from "../utils/get-test-user-credentials";
 import { login } from "../utils/login";
