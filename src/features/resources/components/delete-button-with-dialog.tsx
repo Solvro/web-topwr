@@ -91,7 +91,11 @@ export function DeleteButtonWithDialog({
           <Trash2 />
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+        }}
+      >
         <AlertDialogHeader>
           <AlertDialogTitle className="text-balance">
             Czy na pewno chcesz usunąć{" "}

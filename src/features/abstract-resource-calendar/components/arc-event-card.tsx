@@ -46,7 +46,6 @@ export function EventCard({
           {event.googleCalId == null ? null : (
             <ArcHideButtonWithDialog
               resource={resource as EditableResource}
-              id={event.id}
               googleCalId={event.googleCalId}
               hidden={event.hidden}
             />
