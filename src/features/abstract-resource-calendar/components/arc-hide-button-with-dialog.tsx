@@ -23,7 +23,6 @@ import { fetchMutation, getKey, useMutationWrapper } from "@/features/backend";
 import type { MessageResponse } from "@/features/backend/types";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
-import type { ResourcePk } from "@/features/resources/types";
 import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import type { OptionalPromise } from "@/types/helpers";
@@ -31,7 +30,6 @@ import { quoteText } from "@/utils";
 
 export function ArcHideButtonWithDialog({
   resource,
-  id,
   googleCalId,
   hidden,
   itemName,
@@ -40,7 +38,6 @@ export function ArcHideButtonWithDialog({
   ...props
 }: {
   resource: Resource;
-  id: ResourcePk;
   googleCalId: string;
   hidden: boolean;
   itemName?: string;
@@ -50,7 +47,7 @@ export function ArcHideButtonWithDialog({
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { mutateAsync, isPending, isSuccess } = useMutationWrapper<
+  const { mutateAsync, isPending } = useMutationWrapper<
     MessageResponse,
     string
   >(getKey.mutation.hideResource(resource, googleCalId), async (calId) => {
@@ -96,7 +93,11 @@ export function ArcHideButtonWithDialog({
           {hidden ? <Eye /> : <EyeOff />}
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+        }}
+      >
         <AlertDialogHeader>
           <AlertDialogTitle className="text-balance">
             {hidden
@@ -125,7 +126,6 @@ export function ArcHideButtonWithDialog({
               variant="destructive"
               onClick={handleHide}
               loading={isPending}
-              disabled={isSuccess}
             >
               {hidden ? (
                 <>
