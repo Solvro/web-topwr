@@ -37,7 +37,7 @@ export function ArcHideButtonWithDialog({
   onHideSuccess,
   ...props
 }: {
-  resource: Resource;
+  resource: Resource.CalendarEvents;
   googleCalId: string;
   hidden: boolean;
   itemName?: string;
