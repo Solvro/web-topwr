@@ -6,7 +6,7 @@ export const OptionalUrlSchema = z
   .string()
   .trim()
   .url(FORM_ERROR_MESSAGES.INVALID_URL)
-  .refine((data) => data === "" || data.startsWith("https://"), {
+  .startsWith("http://", {
     message: FORM_ERROR_MESSAGES.INVALID_URL,
   })
   .or(z.literal(""))
