@@ -439,6 +439,14 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.Dashboard]: {
+    apiPath: "",
+    itemMapper: () => ({}),
+    form: {
+      inputs: {},
+      defaultValues: {},
+    },
+  },
   [Resource.DaySwaps]: {
     queryName: "daySwaps",
     apiPath: "day_swaps",

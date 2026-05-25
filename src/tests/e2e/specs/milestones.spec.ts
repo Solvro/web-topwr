@@ -50,7 +50,7 @@ const filterFirstVersion = async (page: Page) =>
 
 test.describe("About Us Versions CRUD", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await page.goto(`/${Resource.Dashboard}`);
     await navigateToMilestones(page);
   });
 

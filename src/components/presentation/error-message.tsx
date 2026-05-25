@@ -1,8 +1,12 @@
+"use client";
+
 import type { ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { ApplicationError } from "@/config/enums";
 import { APPLICATION_ERROR_MESSAGES } from "@/data/application-error-messages";
+import { useAuthentication } from "@/features/authentication";
+import { Resource } from "@/features/resources";
 import type { RoutableResource } from "@/features/resources/types";
 import type { WrapperProps } from "@/types/components";
 
@@ -43,6 +47,7 @@ export function ErrorMessage({
   message?: ReactNode;
   returnToResource?: RoutableResource;
 }) {
+  const { user } = useAuthentication();
   const contextInfo = ERROR_CONTEXT_INFOS[type];
 
   return (
@@ -55,7 +60,11 @@ export function ErrorMessage({
         {contextInfo ?? null}
         <div className="order-4">
           {returnToResource == null ? (
-            <BackToHomeButton />
+            user == null ? (
+              <BackToHomeButton />
+            ) : (
+              <ReturnButton resource={Resource.Dashboard} />
+            )
           ) : (
             <ReturnButton resource={returnToResource} />
           )}

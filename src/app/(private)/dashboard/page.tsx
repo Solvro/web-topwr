@@ -5,7 +5,7 @@ import { getUserDisplayName } from "@/features/authentication";
 import { getAuthStateServer } from "@/features/authentication/server";
 import { Resource } from "@/features/resources";
 
-export default async function Home() {
+export default async function AdminPage() {
   const authState = await getAuthStateServer();
   const user = authState?.user;
 

@@ -3,6 +3,7 @@ import { ThemeProvider } from "next-themes";
 import { Space_Grotesk } from "next/font/google";
 
 import { Analytics } from "@/components/analytics";
+import { Navbar } from "@/components/presentation/navbar";
 import { RootProviders } from "@/components/providers/root-providers";
 import { env } from "@/config/env";
 import { Toaster } from "@/features/toaster";
@@ -25,9 +26,9 @@ const OG_IMAGE_METADATA = {
 };
 
 export const metadata: Metadata = {
-  title: "Panel Administratora | ToPWR by Solvro",
+  title: "ToPWR | Twój studencki asystent",
   description:
-    "Panel Administracyjny ToPWR autorstwa KN Solvro to zaawansowany system CMS do zarządzania aplikacją mobilną ToPWR. Zarządzaj organizacjami studenckimi, artykułami i wiele więcej w jednym intuicyjnym panelu.",
+    "Pierwszy dzień na zajęciach i już nieparzysta środa w poniedziałek? Budynek o zagadkowej nazwie C-13 w planie zajęć? A może szukasz informacji o wydziałach i kołach naukowych? Każdy student na PWr zadaje podobne pytania, dlatego wiemy, jak trudno jest ogarnąć życie na uczelni. Stworzyliśmy ToPWR, by uprościć i ułatwić codzienne studenckie wyzwania!",
   metadataBase: new URL(env.NEXT_PUBLIC_WEBSITE_URL),
   openGraph: {
     images: OG_IMAGE_METADATA,
@@ -54,7 +55,8 @@ export default function RootLayout({ children }: WrapperProps) {
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <Toaster position="top-center" />
-            {children}
+            <Navbar />
+            <main className="w-full grow">{children}</main>
           </ThemeProvider>
           <Analytics />
         </body>

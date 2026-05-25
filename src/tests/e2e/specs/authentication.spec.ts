@@ -1,5 +1,7 @@
 import test, { expect } from "@playwright/test";
 
+import { Resource } from "@/features/resources/node";
+
 import { getTestUserCredentials } from "../utils/get-test-user-credentials";
 import { login } from "../utils/login";
 
@@ -10,23 +12,23 @@ test.describe("Authentication", () => {
   test("should redirect to login page when not authenticated", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto(`/${Resource.Dashboard}`);
     await expect(page).toHaveURL("/login");
   });
 
-  test("should redirect to home page when already authenticated", async ({
+  test("should redirect to admin page when already authenticated", async ({
     page,
   }) => {
     await login(page, credentials);
-    await expect(page).toHaveURL("/");
+    await expect(page).toHaveURL(`/${Resource.Dashboard}`);
     await page.goto("/login");
-    await expect(page).toHaveURL("/");
+    await expect(page).toHaveURL(`/${Resource.Dashboard}`);
   });
 
   test("should allow test user to log in", async ({ page }) => {
     await login(page, credentials);
     await expect(page).not.toHaveURL("/login");
-    await expect(page).toHaveURL("/");
+    await expect(page).toHaveURL(`/${Resource.Dashboard}`);
     const greeting = page.getByText(
       new RegExp(`cześć, ${credentials.email}`, "i"),
     );
@@ -35,7 +37,9 @@ test.describe("Authentication", () => {
 
   test("should allow test user to log out", async ({ page }) => {
     await login(page, credentials);
-    await page.getByRole("button", { name: /wyloguj się/i }).click();
+    await expect(page).toHaveURL(`/${Resource.Dashboard}`);
+    await page.getByRole("button", { name: /menu użytkownika/i }).click();
+    await page.getByRole("menuitem", { name: /wyloguj się/i }).click();
     await expect(page).toHaveURL("/login");
   });
 
