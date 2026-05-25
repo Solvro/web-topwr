@@ -1,6 +1,6 @@
 import type { AuthState } from "../types/internal";
-import { doRefreshToken } from "./do-refresh-token";
 import { getAuthStateNode } from "./get-auth-state.node";
+import { performTokenRefresh } from "./perform-token-refresh";
 
 /** Singleton promise – prevents concurrent refresh requests from stacking. */
 let pendingRefresh: Promise<AuthState | null> | null = null;
@@ -20,7 +20,7 @@ export async function refreshAccessToken(): Promise<AuthState | null> {
     return null;
   }
 
-  pendingRefresh = doRefreshToken(authState).finally(() => {
+  pendingRefresh = performTokenRefresh(authState).finally(() => {
     pendingRefresh = null;
   });
   return pendingRefresh;
