@@ -5,7 +5,7 @@ import { fetchResources } from "@/features/backend";
 import type { Resource } from "@/features/resources";
 import type { ResourcePageProps } from "@/types/components";
 
-import { HIDDEN_EVENT_QUERY_PARAM } from "../constants";
+import { HIDDEN_EVENT_QUERY_PARAMS } from "../constants";
 import type {
   CalendarDataMapper,
   ResourceCalendarProps,
@@ -31,7 +31,7 @@ export async function AbstractResourceCalendar<T extends Resource>({
   const resourceData = await fetchResources(
     resource,
     true,
-    isSolvroAdmin ? HIDDEN_EVENT_QUERY_PARAM : "",
+    isSolvroAdmin ? HIDDEN_EVENT_QUERY_PARAMS : undefined,
   );
 
   const mappedData = dataMapper(resourceData, clickable);
