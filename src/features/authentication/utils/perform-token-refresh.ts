@@ -10,7 +10,7 @@ import type { AuthState } from "../types/internal";
 import { getAuthStateNode } from "./get-auth-state.node";
 import { getCookieOptions } from "./get-cookie-options";
 
-export async function doRefreshToken(
+export async function performTokenRefresh(
   authState: AuthState,
 ): Promise<AuthState | null> {
   try {
