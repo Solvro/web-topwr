@@ -1,3 +1,9 @@
+import {
+  forceLogout,
+  getAuthStateNode,
+  getTokenStatus,
+  refreshAccessToken,
+} from "@/features/authentication/node";
 import { logger, parseError } from "@/features/logging";
 import type { Resource } from "@/features/resources";
 
@@ -10,6 +16,38 @@ export const executeFetch = async <T, R extends Resource>(
   endpoint: string,
   options: FetchRequestOptions<R>,
 ): Promise<NonNullable<T>> => {
+  if (typeof window !== "undefined" && options.accessTokenOverride == null) {
+    const authState = getAuthStateNode();
+    if (authState != null) {
+      const status = getTokenStatus(authState);
+      switch (status) {
+        case "both-expired": {
+          forceLogout();
+          throw new Error("Session expired");
+        }
+        case "expired": {
+          const refreshedAuthState = await refreshAccessToken();
+          if (refreshedAuthState == null) {
+            forceLogout();
+            throw new Error("Session expired");
+          }
+          break;
+        }
+        case "expiring-soon": {
+          void refreshAccessToken().then((refreshedAuthState) => {
+            if (refreshedAuthState == null) {
+              forceLogout();
+            }
+          });
+          break;
+        }
+        case "ok": {
+          break;
+        }
+      }
+    }
+  }
+
   const request = createRequest<R>(endpoint, options);
   let response;
   try {
