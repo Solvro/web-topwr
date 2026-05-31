@@ -96,6 +96,8 @@ export type ResourceMetadata<R extends Resource> = Readonly<{
   pk?: ResourceSchemaKey<R, z.ZodString | z.ZodNumber | AnyZodEnum>;
   /** A mapping of the client-side resources to their paths in the backend API. */
   apiPath: string;
+  /** If the API supports draft models for this resource, the path to be used when creating drafts. */
+  apiDraftPath?: string;
   /** The API version to be used when fetching this resource. Defaults to 1. */
   apiVersion?: number;
   /**

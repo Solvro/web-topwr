@@ -13,8 +13,10 @@ import { AbstractResourceEditPageInternal } from "./abstract-resource-edit-page-
 export async function AbstractResourceEditPage({
   resource,
   params,
+  draft = false,
 }: ResourceEditPageProps & {
   resource: RoutableResource;
+  draft?: boolean;
 }) {
   const metadata = getResourceMetadata(resource);
   const declensions = declineNoun(resource);
@@ -24,6 +26,7 @@ export async function AbstractResourceEditPage({
       <AbstractResourceEditPageInternal
         resource={resource}
         path=""
+        draft={draft}
         errorMessage={<>Nie udało się wczytać {declensions.genitive}.</>}
       />
     );
@@ -48,6 +51,7 @@ export async function AbstractResourceEditPage({
     <AbstractResourceEditPageInternal
       resource={resource}
       path={sanitizedId}
+      draft={draft}
       errorMessage={
         <>
           Nie istnieje{" "}
