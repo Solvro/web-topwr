@@ -1,8 +1,7 @@
+import { forceLogout, refreshAccessToken } from "@/features/authentication";
 import {
-  forceLogout,
   getAuthStateNode,
   getTokenStatus,
-  refreshAccessToken,
 } from "@/features/authentication/node";
 import { logger, parseError } from "@/features/logging";
 import type { Resource } from "@/features/resources";
