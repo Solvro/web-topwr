@@ -142,7 +142,9 @@ export function ArfRelationInput<
     );
   }
   const queriedRelations = unsafeQueriedRelations ?? [];
-  const isRelationOrderable = isOrderableResource(resourceRelation);
+  const isRelationOrderable =
+    isOrderableResource(resourceRelation) &&
+    relationDefinition.type !== RelationType.ManyToMany;
   const sortedQueriedRelations = isRelationOrderable
     ? [...queriedRelations].toSorted((a, b) =>
         "order" in a && "order" in b ? a.order - b.order : 1,
