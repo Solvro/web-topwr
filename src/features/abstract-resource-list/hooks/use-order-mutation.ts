@@ -12,6 +12,7 @@ interface UseOrderMutationOptions<T extends Resource> {
   resource: T;
   buildPath: (itemId: ResourcePk) => string;
   onError?: () => void;
+  onSuccess?: (data: ModifyResourceResponse<T>) => void;
 }
 
 interface OrderMutationVariables {
@@ -23,6 +24,7 @@ export function useOrderMutation<T extends Resource>({
   resource,
   buildPath,
   onError,
+  onSuccess,
 }: UseOrderMutationOptions<T>) {
   const mutation = useMutationWrapper<
     ModifyResourceResponse<T>,
@@ -41,7 +43,7 @@ export function useOrderMutation<T extends Resource>({
       );
       return response;
     },
-    { onError },
+    { onError, onSuccess },
   );
 
   const mutateOrder = async (id: ResourcePk, order: number) =>
