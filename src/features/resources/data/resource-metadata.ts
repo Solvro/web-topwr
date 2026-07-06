@@ -758,8 +758,20 @@ export const RESOURCE_METADATA = {
             bumpPath: "translator",
           },
         },
+        groupInputs: [
+          {
+            textInputs: {
+              boothsApiBaseUrl: { label: "URL API budek" },
+            },
+            checkboxInputs: {
+              boothsEnabled: { label: "Czy budki są włączone?" },
+            },
+          },
+        ],
       },
       defaultValues: {
+        boothsApiBaseUrl: "https://booths-api.topwr.solvro.pl/api/v1",
+        boothsEnabled: true,
         sksMicroserviceUrl: "",
         parkingMicroserviceUrl: "",
         cmsReferenceNumber: -1,

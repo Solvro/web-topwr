@@ -19,7 +19,7 @@ export function CheckboxInput({
   return (
     <FormItem
       className={cn(
-        "border-input flex w-fit flex-row gap-2 rounded-md border-2 p-2 transition-colors",
+        "border-input mt-auto flex h-fit w-fit flex-row gap-2 rounded-md border-2 p-2 transition-colors",
         { "border-primary": value },
       )}
     >
