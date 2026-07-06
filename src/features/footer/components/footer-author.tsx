@@ -1,4 +1,5 @@
-import { SOLVRO_WEBPAGE_URL } from "../constants";
+import { SOLVRO_WEBPAGE_URL } from "@/config/constants";
+
 import { SOLVRO_LOGOS } from "../data/solvro-logos";
 import type { FooterSectionProps } from "../types/internal";
 import { FooterLink } from "./footer-link";
