@@ -25,18 +25,24 @@ export function FooterLink<T extends string>({
     invertColors,
     compact,
   );
+
   return (
     <Link<T> className="group relative flex items-center gap-1" {...props}>
-      <Image
-        height={DEFAULT_IMAGE_HEIGHT}
-        {...imageLight}
-        className="dark:hidden"
-      />
-      <Image
-        height={DEFAULT_IMAGE_HEIGHT}
-        {...imageDark}
-        className="not-dark:hidden"
-      />
+      <div
+        className="shrink-0"
+        style={{ width: DEFAULT_IMAGE_HEIGHT, height: DEFAULT_IMAGE_HEIGHT }}
+      >
+        <Image
+          src={imageLight.src}
+          alt={imageLight.alt}
+          className="object-contain dark:hidden"
+        />
+        <Image
+          src={imageDark.src}
+          alt={imageDark.alt}
+          className="object-contain not-dark:hidden"
+        />
+      </div>
       {compact ? (
         label
       ) : (
