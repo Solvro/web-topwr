@@ -9,12 +9,37 @@ import { PasswordInput } from "@/components/inputs/password-input";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { FetchError } from "@/features/backend";
-import { logger, parseError } from "@/features/logging";
 import { getToastMessages } from "@/lib/get-toast-messages";
 
 import { changePassword } from "../api/change-password";
 import { ChangePasswordSchema } from "../schemas/change-password-schema";
 import type { ChangePasswordFormValues } from "../schemas/change-password-schema";
+
+/**
+ * Jeżeli fetch nie przejdzie przez błąd użytkownika, wyświetli odpowidni toast
+ * @param {unknown} error - błąd zwrócony przez fetch
+ * @returns {boolean} - czy błąd został obsłużony (czy wyświetlono toast)
+ */
+function handleServerValidationErrors(error: unknown): boolean {
+  if (!(error instanceof FetchError)) {
+    return false;
+  }
+
+  const validationIssues = error.errorReport?.error.validationIssues;
+  if (!Array.isArray(validationIssues)) {
+    return false;
+  }
+  for (const issue of validationIssues) {
+    const fieldName =
+      (issue as Record<string, unknown>).field ??
+      (issue as Record<string, unknown>).rule;
+    if (fieldName === "oldPassword") {
+      toast.error(getToastMessages.changePassword.invalidOldPassword);
+      return true;
+    }
+  }
+  return false;
+}
 
 export function ChangePasswordForm() {
   const form = useForm<ChangePasswordFormValues>({
@@ -30,53 +55,6 @@ export function ChangePasswordForm() {
     mutationFn: changePassword,
   });
 
-  function handleServerValidationErrors(error: unknown) {
-    if (!(error instanceof FetchError)) {
-      return false;
-    }
-    const validationIssues = error.errorReport?.error.validationIssues;
-    if (!Array.isArray(validationIssues)) {
-      return false;
-    }
-    for (const issue of validationIssues) {
-      const fieldName =
-        (issue as Record<string, unknown>).field ??
-        (issue as Record<string, unknown>).rule;
-      const message = (issue as Record<string, unknown>).message;
-      if (fieldName === "oldPassword") {
-        const serverMessage = typeof message === "string" ? message : undefined;
-        let toastMessage: string | undefined;
-        try {
-          toastMessage = (
-            getToastMessages.changePassword as { invalidOldPassword?: string }
-          ).invalidOldPassword;
-        } catch (error_) {
-          logger.error(
-            parseError(error_),
-            "ChangePasswordForm: failed to get invalidOldPassword message",
-          );
-        }
-
-        const fieldMessage =
-          typeof toastMessage === "string" && toastMessage.length > 0
-            ? toastMessage
-            : serverMessage;
-
-        form.setError("oldPassword", {
-          type: "server",
-          message: fieldMessage,
-        });
-
-        if (typeof toastMessage === "string" && toastMessage.length > 0) {
-          toast.error(toastMessage);
-        }
-
-        return true;
-      }
-    }
-    return false;
-  }
-
   return (
     <Form {...form}>
       <form
@@ -91,11 +69,7 @@ export function ChangePasswordForm() {
           } catch (error: unknown) {
             const handled = handleServerValidationErrors(error);
             if (!handled) {
-              const errorMessage =
-                typeof messages.error === "function"
-                  ? messages.error(error)
-                  : (messages.error as string);
-              toast.error(errorMessage);
+              toast.error(messages.error);
             }
           } finally {
             toast.dismiss(loadingToast);
@@ -132,8 +106,8 @@ export function ChangePasswordForm() {
           name="newPasswordConfirm"
           render={({ field }) => (
             <PasswordInput
-              label="Powtórzone hasło"
-              placeholder="Powtórzone hasło"
+              label="Potwierdź nowe hasło"
+              placeholder="Potwierdź nowe hasło"
               {...field}
             />
           )}

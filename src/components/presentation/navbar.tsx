@@ -1,6 +1,6 @@
 "use client";
 
-import { UserRound } from "lucide-react";
+import { KeyRound, UserRound } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { Link } from "@/components/core/link";
@@ -39,16 +39,9 @@ function UserProfileMenu({ user }: { user: User | null }) {
         <DropdownMenuGroup>
           <DropdownMenuLabel>Moje konto</DropdownMenuLabel>
           {user == null ? (
-            <>
-              <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/login">Zaloguj się</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/change-password" className="block w-full">
-                  Zmiana hasła
-                </Link>
-              </DropdownMenuItem>
-            </>
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link href="/login">Zaloguj się</Link>
+            </DropdownMenuItem>
           ) : (
             <DropdownMenuItem className="font-normal">
               {user.fullName ?? user.email}
@@ -68,6 +61,12 @@ function UserProfileMenu({ user }: { user: User | null }) {
         {user != null && (
           <>
             <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/change-password" className="block w-full">
+                <KeyRound />
+                Zmiana hasła
+              </Link>
+            </DropdownMenuItem>
             <LogoutButton />
           </>
         )}
