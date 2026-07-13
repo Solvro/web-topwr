@@ -1,6 +1,6 @@
 "use client";
 
-import { UserRound } from "lucide-react";
+import { KeyRound, UserRound } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { Link } from "@/components/core/link";
@@ -61,6 +61,12 @@ function UserProfileMenu({ user }: { user: User | null }) {
         {user != null && (
           <>
             <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/change-password" className="cursor-pointer">
+                <KeyRound />
+                Zmiana hasła
+              </Link>
+            </DropdownMenuItem>
             <LogoutButton />
           </>
         )}

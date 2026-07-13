@@ -28,7 +28,6 @@ export function PasswordInput({
   placeholder?: string;
 } & ControllerRenderProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const labelLowerCase = label.toLowerCase();
   return (
     <FormItem>
       <FormLabel>{label}</FormLabel>
@@ -42,11 +41,11 @@ export function PasswordInput({
         </FormControl>
         <InputGroupButton
           asChild
-          tooltip={`${showPassword ? "Ukryj" : "Pokaż"} ${labelLowerCase}`}
+          tooltip={`${showPassword ? "Ukryj" : "Pokaż"} hasło`}
         >
           <Toggle
             size="unset"
-            aria-label={`Pokaż ${labelLowerCase}`}
+            aria-label={`${showPassword ? "Ukryj" : "Pokaż"} ${label.toLowerCase()}`}
             pressed={showPassword}
             onPressedChange={setShowPassword}
           >

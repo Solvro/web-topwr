@@ -42,6 +42,7 @@ export function LogoutButton() {
       onClick={() => toast.promise(mutateAsync(null), getToastMessages.logout)}
       disabled={isPending}
       variant="destructive"
+      className="cursor-pointer"
     >
       <LogOut className="size-4" />
       <span>Wyloguj się</span>
