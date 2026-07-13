@@ -31,7 +31,11 @@ function handleServerValidationErrors(error: unknown): boolean {
   }
   for (const issue of validationIssues) {
     const fieldName = issue.field ?? issue.rule;
-    if (fieldName === "oldPassword") {
+    const refersToOldPassword =
+      fieldName === "oldPassword" ||
+      Object.keys(issue).includes("oldPassword") ||
+      Object.values(issue).includes("oldPassword");
+    if (refersToOldPassword) {
       toast.error(getToastMessages.changePassword.invalidOldPassword);
       return true;
     }

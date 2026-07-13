@@ -62,7 +62,7 @@ function UserProfileMenu({ user }: { user: User | null }) {
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/change-password" className="block w-full">
+              <Link href="/change-password" className="cursor-pointer">
                 <KeyRound />
                 Zmiana hasła
               </Link>
