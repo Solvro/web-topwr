@@ -16,9 +16,9 @@ import { ChangePasswordSchema } from "../schemas/change-password-schema";
 import type { ChangePasswordFormValues } from "../schemas/change-password-schema";
 
 /**
- * Jeżeli fetch nie przejdzie przez błąd użytkownika, wyświetli odpowidni toast
- * @param {unknown} error - błąd zwrócony przez fetch
- * @returns {boolean} - czy błąd został obsłużony (czy wyświetlono toast)
+ * If a fetch request fails due to user input (incorrect old password), displays an appropriate toast message.
+ * @param {unknown} error - Error thrown by the fetch request.
+ * @returns {boolean} Whether the error was handled (whether a toast message was displayed).
  */
 function handleServerValidationErrors(error: unknown): boolean {
   if (!(error instanceof FetchError)) {
@@ -30,9 +30,7 @@ function handleServerValidationErrors(error: unknown): boolean {
     return false;
   }
   for (const issue of validationIssues) {
-    const fieldName =
-      (issue as Record<string, unknown>).field ??
-      (issue as Record<string, unknown>).rule;
+    const fieldName = issue.field ?? issue.rule;
     if (fieldName === "oldPassword") {
       toast.error(getToastMessages.changePassword.invalidOldPassword);
       return true;

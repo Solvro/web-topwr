@@ -45,7 +45,7 @@ export function PasswordInput({
         >
           <Toggle
             size="unset"
-            aria-label={`Pokaż ${label.toLowerCase()}`}
+            aria-label={`${showPassword ? "Ukryj" : "Pokaż"} ${label.toLowerCase()}`}
             pressed={showPassword}
             onPressedChange={setShowPassword}
           >
