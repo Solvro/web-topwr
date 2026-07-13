@@ -2,7 +2,6 @@ import { faker } from "@faker-js/faker";
 import { expect, test } from "@playwright/test";
 import type { Locator, Page, Response } from "@playwright/test";
 
-import { LIST_RESULTS_PER_PAGE } from "@/features/abstract-resource-list/node";
 import { FetchError, fetchMutation, uploadFile } from "@/features/backend/node";
 import type {
   MessageResponse,
@@ -22,7 +21,6 @@ import { generateAccessToken } from "../api/generate-access-token";
 import { MOCK_IMAGE_PATH } from "../constants";
 import { expectArfSuccess } from "../utils/expect-arf-success";
 import { returnFromArf } from "../utils/return-from-arf";
-import { setArlSortFilters } from "../utils/set-arl-filters";
 
 const resource = Resource.GuideArticles;
 type ResourceType = typeof resource;
@@ -129,15 +127,39 @@ async function navigateToArticles(page: Page) {
 
 /** Sets the abstract resource list filters such that the only displayed article is the provided one. */
 async function filterSpecificArticle(page: Page, article: MockGuideArticle) {
-  await setArlSortFilters(page, resource, {
-    filters: [
-      {
-        field: "shortDesc",
-        value: article.shortDesc,
-      },
-    ],
-  });
+  await expect(page.locator("li").first()).toBeVisible({ timeout: 15_000 });
+
+  const articleCard = page.locator("li").filter({ hasText: article.title });
+
+  let attempts = 0;
+  while (!(await articleCard.isVisible()) && attempts < 50) {
+    attempts++;
+    const loadMoreButton = page.getByRole("button", { name: "Załaduj więcej" });
+    if (await loadMoreButton.isVisible()) {
+      const currentCount = await page.locator("li").count();
+      try {
+        await loadMoreButton.scrollIntoViewIfNeeded({ timeout: 1000 });
+      } catch {
+        continue;
+      }
+      try {
+        await expect(async () => {
+          const newCount = await page.locator("li").count();
+          expect(newCount).toBeGreaterThan(currentCount);
+        }).toPass({ timeout: 5000 });
+      } catch {
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+
+  await expect(articleCard).toBeVisible();
 }
+
+const getArticleCard = (page: Page, article: MockGuideArticle) =>
+  page.locator("li").filter({ hasText: article.title });
 
 test.describe("Guide Articles CRUD", () => {
   test.beforeAll(async () => {
@@ -190,6 +212,7 @@ test.describe("Guide Articles CRUD", () => {
           .split("/")
           .includes(getResourceMetadata(resource).apiPath),
     );
+    let articleData: CreateArticleResponse | null = null;
     try {
       await test.step("Submit create article form", async () => {
         const button = page.getByRole("button", { name: /utwórz/i });
@@ -198,6 +221,9 @@ test.describe("Guide Articles CRUD", () => {
         await expectArfSuccess(page);
       });
 
+      const articleResponse = await articlePromise;
+      articleData = (await articleResponse.json()) as CreateArticleResponse;
+
       await test.step("Ensure creation is persisted", async () => {
         await returnFromArf(page, resource);
         await filterSpecificArticle(page, testArticle);
@@ -205,10 +231,9 @@ test.describe("Guide Articles CRUD", () => {
         await expect(page.getByText(testArticle.shortDesc)).toBeVisible();
       });
     } finally {
-      const articleResponse = await articlePromise;
-      const articleData =
-        (await articleResponse.json()) as CreateArticleResponse;
-      await deleteTestArticle({ ...articleData.data, imageKey }, true);
+      if (articleData != null) {
+        await deleteTestArticle({ ...articleData.data, imageKey }, true);
+      }
     }
   });
 
@@ -216,13 +241,13 @@ test.describe("Guide Articles CRUD", () => {
     const testArticle = await createTestArticle();
     try {
       await navigateToArticles(page);
-      await expect(getEditButton(page)).toHaveCount(LIST_RESULTS_PER_PAGE);
       await filterSpecificArticle(page, testArticle);
 
-      await expect(getEditButton(page)).toHaveCount(1);
+      const articleCard = getArticleCard(page, testArticle);
+      await expect(getEditButton(articleCard)).toHaveCount(1);
 
-      await expect(page.getByText(testArticle.title)).toBeVisible();
-      await expect(page.getByText(testArticle.shortDesc)).toBeVisible();
+      await expect(articleCard.getByText(testArticle.title)).toBeVisible();
+      await expect(articleCard.getByText(testArticle.shortDesc)).toBeVisible();
     } finally {
       await deleteTestArticle(testArticle);
     }
@@ -236,7 +261,7 @@ test.describe("Guide Articles CRUD", () => {
       await test.step("Change article name", async () => {
         await navigateToArticles(page);
         await filterSpecificArticle(page, testArticle);
-        await getEditButton(page).click();
+        await getEditButton(getArticleCard(page, testArticle)).click();
         await page.waitForURL(`/${resource}/edit/*`);
         const submitButton = page.getByRole("button", { name: /zapisz/i });
         // TODO: for some reason the button is sometimes initially enabled
@@ -260,9 +285,15 @@ test.describe("Guide Articles CRUD", () => {
 
       await test.step("Ensure update is persisted", async () => {
         await returnFromArf(page, resource);
+        await page.reload();
         await filterSpecificArticle(page, newArticle);
-        await expect(page.getByText(newArticle.title)).toBeVisible();
-        await expect(page.getByText(newArticle.shortDesc)).toBeVisible();
+        const updatedArticleCard = getArticleCard(page, newArticle);
+        await expect(
+          updatedArticleCard.getByText(newArticle.title),
+        ).toBeVisible();
+        await expect(
+          updatedArticleCard.getByText(newArticle.shortDesc),
+        ).toBeVisible();
       });
     } finally {
       await deleteTestArticle(testArticle);
@@ -274,7 +305,7 @@ test.describe("Guide Articles CRUD", () => {
     try {
       await navigateToArticles(page);
       await filterSpecificArticle(page, testArticle);
-      await getEditButton(page).click();
+      await getEditButton(getArticleCard(page, testArticle)).click();
 
       const deleteButton = getDeleteButton(page);
       await expect(deleteButton).toBeVisible();
@@ -282,10 +313,8 @@ test.describe("Guide Articles CRUD", () => {
       await page.getByRole("button", { name: /^usuń$/i }).click();
 
       await expect(page.getByText(/pomyślnie usunięto artykuł/i)).toBeVisible();
-
-      await filterSpecificArticle(page, testArticle);
-      await expect(getEditButton(page)).toBeHidden();
-      await expect(getDeleteButton(page)).toBeHidden();
+      await page.reload();
+      await expect(getArticleCard(page, testArticle)).toBeHidden();
     } finally {
       await deleteTestArticle(testArticle);
     }

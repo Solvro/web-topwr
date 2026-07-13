@@ -67,6 +67,23 @@ test.describe("About Us Versions CRUD", () => {
     });
     await konradPivotData.scrollIntoViewIfNeeded();
     await expect(konradPivotData).toBeVisible();
+
+    try {
+      await expect(konradPivotData).toHaveText("Dodaj");
+    } catch {
+      await konradPivotData.click();
+      const deleteButton = page.getByRole("option", {
+        name: "Usuń kontrybutora",
+      });
+      try {
+        await deleteButton.waitFor({ state: "visible", timeout: 2000 });
+        await deleteButton.click();
+        await expect(konradPivotData).toHaveText("Dodaj");
+      } catch {
+        await page.keyboard.press("Escape");
+      }
+    }
+
     await expect(konradPivotData).toHaveText("Dodaj");
     await konradPivotData.click();
     for (const role of ROLES) {
