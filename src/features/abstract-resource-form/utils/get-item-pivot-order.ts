@@ -9,7 +9,7 @@ export const hasMeta = (
   typeof item.meta === "object" &&
   item.meta !== null;
 
-export const hasPivotOrder = (item: unknown): item is ItemWithPivotOrder =>
+const hasPivotOrder = (item: unknown): item is ItemWithPivotOrder =>
   hasMeta(item) && "pivot_order" in item.meta;
 
 export const getItemPivotOrder = (item: unknown): number | undefined => {
