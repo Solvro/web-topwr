@@ -80,3 +80,9 @@ export interface PersistedFormData<T extends Resource> {
   values: ResourceFormValues<T>;
   timestamp: number;
 }
+
+export interface ItemWithPivotOrder {
+  meta: {
+    pivot_order: number;
+  };
+}

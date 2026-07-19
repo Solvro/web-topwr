@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { get } from "react-hook-form";
 import type { Control } from "react-hook-form";
 import { toast } from "sonner";
@@ -36,11 +37,13 @@ import { sanitizeId, toTitleCase } from "@/utils";
 import { useArfRelation } from "../hooks/use-arf-relation";
 import { useArfRelationMutation } from "../hooks/use-arf-relation-mutation";
 import { useArfSheet } from "../hooks/use-arf-sheet";
+import { getItemPivotOrder } from "../utils/get-item-pivot-order";
 import { getMutationConfig } from "../utils/get-mutation-config";
 import { isExistingItem } from "../utils/is-existing-item";
 import { ArfInput } from "./arf-input";
 import { ArfPivotData } from "./arf-pivot-data";
 import { OrderableMultiSelect } from "./orderable-multi-select";
+import { OrderablePivotMultiSelect } from "./orderable-pivot-multi-select";
 
 export function ArfRelationInput<
   T extends Resource,
@@ -145,11 +148,23 @@ export function ArfRelationInput<
   const isRelationOrderable =
     isOrderableResource(resourceRelation) &&
     relationDefinition.type !== RelationType.ManyToMany;
+  const isPivotOrderable =
+    relationDefinition.type === RelationType.ManyToMany &&
+    relationDefinition.orderable === true;
   const sortedQueriedRelations = isRelationOrderable
     ? [...queriedRelations].toSorted((a, b) =>
         "order" in a && "order" in b ? a.order - b.order : 1,
       )
-    : queriedRelations;
+    : isPivotOrderable
+      ? [...queriedRelations].toSorted((a, b) => {
+          const orderA = getItemPivotOrder(a);
+          const orderB = getItemPivotOrder(b);
+          if (orderA !== undefined && orderB !== undefined) {
+            return orderA - orderB;
+          }
+          return 1;
+        })
+      : queriedRelations;
   const selectedValues = sortedQueriedRelations.flatMap((item) => {
     const value = get(item, primaryKeyField, null) as ResourcePk | null;
     return value == null ? [] : String(value);
@@ -264,16 +279,29 @@ export function ArfRelationInput<
     defaultValue: [...new Set(selectedValues)],
   } satisfies React.ComponentProps<typeof MultiSelect>;
 
-  const multiselect = isRelationOrderable ? (
-    <OrderableMultiSelect
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- type guard doesn't narrow generics
-      resourceRelation={resourceRelation as OrderableResource}
-      items={sortedQueriedRelations as ResourceDataType<OrderableResource>[]}
-      multiSelectProps={multiSelectProps}
-    />
-  ) : (
-    <MultiSelect {...multiSelectProps} />
-  );
+  let multiselect: ReactNode;
+  if (isRelationOrderable) {
+    multiselect = (
+      <OrderableMultiSelect
+        resourceRelation={resourceRelation as OrderableResource}
+        items={sortedQueriedRelations as ResourceDataType<OrderableResource>[]}
+        multiSelectProps={multiSelectProps}
+      />
+    );
+  } else if (isPivotOrderable && relationDefinition.pivotData != null) {
+    multiselect = (
+      <OrderablePivotMultiSelect
+        resource={resource}
+        resourceRelation={resourceRelation}
+        endpoint={endpoint}
+        pivotData={relationDefinition.pivotData}
+        items={sortedQueriedRelations}
+        multiSelectProps={multiSelectProps}
+      />
+    );
+  } else {
+    multiselect = <MultiSelect {...multiSelectProps} />;
+  }
   return relationDefinition.type === RelationType.ManyToMany ? (
     // TODO: allow m:n relation inputs to be immutable
     <Label className="flex-col items-start">

@@ -54,6 +54,7 @@ export interface PivotRelationDefinition {
   foreignKey?: never;
   label?: DeclinableNoun;
   pivotData?: PivotDataDefinition;
+  orderable?: boolean;
 }
 /** Relation definitions between T and L, where T is the main resource and L is the related resource. */
 export type RelationDefinition<T extends Resource, L extends Resource> =
