@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef } from "react";
+import { arrayMove } from "@dnd-kit/sortable";
+import { useEffect, useRef } from "react";
 
 import { MultiSelect } from "@/components/ui/multi-select";
 import { calculateNewSortValue } from "@/features/abstract-resource-list";
@@ -23,7 +24,10 @@ export function OrderableMultiSelect<T extends OrderableResource>({
   multiSelectProps,
 }: OrderableMultiSelectProps<T>) {
   const itemsRef = useRef(items);
-  itemsRef.current = items;
+
+  useEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
 
   const { mutateOrder } = useRelationOrderMutation({ resourceRelation });
 
@@ -33,6 +37,9 @@ export function OrderableMultiSelect<T extends OrderableResource>({
       oldIndex,
       newIndex,
     );
+
+    itemsRef.current = arrayMove(itemsRef.current, oldIndex, newIndex);
+
     void mutateOrder(id, order);
   };
 

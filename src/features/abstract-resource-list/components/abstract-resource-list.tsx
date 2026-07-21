@@ -4,7 +4,11 @@ import { Counter } from "@/components/core/counter";
 import { ReturnButton } from "@/components/presentation/return-button";
 import { fetchRelatedResources } from "@/features/abstract-resource-form";
 import type { ResourceDeclinableField } from "@/features/polish/types";
-import { CreateButton, Resource } from "@/features/resources";
+import {
+  CreateButton,
+  Resource,
+  isOrderableResource,
+} from "@/features/resources";
 import type {
   CreatableResource,
   EditableResource,
@@ -36,15 +40,20 @@ export async function AbstractResourceList<
   parentResource?: RoutableResource;
 }) {
   const searchParameters = await searchParams;
+  const isOrderable = isOrderableResource(resource);
 
-  const filterDefinitions = await getResourceFilterDefinitions({
-    resource,
-    includeRelations: true,
-  });
-  const sortFilters: Partial<SortFiltersFormValuesNarrowed> = {
-    ...parseSortParameter(searchParameters.sort, sortableFields),
-    filters: deserializeSortFilters(searchParameters, filterDefinitions),
-  };
+  const filterDefinitions = isOrderable
+    ? {}
+    : await getResourceFilterDefinitions({
+        resource,
+        includeRelations: true,
+      });
+  const sortFilters: Partial<SortFiltersFormValuesNarrowed> = isOrderable
+    ? {}
+    : {
+        ...parseSortParameter(searchParameters.sort, sortableFields),
+        filters: deserializeSortFilters(searchParameters, filterDefinitions),
+      };
 
   const firstPageData = await fetchPaginatedResources(
     resource,
@@ -56,17 +65,19 @@ export async function AbstractResourceList<
 
   return (
     <section className="flex h-full flex-col gap-2">
-      <header className="relative w-fit">
-        <SortFiltersPopover
-          sortableFields={sortableFields}
-          filterDefinitions={filterDefinitions}
-          defaultValues={sortFilters}
-        />
-        <Counter
-          values={sortFilters.filters ?? []}
-          label="Liczba zastosowanych filtrów"
-        />
-      </header>
+      {!isOrderable && (
+        <header className="relative w-fit">
+          <SortFiltersPopover
+            sortableFields={sortableFields}
+            filterDefinitions={filterDefinitions}
+            defaultValues={sortFilters}
+          />
+          <Counter
+            values={sortFilters.filters ?? []}
+            label="Liczba zastosowanych filtrów"
+          />
+        </header>
+      )}
       <div className="grow basis-0 overflow-y-auto pr-2">
         <InfiniteScroller
           resource={resource}

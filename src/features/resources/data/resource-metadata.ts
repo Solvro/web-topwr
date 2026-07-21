@@ -386,7 +386,6 @@ export const RESOURCE_METADATA = {
   [Resource.Contributors]: {
     queryName: "contributors",
     apiPath: "contributors",
-    orderable: true,
     itemMapper: (item) => ({
       name: item.name,
     }),
@@ -722,6 +721,7 @@ export const RESOURCE_METADATA = {
         relationInputs: {
           [Resource.Contributors]: {
             type: RelationType.ManyToMany,
+            orderable: true,
             pivotData: {
               field: "role_id",
               relatedResource: Resource.Roles,

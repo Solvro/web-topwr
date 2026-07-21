@@ -1,6 +1,7 @@
 "use client";
 
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import type { QueryKey } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -31,17 +32,24 @@ function OrderableItems<T extends OrderableResource>({
   resource,
   items,
   relatedResources,
+  queryKey,
 }: {
   resource: T;
   items: ResourceDataType<T>[];
   relatedResources: ResourceRelations<T>;
+  queryKey: QueryKey;
 }) {
   const itemsRef = useRef(items);
   itemsRef.current = items;
 
+  const queryClient = useQueryClient();
+
   const { mutateOrder } = useOrderMutation({
     resource,
     buildPath: (id) => sanitizeId(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey });
+    },
   });
 
   const handleReorder = ({ id, oldIndex, newIndex }: ReorderEvent) => {
@@ -74,13 +82,15 @@ export function InfiniteScroller<T extends EditableResource>({
 }) {
   const { ref, inView } = useInView();
 
+  const queryKey = [
+    getKey.query.resourceList(resource),
+    sortFilters,
+    filterDefinitions,
+  ];
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: [
-        getKey.query.resourceList(resource),
-        sortFilters,
-        filterDefinitions,
-      ],
+      queryKey,
       queryFn: async ({ pageParam }) =>
         fetchPaginatedResources(
           resource,
@@ -114,6 +124,7 @@ export function InfiniteScroller<T extends EditableResource>({
           items={flatData as ResourceDataType<typeof resource>[]}
           resource={resource}
           relatedResources={relatedResources}
+          queryKey={queryKey}
         />
       ) : (
         <ArlItems

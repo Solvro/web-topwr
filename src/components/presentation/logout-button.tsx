@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 
@@ -12,6 +13,7 @@ import { getToastMessages } from "@/lib/get-toast-messages";
 
 export function LogoutButton() {
   const { logout, clearAuthState } = useAuthentication();
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   const { mutateAsync, isPending } = useMutationWrapper<
@@ -28,6 +30,7 @@ export function LogoutButton() {
         router.push("/login", {
           onSnapshotTaken: () => {
             clearAuthState();
+            queryClient.clear();
           },
         });
       },
