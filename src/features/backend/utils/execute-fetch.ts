@@ -1,8 +1,3 @@
-import { forceLogout, refreshAccessToken } from "@/features/authentication";
-import {
-  getAuthStateNode,
-  getTokenStatus,
-} from "@/features/authentication/node";
 import { logger, parseError } from "@/features/logging";
 import type { Resource } from "@/features/resources";
 
@@ -16,35 +11,10 @@ export const executeFetch = async <T, R extends Resource>(
   options: FetchRequestOptions<R>,
 ): Promise<NonNullable<T>> => {
   if (typeof window !== "undefined" && options.accessTokenOverride == null) {
-    const authState = getAuthStateNode();
-    if (authState != null) {
-      const status = getTokenStatus(authState);
-      switch (status) {
-        case "both-expired": {
-          forceLogout();
-          throw new Error("Session expired");
-        }
-        case "expired": {
-          const refreshedAuthState = await refreshAccessToken();
-          if (refreshedAuthState == null) {
-            forceLogout();
-            throw new Error("Session expired");
-          }
-          break;
-        }
-        case "expiring-soon": {
-          void refreshAccessToken().then((refreshedAuthState) => {
-            if (refreshedAuthState == null) {
-              forceLogout();
-            }
-          });
-          break;
-        }
-        case "ok": {
-          break;
-        }
-      }
-    }
+    // Lazy import client-only wrapper to avoid circular dependency
+    // and prevent pulling client-only deps into server bundles
+    const { handleAuthState } = await import("./handle-auth-state.client");
+    await handleAuthState();
   }
 
   const request = createRequest<R>(endpoint, options);
