@@ -27,6 +27,8 @@ function Calendar({
 
   return (
     <DayPicker
+      startMonth={props.startMonth ?? new Date(2000, 0)}
+      endMonth={props.endMonth ?? new Date(2050, 11)}
       showOutsideDays={showOutsideDays}
       className={cn(
         "bg-background group/calendar p-3 [--cell-size:--spacing(8)] in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent",
