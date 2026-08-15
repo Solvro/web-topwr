@@ -1,4 +1,5 @@
 import type { Route } from "next";
+import type { ImageProps } from "next/image";
 import type { ReactNode } from "react";
 import type { z } from "zod";
 
@@ -63,3 +64,6 @@ export type ResourceRelations<T extends Resource> = {
 export type PendingNavigation =
   | { type: "href"; href: Route }
   | { type: "back" };
+
+type StrictImageProps = Omit<ImageProps, "height"> & { height?: number };
+export type ImageTuple = [light: StrictImageProps, dark: StrictImageProps];

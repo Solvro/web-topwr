@@ -397,7 +397,7 @@ export const RESOURCE_METADATA = {
           name: { label: "Imię i nazwisko" },
         },
         imageInputs: {
-          photoKey: { label: "Zdjęcie", type: ImageType.Logo },
+          photoKey: { label: "Zdjęcie", type: ImageType.Avatar },
         },
         relationInputs: {
           [Resource.ContributorSocialLinks]: {
