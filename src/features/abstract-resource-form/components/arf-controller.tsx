@@ -8,7 +8,11 @@ import { toast } from "sonner";
 
 import { ReturnButton } from "@/components/presentation/return-button";
 import { Form } from "@/components/ui/form";
-import { isSolvroAdmin, useAuthentication } from "@/features/authentication";
+import {
+  isAdmin,
+  isSolvroAdmin,
+  useAuthentication,
+} from "@/features/authentication";
 import { fetchMutation, useMutationWrapper } from "@/features/backend";
 import type { ModifyResourceResponse } from "@/features/backend/types";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
@@ -30,6 +34,7 @@ import type {
   RoutableResource,
 } from "@/features/resources/types";
 import { ApproveButton } from "@/features/review";
+import type { DraftableResource } from "@/features/review";
 import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import { cn } from "@/lib/utils";
@@ -101,14 +106,27 @@ export function ArfController<T extends Resource>({
   });
 
   const {
-    mutationKey,
-    endpoint,
-    submitLabel,
+    mutationKey: configMutationKey,
+    endpoint: configEndpoint,
+    method: configMethod,
+    submitLabel: configSubmitLabel,
     submitIcon: SubmitIconComponent,
     confirmationMessage,
     onAfterCreate,
-    ...mutationOptions
+    ...restOptions
   } = getMutationConfig(resource, defaultValues, relationContext);
+
+  const isNonAdmin = !isSolvroAdmin(user) && !isAdmin(user);
+  const shouldCreateDraftFromExisting = isEditing && !draft && isNonAdmin;
+
+  const mutationKey = shouldCreateDraftFromExisting
+    ? `create__${resource}__draft`
+    : configMutationKey;
+  const endpoint = shouldCreateDraftFromExisting ? "/" : configEndpoint;
+  const method = shouldCreateDraftFromExisting ? "POST" : configMethod;
+  const submitLabel = shouldCreateDraftFromExisting
+    ? "Zaproponuj zmiany"
+    : configSubmitLabel;
 
   const metadata = getResourceMetadata(resource);
   const declensions = declineNoun(resource);
@@ -118,12 +136,15 @@ export function ArfController<T extends Resource>({
     ResourceFormValues<T>
   >(mutationKey, async (body) => {
     const response = await fetchMutation<ModifyResourceResponse<T>>(endpoint, {
-      body,
+      body: shouldCreateDraftFromExisting
+        ? { ...body, originalId: getResourcePkValue(resource, defaultValues) }
+        : body,
       resource,
-      draft: draft || !isSolvroAdmin(user),
-      ...mutationOptions,
+      draft: draft || isNonAdmin,
+      method,
+      ...restOptions,
     });
-    const wasCreated = mutationOptions.method === "POST";
+    const wasCreated = method === "POST";
 
     // initially disables the save button after successful edit
     form.reset(wasCreated ? undefined : response.data);
@@ -139,12 +160,19 @@ export function ArfController<T extends Resource>({
       isEditing &&
       newPrimaryKey !== getResourcePkValue(resource, defaultValues);
     if (relationContext == null && wasCreated) {
-      router.push(
-        // assume that creatable resources in non-embedded forms are routable/editable
-        metadata.isSingleton === true
-          ? `/${resource as RoutableResource}`
-          : `/${resource as EditableResource}/edit/${newPrimaryKey}`,
-      );
+      const isDraftTarget = draft || isNonAdmin;
+      if (isDraftTarget && metadata.apiDraftPath != null) {
+        router.push(
+          `/drafts/${resource as DraftableResource}/edit/${newPrimaryKey}`,
+        );
+      } else {
+        router.push(
+          // assume that creatable resources in non-embedded forms are routable/editable
+          metadata.isSingleton === true
+            ? `/${resource as RoutableResource}`
+            : `/${resource as EditableResource}/edit/${newPrimaryKey}`,
+        );
+      }
     } else if (relationContext == null && primaryKeyChanged) {
       // cast is safe as the resource has to be editable in order for the pk to change
       router.replace(`/${resource as EditableResource}/edit/${newPrimaryKey}`);
@@ -190,6 +218,7 @@ export function ArfController<T extends Resource>({
                 existingImages={existingImages}
                 relatedResources={relatedResources}
                 pivotResources={pivotResources}
+                isDraft={draft || isNonAdmin}
               />
             </div>
           </div>
@@ -220,12 +249,15 @@ export function ArfController<T extends Resource>({
                 showLabel
               />
             ) : null}
-            {isEditing && metadata.deletable !== false ? (
+            {isEditing &&
+            !shouldCreateDraftFromExisting &&
+            metadata.deletable !== false ? (
               <DeleteButtonWithDialog
                 resource={resource}
                 id={get(defaultValues, getResourcePk(resource)) as ResourcePk}
                 showLabel
                 size="default"
+                isDraft={draft}
                 {...(isEmbedded
                   ? {
                       variant: "destructive",
