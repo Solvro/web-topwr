@@ -37,7 +37,7 @@ export async function DraftList() {
     <ul className="flex flex-col gap-4">
       {drafts.map((draft) => (
         <DraftItem
-          key={`draft-item-${String(draft.data.id)}`}
+          key={`draft-item-${getDraftResource(draft)}-${String(draft.data.id)}`}
           draft={draft}
           relatedResourcesMap={relatedResourcesMap}
           authState={authState}

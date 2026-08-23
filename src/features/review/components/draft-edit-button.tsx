@@ -15,15 +15,14 @@ export function DraftEditButton({
   id: ResourcePk;
 }) {
   const metadata = getResourceMetadata(resource);
-  const draftPath = metadata.apiDraftPath?.replaceAll("_", "-"); //TODO
 
-  if (draftPath == null) {
+  if (metadata.apiDraftPath == null) {
     return null;
   }
 
   return (
     <Button asChild variant="ghost" size="icon" tooltip="Edytuj">
-      <Link href={`/drafts/${draftPath}/edit/${sanitizeId(id)}` as Route}>
+      <Link href={`/drafts/${resource}/edit/${sanitizeId(id)}` as Route}>
         <SquarePen />
       </Link>
     </Button>
