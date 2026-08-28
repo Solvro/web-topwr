@@ -2,6 +2,6 @@ import { z } from "zod";
 
 import { RequiredStringSchema } from "@/schemas";
 
-export const DasTimetableSchema = z.object({
+export const DasFloorSchema = z.object({
   name: RequiredStringSchema,
 });

@@ -85,7 +85,9 @@ type SubmitFormConfiguration<R extends Resource> = Readonly<{
   submitIcon: LucideIcon;
   confirmationMessage?: SubmitFormConfirmationMessage<R>;
   /** Called after a successful creation of the resource. Receives the newly created resource data. */
-  onAfterCreate?: (item: ResourceFormValues<R> & { id: ResourcePk }) => Promise<void>;
+  onAfterCreate?: (
+    item: ResourceFormValues<R> & { id: ResourcePk },
+  ) => Promise<void>;
 }>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

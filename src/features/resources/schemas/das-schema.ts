@@ -1,10 +1,9 @@
 import { z } from "zod";
 
-import { IsoTimestampSchema } from "@/schemas";
+import { IsoTimestampSchema, RequiredStringSchema } from "@/schemas";
 
 export const DasSchema = z.object({
-  name: z.string(),
+  name: RequiredStringSchema,
   startsAt: IsoTimestampSchema,
   endsAt: IsoTimestampSchema,
-  timetableId: z.number(),
 });

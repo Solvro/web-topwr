@@ -1,7 +1,9 @@
 import { z } from "zod";
 
+import { NumericIdSchema, RequiredStringSchema } from "@/schemas";
+
 export const DasMapSchema = z.object({
-  dasId: z.number(),
-  name: z.string(),
-  contentKey: z.string(),
+  dasId: NumericIdSchema,
+  name: RequiredStringSchema,
+  contentKey: RequiredStringSchema,
 });

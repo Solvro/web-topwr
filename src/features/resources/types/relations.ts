@@ -63,6 +63,8 @@ export type RelationDefinition<T extends Resource, L extends Resource> =
       type: RelationType.OneToMany;
       foreignKey: ResourceSchemaKey<L, z.ZodString | z.ZodNumber>;
       immutable?: boolean;
+      /** If true, resource will be created at its root route (e.g. `POST /child`) instead of the default nested route (e.g. `POST /parent/:id/child`). */
+      bypassNestedRouting?: boolean;
       dateFields?: ResourceSchemaKey<L, z.ZodString>[];
     }
   | {
@@ -75,8 +77,10 @@ export type RelationDefinition<T extends Resource, L extends Resource> =
       type: RelationType.OneToOne;
       foreignKey: ResourceSchemaKey<T, z.ZodString | z.ZodNumber>;
       immutable?: boolean;
+      /** If true, resource will be created at its root route (e.g. `POST /child`) instead of the default nested route (e.g. `POST /parent/:id/child`). */
+      bypassNestedRouting?: boolean;
       dateFields?: ResourceSchemaKey<L, z.ZodString>[];
-    }
+    };
 export type RelationDefinitions<T extends Resource> = {
   [L in Resource]?: RelationDefinition<T, L>;
 };

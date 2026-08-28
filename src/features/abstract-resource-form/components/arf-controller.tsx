@@ -123,7 +123,7 @@ export function ArfController<T extends Resource>({
     clearPersistedData();
 
     if (wasCreated && onAfterCreate != null) {
-      await onAfterCreate(response.data as Parameters<typeof onAfterCreate>[0]);
+      await onAfterCreate(response.data);
     }
 
     const newPrimaryKey = getResourcePkValue(resource, response.data);
