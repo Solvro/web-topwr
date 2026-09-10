@@ -11,5 +11,7 @@ export const getKey = {
   mutation: {
     deleteResource: (resource: Resource, id: ResourcePk) =>
       `delete__${resource}__${sanitizeId(id)}`,
+    hideResource: (resource: Resource, id: ResourcePk) =>
+      `hide__${resource}__${sanitizeId(id)}`,
   },
 };

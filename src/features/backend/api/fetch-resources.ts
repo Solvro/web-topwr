@@ -13,12 +13,18 @@ export async function fetchResources<
 >(
   resource: T,
   includeRelations: B = false as B,
+  queryParameters: Record<string, string> = {},
 ): Promise<
   B extends true ? ResourceDataWithRelations<T>[] : ResourceDataType<T>[]
 > {
-  const result = await fetchQuery<GetResourcesWithRelationsResponse<T>>("", {
-    resource,
-    includeRelations,
-  });
+  const queryString = new URLSearchParams(queryParameters).toString();
+  const endpointSuffix = queryString ? `?${queryString}` : "";
+  const result = await fetchQuery<GetResourcesWithRelationsResponse<T>>(
+    endpointSuffix,
+    {
+      resource,
+      includeRelations,
+    },
+  );
   return result.data;
 }
