@@ -83,11 +83,11 @@ export function useFormPersistence<T extends Resource>({
       }
     });
 
-    const timerId = debounceTimerRef.current;
     return () => {
       subscription.unsubscribe();
-      if (timerId != null) {
-        clearTimeout(timerId);
+      if (debounceTimerRef.current != null) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        clearTimeout(debounceTimerRef.current);
       }
     };
   }, [

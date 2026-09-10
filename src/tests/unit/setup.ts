@@ -49,7 +49,8 @@ vi.mock("@/features/backend/node", { spy: true });
 vi.mock("js-cookie");
 
 globalThis.ResizeObserver = ResizeObserver as typeof globalThis.ResizeObserver;
-globalThis.IntersectionObserver = MOCK_INTERSECTION_OBSERVER;
+globalThis.IntersectionObserver =
+  MOCK_INTERSECTION_OBSERVER as unknown as typeof globalThis.IntersectionObserver;
 
 Element.prototype.scrollIntoView = vi.fn();
 Document.prototype.elementFromPoint = vi.fn();

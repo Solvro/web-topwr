@@ -8,6 +8,7 @@ export const MOCK_USE_ROUTER: AppRouterInstance = {
   push: vi.fn(),
   replace: vi.fn(),
   refresh: vi.fn(),
+  bfcacheId: "mock-bfcache-id",
 };
 
 export const MOCK_USE_PATHNAME = vi.fn();
@@ -23,9 +24,18 @@ export const MOCK_USE_SEARCH_PARAMS = vi.fn(() => {
 
 export const MOCK_NOT_FOUND = vi.fn(() => null as never);
 
-export const MOCK_INTERSECTION_OBSERVER = vi.fn();
-MOCK_INTERSECTION_OBSERVER.mockReturnValue({
-  observe: () => null,
-  unobserve: () => null,
-  disconnect: () => null,
-});
+class MockIntersectionObserver {
+  readonly root = null;
+  readonly rootMargin = "";
+  readonly thresholds: readonly number[] = [];
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+  takeRecords = vi.fn().mockReturnValue([]);
+}
+
+export const MOCK_INTERSECTION_OBSERVER = vi
+  .fn()
+  .mockImplementation(
+    MockIntersectionObserver as unknown as () => MockIntersectionObserver,
+  );
