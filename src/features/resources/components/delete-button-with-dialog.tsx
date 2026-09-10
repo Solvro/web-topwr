@@ -36,6 +36,7 @@ export function DeleteButtonWithDialog({
   itemName,
   showLabel = false,
   onDeleteSuccess,
+  isDraft = false,
   ...props
 }: {
   resource: Resource;
@@ -43,6 +44,7 @@ export function DeleteButtonWithDialog({
   itemName?: string;
   showLabel?: boolean;
   onDeleteSuccess?: () => OptionalPromise<boolean>;
+  isDraft?: boolean;
 } & VariantProps<typeof buttonVariants>) {
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
   const router = useRouter();
@@ -55,6 +57,7 @@ export function DeleteButtonWithDialog({
     const response = await fetchMutation<MessageResponse>(sanitizedId, {
       resource,
       method: "DELETE",
+      draft: isDraft,
     });
     setIsAlertDialogOpen(false);
     await queryClient.invalidateQueries({
