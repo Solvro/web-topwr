@@ -4,6 +4,7 @@ export * from "./iso-timestamp-schema";
 export * from "./numeric-id-schema";
 export * from "./optional-url-schema";
 export * from "./positive-integer-schema";
+export * from "./required-link-schema";
 export * from "./required-string-schema";
 export * from "./required-url-schema";
 export * from "./string-date-schema";
