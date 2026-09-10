@@ -85,10 +85,6 @@ export function useFormPersistence<T extends Resource>({
 
     return () => {
       subscription.unsubscribe();
-      if (debounceTimerRef.current != null) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        clearTimeout(debounceTimerRef.current);
-      }
     };
   }, [
     form,
@@ -98,6 +94,15 @@ export function useFormPersistence<T extends Resource>({
     excludedFields,
     enabled,
   ]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current != null) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [isPersistenceActive]);
 
   return {
     clearLocalStorageData,

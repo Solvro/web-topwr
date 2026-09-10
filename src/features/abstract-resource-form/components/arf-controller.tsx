@@ -50,6 +50,8 @@ import { ArfCancelButton } from "./arf-cancel-button";
 import { ArfConfirmationModal } from "./arf-confirmation-modal";
 import { ArfResetButton } from "./arf-reset-button";
 
+const EXCLUDED_FIELDS = ["id"];
+
 /** Controller component for Abstract Resource Form. Sets up form context and handles submission. */
 export function ArfController<T extends Resource>({
   resource,
@@ -89,7 +91,7 @@ export function ArfController<T extends Resource>({
   const { clearPersistedData, resetForm } = useFormWithPersistence({
     storageKey,
     form,
-    excludedFields: ["id"],
+    excludedFields: EXCLUDED_FIELDS,
     isEditing,
   });
 
