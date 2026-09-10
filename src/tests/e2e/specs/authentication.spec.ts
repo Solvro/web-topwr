@@ -29,10 +29,10 @@ test.describe("Authentication", () => {
     await login(page, credentials);
     await expect(page).not.toHaveURL("/login");
     await expect(page).toHaveURL(`/${Resource.Dashboard}`);
-    const greeting = page.getByText(
-      new RegExp(`cześć, ${credentials.email}`, "i"),
-    );
-    await greeting.waitFor({ state: "visible" });
+    const greeting = page.getByRole("heading", {
+      name: new RegExp(`cześć, ${credentials.email}`, "i"),
+    });
+    await expect(greeting).toBeVisible();
   });
 
   test("should allow test user to log out", async ({ page }) => {
