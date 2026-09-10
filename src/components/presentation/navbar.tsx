@@ -25,7 +25,7 @@ import { LogoutButton } from "./logout-button";
 
 function UserProfileMenu({ user }: { user: User | null }) {
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
           size="icon"

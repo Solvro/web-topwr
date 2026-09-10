@@ -1,6 +1,6 @@
 import { REPOSITORY_URL } from "@/config/constants";
+import { GITHUB_LOGOS } from "@/data/github-logos";
 
-import { GITHUB_LOGOS } from "../data/github-logos";
 import type { FooterSectionProps } from "../types/internal";
 import { FooterLink } from "./footer-link";
 
