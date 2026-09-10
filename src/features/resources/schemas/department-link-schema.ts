@@ -2,8 +2,8 @@ import { z } from "zod";
 
 import {
   NumericIdSchema,
+  RequiredLinkSchema,
   RequiredStringSchema,
-  RequiredUrlSchema,
 } from "@/schemas";
 
 import { LinkType } from "../enums";
@@ -11,6 +11,6 @@ import { LinkType } from "../enums";
 export const DepartmentLinkSchema = z.object({
   departmentId: NumericIdSchema,
   linkType: z.nativeEnum(LinkType),
-  link: RequiredUrlSchema,
+  link: RequiredLinkSchema,
   name: RequiredStringSchema,
 });

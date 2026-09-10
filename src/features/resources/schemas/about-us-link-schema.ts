@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-import { RequiredUrlSchema } from "@/schemas";
+import { RequiredLinkSchema } from "@/schemas";
 
 import { LinkType } from "../enums";
 
 export const AboutUsLinkSchema = z.object({
   linkType: z.nativeEnum(LinkType),
-  link: RequiredUrlSchema,
+  link: RequiredLinkSchema,
 });
