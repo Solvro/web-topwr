@@ -15,14 +15,15 @@ export function SelectInput({
   value,
   onChange,
   disabled,
+  placeholder,
 }: {
   label: string;
   options: ReactNode;
   value: unknown;
   onChange: (value: number | string) => void;
   disabled?: boolean;
+  placeholder?: string;
 }) {
-  const placeholder = `Wybierz ${label.toLowerCase()}`;
   return (
     <Select
       value={
@@ -36,7 +37,9 @@ export function SelectInput({
     >
       <FormControl>
         <SelectTrigger className="w-full">
-          <SelectValue placeholder={placeholder} />
+          <SelectValue
+            placeholder={placeholder ?? `Wybierz ${label.toLowerCase()}`}
+          />
         </SelectTrigger>
       </FormControl>
       <SelectContent>{options}</SelectContent>

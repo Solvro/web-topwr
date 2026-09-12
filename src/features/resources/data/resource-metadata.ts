@@ -4,10 +4,14 @@ import {
   BellPlus,
   BookOpen,
   Building,
+  Building2,
   Calendar,
   CalendarCog,
+  Calendars,
   CircleQuestionMark,
   Clock,
+  ExternalLink,
+  Layers,
   Library,
   Link,
   Map,
@@ -18,6 +22,7 @@ import {
   ShieldUser,
   Slice,
   SquareActivity,
+  Store,
   Train,
   University,
   UsersRound,
@@ -29,6 +34,9 @@ import { lazy } from "react";
 import { DEFAULT_INPUT_COLOR } from "@/config/constants";
 import { ImageType, Weekday } from "@/config/enums";
 import type { ArrayInputDefinition } from "@/features/abstract-resource-form/types";
+// TODO: circular dependency
+// eslint-disable-next-line no-restricted-imports
+import { fetchMutation } from "@/features/backend/api/fetch-mutation";
 import { POLISH_WEEKDAYS } from "@/features/polish";
 import { getRoundedDate } from "@/utils";
 
@@ -256,6 +264,47 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.Aeds]: {
+    apiPath: "aeds",
+    itemMapper: (item) => ({
+      name: "Defibrylator AED",
+      description: item.addressLine1 ?? null,
+    }),
+    icon: SquareActivity,
+    form: {
+      inputs: {
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
+        groupInputs: [ADDRESS_LINE_INPUTS, COORDINATES_INPUTS],
+        textareaInputs: {
+          instructions: { label: "Instrukcje użytkowania" },
+        },
+        selectInputs: {
+          branch: {
+            label: "Filia",
+            optionEnum: UniversityBranch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
+        relationInputs: {
+          [Resource.Buildings]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "buildingId",
+          },
+        },
+      },
+      defaultValues: {
+        ...DEFAULT_COORDINATES,
+        addressLine1: null,
+        addressLine2: null,
+        branch: UniversityBranch.Main,
+        instructions: null,
+        photoKey: null,
+        buildingId: null,
+      },
+    },
+  },
   [Resource.Banners]: {
     apiPath: "banners",
     itemMapper: (item) => ({
@@ -296,6 +345,118 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.BicycleShowers]: {
+    apiPath: "bicycle_showers",
+    itemMapper: (item) => ({
+      name: item.room ?? "Prysznic rowerowy",
+      description: item.addressLine1 ?? null,
+    }),
+    icon: Bath,
+    form: {
+      inputs: {
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
+        textInputs: {
+          room: { label: "Numer pokoju/pomieszczenia" },
+        },
+        textareaInputs: {
+          instructions: { label: "Instrukcje użytkowania" },
+        },
+        selectInputs: {
+          branch: {
+            label: "Filia",
+            optionEnum: UniversityBranch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
+        groupInputs: [ADDRESS_LINE_INPUTS, COORDINATES_INPUTS],
+        relationInputs: {
+          [Resource.Buildings]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "buildingId",
+          },
+        },
+      },
+      defaultValues: {
+        room: null,
+        instructions: null,
+        ...DEFAULT_COORDINATES,
+        addressLine1: null,
+        addressLine2: null,
+        branch: UniversityBranch.Main,
+        photoKey: null,
+        buildingId: null,
+      },
+    },
+  },
+  [Resource.Buildings]: {
+    apiPath: "buildings",
+    itemMapper: (item) => ({
+      name: item.identifier,
+      descriptor: item.specialName,
+      description: item.addressLine1,
+    }),
+    icon: Building,
+    form: {
+      inputs: {
+        imageInputs: {
+          coverKey: { label: "Zdjęcie okładki", type: ImageType.Banner },
+        },
+        textInputs: {
+          identifier: { label: "Identyfikator budynku (np. A1, C13)" },
+          specialName: { label: "Specjalna nazwa budynku" },
+        },
+        groupInputs: [
+          {
+            textInputs: {
+              externalDigitalGuideIdOrUrl: {
+                label: "ID lub URL zewnętrznego przewodnika",
+              },
+            },
+            selectInputs: {
+              externalDigitalGuideMode: {
+                label: "Tryb przewodnika cyfrowego",
+                optionEnum: ExternalDigitalGuideMode,
+                optionLabels: SELECT_OPTION_LABELS.MAP.EXTERNAL_GUIDE_MODE,
+              },
+            },
+          },
+          ADDRESS_LINE_INPUTS,
+          COORDINATES_INPUTS,
+        ],
+        checkboxInputs: {
+          haveFood: { label: "Czy budynek ma miejsca z jedzeniem?" },
+        },
+        selectInputs: {
+          branch: {
+            label: "Filia",
+            optionEnum: UniversityBranch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
+        relationInputs: {
+          [Resource.Campuses]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "campusId",
+          },
+        },
+      },
+      defaultValues: {
+        identifier: "",
+        specialName: null,
+        campusId: null,
+        addressLine1: "",
+        addressLine2: null,
+        ...DEFAULT_COORDINATES,
+        haveFood: false,
+        branch: UniversityBranch.Main,
+        coverKey: null,
+        externalDigitalGuideMode: null,
+        externalDigitalGuideIdOrUrl: null,
+      },
+    },
+  },
   [Resource.CalendarEvents]: {
     apiPath: "event_calendar",
     itemMapper: (item) => ({
@@ -325,6 +486,58 @@ export const RESOURCE_METADATA = {
         startTime: getRoundedDate(0),
         endTime: getRoundedDate(24),
         accentColor: null,
+      },
+    },
+  },
+  [Resource.Campuses]: {
+    apiPath: "campuses",
+    itemMapper: (item) => ({
+      name: item.name,
+      description: SELECT_OPTION_LABELS.MAP.BRANCH[item.branch],
+    }),
+    icon: Map,
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa kampusu" },
+        },
+        selectInputs: {
+          branch: {
+            label: "Filia",
+            optionEnum: UniversityBranch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
+        imageInputs: {
+          coverKey: { label: "Zdjęcie okładki", type: ImageType.Banner },
+        },
+      },
+      defaultValues: {
+        name: "",
+        coverKey: null,
+        branch: UniversityBranch.Main,
+      },
+    },
+  },
+  [Resource.ChangeScreenshots]: {
+    queryName: "screenshots",
+    apiPath: "change_screenshots",
+    itemMapper: (item) => ({
+      name: item.subtitle ?? `Zdjęcie ${String(item.id)}`,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          subtitle: { label: "Podpis" },
+        },
+        imageInputs: {
+          imageKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
+      },
+      defaultValues: {
+        changeId: -1,
+        imageKey: "",
+        subtitle: null,
       },
     },
   },
@@ -361,25 +574,30 @@ export const RESOURCE_METADATA = {
       },
     },
   },
-  [Resource.ChangeScreenshots]: {
-    queryName: "screenshots",
-    apiPath: "change_screenshots",
+  [Resource.ContributorSocialLinks]: {
+    queryName: "socialLinks",
+    apiPath: "contributor_social_links",
     itemMapper: (item) => ({
-      name: item.subtitle ?? `Zdjęcie ${String(item.id)}`,
+      name: item.link,
+      description: item.linkType,
     }),
     form: {
       inputs: {
         textInputs: {
-          subtitle: { label: "Podpis" },
+          link: { label: "Link" },
         },
-        imageInputs: {
-          imageKey: { label: "Zdjęcie", type: ImageType.Banner },
+        selectInputs: {
+          linkType: {
+            label: "Rodzaj linku",
+            optionEnum: LinkType,
+            optionLabels: SELECT_OPTION_LABELS.LINK_TYPE,
+          },
         },
       },
       defaultValues: {
-        changeId: -1,
-        imageKey: "",
-        subtitle: null,
+        link: "",
+        linkType: LinkType.Default,
+        contributorId: -1,
       },
     },
   },
@@ -411,20 +629,105 @@ export const RESOURCE_METADATA = {
       },
     },
   },
-  [Resource.ContributorSocialLinks]: {
-    queryName: "socialLinks",
-    apiPath: "contributor_social_links",
+  [Resource.Das]: {
+    queryName: "das",
+    apiPath: "das",
+    icon: Calendars,
     itemMapper: (item) => ({
-      name: item.link,
-      description: item.linkType,
+      name: item.name,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa" },
+        },
+        dateTimeInputs: {
+          startsAt: { label: "Czas rozpoczęcia" },
+          endsAt: { label: "Czas zakończenia" },
+        },
+        relationInputs: {
+          [Resource.DasMaps]: {
+            type: RelationType.OneToMany,
+            foreignKey: "dasId",
+          },
+          [Resource.DasLinks]: {
+            type: RelationType.OneToMany,
+            foreignKey: "dasId",
+          },
+          [Resource.DasStands]: {
+            type: RelationType.OneToMany,
+            foreignKey: "dasId",
+          },
+          [Resource.DasTimetableEntries]: {
+            type: RelationType.OneToMany,
+            foreignKey: "timetableId",
+            bypassNestedRouting: true,
+          },
+        },
+      },
+      defaultValues: {
+        name: "",
+        startsAt: "",
+        endsAt: "",
+      },
+      submitConfiguration: {
+        create: {
+          submitLabel: "Utwórz",
+          submitIcon: SendHorizonal,
+          onAfterCreate: async (item) => {
+            await fetchMutation(`/${String(item.id)}/timetable`, {
+              body: { name: item.name },
+              resource: Resource.Das,
+              method: "POST",
+            });
+          },
+        },
+      },
+    },
+  },
+  [Resource.DasConfig]: {
+    apiPath: "",
+    itemMapper: () => ({ name: "Zarządzanie DAS'em" }),
+    icon: Store,
+    form: {
+      inputs: {},
+      defaultValues: {},
+    },
+  },
+  [Resource.DasFloors]: {
+    queryName: "floors",
+    apiPath: "floors",
+    icon: Building,
+    itemMapper: (item) => ({
+      name: item.name,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa" },
+        },
+      },
+      defaultValues: {
+        name: "",
+      },
+    },
+  },
+  [Resource.DasLinks]: {
+    queryName: "links",
+    apiPath: "das_links",
+    icon: ExternalLink,
+    itemMapper: (item) => ({
+      name: item.title,
     }),
     form: {
       inputs: {
         textInputs: {
           link: { label: "Link" },
+          title: { label: "Tytuł" },
+          subtitle: { label: "Podpis" },
         },
         selectInputs: {
-          linkType: {
+          type: {
             label: "Rodzaj linku",
             optionEnum: LinkType,
             optionLabels: SELECT_OPTION_LABELS.LINK_TYPE,
@@ -432,9 +735,149 @@ export const RESOURCE_METADATA = {
         },
       },
       defaultValues: {
+        dasId: -1,
         link: "",
-        linkType: LinkType.Default,
-        contributorId: -1,
+        type: LinkType.Default,
+        title: "",
+      },
+    },
+  },
+  [Resource.DasMaps]: {
+    queryName: "maps",
+    apiPath: "das_maps",
+    icon: Map,
+    itemMapper: (item) => ({
+      name: item.name,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa" },
+        },
+        imageInputs: {
+          contentKey: { label: "Mapa", type: ImageType.Banner },
+        },
+      },
+      defaultValues: {
+        dasId: -1,
+        name: "",
+        contentKey: "",
+      },
+    },
+  },
+  [Resource.DasOrganizations]: {
+    apiPath: "das_organizations",
+    icon: Building2,
+    itemMapper: (item) => ({
+      name: item.name,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa" },
+        },
+        richTextInputs: {
+          description: { label: "Opis" },
+        },
+        imageInputs: {
+          logoKey: { label: "Logo", type: ImageType.Logo },
+        },
+        relationInputs: {
+          [Resource.StudentOrganizations]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "studentOrganizationId",
+          },
+        },
+      },
+      defaultValues: {
+        name: "",
+        description: null,
+        logoKey: null,
+        studentOrganizationId: null,
+      },
+    },
+  },
+  [Resource.DasStands]: {
+    queryName: "stands",
+    apiPath: "das_stands",
+    icon: Store,
+    itemMapper: (item) => ({
+      name: item.name,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa" },
+          number: { label: "Numer" },
+        },
+        richTextInputs: {
+          description: { label: "Opis" },
+        },
+        relationInputs: {
+          [Resource.DasFloors]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "floorId",
+          },
+          [Resource.DasOrganizations]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "dasOrganizationId",
+          },
+        },
+      },
+      defaultValues: {
+        dasId: -1,
+        name: "",
+        number: "",
+      },
+    },
+  },
+  [Resource.DasTimetableEntries]: {
+    queryName: "entries",
+    apiPath: "das_timetable_entries",
+    icon: Layers,
+    itemMapper: (item) => ({
+      name: item.name,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa" },
+        },
+        dateTimeInputs: {
+          startTime: { label: "Czas rozpoczęcia" },
+          endTime: { label: "Czas zakończenia" },
+        },
+      },
+      defaultValues: {
+        name: "",
+        startTime: "",
+        endTime: null,
+        timetableId: -1,
+      },
+    },
+  },
+  [Resource.DasTimetables]: {
+    queryName: "timetable",
+    apiPath: "das_timetables",
+    icon: Clock,
+    itemMapper: (item) => ({
+      name: item.name,
+    }),
+    form: {
+      inputs: {
+        relationInputs: {
+          [Resource.DasTimetableEntries]: {
+            type: RelationType.OneToMany,
+            foreignKey: "timetableId",
+            bypassNestedRouting: true,
+          },
+        },
+        textInputs: {
+          name: { label: "Nazwa" },
+        },
+      },
+      defaultValues: {
+        name: "",
       },
     },
   },
@@ -473,6 +916,35 @@ export const RESOURCE_METADATA = {
         changedWeekday: Weekday.Monday,
         changedDayIsEven: false,
         academicCalendarId: -1,
+      },
+    },
+  },
+  [Resource.DepartmentLinks]: {
+    queryName: "departmentLinks",
+    apiPath: "department_links",
+    itemMapper: (item) => ({
+      name: item.name,
+      description: item.link,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa" },
+          link: { label: "Link" },
+        },
+        selectInputs: {
+          linkType: {
+            label: "Rodzaj linku",
+            optionEnum: LinkType,
+            optionLabels: SELECT_OPTION_LABELS.LINK_TYPE,
+          },
+        },
+      },
+      defaultValues: {
+        link: "",
+        name: "",
+        linkType: LinkType.Default,
+        departmentId: -1,
       },
     },
   },
@@ -537,32 +1009,44 @@ export const RESOURCE_METADATA = {
       },
     },
   },
-  [Resource.DepartmentLinks]: {
-    queryName: "departmentLinks",
-    apiPath: "department_links",
+  [Resource.FoodSpots]: {
+    apiPath: "food_spots",
     itemMapper: (item) => ({
       name: item.name,
-      description: item.link,
+      description: item.addressLine1 ?? null,
     }),
+    icon: UtensilsCrossed,
     form: {
       inputs: {
-        textInputs: {
-          name: { label: "Nazwa" },
-          link: { label: "Link" },
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
         },
+        textInputs: {
+          name: { label: "Nazwa miejsca" },
+        },
+        groupInputs: [ADDRESS_LINE_INPUTS, COORDINATES_INPUTS],
         selectInputs: {
-          linkType: {
-            label: "Rodzaj linku",
-            optionEnum: LinkType,
-            optionLabels: SELECT_OPTION_LABELS.LINK_TYPE,
+          branch: {
+            label: "Filia",
+            optionEnum: UniversityBranch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
+        relationInputs: {
+          [Resource.Buildings]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "buildingId",
           },
         },
       },
       defaultValues: {
-        link: "",
         name: "",
-        linkType: LinkType.Default,
-        departmentId: -1,
+        addressLine1: null,
+        addressLine2: null,
+        ...DEFAULT_COORDINATES,
+        branch: UniversityBranch.Main,
+        photoKey: null,
+        buildingId: null,
       },
     },
   },
@@ -673,6 +1157,61 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.Libraries]: {
+    apiPath: "libraries",
+    itemMapper: (item) => ({
+      name: item.title,
+      description: item.addressLine1 ?? null,
+    }),
+    icon: Library,
+    form: {
+      inputs: {
+        imageInputs: {
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
+        textInputs: {
+          title: { label: "Nazwa biblioteki" },
+          room: { label: "Numer pokoju" },
+          phone: { label: "Numer telefonu" },
+          email: { label: "Adres email" },
+        },
+        groupInputs: [ADDRESS_LINE_INPUTS, COORDINATES_INPUTS],
+        selectInputs: {
+          branch: {
+            label: "Filia",
+            optionEnum: UniversityBranch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
+        relationInputs: {
+          [Resource.Buildings]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "buildingId",
+          },
+          [Resource.RegularHours]: {
+            type: RelationType.OneToMany,
+            foreignKey: "libraryId",
+          },
+          [Resource.SpecialHours]: {
+            type: RelationType.OneToMany,
+            foreignKey: "libraryId",
+          },
+        },
+      },
+      defaultValues: {
+        title: "",
+        room: null,
+        addressLine1: null,
+        addressLine2: null,
+        phone: null,
+        email: null,
+        ...DEFAULT_COORDINATES,
+        branch: UniversityBranch.Main,
+        photoKey: null,
+        buildingId: null,
+      },
+    },
+  },
   [Resource.Majors]: {
     apiPath: "fields_of_study",
     queryName: "fieldsOfStudy",
@@ -706,6 +1245,16 @@ export const RESOURCE_METADATA = {
         hasWeekendOption: false,
         departmentId: -1,
       },
+    },
+  },
+  [Resource.Map]: {
+    // Map is a grouping resource for navigation, not an actual data resource
+    apiPath: "map",
+    itemMapper: () => ({ name: "Mapa" }),
+    icon: Map,
+    form: {
+      inputs: {},
+      defaultValues: {},
     },
   },
   [Resource.Milestones]: {
@@ -780,6 +1329,31 @@ export const RESOURCE_METADATA = {
       },
     },
   },
+  [Resource.NotificationTopics]: {
+    apiPath: "firebase/topics",
+    pk: "topicName",
+    deletable: false,
+    showItemId: false,
+    itemMapper: (item) => ({
+      name: item.topicName,
+      description: item.description,
+    }),
+    icon: BellPlus,
+    form: {
+      inputs: {
+        textInputs: {
+          topicName: { label: "Nazwa", immutable: true },
+          description: { label: "Opis" },
+        },
+      },
+      defaultValues: {
+        topicName: "",
+        description: null,
+        isActive: true,
+        deactivatedAt: null,
+      },
+    },
+  },
   [Resource.Notifications]: {
     apiPath: "firebase/broadcast",
     isSingleton: true,
@@ -820,619 +1394,6 @@ export const RESOURCE_METADATA = {
             description: NotificationConfirmationMessage,
           },
         },
-      },
-    },
-  },
-  [Resource.NotificationTopics]: {
-    apiPath: "firebase/topics",
-    pk: "topicName",
-    deletable: false,
-    showItemId: false,
-    itemMapper: (item) => ({
-      name: item.topicName,
-      description: item.description,
-    }),
-    icon: BellPlus,
-    form: {
-      inputs: {
-        textInputs: {
-          topicName: { label: "Nazwa", immutable: true },
-          description: { label: "Opis" },
-        },
-      },
-      defaultValues: {
-        topicName: "",
-        description: null,
-        isActive: true,
-        deactivatedAt: null,
-      },
-    },
-  },
-  [Resource.Roles]: {
-    queryName: "roles",
-    apiPath: "roles",
-    itemMapper: (item) => ({
-      name: item.name,
-    }),
-    icon: ShieldUser,
-    form: {
-      inputs: {
-        textInputs: {
-          name: { label: "Nazwa roli" },
-        },
-      },
-      defaultValues: {
-        name: "",
-      },
-    },
-  },
-  [Resource.SksOpeningHours]: {
-    apiPath: "sks_opening_hours",
-    pk: "language",
-    itemMapper: (item) => ({
-      name: SELECT_OPTION_LABELS.SKS_OPENING_HOURS.LANGUAGE[item.language],
-      description: `${item.canteen} | ${item.cafe}`,
-    }),
-    icon: Clock,
-    form: {
-      inputs: {
-        textInputs: {
-          canteen: { label: "Godziny otwarcia stołówki" },
-          cafe: { label: "Godziny otwarcia kawiarni" },
-        },
-        selectInputs: {
-          language: {
-            label: "Język",
-            optionEnum: Language,
-            optionLabels: SELECT_OPTION_LABELS.SKS_OPENING_HOURS.LANGUAGE,
-          },
-        },
-      },
-      defaultValues: {
-        canteen: "",
-        cafe: "",
-        language: null as unknown as Language,
-      },
-    },
-  },
-  [Resource.StudentOrganizations]: {
-    apiPath: "student_organizations",
-    itemMapper: (item) => ({
-      name: item.name,
-      description: item.shortDescription,
-    }),
-    icon: Building,
-    form: {
-      inputs: {
-        imageInputs: {
-          logoKey: { label: "Logo", type: ImageType.Logo },
-          coverKey: { label: "Baner", type: ImageType.Banner },
-        },
-        textInputs: {
-          name: { label: "Nazwa" },
-          enName: { label: "Nazwa (ang.)" },
-        },
-        textareaInputs: {
-          shortDescription: { label: "Krótki opis" },
-          enShortDescription: { label: "Krótki opis (ang.)" },
-        },
-        richTextInputs: {
-          description: { label: "Opis" },
-          enDescription: { label: "Opis (ang.)" },
-        },
-        selectInputs: {
-          source: {
-            label: "Źródło",
-            optionEnum: OrganizationSource,
-            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.SOURCE,
-          },
-          organizationType: {
-            label: "Typ",
-            optionEnum: OrganizationType,
-            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.TYPE,
-          },
-          organizationStatus: {
-            label: "Status",
-            optionEnum: OrganizationStatus,
-            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
-          },
-          branch: {
-            label: "Filia",
-            optionEnum: UniversityBranch,
-            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
-          },
-        },
-        checkboxInputs: {
-          isStrategic: { label: "Czy jest kołem strategicznym?" },
-          coverPreview: { label: "Używaj banera jako zdjęcia podglądowego?" },
-        },
-        relationInputs: {
-          [Resource.Departments]: {
-            type: RelationType.ManyToOne,
-            foreignKey: "departmentId",
-          },
-          [Resource.StudentOrganizationLinks]: {
-            type: RelationType.OneToMany,
-            foreignKey: "studentOrganizationId",
-          },
-          [Resource.StudentOrganizationTags]: { type: RelationType.ManyToMany },
-        },
-      },
-      defaultValues: {
-        name: "",
-        departmentId: null,
-        logoKey: null,
-        coverKey: null,
-        description: null,
-        shortDescription: null,
-        enName: null,
-        enDescription: null,
-        enShortDescription: null,
-        coverPreview: false, // czy używać covera jako zdjęcie podglądowe zamiast logo
-        source: OrganizationSource.Manual,
-        organizationType: OrganizationType.ScientificClub,
-        organizationStatus: OrganizationStatus.Active,
-        isStrategic: false,
-        branch: UniversityBranch.Main,
-      },
-    },
-  },
-  [Resource.StudentOrganizationLinks]: {
-    queryName: "links",
-    apiPath: "student_organization_links",
-    itemMapper: (item) => ({
-      name: item.link,
-      description: item.linkType,
-    }),
-    form: {
-      inputs: {
-        textInputs: {
-          link: { label: "Link" },
-          name: { label: "Nazwa" },
-        },
-        selectInputs: {
-          linkType: {
-            label: "Rodzaj linku",
-            optionEnum: LinkType,
-            optionLabels: SELECT_OPTION_LABELS.LINK_TYPE,
-          },
-        },
-      },
-      defaultValues: {
-        link: "",
-        name: "",
-        linkType: LinkType.Default,
-        studentOrganizationId: -1,
-      },
-    },
-  },
-  [Resource.StudentOrganizationTags]: {
-    queryName: "tags",
-    pk: "tag",
-    apiPath: "student_organization_tags",
-    itemMapper: (item) => ({
-      name: item.tag,
-    }),
-    form: {
-      inputs: {
-        textInputs: {
-          tag: { label: "Tag" },
-        },
-      },
-      defaultValues: {
-        tag: "",
-      },
-    },
-  },
-  [Resource.Versions]: {
-    apiPath: "versions",
-    itemMapper: (item) => ({
-      name: item.name,
-      description: item.description,
-    }),
-    icon: Notebook,
-    form: {
-      inputs: {
-        textInputs: { name: { label: "Nazwa" } },
-        textareaInputs: { description: { label: "Opis" } },
-        dateInputs: { releaseDate: { label: "Data publikacji" } },
-        relationInputs: {
-          [Resource.Changes]: {
-            type: RelationType.OneToMany,
-            foreignKey: "versionId",
-          },
-          [Resource.Milestones]: {
-            type: RelationType.ManyToOne,
-            foreignKey: "milestoneId",
-          },
-          [Resource.VersionScreenshots]: {
-            type: RelationType.OneToMany,
-            foreignKey: "versionId",
-          },
-        },
-      },
-      defaultValues: {
-        name: "",
-        description: null,
-        releaseDate: "",
-        milestoneId: -1,
-      },
-    },
-  },
-  [Resource.VersionScreenshots]: {
-    queryName: "screenshots",
-    apiPath: "version_screenshots",
-    itemMapper: (item) => ({
-      name: item.subtitle ?? `Zdjęcie ${String(item.id)}`,
-    }),
-    form: {
-      inputs: {
-        textInputs: {
-          subtitle: { label: "Podpis" },
-        },
-        imageInputs: {
-          imageKey: { label: "Zdjęcie", type: ImageType.Banner },
-        },
-      },
-      defaultValues: {
-        versionId: -1,
-        imageKey: "",
-        subtitle: null,
-      },
-    },
-  },
-  [Resource.Campuses]: {
-    apiPath: "campuses",
-    itemMapper: (item) => ({
-      name: item.name,
-      description: SELECT_OPTION_LABELS.MAP.BRANCH[item.branch],
-    }),
-    icon: Map,
-    form: {
-      inputs: {
-        textInputs: {
-          name: { label: "Nazwa kampusu" },
-        },
-        selectInputs: {
-          branch: {
-            label: "Filia",
-            optionEnum: UniversityBranch,
-            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
-          },
-        },
-        imageInputs: {
-          coverKey: { label: "Zdjęcie okładki", type: ImageType.Banner },
-        },
-      },
-      defaultValues: {
-        name: "",
-        coverKey: null,
-        branch: UniversityBranch.Main,
-      },
-    },
-  },
-  [Resource.Buildings]: {
-    apiPath: "buildings",
-    itemMapper: (item) => ({
-      name: item.identifier,
-      descriptor: item.specialName,
-      description: item.addressLine1,
-    }),
-    icon: Building,
-    form: {
-      inputs: {
-        imageInputs: {
-          coverKey: { label: "Zdjęcie okładki", type: ImageType.Banner },
-        },
-        textInputs: {
-          identifier: { label: "Identyfikator budynku (np. A1, C13)" },
-          specialName: { label: "Specjalna nazwa budynku" },
-        },
-        groupInputs: [
-          {
-            textInputs: {
-              externalDigitalGuideIdOrUrl: {
-                label: "ID lub URL zewnętrznego przewodnika",
-              },
-            },
-            selectInputs: {
-              externalDigitalGuideMode: {
-                label: "Tryb przewodnika cyfrowego",
-                optionEnum: ExternalDigitalGuideMode,
-                optionLabels: SELECT_OPTION_LABELS.MAP.EXTERNAL_GUIDE_MODE,
-              },
-            },
-          },
-          ADDRESS_LINE_INPUTS,
-          COORDINATES_INPUTS,
-        ],
-        checkboxInputs: {
-          haveFood: { label: "Czy budynek ma miejsca z jedzeniem?" },
-        },
-        selectInputs: {
-          branch: {
-            label: "Filia",
-            optionEnum: UniversityBranch,
-            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
-          },
-        },
-        relationInputs: {
-          [Resource.Campuses]: {
-            type: RelationType.ManyToOne,
-            foreignKey: "campusId",
-          },
-        },
-      },
-      defaultValues: {
-        identifier: "",
-        specialName: null,
-        campusId: null,
-        addressLine1: "",
-        addressLine2: null,
-        ...DEFAULT_COORDINATES,
-        haveFood: false,
-        branch: UniversityBranch.Main,
-        coverKey: null,
-        externalDigitalGuideMode: null,
-        externalDigitalGuideIdOrUrl: null,
-      },
-    },
-  },
-  [Resource.BicycleShowers]: {
-    apiPath: "bicycle_showers",
-    itemMapper: (item) => ({
-      name: item.room ?? "Prysznic rowerowy",
-      description: item.addressLine1 ?? null,
-    }),
-    icon: Bath,
-    form: {
-      inputs: {
-        imageInputs: {
-          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
-        },
-        textInputs: {
-          room: { label: "Numer pokoju/pomieszczenia" },
-        },
-        textareaInputs: {
-          instructions: { label: "Instrukcje użytkowania" },
-        },
-        selectInputs: {
-          branch: {
-            label: "Filia",
-            optionEnum: UniversityBranch,
-            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
-          },
-        },
-        groupInputs: [ADDRESS_LINE_INPUTS, COORDINATES_INPUTS],
-        relationInputs: {
-          [Resource.Buildings]: {
-            type: RelationType.ManyToOne,
-            foreignKey: "buildingId",
-          },
-        },
-      },
-      defaultValues: {
-        room: null,
-        instructions: null,
-        ...DEFAULT_COORDINATES,
-        addressLine1: null,
-        addressLine2: null,
-        branch: UniversityBranch.Main,
-        photoKey: null,
-        buildingId: null,
-      },
-    },
-  },
-  [Resource.Aeds]: {
-    apiPath: "aeds",
-    itemMapper: (item) => ({
-      name: "Defibrylator AED",
-      description: item.addressLine1 ?? null,
-    }),
-    icon: SquareActivity,
-    form: {
-      inputs: {
-        imageInputs: {
-          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
-        },
-        groupInputs: [ADDRESS_LINE_INPUTS, COORDINATES_INPUTS],
-        textareaInputs: {
-          instructions: { label: "Instrukcje użytkowania" },
-        },
-        selectInputs: {
-          branch: {
-            label: "Filia",
-            optionEnum: UniversityBranch,
-            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
-          },
-        },
-        relationInputs: {
-          [Resource.Buildings]: {
-            type: RelationType.ManyToOne,
-            foreignKey: "buildingId",
-          },
-        },
-      },
-      defaultValues: {
-        ...DEFAULT_COORDINATES,
-        addressLine1: null,
-        addressLine2: null,
-        branch: UniversityBranch.Main,
-        instructions: null,
-        photoKey: null,
-        buildingId: null,
-      },
-    },
-  },
-  [Resource.FoodSpots]: {
-    apiPath: "food_spots",
-    itemMapper: (item) => ({
-      name: item.name,
-      description: item.addressLine1 ?? null,
-    }),
-    icon: UtensilsCrossed,
-    form: {
-      inputs: {
-        imageInputs: {
-          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
-        },
-        textInputs: {
-          name: { label: "Nazwa miejsca" },
-        },
-        groupInputs: [ADDRESS_LINE_INPUTS, COORDINATES_INPUTS],
-        selectInputs: {
-          branch: {
-            label: "Filia",
-            optionEnum: UniversityBranch,
-            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
-          },
-        },
-        relationInputs: {
-          [Resource.Buildings]: {
-            type: RelationType.ManyToOne,
-            foreignKey: "buildingId",
-          },
-        },
-      },
-      defaultValues: {
-        name: "",
-        addressLine1: null,
-        addressLine2: null,
-        ...DEFAULT_COORDINATES,
-        branch: UniversityBranch.Main,
-        photoKey: null,
-        buildingId: null,
-      },
-    },
-  },
-  [Resource.Map]: {
-    // Map is a grouping resource for navigation, not an actual data resource
-    apiPath: "map",
-    itemMapper: () => ({ name: "Mapa" }),
-    icon: Map,
-    form: {
-      inputs: {},
-      defaultValues: {},
-    },
-  },
-  [Resource.Libraries]: {
-    apiPath: "libraries",
-    itemMapper: (item) => ({
-      name: item.title,
-      description: item.addressLine1 ?? null,
-    }),
-    icon: Library,
-    form: {
-      inputs: {
-        imageInputs: {
-          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
-        },
-        textInputs: {
-          title: { label: "Nazwa biblioteki" },
-          room: { label: "Numer pokoju" },
-          phone: { label: "Numer telefonu" },
-          email: { label: "Adres email" },
-        },
-        groupInputs: [ADDRESS_LINE_INPUTS, COORDINATES_INPUTS],
-        selectInputs: {
-          branch: {
-            label: "Filia",
-            optionEnum: UniversityBranch,
-            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
-          },
-        },
-        relationInputs: {
-          [Resource.Buildings]: {
-            type: RelationType.ManyToOne,
-            foreignKey: "buildingId",
-          },
-          [Resource.RegularHours]: {
-            type: RelationType.OneToMany,
-            foreignKey: "libraryId",
-          },
-          [Resource.SpecialHours]: {
-            type: RelationType.OneToMany,
-            foreignKey: "libraryId",
-          },
-        },
-      },
-      defaultValues: {
-        title: "",
-        room: null,
-        addressLine1: null,
-        addressLine2: null,
-        phone: null,
-        email: null,
-        ...DEFAULT_COORDINATES,
-        branch: UniversityBranch.Main,
-        photoKey: null,
-        buildingId: null,
-      },
-    },
-  },
-  [Resource.RegularHours]: {
-    queryName: "regularHours",
-    apiPath: "regular_hours",
-    itemMapper: (item) => ({
-      name: POLISH_WEEKDAYS[item.weekDay],
-      description: `${item.openTime} - ${item.closeTime}`,
-    }),
-    form: {
-      inputs: {
-        selectInputs: {
-          weekDay: {
-            label: "Dzień tygodnia",
-            optionEnum: Weekday,
-            optionLabels: POLISH_WEEKDAYS,
-          },
-        },
-        timeInputs: {
-          openTime: { label: "Godzina otwarcia" },
-          closeTime: { label: "Godzina zamknięcia" },
-        },
-        relationInputs: {
-          [Resource.Libraries]: {
-            type: RelationType.ManyToOne,
-            foreignKey: "libraryId",
-          },
-        },
-      },
-      defaultValues: {
-        weekDay: Weekday.Monday,
-        openTime: "08:00:00",
-        closeTime: "16:00:00",
-        libraryId: -1,
-      },
-    },
-  },
-  [Resource.SpecialHours]: {
-    queryName: "specialHours",
-    apiPath: "special_hours",
-    itemMapper: (item) => ({
-      name: item.specialDate,
-      description: `${item.openTime} - ${item.closeTime}`,
-    }),
-    form: {
-      inputs: {
-        dateInputs: {
-          specialDate: { label: "Specjalna data" },
-        },
-        timeInputs: {
-          openTime: { label: "Godzina otwarcia" },
-          closeTime: { label: "Godzina zamknięcia" },
-        },
-        relationInputs: {
-          [Resource.Libraries]: {
-            type: RelationType.ManyToOne,
-            foreignKey: "libraryId",
-          },
-        },
-      },
-      defaultValues: {
-        specialDate: "",
-        openTime: "08:00:00",
-        closeTime: "16:00:00",
-        libraryId: -1,
       },
     },
   },
@@ -1534,6 +1495,305 @@ export const RESOURCE_METADATA = {
         photoKey: null,
         externalDigitalGuideMode: null,
         externalDigitalGuideIdOrUrl: null,
+      },
+    },
+  },
+  [Resource.RegularHours]: {
+    queryName: "regularHours",
+    apiPath: "regular_hours",
+    itemMapper: (item) => ({
+      name: POLISH_WEEKDAYS[item.weekDay],
+      description: `${item.openTime} - ${item.closeTime}`,
+    }),
+    form: {
+      inputs: {
+        selectInputs: {
+          weekDay: {
+            label: "Dzień tygodnia",
+            optionEnum: Weekday,
+            optionLabels: POLISH_WEEKDAYS,
+          },
+        },
+        timeInputs: {
+          openTime: { label: "Godzina otwarcia" },
+          closeTime: { label: "Godzina zamknięcia" },
+        },
+        relationInputs: {
+          [Resource.Libraries]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "libraryId",
+          },
+        },
+      },
+      defaultValues: {
+        weekDay: Weekday.Monday,
+        openTime: "08:00:00",
+        closeTime: "16:00:00",
+        libraryId: -1,
+      },
+    },
+  },
+  [Resource.Roles]: {
+    queryName: "roles",
+    apiPath: "roles",
+    itemMapper: (item) => ({
+      name: item.name,
+    }),
+    icon: ShieldUser,
+    form: {
+      inputs: {
+        textInputs: {
+          name: { label: "Nazwa roli" },
+        },
+      },
+      defaultValues: {
+        name: "",
+      },
+    },
+  },
+  [Resource.SksOpeningHours]: {
+    apiPath: "sks_opening_hours",
+    pk: "language",
+    itemMapper: (item) => ({
+      name: SELECT_OPTION_LABELS.SKS_OPENING_HOURS.LANGUAGE[item.language],
+      description: `${item.canteen} | ${item.cafe}`,
+    }),
+    icon: Clock,
+    form: {
+      inputs: {
+        textInputs: {
+          canteen: { label: "Godziny otwarcia stołówki" },
+          cafe: { label: "Godziny otwarcia kawiarni" },
+        },
+        selectInputs: {
+          language: {
+            label: "Język",
+            optionEnum: Language,
+            optionLabels: SELECT_OPTION_LABELS.SKS_OPENING_HOURS.LANGUAGE,
+          },
+        },
+      },
+      defaultValues: {
+        canteen: "",
+        cafe: "",
+        language: null as unknown as Language,
+      },
+    },
+  },
+  [Resource.SpecialHours]: {
+    queryName: "specialHours",
+    apiPath: "special_hours",
+    itemMapper: (item) => ({
+      name: item.specialDate,
+      description: `${item.openTime} - ${item.closeTime}`,
+    }),
+    form: {
+      inputs: {
+        dateInputs: {
+          specialDate: { label: "Specjalna data" },
+        },
+        timeInputs: {
+          openTime: { label: "Godzina otwarcia" },
+          closeTime: { label: "Godzina zamknięcia" },
+        },
+        relationInputs: {
+          [Resource.Libraries]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "libraryId",
+          },
+        },
+      },
+      defaultValues: {
+        specialDate: "",
+        openTime: "08:00:00",
+        closeTime: "16:00:00",
+        libraryId: -1,
+      },
+    },
+  },
+  [Resource.StudentOrganizationLinks]: {
+    queryName: "links",
+    apiPath: "student_organization_links",
+    itemMapper: (item) => ({
+      name: item.link,
+      description: item.linkType,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          link: { label: "Link" },
+          name: { label: "Nazwa" },
+        },
+        selectInputs: {
+          linkType: {
+            label: "Rodzaj linku",
+            optionEnum: LinkType,
+            optionLabels: SELECT_OPTION_LABELS.LINK_TYPE,
+          },
+        },
+      },
+      defaultValues: {
+        link: "",
+        name: "",
+        linkType: LinkType.Default,
+        studentOrganizationId: -1,
+      },
+    },
+  },
+  [Resource.StudentOrganizationTags]: {
+    queryName: "tags",
+    pk: "tag",
+    apiPath: "student_organization_tags",
+    itemMapper: (item) => ({
+      name: item.tag,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          tag: { label: "Tag" },
+        },
+      },
+      defaultValues: {
+        tag: "",
+      },
+    },
+  },
+  [Resource.StudentOrganizations]: {
+    apiPath: "student_organizations",
+    itemMapper: (item) => ({
+      name: item.name,
+      description: item.shortDescription,
+    }),
+    icon: Building,
+    form: {
+      inputs: {
+        imageInputs: {
+          logoKey: { label: "Logo", type: ImageType.Logo },
+          coverKey: { label: "Baner", type: ImageType.Banner },
+        },
+        textInputs: {
+          name: { label: "Nazwa" },
+          enName: { label: "Nazwa (ang.)" },
+        },
+        textareaInputs: {
+          shortDescription: { label: "Krótki opis" },
+          enShortDescription: { label: "Krótki opis (ang.)" },
+        },
+        richTextInputs: {
+          description: { label: "Opis" },
+          enDescription: { label: "Opis (ang.)" },
+        },
+        selectInputs: {
+          source: {
+            label: "Źródło",
+            optionEnum: OrganizationSource,
+            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.SOURCE,
+          },
+          organizationType: {
+            label: "Typ",
+            optionEnum: OrganizationType,
+            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.TYPE,
+          },
+          organizationStatus: {
+            label: "Status",
+            optionEnum: OrganizationStatus,
+            optionLabels: SELECT_OPTION_LABELS.STUDENT_ORGANIZATIONS.STATUS,
+          },
+          branch: {
+            label: "Filia",
+            optionEnum: UniversityBranch,
+            optionLabels: SELECT_OPTION_LABELS.MAP.BRANCH,
+          },
+        },
+        checkboxInputs: {
+          isStrategic: { label: "Czy jest kołem strategicznym?" },
+          coverPreview: { label: "Używaj banera jako zdjęcia podglądowego?" },
+        },
+        relationInputs: {
+          [Resource.Departments]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "departmentId",
+          },
+          [Resource.StudentOrganizationLinks]: {
+            type: RelationType.OneToMany,
+            foreignKey: "studentOrganizationId",
+          },
+          [Resource.StudentOrganizationTags]: { type: RelationType.ManyToMany },
+        },
+      },
+      defaultValues: {
+        name: "",
+        departmentId: null,
+        logoKey: null,
+        coverKey: null,
+        description: null,
+        shortDescription: null,
+        enName: null,
+        enDescription: null,
+        enShortDescription: null,
+        coverPreview: false, // czy używać covera jako zdjęcie podglądowe zamiast logo
+        source: OrganizationSource.Manual,
+        organizationType: OrganizationType.ScientificClub,
+        organizationStatus: OrganizationStatus.Active,
+        isStrategic: false,
+        branch: UniversityBranch.Main,
+      },
+    },
+  },
+  [Resource.VersionScreenshots]: {
+    queryName: "screenshots",
+    apiPath: "version_screenshots",
+    itemMapper: (item) => ({
+      name: item.subtitle ?? `Zdjęcie ${String(item.id)}`,
+    }),
+    form: {
+      inputs: {
+        textInputs: {
+          subtitle: { label: "Podpis" },
+        },
+        imageInputs: {
+          imageKey: { label: "Zdjęcie", type: ImageType.Banner },
+        },
+      },
+      defaultValues: {
+        versionId: -1,
+        imageKey: "",
+        subtitle: null,
+      },
+    },
+  },
+  [Resource.Versions]: {
+    apiPath: "versions",
+    itemMapper: (item) => ({
+      name: item.name,
+      description: item.description,
+    }),
+    icon: Notebook,
+    form: {
+      inputs: {
+        textInputs: { name: { label: "Nazwa" } },
+        textareaInputs: { description: { label: "Opis" } },
+        dateInputs: { releaseDate: { label: "Data publikacji" } },
+        relationInputs: {
+          [Resource.Changes]: {
+            type: RelationType.OneToMany,
+            foreignKey: "versionId",
+          },
+          [Resource.Milestones]: {
+            type: RelationType.ManyToOne,
+            foreignKey: "milestoneId",
+          },
+          [Resource.VersionScreenshots]: {
+            type: RelationType.OneToMany,
+            foreignKey: "versionId",
+          },
+        },
+      },
+      defaultValues: {
+        name: "",
+        description: null,
+        releaseDate: "",
+        milestoneId: -1,
       },
     },
   },

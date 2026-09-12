@@ -34,8 +34,8 @@ export const encodeQueryParameters = (
 export const sanitizeId = (id: ResourcePk): string =>
   encodeURIComponent(String(id).trim());
 
-export const toTitleCase = (text: string): string =>
-  text === "" ? "" : text[0].toUpperCase() + text.slice(1).toLowerCase();
+export const capitalizeFirstLetter = (text: string): string =>
+  text === "" ? "" : text[0].toUpperCase() + text.slice(1);
 
 export const tryParseNumber = <T>(value: T): number | T =>
   String(Number(value)) === value && Number.isFinite(Number(value))

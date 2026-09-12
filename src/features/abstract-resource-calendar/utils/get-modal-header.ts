@@ -5,7 +5,7 @@ import { GrammaticalCase, declineNoun } from "@/features/polish";
 import { getResourceRelationDefinitions } from "@/features/resources";
 import type { Resource } from "@/features/resources";
 import { RelationType } from "@/features/resources/enums";
-import { toTitleCase, typedEntries } from "@/utils";
+import { capitalizeFirstLetter, typedEntries } from "@/utils";
 
 export function getModalHeader(
   resource: Resource,
@@ -17,7 +17,7 @@ export function getModalHeader(
     .map(([relatedResource]) => relatedResource);
 
   if (clickedDay === null) {
-    return toTitleCase(
+    return capitalizeFirstLetter(
       declineNoun(resource, {
         case: GrammaticalCase.Nominative,
         plural: true,
@@ -29,13 +29,13 @@ export function getModalHeader(
     });
     return relatedResources.length > 0
       ? relatedResources.length === 1
-        ? `${toTitleCase(
+        ? `${capitalizeFirstLetter(
             declineNoun(relatedResources[0], {
               case: GrammaticalCase.Nominative,
               plural: true,
             }),
           )} ${clickedDayFormatted}`
-        : `${toTitleCase(
+        : `${capitalizeFirstLetter(
             relatedResources
               .map((relatedResource) =>
                 declineNoun(relatedResource, {
@@ -45,7 +45,7 @@ export function getModalHeader(
               )
               .join(" i "),
           )} ${clickedDayFormatted}`
-      : `${toTitleCase(
+      : `${capitalizeFirstLetter(
           declineNoun(resource, {
             case: GrammaticalCase.Nominative,
             plural: true,

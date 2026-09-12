@@ -35,12 +35,7 @@ export default function MapPage(_props: ResourcePageProps) {
         longLabel
         variant="outline"
       />
-      <DashboardButton
-        resource={Resource.Aeds}
-        longLabel
-        variant="outline"
-        preserveCase={true}
-      />
+      <DashboardButton resource={Resource.Aeds} longLabel variant="outline" />
       <DashboardButton
         resource={Resource.PinkBoxes}
         longLabel

@@ -76,8 +76,14 @@ export const getMutationConfig = <T extends Resource>(
   const relationDefinition = getResourceRelationDefinitions(
     relationContext.parentResource,
   )[relationContext.childResource];
-  if (relationDefinition.type !== RelationType.OneToMany) {
-    // only 1:n relations need special handling when creating a related resource
+  if (
+    !(
+      relationDefinition.type === RelationType.OneToMany ||
+      relationDefinition.type === RelationType.OneToOne
+    ) ||
+    relationDefinition.bypassNestedRouting === true
+  ) {
+    // If it's not a nested relation type, or if the relation explicitly skips nested routing, use standard flat routing endpoints
     return parentConfig;
   }
   // fetch the parent resource when creating a related resource
