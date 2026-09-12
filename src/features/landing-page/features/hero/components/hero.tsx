@@ -4,8 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 import { HeroRating } from "./hero-rating";
-
-// import { PhoneModel } from "./phone-model";
+import { PhoneModel } from "./phone-model";
 
 export function Hero() {
   return (
@@ -14,7 +13,7 @@ export function Hero() {
         <div className="flex flex-col gap-8 lg:col-span-2">
           <div className="space-y-6">
             <h1 className="text-3xl font-semibold tracking-tight sm:text-5xl xl:text-6xl">
-              Cały campus PWr w&nbsp;kieszeni.
+              Cały kampus PWr w&nbsp;kieszeni.
             </h1>
             <p className="text-muted-foreground md:text-xl">
               Mapy budynków, wydarzenia i&nbsp;przewodnik po&nbsp;kampusie —
@@ -42,9 +41,9 @@ export function Hero() {
           <HeroRating />
         </div>
 
-        {/* <div className="mx-auto flex aspect-3/4 w-full max-w-sm items-center justify-center overflow-hidden lg:col-span-3 lg:aspect-square lg:max-w-none">
+        <div className="mx-auto flex aspect-3/4 w-full max-w-sm items-center justify-center overflow-hidden lg:col-span-3 lg:aspect-square lg:max-w-none">
           <PhoneModel />
-        </div> */}
+        </div>
       </div>
     </section>
   );
