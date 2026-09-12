@@ -84,15 +84,14 @@ export function Navbar() {
 
   return (
     <header
-      className={cn("sticky top-0 z-50 w-full", isLoginPage && "absolute")}
+      className={cn(
+        "sticky top-0 z-50 w-full",
+        isLandingPage &&
+          "bg-background/65 border-border border-b backdrop-blur-md",
+        isLoginPage && "absolute",
+      )}
     >
-      <div
-        className={cn(
-          "w-full",
-          isLandingPage &&
-            "bg-background/65 border-border absolute border-b backdrop-blur-md",
-        )}
-      >
+      <div className="w-full">
         <div className="container mx-auto flex flex-row items-center justify-between">
           <Link href="/" passHref className="w-32 p-4">
             <Logo

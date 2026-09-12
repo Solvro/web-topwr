@@ -9,7 +9,7 @@ import { Link as LinkIcon } from "lucide-react";
 
 import { LinkType } from "@/features/resources/enums";
 
-const ICON_MAP: Record<string, React.ElementType> = {
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   [LinkType.GitHub]: GitHubLogoIcon,
   [LinkType.LinkedIn]: LinkedInLogoIcon,
   [LinkType.Instagram]: InstagramLogoIcon,
