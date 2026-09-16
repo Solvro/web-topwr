@@ -2,7 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import type { VariantProps } from "class-variance-authority";
-import { Shredder, Trash2 } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -22,73 +22,75 @@ import type { buttonVariants } from "@/components/ui/button/variants";
 import { fetchMutation, getKey, useMutationWrapper } from "@/features/backend";
 import type { MessageResponse } from "@/features/backend/types";
 import { GrammaticalCase, declineNoun } from "@/features/polish";
+import type { Resource } from "@/features/resources";
 import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import type { OptionalPromise } from "@/types/helpers";
-import { quoteText, sanitizeId } from "@/utils";
+import { quoteText } from "@/utils";
 
-import type { Resource } from "../enums";
-import type { ResourcePk } from "../types/internal";
-
-export function DeleteButtonWithDialog({
+export function ArcHideButtonWithDialog({
   resource,
-  id,
+  googleCalId,
+  hidden,
   itemName,
   showLabel = false,
-  onDeleteSuccess,
+  onHideSuccess,
   ...props
 }: {
   resource: Resource;
-  id: ResourcePk;
+  googleCalId: string;
+  hidden: boolean;
   itemName?: string;
   showLabel?: boolean;
-  onDeleteSuccess?: () => OptionalPromise<boolean>;
+  onHideSuccess?: () => OptionalPromise<boolean>;
 } & VariantProps<typeof buttonVariants>) {
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
   const router = useRouter();
-
   const queryClient = useQueryClient();
-  const { mutateAsync, isPending, isSuccess } = useMutationWrapper<
+  const { mutateAsync, isPending } = useMutationWrapper<
     MessageResponse,
     string
-  >(getKey.mutation.deleteResource(resource, id), async (sanitizedId) => {
-    const response = await fetchMutation<MessageResponse>(sanitizedId, {
+  >(getKey.mutation.hideResource(resource, googleCalId), async (calId) => {
+    const response = await fetchMutation<MessageResponse>(`hidden`, {
       resource,
-      method: "DELETE",
+      method: "POST",
+      body: { googleCalId: calId, hide: !hidden },
     });
     setIsAlertDialogOpen(false);
     await queryClient.invalidateQueries({
       queryKey: [getKey.query.resourceList(resource)],
       exact: false,
     });
-    if ((await onDeleteSuccess?.()) !== false) {
+    if ((await onHideSuccess?.()) !== false) {
       router.refresh();
     }
     return response;
   });
 
-  function handleDelete() {
+  function handleHide() {
     toast.promise(
-      mutateAsync(sanitizeId(id)),
-      getToastMessages.resource(resource).delete,
+      mutateAsync(googleCalId),
+      getToastMessages.resource(resource).modify,
     );
   }
 
   const declensions = declineNoun(resource);
-  const label = `Usuń ${declensions.accusative}`;
+  const label = hidden
+    ? `Pokaż ${declensions.accusative}`
+    : `Ukryj ${declensions.accusative}`;
 
   return (
     <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
       <AlertDialogTrigger asChild>
         <Button
-          variant="destructive-ghost"
+          variant="icon"
           size={showLabel ? "sm" : "icon"}
           aria-label={label}
           tooltip={showLabel ? undefined : label}
           {...props}
         >
           {showLabel ? label : null}
-          <Trash2 />
+          {hidden ? <Eye /> : <EyeOff />}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent
@@ -98,7 +100,9 @@ export function DeleteButtonWithDialog({
       >
         <AlertDialogHeader>
           <AlertDialogTitle className="text-balance">
-            Czy na pewno chcesz usunąć{" "}
+            {hidden
+              ? "Czy na pewno chcesz pokazać"
+              : "Czy na pewno chcesz ukryć"}{" "}
             {
               itemName == null
                 ? declineNoun(resource, {
@@ -110,7 +114,9 @@ export function DeleteButtonWithDialog({
             ?
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Ta operacja jest nieodwracalna.
+            {hidden
+              ? "Wydarzenie zostanie ponownie wyświetlone w kalendarzu."
+              : "Wydarzenie zostanie ukryte w kalendarzu."}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -118,12 +124,20 @@ export function DeleteButtonWithDialog({
           <AlertDialogAction asChild>
             <Button
               variant="destructive"
-              onClick={handleDelete}
+              onClick={handleHide}
               loading={isPending}
-              disabled={isSuccess}
             >
-              <Shredder />
-              Usuń
+              {hidden ? (
+                <>
+                  <Eye />
+                  Pokaż
+                </>
+              ) : (
+                <>
+                  <EyeOff />
+                  Ukryj
+                </>
+              )}
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>
