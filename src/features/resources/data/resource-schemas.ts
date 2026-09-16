@@ -14,6 +14,15 @@ import { ChangeScreenshotsSchema } from "../schemas/change-screenshots-schema";
 import { ChangesSchema } from "../schemas/changes-schema";
 import { ContributorSchema } from "../schemas/contributor-schema";
 import { ContributorSocialLinkSchema } from "../schemas/contributor-social-link-schema";
+import { DasConfigSchema } from "../schemas/das-config-schema";
+import { DasFloorSchema } from "../schemas/das-floor-schema";
+import { DasLinkSchema } from "../schemas/das-link-schema";
+import { DasMapSchema } from "../schemas/das-map-schema";
+import { DasOrganizationSchema } from "../schemas/das-organization-schema";
+import { DasSchema } from "../schemas/das-schema";
+import { DasStandSchema } from "../schemas/das-stand-schema";
+import { DasTimetableEntrySchema } from "../schemas/das-timetable-entry-schema";
+import { DasTimetableSchema } from "../schemas/das-timetable-schema";
 import { DashboardSchema } from "../schemas/dashboard-schema";
 import { DaySwapSchema } from "../schemas/day-swap-schema";
 import { DepartmentLinkSchema } from "../schemas/department-link-schema";
@@ -52,14 +61,23 @@ export const RESOURCE_SCHEMAS = {
   [Resource.Buildings]: BuildingSchema,
   [Resource.CalendarEvents]: CalendarEventSchema,
   [Resource.Campuses]: CampusSchema,
-  [Resource.Changes]: ChangesSchema,
   [Resource.ChangeScreenshots]: ChangeScreenshotsSchema,
-  [Resource.Contributors]: ContributorSchema,
+  [Resource.Changes]: ChangesSchema,
   [Resource.ContributorSocialLinks]: ContributorSocialLinkSchema,
+  [Resource.Contributors]: ContributorSchema,
+  [Resource.Das]: DasSchema,
+  [Resource.DasConfig]: DasConfigSchema,
+  [Resource.DasFloors]: DasFloorSchema,
+  [Resource.DasLinks]: DasLinkSchema,
+  [Resource.DasMaps]: DasMapSchema,
+  [Resource.DasOrganizations]: DasOrganizationSchema,
+  [Resource.DasStands]: DasStandSchema,
+  [Resource.DasTimetableEntries]: DasTimetableEntrySchema,
+  [Resource.DasTimetables]: DasTimetableSchema,
   [Resource.Dashboard]: DashboardSchema,
   [Resource.DaySwaps]: DaySwapSchema,
-  [Resource.Departments]: DepartmentSchema,
   [Resource.DepartmentLinks]: DepartmentLinkSchema,
+  [Resource.Departments]: DepartmentSchema,
   [Resource.FoodSpots]: FoodSpotSchema,
   [Resource.GuideArticles]: GuideArticleSchema,
   [Resource.GuideAuthors]: GuideAuthorSchema,
@@ -70,17 +88,17 @@ export const RESOURCE_SCHEMAS = {
   [Resource.Map]: MapSchema,
   [Resource.Milestones]: MilestonesSchema,
   [Resource.MobileConfig]: MobileConfigSchema,
-  [Resource.Notifications]: NotificationSchema,
   [Resource.NotificationTopics]: NotificationTopicSchema,
+  [Resource.Notifications]: NotificationSchema,
   [Resource.PinkBoxes]: PinkBoxSchema,
   [Resource.PolinkaStations]: PolinkaStationSchema,
   [Resource.RegularHours]: RegularHourSchema,
   [Resource.Roles]: RoleSchema,
   [Resource.SksOpeningHours]: SksOpeningHoursSchema,
   [Resource.SpecialHours]: SpecialHourSchema,
-  [Resource.StudentOrganizations]: StudentOrganizationSchema,
   [Resource.StudentOrganizationLinks]: StudentOrganizationLinkSchema,
   [Resource.StudentOrganizationTags]: StudentOrganizationTagSchema,
-  [Resource.Versions]: VersionsSchema,
+  [Resource.StudentOrganizations]: StudentOrganizationSchema,
   [Resource.VersionScreenshots]: VersionScreenshotsSchema,
+  [Resource.Versions]: VersionsSchema,
 } satisfies Record<Resource, AppSchema>;

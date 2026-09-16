@@ -2,10 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import {
   camelToSnakeCase,
+  capitalizeFirstLetter,
   encodeQueryParameters,
+  removeLeadingSlash,
   removeTrailingSlash,
   sanitizeId,
-  toTitleCase,
   tryParseNumber,
 } from "./transformations";
 
@@ -47,11 +48,12 @@ describe("encodeQueryParameters function", () => {
   });
 });
 
-describe("toTitleCase function", () => {
+describe("capitalizeFirstLetter function", () => {
   it("should convert text to title case", () => {
-    expect(toTitleCase("hello world")).toBe("Hello world");
-    expect(toTitleCase("JAVA SCRIPT")).toBe("Java script");
-    expect(toTitleCase("tYpEsCrIpT")).toBe("Typescript");
+    expect(capitalizeFirstLetter("hello world")).toBe("Hello world");
+    expect(capitalizeFirstLetter("JAVA SCRIPT")).toBe("JAVA SCRIPT");
+    expect(capitalizeFirstLetter("tYpEsCrIpT")).toBe("TYpEsCrIpT");
+    expect(capitalizeFirstLetter("")).toBe("");
   });
 });
 
@@ -80,5 +82,13 @@ describe("tryParseNumber function", () => {
     expect(tryParseNumber(null)).toBe(null);
     expect(tryParseNumber("")).toBe("");
     expect(tryParseNumber(Number.NaN)).toBe(Number.NaN);
+  });
+});
+
+describe("removeLeadingSlash function", () => {
+  it("should remove leading slashes from URLs", () => {
+    expect(removeLeadingSlash("/path")).toBe("path");
+    expect(removeLeadingSlash("path")).toBe("path");
+    expect(removeLeadingSlash("")).toBe("");
   });
 });

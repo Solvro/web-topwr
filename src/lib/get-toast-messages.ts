@@ -4,7 +4,7 @@ import { declineNoun } from "@/features/polish";
 import type { Declensions } from "@/features/polish/types";
 import { Resource } from "@/features/resources";
 
-import { toTitleCase } from "../utils";
+import { capitalizeFirstLetter } from "../utils";
 
 const getDefaultToastMessages = (declensions: Declensions) => ({
   read: {
@@ -22,7 +22,7 @@ const getDefaultToastMessages = (declensions: Declensions) => ({
   },
   toggleArchived: (isArchived: boolean) => ({
     loading: `Trwa ${isArchived ? "archiwizowanie" : "przywracanie"} ${declensions.genitive}...`,
-    success: `${toTitleCase(declensions.nominative)} została ${isArchived ? "zarchiwizowana" : "przywrócona"}.`,
+    success: `${capitalizeFirstLetter(declensions.nominative)} została ${isArchived ? "zarchiwizowana" : "przywrócona"}.`,
     error: `Nie udało się ${isArchived ? "zarchiwizować" : "przywrócić"} ${declensions.genitive}`,
   }),
   bump: {

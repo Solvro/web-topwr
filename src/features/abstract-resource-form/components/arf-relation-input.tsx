@@ -16,6 +16,7 @@ import {
   RelationType,
   getResourceMetadata,
   getResourcePk,
+  getResourcePkValue,
   getResourceQueryName,
   isOrderableResource,
 } from "@/features/resources";
@@ -32,7 +33,7 @@ import type {
   XToManyResource,
 } from "@/features/resources/types";
 import type { ResourceFormProps, ResourceRelations } from "@/types/components";
-import { sanitizeId, toTitleCase } from "@/utils";
+import { capitalizeFirstLetter, sanitizeId } from "@/utils";
 
 import { useArfRelation } from "../hooks/use-arf-relation";
 import { useArfRelationMutation } from "../hooks/use-arf-relation-mutation";
@@ -88,8 +89,13 @@ export function ArfRelationInput<
     plural: declineNoun(resourceRelation, { plural: true }),
   };
   const isEditing = isExistingItem(resource, defaultValues);
-  if (relationDefinition.type === RelationType.ManyToOne) {
-    const selectLabel = toTitleCase(relationDeclined.singular.nominative);
+  if (
+    relationDefinition.type === RelationType.ManyToOne ||
+    relationDefinition.type === RelationType.OneToOne
+  ) {
+    const selectLabel = capitalizeFirstLetter(
+      relationDeclined.singular.nominative,
+    );
     return (
       <FormField
         control={control}
@@ -114,12 +120,12 @@ export function ArfRelationInput<
       />
     );
   }
-  const inputLabel = toTitleCase(relationDeclined.plural.nominative);
+  const inputLabel = capitalizeFirstLetter(relationDeclined.plural.nominative);
   if (!isEditing) {
     return (
       <PendingInput
         label={inputLabel}
-        message={`${toTitleCase(relationDeclined.plural.accusative)} można dodać po utworzeniu ${declensions.genitive}.`}
+        message={`${capitalizeFirstLetter(relationDeclined.plural.accusative)} można dodać po utworzeniu ${declensions.genitive}.`}
       />
     );
   }
@@ -132,19 +138,22 @@ export function ArfRelationInput<
   const unsafeQueriedRelations = defaultValues[
     getResourceQueryName(resourceRelation as XToManyResource)
   ] as ResourceDataType<L>[] | undefined;
+
   if (unsafeQueriedRelations == null) {
-    // TODO: ensure this never happens
-    logger.error(
-      {
-        resource,
-        relation: resourceRelation,
-        defaultValues,
-      },
-      "Expected relation values to be present in defaultValues but they are missing.",
-      "This is a bug - please report to Konrad Guzek.",
+    logger.warn(
+      { resource, relation: resourceRelation },
+      "Relation values missing in parent payload. Falling back to manual filtering of allRelatedData.",
     );
   }
-  const queriedRelations = unsafeQueriedRelations ?? [];
+
+  const parentPkValue = getResourcePkValue(resource, defaultValues);
+  const fallbackRelations = Object.values(allRelatedData).filter(
+    (item) =>
+      sanitizeId(String(get(item, relationDefinition.foreignKey))) ===
+      parentPkValue,
+  ) as ResourceDataType<L>[];
+
+  const queriedRelations = unsafeQueriedRelations ?? fallbackRelations;
   const isRelationOrderable =
     isOrderableResource(resourceRelation) &&
     relationDefinition.type !== RelationType.ManyToMany;

@@ -291,6 +291,10 @@ export function getItemBadges<T extends Resource>(
         }
         break;
       }
+      case RelationType.OneToOne: {
+        // Implement if needed
+        break;
+      }
     }
   }
 

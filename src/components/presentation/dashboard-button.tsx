@@ -16,7 +16,7 @@ import type {
   RoutableResource,
 } from "@/features/resources/types";
 import { cn } from "@/lib/utils";
-import { toTitleCase } from "@/utils";
+import { capitalizeFirstLetter } from "@/utils";
 
 export async function DashboardButton({
   icon,
@@ -26,7 +26,6 @@ export async function DashboardButton({
   label: labelOverride,
   resource,
   longLabel = false,
-  preserveCase = false,
 }: VariantProps<typeof Button> & {
   className?: string;
 } & (
@@ -36,7 +35,6 @@ export async function DashboardButton({
         icon?: LucideIcon;
         resource: RoutableResource & DisplayableResource;
         longLabel?: boolean;
-        preserveCase?: boolean;
       }
     | {
         href: Route & RoutePermission;
@@ -44,7 +42,6 @@ export async function DashboardButton({
         icon: LucideIcon;
         resource?: never;
         longLabel?: never;
-        preserveCase?: never;
       }
   )) {
   const [route, label, Icon] =
@@ -100,7 +97,7 @@ export async function DashboardButton({
               : undefined,
           }}
         >
-          {preserveCase ? label : toTitleCase(label)}
+          {capitalizeFirstLetter(label)}
         </h2>
       </Link>
     </Button>

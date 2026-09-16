@@ -21,7 +21,6 @@ export default function MobileConfigPage(_props: ResourcePageProps) {
           firstWordOnly: false,
         })}
         variant="outline"
-        preserveCase
       />
     </AbstractResourceGroup>
   );
