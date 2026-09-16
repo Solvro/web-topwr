@@ -19,6 +19,15 @@ export interface LogInResponse {
   refreshExpiresInMs: number;
 }
 
+/** As returned from POST /auth/refresh */
+export interface RefreshTokenResponse {
+  newAccessToken: {
+    type: "bearer";
+    accessToken: string;
+    accessExpiresInMs: number;
+  };
+}
+
 /** As returned from GET /files/{id} */
 export interface FileEntry extends DatedResource {
   id: string;

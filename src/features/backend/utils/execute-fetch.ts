@@ -10,6 +10,13 @@ export const executeFetch = async <T, R extends Resource>(
   endpoint: string,
   options: FetchRequestOptions<R>,
 ): Promise<NonNullable<T>> => {
+  if (typeof window !== "undefined" && options.accessTokenOverride == null) {
+    // Lazy import client-only wrapper to avoid circular dependency
+    // and prevent pulling client-only deps into server bundles
+    const { handleAuthState } = await import("./handle-auth-state.client");
+    await handleAuthState();
+  }
+
   const request = createRequest<R>(endpoint, options);
   let response;
   try {
