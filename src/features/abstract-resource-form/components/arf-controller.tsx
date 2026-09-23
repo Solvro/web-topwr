@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
+import type { Route } from "next";
 import { get, useForm } from "react-hook-form";
 import type { DefaultValues, Resolver } from "react-hook-form";
 import { toast } from "sonner";
@@ -9,13 +10,20 @@ import { toast } from "sonner";
 import { ReturnButton } from "@/components/presentation/return-button";
 import { Form } from "@/components/ui/form";
 import {
-  isAdmin,
-  isSolvroAdmin,
-  useAuthentication,
+  canApproveDrafts,
+  canManageAllDrafts,
+  canSuggestNewResource,
+  canSuggestResourceEdit,
+  mustUseDrafts,
+  useCurrentUser,
 } from "@/features/authentication";
-import { fetchMutation, useMutationWrapper } from "@/features/backend";
+import {
+  fetchMutation,
+  getErrorMessage,
+  useMutationWrapper,
+} from "@/features/backend";
 import type { ModifyResourceResponse } from "@/features/backend/types";
-import { GrammaticalCase, declineNoun } from "@/features/polish";
+import { declineNoun } from "@/features/polish";
 import type { Resource } from "@/features/resources";
 import {
   DeleteButtonWithDialog,
@@ -33,8 +41,13 @@ import type {
   ResourcePk,
   RoutableResource,
 } from "@/features/resources/types";
-import { ApproveButton } from "@/features/review";
-import type { DraftableResource } from "@/features/review";
+import {
+  ApproveButton,
+  DraftNotice,
+  getDraftEditRoute,
+  getDraftListRoute,
+} from "@/features/review";
+import type { DraftNoticeVariant, DraftableResource } from "@/features/review";
 import { useRouter } from "@/hooks/use-router";
 import { getToastMessages } from "@/lib/get-toast-messages";
 import { cn } from "@/lib/utils";
@@ -68,17 +81,17 @@ export function ArfController<T extends Resource>({
   pivotResources,
   className,
   draft = false,
+  existingDraftHref,
 }: ResourceFormProps<T> & {
   defaultValues: ResourceDefaultValues<T>;
   existingImages: ExistingImages<T>;
   relatedResources: ResourceRelations<T>;
   pivotResources: ResourcePivotRelationData<T>;
-  draft?: boolean;
 }) {
   const schema = RESOURCE_SCHEMAS[resource];
   const router = useRouter();
   const relationContext = useArfRelation();
-  const { user } = useAuthentication();
+  const user = useCurrentUser();
   const form = useForm<ResourceFormValues<T>>({
     // Maybe try extracting the id from the defaultValues and passing it as an editedResourceId prop
     resolver: zodResolver(schema) as Resolver<ResourceFormValues<T>>,
@@ -116,20 +129,58 @@ export function ArfController<T extends Resource>({
     ...restOptions
   } = getMutationConfig(resource, defaultValues, relationContext);
 
-  const isNonAdmin = !isSolvroAdmin(user) && !isAdmin(user);
-  const shouldCreateDraftFromExisting = isEditing && !draft && isNonAdmin;
+  const metadata = getResourceMetadata(resource);
+  const declensions = declineNoun(resource);
+
+  const isDraftMode =
+    draft || (mustUseDrafts(user) && metadata.apiDraftPath != null);
+  const shouldCreateDraftFromExisting = isDraftMode && isEditing && !draft;
+  const isSuggestingNew = isDraftMode && !isEditing && !draft;
+  const originalId = get(defaultValues, "originalId") as
+    | number
+    | null
+    | undefined;
+  const draftListRoute = getDraftListRoute(canManageAllDrafts(user));
+
+  const noticeVariant: DraftNoticeVariant | null = draft
+    ? "editing-draft"
+    : shouldCreateDraftFromExisting
+      ? canSuggestResourceEdit(
+          user,
+          resource,
+          getResourcePkValue(resource, defaultValues),
+        )
+        ? "suggesting-edit"
+        : "forbidden"
+      : isSuggestingNew
+        ? canSuggestNewResource(user, resource)
+          ? "suggesting-new"
+          : "forbidden"
+        : null;
+  const canSubmit = noticeVariant !== "forbidden";
 
   const mutationKey = shouldCreateDraftFromExisting
     ? `create__${resource}__draft`
     : configMutationKey;
   const endpoint = shouldCreateDraftFromExisting ? "/" : configEndpoint;
   const method = shouldCreateDraftFromExisting ? "POST" : configMethod;
-  const submitLabel = shouldCreateDraftFromExisting
-    ? "Zaproponuj zmiany"
-    : configSubmitLabel;
-
-  const metadata = getResourceMetadata(resource);
-  const declensions = declineNoun(resource);
+  const submitLabel = draft
+    ? "Zapisz draft"
+    : shouldCreateDraftFromExisting
+      ? "Zaproponuj zmiany"
+      : isSuggestingNew
+        ? `Zaproponuj ${declensions.accusative}`
+        : `${configSubmitLabel} ${declensions.accusative}`;
+  const toastMessages = isDraftMode
+    ? {
+        loading: "Trwa zapisywanie draftu...",
+        success: shouldCreateDraftFromExisting
+          ? "Propozycja zmian została zapisana jako draft!"
+          : "Pomyślnie zapisano draft!",
+        error: (error: unknown) =>
+          getErrorMessage(error, "Wystąpił błąd podczas zapisywania draftu."),
+      }
+    : getToastMessages.resource(resource).modify;
 
   const { mutateAsync, isPending } = useMutationWrapper<
     ModifyResourceResponse<T>,
@@ -140,7 +191,7 @@ export function ArfController<T extends Resource>({
         ? { ...body, originalId: getResourcePkValue(resource, defaultValues) }
         : body,
       resource,
-      draft: draft || isNonAdmin,
+      draft: isDraftMode,
       method,
       ...restOptions,
     });
@@ -160,10 +211,9 @@ export function ArfController<T extends Resource>({
       isEditing &&
       newPrimaryKey !== getResourcePkValue(resource, defaultValues);
     if (relationContext == null && wasCreated) {
-      const isDraftTarget = draft || isNonAdmin;
-      if (isDraftTarget && metadata.apiDraftPath != null) {
+      if (isDraftMode) {
         router.push(
-          `/drafts/${resource as DraftableResource}/edit/${newPrimaryKey}`,
+          getDraftEditRoute(resource as DraftableResource, newPrimaryKey),
         );
       } else {
         router.push(
@@ -191,10 +241,7 @@ export function ArfController<T extends Resource>({
   });
 
   const onSubmit = form.handleSubmit((values) =>
-    toast.promise(
-      mutateAsync(values),
-      getToastMessages.resource(resource).modify,
-    ),
+    toast.promise(mutateAsync(values), toastMessages),
   );
 
   return (
@@ -204,6 +251,18 @@ export function ArfController<T extends Resource>({
     >
       <Form {...form}>
         <form className="flex grow flex-col gap-4" onSubmit={onSubmit}>
+          {noticeVariant == null || isEmbedded ? null : (
+            <DraftNotice
+              resource={resource}
+              variant={noticeVariant}
+              originalHref={
+                draft && originalId != null
+                  ? (`/${resource as EditableResource}/edit/${String(originalId)}` as Route)
+                  : undefined
+              }
+              existingDraftHref={existingDraftHref}
+            />
+          )}
           <div className="grow basis-0 overflow-y-auto">
             <div
               className={cn(
@@ -218,7 +277,7 @@ export function ArfController<T extends Resource>({
                 existingImages={existingImages}
                 relatedResources={relatedResources}
                 pivotResources={pivotResources}
-                isDraft={draft || isNonAdmin}
+                isDraft={isDraftMode}
               />
             </div>
           </div>
@@ -232,20 +291,19 @@ export function ArfController<T extends Resource>({
           >
             <ArfConfirmationModal
               loading={isPending}
-              disabled={!isFormStateDirty(form.formState)}
+              disabled={!canSubmit || !isFormStateDirty(form.formState)}
               form={form}
               onSubmit={onSubmit}
               confirmationMessage={confirmationMessage}
             >
-              {draft
-                ? `Zapisz ${declineNoun("draft", { case: GrammaticalCase.Accusative })}`
-                : `${submitLabel} ${declensions.accusative}`}
+              {submitLabel}
               <SubmitIconComponent />
             </ArfConfirmationModal>
-            {draft && isSolvroAdmin(user) ? (
+            {draft && canApproveDrafts(user) ? (
               <ApproveButton
                 id={get(defaultValues, getResourcePk(resource)) as ResourcePk}
                 resource={resource}
+                disabled={isFormStateDirty(form.formState)}
                 showLabel
               />
             ) : null}
@@ -274,7 +332,11 @@ export function ArfController<T extends Resource>({
                   : {
                       onDeleteSuccess: () => {
                         // again, assume that only routable resources use non-embedded forms
-                        router.push(`/${resource as RoutableResource}`);
+                        router.push(
+                          draft
+                            ? draftListRoute
+                            : `/${resource as RoutableResource}`,
+                        );
                         return false;
                       },
                     })}
@@ -304,12 +366,22 @@ export function ArfController<T extends Resource>({
                 {/* It would be too complex to relate `isEmbedded` to `resource` being a `RoutableResource`,
                     so I'm going to assume the codebase won't use `AbstractResourceForm` anywhere except for
                     routable resources with `isEmbedded` set to `false` and otherwise with it set to `true`. */}
-                <ReturnButton
-                  className="lg:mr-auto"
-                  resource={resource as RoutableResource}
-                  returnLabel="Wróć do"
-                  icon={ChevronLeft}
-                />
+                {draft ? (
+                  <ReturnButton
+                    className="lg:mr-auto"
+                    href={draftListRoute}
+                    target="draftów"
+                    returnLabel="Wróć do"
+                    icon={ChevronLeft}
+                  />
+                ) : (
+                  <ReturnButton
+                    className="lg:mr-auto"
+                    resource={resource as RoutableResource}
+                    returnLabel="Wróć do"
+                    icon={ChevronLeft}
+                  />
+                )}
               </>
             )}
           </footer>

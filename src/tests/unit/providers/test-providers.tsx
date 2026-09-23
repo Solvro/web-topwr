@@ -5,6 +5,8 @@ import type { Store } from "jotai/vanilla/store";
 
 import { InternalProviders } from "@/components/providers/internal-providers";
 import { Toaster } from "@/components/ui/sonner";
+import { CurrentUserProvider } from "@/features/authentication";
+import { MOCK_SOLVRO_ADMIN } from "@/tests/shared";
 import type { WrapperProps } from "@/types/components";
 
 const queryClient = new QueryClient({
@@ -29,8 +31,10 @@ export function TestProviders({
 }) {
   return (
     <InternalProviders jotaiStore={store} queryClient={queryClient}>
-      {children}
-      {renderToaster ? <Toaster /> : null}
+      <CurrentUserProvider user={MOCK_SOLVRO_ADMIN}>
+        {children}
+        {renderToaster ? <Toaster /> : null}
+      </CurrentUserProvider>
     </InternalProviders>
   );
 }

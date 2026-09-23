@@ -4,12 +4,16 @@ import { Resource } from "@/features/resources";
 import type { RoutableResource } from "@/features/resources/types";
 import type { RecordIntersection } from "@/types/helpers";
 
-import { ANY_AUTHENTICATED_ROLE, SOLVRO_ADMINS_ONLY } from "./permissions";
+import {
+  ADMINS_ONLY,
+  ANY_AUTHENTICATED_ROLE,
+  SOLVRO_ADMINS_ONLY,
+} from "./permissions";
 
 export const ROUTE_PERMISSIONS = {
   [`/${Resource.Dashboard}`]: ANY_AUTHENTICATED_ROLE,
   "/drafts": ANY_AUTHENTICATED_ROLE,
-  "/review": SOLVRO_ADMINS_ONLY,
+  "/review": ADMINS_ONLY,
   [`/${Resource.AboutUs}`]: SOLVRO_ADMINS_ONLY,
   [`/${Resource.AboutUsLinks}`]: SOLVRO_ADMINS_ONLY,
   [`/${Resource.AcademicSemesters}`]: SOLVRO_ADMINS_ONLY,

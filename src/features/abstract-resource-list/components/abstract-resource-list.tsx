@@ -4,11 +4,7 @@ import { Counter } from "@/components/core/counter";
 import { ReturnButton } from "@/components/presentation/return-button";
 import { fetchRelatedResources } from "@/features/abstract-resource-form";
 import type { ResourceDeclinableField } from "@/features/polish/types";
-import {
-  CreateButton,
-  Resource,
-  isOrderableResource,
-} from "@/features/resources";
+import { Resource, isOrderableResource } from "@/features/resources";
 import type {
   CreatableResource,
   EditableResource,
@@ -24,6 +20,7 @@ import type { SortFiltersFormValuesNarrowed } from "@/features/sort-filters/type
 import type { SearchParameters } from "@/types/components";
 
 import { fetchPaginatedResources } from "../api/fetch-paginated-resources";
+import { ArlCreateButton } from "./arl-create-button";
 import { InfiniteScroller } from "./infinite-scroller";
 
 export async function AbstractResourceList<
@@ -88,7 +85,7 @@ export async function AbstractResourceList<
         />
       </div>
       <footer className="mt-2 flex w-full flex-col items-center gap-2 sm:flex-row-reverse sm:justify-between">
-        <CreateButton resource={resource} />
+        <ArlCreateButton resource={resource} />
         {parentResource == null ? (
           <ReturnButton resource={Resource.Dashboard} icon={ChevronsLeft} />
         ) : (

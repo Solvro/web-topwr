@@ -70,15 +70,30 @@ export function DeleteButtonWithDialog({
     return response;
   });
 
+  const declensions = declineNoun(resource);
+  const label = isDraft ? "Usuń draft" : `Usuń ${declensions.accusative}`;
+  const quotedName = itemName == null ? "" : ` ${quoteText(itemName)}`;
+  const subject = isDraft
+    ? `draft ${declensions.genitive}${quotedName}`
+    : itemName == null
+      ? declineNoun(resource, {
+          case: GrammaticalCase.Accusative,
+          prependDeterminer: "this",
+        })
+      : `${declensions.accusative}${quotedName}`;
+
   function handleDelete() {
     toast.promise(
       mutateAsync(sanitizeId(id)),
-      getToastMessages.resource(resource).delete,
+      isDraft
+        ? {
+            loading: "Trwa usuwanie draftu...",
+            success: "Pomyślnie usunięto draft!",
+            error: "Wystąpił błąd podczas usuwania draftu",
+          }
+        : getToastMessages.resource(resource).delete,
     );
   }
-
-  const declensions = declineNoun(resource);
-  const label = `Usuń ${declensions.accusative}`;
 
   return (
     <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
@@ -97,16 +112,7 @@ export function DeleteButtonWithDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="text-balance">
-            Czy na pewno chcesz usunąć{" "}
-            {
-              itemName == null
-                ? declineNoun(resource, {
-                    case: GrammaticalCase.Accusative,
-                    prependDeterminer: "this",
-                  }) // e.g. tę organizację studencką
-                : `${declensions.accusative} ${quoteText(itemName)}` // e.g. organizację studencką „KN Solvro”
-            }
-            ?
+            Czy na pewno chcesz usunąć {subject}?
           </AlertDialogTitle>
           <AlertDialogDescription>
             Ta operacja jest nieodwracalna.

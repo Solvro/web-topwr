@@ -1,28 +1,22 @@
 import { SquarePen } from "lucide-react";
-import type { Route } from "next";
 
 import { Link } from "@/components/core/link";
 import { Button } from "@/components/ui/button";
-import { getResourceMetadata } from "@/features/resources";
-import type { EditableResource, ResourcePk } from "@/features/resources/types";
-import { sanitizeId } from "@/utils";
+import type { ResourcePk } from "@/features/resources/types";
+
+import type { DraftableResource } from "../types/internal";
+import { getDraftEditRoute } from "../utils/get-draft-route";
 
 export function DraftEditButton({
   resource,
   id,
 }: {
-  resource: EditableResource;
+  resource: DraftableResource;
   id: ResourcePk;
 }) {
-  const metadata = getResourceMetadata(resource);
-
-  if (metadata.apiDraftPath == null) {
-    return null;
-  }
-
   return (
-    <Button asChild variant="ghost" size="icon" tooltip="Edytuj">
-      <Link href={`/drafts/${resource}/edit/${sanitizeId(id)}` as Route}>
+    <Button asChild variant="icon" size="icon" tooltip="Edytuj draft">
+      <Link href={getDraftEditRoute(resource, id)}>
         <SquarePen />
       </Link>
     </Button>

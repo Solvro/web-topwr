@@ -19,7 +19,10 @@ export type WrapperProps = Readonly<{
 export interface ResourceFormProps<T extends Resource> {
   resource: T;
   className?: string;
+  /** Whether the form edits a draft of the resource rather than the resource itself. */
   draft?: boolean;
+  /** Link to an existing draft of the edited resource instance, created by the current user. */
+  existingDraftHref?: Route;
 }
 
 export type SearchParameters = Record<string, string | undefined>;

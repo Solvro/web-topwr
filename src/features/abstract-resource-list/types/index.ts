@@ -1,2 +1,2 @@
 export type { ListItem } from "./internal";
-export type { ResourceBadgeDefinitions } from "./badges";
+export type { ItemBadge, ResourceBadgeDefinitions } from "./badges";
