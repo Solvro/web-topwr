@@ -9,12 +9,15 @@ import { PhoneModel } from "./phone-model";
 
 export function Hero() {
   return (
-    <section className="w-full py-12 md:py-6">
-      <div className="container mx-auto grid items-center gap-12 px-4 md:px-6 lg:grid-cols-5">
-        <div className="flex flex-col gap-8 lg:col-span-2">
-          <div className="space-y-6">
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-5xl xl:text-6xl">
-              Cały kampus PWr w&nbsp;kieszeni.
+    <section className="h-[calc(100dvh-(--spacing(17)))] min-h-152 w-full">
+      <div className="container mx-auto grid h-full items-center gap-6 px-4 py-6 max-lg:grid-rows-[auto_minmax(0,1fr)] md:px-6 lg:grid-cols-5 lg:gap-12">
+        <div className="flex flex-col gap-6 max-lg:items-center max-lg:text-center lg:col-span-2 lg:gap-8">
+          <div className="space-y-4 lg:space-y-6">
+            <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-6xl xl:text-7xl">
+              Cały kampus PWr{" "}
+              <span className="from-gradient-1 to-gradient-2 bg-linear-to-r bg-clip-text text-transparent">
+                w&nbsp;kieszeni.
+              </span>
             </h1>
             <p className="text-muted-foreground md:text-xl">
               Mapy budynków, wydarzenia i&nbsp;przewodnik po&nbsp;kampusie —
@@ -22,7 +25,7 @@ export function Hero() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-4 sm:flex-row">
+          <div className="flex gap-3 max-sm:w-full max-sm:flex-col sm:gap-4">
             <Button size="lg" className="rounded-full py-6">
               <Download className="size-5" />
               Pobierz aplikację
@@ -42,13 +45,13 @@ export function Hero() {
           <HeroRating />
         </div>
 
-        <div className="relative mx-auto flex aspect-3/4 w-full max-w-sm items-center justify-center lg:col-span-3 lg:aspect-square lg:max-w-none">
+        <div className="relative flex size-full max-h-192 items-center justify-center lg:col-span-3">
           <Image
             src="/phone-bg.svg"
             alt=""
             fill
             priority
-            className="pointer-events-none -z-10 object-contain drop-shadow-[0.75rem_1rem_0.08rem_rgb(0_0_0/0.25)]"
+            className="pointer-events-none object-contain drop-shadow-[0.75rem_1rem_0.08rem_rgb(0_0_0/0.25)]"
           />
           <PhoneModel className="drop-shadow-2xl drop-shadow-black/50" />
         </div>

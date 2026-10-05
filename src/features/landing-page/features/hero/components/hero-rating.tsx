@@ -27,7 +27,7 @@ export function HeroRating() {
 
   /* eslint-disable react/no-array-index-key */
   return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm sm:text-base">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm max-lg:justify-center sm:text-base">
       <div className="flex items-center gap-1">
         {Array.from({ length: STAR_COUNT }).map((_, index) => {
           if (index < fullStars) {

@@ -7,10 +7,14 @@ import * as THREE from "three";
 
 import { cn } from "@/lib/utils";
 
+import type { CursorOffset } from "../hooks/use-cursor-offset";
+import { useCursorOffset } from "../hooks/use-cursor-offset";
+
 const PHONE_MODEL_FILENAME = "/phone.glb";
 const PREVIEW_VIDEO_FILENAME = "/topwr-preview.mp4";
 const AMBIENT_LIGHT_INTENSITY = 1;
-const FIT_MARGIN = 1.33;
+const FIT_MARGIN = 1.415;
+const DEVICE_PIXEL_RATIO = 2;
 const ANIMATION_CONFIG = {
   speed: 6,
   floatFrequency: 1,
@@ -25,20 +29,26 @@ const ANIMATION_CONFIG = {
     rotationY: -0.15,
     scale: 1.2,
   },
+  cursorTilt: {
+    rotationX: 0.18,
+    rotationY: 0.4,
+  },
 } as const;
 
 /**
- * Phone hover animation.
- * Damps transform properties towards target values based on hover state.
+ * Phone hover and cursor-follow animation.
+ * Damps transform properties towards target values based on hover state and cursor position.
  *
  * @param group - The Three.js Group containing the phone and screen meshes
  * @param hovered - Whether the user is currently hovering over the 3D phone model
+ * @param cursorOffset - Where the cursor is relative to the screen center; the phone tilts towards it
  * @param elapsedTime - Total elapsed clock time in seconds
  * @param delta - Delta time in seconds since the previous frame
  */
 function updatePhoneTransformOnFrame(
   group: THREE.Group,
   hovered: boolean,
+  cursorOffset: CursorOffset,
   elapsedTime: number,
   delta: number,
 ): void {
@@ -49,7 +59,7 @@ function updatePhoneTransformOnFrame(
       ANIMATION_CONFIG.floatAmplitude;
 
   const target = hovered ? ANIMATION_CONFIG.hover : ANIMATION_CONFIG.rest;
-  const { speed } = ANIMATION_CONFIG;
+  const { speed, cursorTilt } = ANIMATION_CONFIG;
 
   group.position.y = THREE.MathUtils.damp(
     group.position.y,
@@ -59,13 +69,13 @@ function updatePhoneTransformOnFrame(
   );
   group.rotation.x = THREE.MathUtils.damp(
     group.rotation.x,
-    target.rotationX,
+    target.rotationX + cursorOffset.y * cursorTilt.rotationX,
     speed,
     delta,
   );
   group.rotation.y = THREE.MathUtils.damp(
     group.rotation.y,
-    target.rotationY,
+    target.rotationY + cursorOffset.x * cursorTilt.rotationY,
     speed,
     delta,
   );
@@ -104,6 +114,7 @@ function Model({
   });
   const viewport = useThree((state) => state.viewport);
   const groupRef = useRef<THREE.Group>(null);
+  const cursorOffsetRef = useCursorOffset();
 
   const { center, size } = getGeometryBounds(nodes.phone.geometry);
   const fitScale =
@@ -114,6 +125,7 @@ function Model({
       updatePhoneTransformOnFrame(
         groupRef.current,
         hovered,
+        cursorOffsetRef.current,
         state.clock.elapsedTime,
         delta,
       );
@@ -159,19 +171,22 @@ export function PhoneModel({ className }: { className?: string }) {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <Canvas
-      camera={{ position: [0, 0, 5], fov: 45 }}
-      className={cn(
-        "size-full max-h-full max-w-full overflow-hidden",
-        hovered ? "cursor-pointer" : "cursor-default",
-        className,
-      )}
-    >
-      <Suspense fallback={null}>
-        <ambientLight intensity={AMBIENT_LIGHT_INTENSITY} />
-        <Environment preset="city" />
-        <Model hovered={hovered} setHovered={setHovered} />
-      </Suspense>
-    </Canvas>
+    <div className="absolute inset-x-0 -inset-y-[8%]">
+      <Canvas
+        camera={{ position: [0, 0, 5], fov: 45 }}
+        dpr={DEVICE_PIXEL_RATIO}
+        className={cn(
+          "size-full max-h-full max-w-full overflow-hidden",
+          hovered ? "cursor-pointer" : "cursor-default",
+          className,
+        )}
+      >
+        <Suspense fallback={null}>
+          <ambientLight intensity={AMBIENT_LIGHT_INTENSITY} />
+          <Environment preset="city" />
+          <Model hovered={hovered} setHovered={setHovered} />
+        </Suspense>
+      </Canvas>
+    </div>
   );
 }
