@@ -1,4 +1,5 @@
 import { ArrowUpRightIcon, Download } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -41,8 +42,15 @@ export function Hero() {
           <HeroRating />
         </div>
 
-        <div className="mx-auto flex aspect-3/4 w-full max-w-sm items-center justify-center overflow-hidden lg:col-span-3 lg:aspect-square lg:max-w-none">
-          <PhoneModel />
+        <div className="relative mx-auto flex aspect-3/4 w-full max-w-sm items-center justify-center lg:col-span-3 lg:aspect-square lg:max-w-none">
+          <Image
+            src="/phone-bg.svg"
+            alt=""
+            fill
+            priority
+            className="pointer-events-none -z-10 object-contain drop-shadow-[0.75rem_1rem_0.08rem_rgb(0_0_0/0.25)]"
+          />
+          <PhoneModel className="drop-shadow-2xl drop-shadow-black/50" />
         </div>
       </div>
     </section>

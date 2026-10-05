@@ -12,9 +12,9 @@ const PREVIEW_VIDEO_FILENAME = "/topwr-preview.mp4";
 const ANIMATION_CONFIG = {
   speed: 6,
   floatFrequency: 1,
-  floatAmplitude: 0.12,
+  floatAmplitude: 0.05,
   rest: {
-    rotationX: -0.07,
+    rotationX: -0.02,
     rotationY: -0.4,
     scale: 1,
   },
