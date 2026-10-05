@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { MOBILE_REPOSITORY_URL } from "@/config/constants";
 import { GITHUB_LOGOS } from "@/data/github-logos";
 import { fetchResources } from "@/features/backend";
+import { SectionHeader } from "@/features/landing-page/components";
 import { Resource } from "@/features/resources";
 
 import { AnimatedContributorList } from "./animated-contributor-list";
@@ -15,10 +16,10 @@ export async function Contributors() {
   return (
     <article className="flex w-full flex-col items-center justify-center py-20">
       <div className="container flex max-w-4xl flex-col items-center px-4 text-center md:px-6">
-        <h2 className="mb-4 text-4xl font-medium sm:text-5xl">Nasi twórcy</h2>
-        <p className="text-muted-foreground mb-12 max-w-2xl text-lg">
-          Studenci Politechniki Wrocławskiej, którzy budują to dla ciebie.
-        </p>
+        <SectionHeader
+          title="Nasi twórcy"
+          description="Studenci Politechniki Wrocławskiej, którzy budują to dla ciebie."
+        />
 
         <AnimatedContributorList
           contributors={contributors}
