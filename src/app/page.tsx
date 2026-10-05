@@ -1,10 +1,17 @@
-import { AppFeatures, Contributors, FAQ, Hero } from "@/features/landing-page";
+import {
+  AppFeatures,
+  Changelog,
+  Contributors,
+  FAQ,
+  Hero,
+} from "@/features/landing-page";
 
 export default function LandingPage() {
   return (
     <div className="flex min-h-dvh flex-col">
       <Hero />
       <AppFeatures />
+      <Changelog />
       <Contributors />
       <FAQ />
     </div>
