@@ -1,7 +1,7 @@
 "use client";
 
-import { Stage, useGLTF, useVideoTexture } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Environment, useGLTF, useVideoTexture } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 
 const PHONE_MODEL_FILENAME = "/phone.glb";
 const PREVIEW_VIDEO_FILENAME = "/topwr-preview.mp4";
+const AMBIENT_LIGHT_INTENSITY = 1;
+const FIT_MARGIN = 1.33;
 const ANIMATION_CONFIG = {
   speed: 6,
   floatFrequency: 1,
@@ -27,7 +29,7 @@ const ANIMATION_CONFIG = {
 
 /**
  * Phone hover animation.
- * Interpolates transform properties towards target values based on hover state
+ * Damps transform properties towards target values based on hover state.
  *
  * @param group - The Three.js Group containing the phone and screen meshes
  * @param hovered - Whether the user is currently hovering over the 3D phone model
@@ -47,22 +49,38 @@ function updatePhoneTransformOnFrame(
       ANIMATION_CONFIG.floatAmplitude;
 
   const target = hovered ? ANIMATION_CONFIG.hover : ANIMATION_CONFIG.rest;
-  const alpha = delta * ANIMATION_CONFIG.speed;
+  const { speed } = ANIMATION_CONFIG;
 
-  group.position.y = THREE.MathUtils.lerp(group.position.y, targetY, alpha);
-  group.rotation.x = THREE.MathUtils.lerp(
+  group.position.y = THREE.MathUtils.damp(
+    group.position.y,
+    targetY,
+    speed,
+    delta,
+  );
+  group.rotation.x = THREE.MathUtils.damp(
     group.rotation.x,
     target.rotationX,
-    alpha,
+    speed,
+    delta,
   );
-  group.rotation.y = THREE.MathUtils.lerp(
+  group.rotation.y = THREE.MathUtils.damp(
     group.rotation.y,
     target.rotationY,
-    alpha,
+    speed,
+    delta,
   );
   group.scale.setScalar(
-    THREE.MathUtils.lerp(group.scale.x, target.scale, alpha),
+    THREE.MathUtils.damp(group.scale.x, target.scale, speed, delta),
   );
+}
+
+function getGeometryBounds(geometry: THREE.BufferGeometry) {
+  geometry.computeBoundingBox();
+  const boundingBox = geometry.boundingBox ?? new THREE.Box3();
+  return {
+    center: boundingBox.getCenter(new THREE.Vector3()),
+    size: boundingBox.getSize(new THREE.Vector3()),
+  };
 }
 
 /* eslint-disable react/no-unknown-property */
@@ -84,7 +102,12 @@ function Model({
     muted: true,
     start: true,
   });
+  const viewport = useThree((state) => state.viewport);
   const groupRef = useRef<THREE.Group>(null);
+
+  const { center, size } = getGeometryBounds(nodes.phone.geometry);
+  const fitScale =
+    Math.min(viewport.width / size.x, viewport.height / size.y) / FIT_MARGIN;
 
   useFrame((state, delta) => {
     if (groupRef.current !== null) {
@@ -98,21 +121,34 @@ function Model({
   });
 
   return (
-    <group
-      ref={groupRef}
-      onPointerEnter={() => {
-        setHovered(true);
-      }}
-      onPointerLeave={() => {
-        setHovered(false);
-      }}
-    >
-      <mesh geometry={nodes.phone.geometry}>
-        <meshStandardMaterial color="#1c1c1e" roughness={0.3} metalness={0.7} />
-      </mesh>
-      <mesh geometry={nodes.screen.geometry}>
-        <meshBasicMaterial map={videoTexture} toneMapped={false} />
-      </mesh>
+    <group scale={fitScale}>
+      <group
+        ref={groupRef}
+        rotation={[
+          ANIMATION_CONFIG.rest.rotationX,
+          ANIMATION_CONFIG.rest.rotationY,
+          0,
+        ]}
+        onPointerEnter={() => {
+          setHovered(true);
+        }}
+        onPointerLeave={() => {
+          setHovered(false);
+        }}
+      >
+        <group position={[-center.x, -center.y, -center.z]}>
+          <mesh geometry={nodes.phone.geometry}>
+            <meshStandardMaterial
+              color="#1c1c1e"
+              roughness={0.3}
+              metalness={0.7}
+            />
+          </mesh>
+          <mesh geometry={nodes.screen.geometry}>
+            <meshBasicMaterial map={videoTexture} toneMapped={false} />
+          </mesh>
+        </group>
+      </group>
     </group>
   );
 }
@@ -132,14 +168,9 @@ export function PhoneModel({ className }: { className?: string }) {
       )}
     >
       <Suspense fallback={null}>
-        <Stage
-          environment="city"
-          intensity={0.5}
-          shadows={false}
-          adjustCamera={1.2}
-        >
-          <Model hovered={hovered} setHovered={setHovered} />
-        </Stage>
+        <ambientLight intensity={AMBIENT_LIGHT_INTENSITY} />
+        <Environment preset="city" />
+        <Model hovered={hovered} setHovered={setHovered} />
       </Suspense>
     </Canvas>
   );
