@@ -89,7 +89,8 @@ export function Navbar() {
       <div
         className={cn(
           "w-full",
-          isLandingPage && "bg-background/80 absolute backdrop-blur-md",
+          isLandingPage &&
+            "bg-background/65 border-border absolute border-b backdrop-blur-md",
         )}
       >
         <div className="container mx-auto flex flex-row items-center justify-between">

@@ -14,7 +14,7 @@ export async function Contributors() {
   const contributors = await fetchResources(Resource.Contributors, true);
 
   return (
-    <article className="flex w-full flex-col items-center justify-center py-20">
+    <article className="border-border flex w-full flex-col items-center justify-center border-b py-20 md:py-48">
       <div className="container flex max-w-4xl flex-col items-center px-4 text-center md:px-6">
         <SectionHeader
           title="Nasi twórcy"
