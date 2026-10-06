@@ -4,6 +4,7 @@ import {
   Contributors,
   FAQ,
   Hero,
+  LandingFooter,
 } from "@/features/landing-page";
 
 export default function LandingPage() {
@@ -14,6 +15,7 @@ export default function LandingPage() {
       <Changelog />
       <Contributors />
       <FAQ />
+      <LandingFooter />
     </div>
   );
 }
