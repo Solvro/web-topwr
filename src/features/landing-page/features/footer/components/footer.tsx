@@ -68,7 +68,7 @@ function MobileAppStoreButton({
 
 function DownloadBannerCta() {
   return (
-    <section className="border-border bg-background relative overflow-hidden rounded-3xl border p-8 shadow-xl md:p-12">
+    <section className="border-border bg-background relative overflow-hidden rounded-3xl border p-8 shadow-2xl md:p-14">
       <Image
         src={CampusPhoto}
         alt=""
@@ -80,13 +80,13 @@ function DownloadBannerCta() {
       <div className="from-background via-background/90 to-background/25 absolute inset-0 bg-linear-to-br" />
 
       <div className="relative">
-        <h2 className="text-foreground mb-4 max-w-md text-4xl leading-tight font-medium sm:text-5xl">
+        <h2 className="text-foreground mb-4 max-w-md text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
           Cały kampus PWr w Twojej kieszeni.
         </h2>
         <p className="text-muted-foreground mb-6 max-w-sm text-lg">
           Pobierz ToPWR za darmo - bez reklam, bez opłat, bez logowania.
         </p>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3">
           {MOBILE_APP_STORE_LINKS.map((mobileAppStore) => (
             <MobileAppStoreButton
               key={mobileAppStore.name}
@@ -114,16 +114,19 @@ function FooterBrand() {
 function FooterSocialLinks() {
   return (
     <nav aria-label="Media społecznościowe">
-      <ul className="flex items-center gap-4">
+      <ul className="flex items-center gap-2">
         {SOCIAL_LINKS.map(({ label, href, logo }) => (
           <li key={label}>
-            <FooterLink
-              href={href}
-              aria-label={label}
-              className="block opacity-70 transition-opacity hover:opacity-100"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              asChild
             >
-              <Image src={logo} alt="" className="size-5" />
-            </FooterLink>
+              <FooterLink href={href} aria-label={label}>
+                <Image src={logo} alt="" className="size-4" />
+              </FooterLink>
+            </Button>
           </li>
         ))}
       </ul>
@@ -140,7 +143,7 @@ function FooterAffiliation({
 }) {
   return (
     <div className="flex flex-col justify-between gap-3">
-      <span className="text-xs">{label}</span>
+      <span className="text-xs tracking-wide">{label}</span>
       {children}
     </div>
   );

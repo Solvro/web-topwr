@@ -10,7 +10,7 @@ export async function Changelog() {
   const entries = getChangelogEntries(versions);
 
   return (
-    <article className="flex w-full flex-col items-center justify-center py-20">
+    <article className="border-border bg-accent dark:bg-accent/25 flex w-full flex-col items-center justify-center border-y py-20">
       <div className="container flex max-w-6xl flex-col px-4 md:px-6">
         <SectionHeader
           title="Changelog"
