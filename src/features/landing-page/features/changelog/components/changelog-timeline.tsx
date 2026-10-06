@@ -16,6 +16,8 @@ export function ChangelogTimeline({ entries }: { entries: ChangelogEntry[] }) {
     canScrollPrevious,
     canScrollNext,
     scrollTimeline,
+    isDragging,
+    dragHandlers,
   } = useTimelineScroll();
 
   return (
@@ -23,8 +25,10 @@ export function ChangelogTimeline({ entries }: { entries: ChangelogEntry[] }) {
       <div className="relative">
         <ul
           ref={scrollContainerRef}
+          {...dragHandlers}
           className={cn(
-            "-ml-16 flex snap-x snap-mandatory scroll-pl-16 overflow-x-auto overflow-y-hidden overscroll-x-contain pl-16 [scrollbar-width:none]",
+            "-ml-16 flex cursor-grab scroll-pl-16 overflow-x-auto overflow-y-hidden overscroll-x-contain pl-16 [scrollbar-width:none] active:cursor-grabbing",
+            isDragging ? "snap-none select-none" : "snap-x snap-mandatory",
             canScrollPrevious && "mask-l-from-[calc(100%-4rem)]",
             canScrollNext && "mask-r-from-85%",
           )}
