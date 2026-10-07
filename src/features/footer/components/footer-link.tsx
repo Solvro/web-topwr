@@ -3,10 +3,11 @@ import Image from "next/image";
 import type { LinkProps } from "next/link";
 
 import { Link } from "@/components/core/link";
+import type { ImageTuple } from "@/types/components";
 
 import { DEFAULT_IMAGE_HEIGHT } from "../constants";
 import { constructImages } from "../lib/construct-images";
-import type { FooterSectionProps, ImageTuple } from "../types/internal";
+import type { FooterSectionProps } from "../types/internal";
 
 export function FooterLink<T extends string>({
   images,

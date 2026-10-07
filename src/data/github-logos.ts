@@ -2,8 +2,7 @@ import type { StaticImageData } from "next/image";
 
 import GitHubLogoColor from "@/assets/logos/github-color.svg";
 import GitHubLogoWhite from "@/assets/logos/github-white.svg";
-
-import type { ImageTuple } from "../types/internal";
+import type { ImageTuple } from "@/types/components";
 
 const width = 20;
 const height = 20;

@@ -2,8 +2,7 @@ import type { StaticImageData } from "next/image";
 
 import SolvroLogoColor from "@/assets/logos/solvro-color.svg";
 import SolvroLogoWhite from "@/assets/logos/solvro-white.svg";
-
-import type { ImageTuple } from "../types/internal";
+import type { ImageTuple } from "@/types/components";
 
 const width = 31;
 
