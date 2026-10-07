@@ -21,7 +21,7 @@ export function LandingFooter() {
             <FooterAffiliation label="Tworzone przez">
               <FooterCreators />
             </FooterAffiliation>
-            <FooterAffiliation label="Partner">
+            <FooterAffiliation label="">
               <FooterPartners />
             </FooterAffiliation>
           </div>

@@ -12,10 +12,10 @@ const DESCRIPTION_PLACEHOLDER = "[PLACEHOLDER]";
 
 export const APP_FEATURES = [
   {
-    title: "SKS menu",
+    title: "Mapa kampusu",
     description: DESCRIPTION_PLACEHOLDER,
-    icon: Utensils,
-    hue: 55,
+    icon: Map,
+    hue: 125,
   },
   {
     title: "Parkingi",
@@ -24,16 +24,16 @@ export const APP_FEATURES = [
     hue: 255,
   },
   {
+    title: "SKS menu",
+    description: DESCRIPTION_PLACEHOLDER,
+    icon: Utensils,
+    hue: 55,
+  },
+  {
     title: "Organizacje studenckie",
     description: DESCRIPTION_PLACEHOLDER,
     icon: GraduationCap,
     hue: 150,
-  },
-  {
-    title: "Mapa kampusu",
-    description: DESCRIPTION_PLACEHOLDER,
-    icon: Map,
-    hue: 125,
   },
   {
     title: "Radio LUZ",
