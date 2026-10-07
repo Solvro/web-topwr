@@ -1,9 +1,10 @@
 import { ArrowUpRightIcon, Download } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
+import { PHONE_BLOB } from "../constants";
+import { BlobShader } from "./blob-shader";
 import { HeroRating } from "./hero-rating";
 import { PhoneModel } from "./phone-model";
 
@@ -46,12 +47,9 @@ export function Hero() {
         </div>
 
         <div className="relative flex size-full max-h-192 items-center justify-center lg:col-span-3">
-          <Image
-            src="/phone-bg.svg"
-            alt=""
-            fill
-            priority
-            className="pointer-events-none object-contain drop-shadow-[0.75rem_1rem_0.08rem_rgb(0_0_0/0.25)]"
+          <BlobShader
+            {...PHONE_BLOB}
+            className="pointer-events-none absolute inset-0 drop-shadow-[0.75rem_1rem_0.08rem_rgb(0_0_0/0.25)]"
           />
           <PhoneModel className="drop-shadow-2xl drop-shadow-black/50" />
         </div>
