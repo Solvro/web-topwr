@@ -6,7 +6,7 @@ export function Analytics() {
       defer
       src="https://analytics.solvro.pl/script.js"
       data-website-id="08f849f2-1625-4566-80f7-e7ef4958e5df"
-      data-domains="admin2.topwr.solvro.pl"
+      data-domains="to.pwr.edu.pl"
     />
   );
 }

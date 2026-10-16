@@ -23,16 +23,16 @@ This application was developed through the efforts of the following team:
 
 - [Michał Gęs](https://github.com/michalges) – Tech lead
 - [Krystian Śliwiński](https://github.com/Infor-Tech) – Project Manager
-- [Nadia Dańczak](https://github.com/s4n000) – Project Manager
 - [Dawid Kowal](https://github.com/GTR1701) – Frontend developer
+- [Jakub Dłużak](https://github.com/jakub206) – Frontend developer
 - [Natalia Malinowska](https://github.com/natmali404) – Frontend developer
 - [Jakub Dołharz](https://github.com/Konzum59) – Frontend developer
-- [Jakub Dłużak](https://github.com/jakub206) – Frontend developer
 - [Barbara Cząstkiewicz](https://www.instagram.com/basiiiikkkk/) – UI/UX designer
 - [Piotr Bonar](https://github.com/pbonar) – UI/UX designer
 - [Konrad Guzek](https://github.com/kguzek) – Ex-Tech lead
 - [Apolonia Abramowicz](https://github.com/Octopus4344) – Ex-Tech lead
 - [Michał Malicki](https://github.com/nuklearbanana) – Ex-Project Manager
+- [Nadia Dańczak](https://github.com/s4n000) – Ex-Project Manager
 
 ## Development
 
