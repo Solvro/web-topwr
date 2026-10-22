@@ -15,7 +15,7 @@ export async function Contributors() {
 
   return (
     <article className="border-border flex w-full flex-col items-center justify-center border-b py-20 md:py-48">
-      <div className="container flex max-w-4xl flex-col items-center px-4 text-center md:px-6">
+      <div className="container flex flex-col items-center px-4 text-center">
         <SectionHeader
           title="Nasi twórcy"
           description="Studenci Politechniki Wrocławskiej, którzy budują to dla ciebie."

@@ -11,7 +11,7 @@ export async function Changelog() {
 
   return (
     <article className="border-border bg-accent dark:bg-accent/25 flex w-full flex-col items-center justify-center border-y py-20">
-      <div className="container flex max-w-6xl flex-col px-4 md:px-6">
+      <div className="container flex flex-col px-4">
         <SectionHeader
           title="Changelog"
           description="Śledź, co nowego pojawia się w ToPWR z każdą aktualizacją."

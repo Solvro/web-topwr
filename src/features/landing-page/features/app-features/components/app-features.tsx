@@ -13,13 +13,13 @@ export function AppFeatures() {
 
   return (
     <article className="flex w-full items-center justify-center py-20">
-      <div className="container flex max-w-6xl flex-col px-4 md:px-6">
+      <div className="container flex flex-col px-4">
         <SectionHeader
           title="Wszystko, czego potrzebujesz w ciągu dnia na uczelni."
           description="Zobacz, jak ToPWR prowadzi Cię przez każdy element studenckiego dnia."
         />
 
-        <div className="grid items-center gap-6 md:grid-cols-2 md:gap-16">
+        <div className="grid items-center gap-6 md:grid-cols-[3fr_2fr] md:gap-12 lg:gap-16">
           <AppFeaturePreview feature={APP_FEATURES[activeIndex]} />
 
           <ul className="border-border flex flex-col border-l">
