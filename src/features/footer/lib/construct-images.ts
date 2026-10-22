@@ -1,5 +1,6 @@
+import type { ImageTuple } from "@/types/components";
+
 import { DEFAULT_IMAGE_HEIGHT } from "../constants";
-import type { ImageTuple } from "../types/internal";
 
 const invertImages = (images: ImageTuple, invert: boolean): ImageTuple =>
   invert ? (images.toReversed() as ImageTuple) : images;
