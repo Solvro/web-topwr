@@ -84,6 +84,7 @@ export const getToastMessages = {
   },
   auth: {
     invalidCookie: "Proszę zalogować się ponownie.",
+    sessionExpired: "Twoja sesja wygasła. Proszę zalogować się ponownie.",
   },
   changePassword: {
     loading: "Trwa zmiana hasła...",
