@@ -8,36 +8,29 @@ import {
 
 import type { AppFeature } from "./types";
 
-const DESCRIPTION_PLACEHOLDER = "[PLACEHOLDER]";
-
 export const APP_FEATURES = [
   {
-    title: "Mapa kampusu",
-    description: DESCRIPTION_PLACEHOLDER,
+    id: "campusMap",
     icon: Map,
     hue: 125,
   },
   {
-    title: "Parkingi",
-    description: DESCRIPTION_PLACEHOLDER,
+    id: "parkings",
     icon: CircleParking,
     hue: 255,
   },
   {
-    title: "SKS menu",
-    description: DESCRIPTION_PLACEHOLDER,
+    id: "sksMenu",
     icon: Utensils,
     hue: 55,
   },
   {
-    title: "Organizacje studenckie",
-    description: DESCRIPTION_PLACEHOLDER,
+    id: "studentOrganizations",
     icon: GraduationCap,
     hue: 150,
   },
   {
-    title: "Radio LUZ",
-    description: DESCRIPTION_PLACEHOLDER,
+    id: "radioLuz",
     icon: Radio,
     hue: 25,
   },

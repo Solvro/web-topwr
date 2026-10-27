@@ -11,7 +11,7 @@ export function SectionHeader({
 }) {
   return (
     <header className="mb-12 flex flex-col gap-4">
-      <h2 className="max-w-2xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+      <h2 className="max-w-2xl text-4xl font-semibold tracking-tight text-balance whitespace-pre-line sm:text-5xl">
         {title}
         {hook == null ? null : (
           <>

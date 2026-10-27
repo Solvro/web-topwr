@@ -3,7 +3,6 @@ import { ThemeProvider } from "next-themes";
 import { Space_Grotesk } from "next/font/google";
 
 import { Analytics } from "@/components/analytics";
-import { Navbar } from "@/components/presentation/navbar";
 import { RootProviders } from "@/components/providers/root-providers";
 import { env } from "@/config/env";
 import { Toaster } from "@/features/toaster";
@@ -55,8 +54,7 @@ export default function RootLayout({ children }: WrapperProps) {
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <Toaster position="top-center" />
-            <Navbar />
-            <main className="w-full grow">{children}</main>
+            {children}
           </ThemeProvider>
           <Analytics />
         </body>
