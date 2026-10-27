@@ -1,8 +1,7 @@
 "use client";
 
-import { format } from "date-fns";
-import { pl } from "date-fns/locale/pl";
 import { motion } from "motion/react";
+import { useFormatter } from "next-intl";
 
 import { VIEWPORT_OFFSET } from "@/features/landing-page/constants";
 
@@ -16,6 +15,8 @@ export function ChangelogTimelineItem({
   entry: ChangelogEntry;
   index: number;
 }) {
+  const format = useFormatter();
+
   return (
     <motion.li
       initial={{ opacity: 0 }}
@@ -33,7 +34,11 @@ export function ChangelogTimelineItem({
       </div>
       <div className="border-border bg-card mt-6 mr-8 mb-2 flex flex-1 flex-col gap-2 rounded-2xl border p-5">
         <p className="text-muted-foreground font-mono text-xs capitalize">
-          {format(entry.releaseDate, "LLL d, yyyy", { locale: pl })}
+          {format.dateTime(new Date(entry.releaseDate), {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
         </p>
         <h4 className="text-lg font-semibold tracking-tight">{entry.name}</h4>
         {entry.description == null ? null : (

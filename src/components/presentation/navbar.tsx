@@ -2,6 +2,7 @@
 
 import { KeyRound, UserRound } from "lucide-react";
 import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
 
 import { Link } from "@/components/core/link";
 import { ThemeToggle } from "@/components/core/theme-toggle";
@@ -75,7 +76,7 @@ function UserProfileMenu({ user }: { user: User | null }) {
   );
 }
 
-export function Navbar() {
+export function Navbar({ actions }: { actions?: ReactNode }) {
   const { user } = useAuthentication();
   const pathname = usePathname();
 
@@ -101,6 +102,7 @@ export function Navbar() {
             />
           </Link>
           <nav className="flex items-center gap-2 p-4 sm:gap-4">
+            {actions}
             <UserProfileMenu user={user} />
             <ThemeToggle
               className="rounded-full"

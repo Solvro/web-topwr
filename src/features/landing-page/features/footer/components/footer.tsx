@@ -1,4 +1,5 @@
 import { Heart } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { DownloadBannerCta } from "./download-banner-cta";
 import { FooterAffiliation } from "./footer-affiliation";
@@ -8,6 +9,8 @@ import { FooterPartners } from "./footer-partners";
 import { FooterSocialLinks } from "./footer-social-links";
 
 export function LandingFooter() {
+  const t = useTranslations("Footer");
+
   return (
     <footer className="dark w-full pt-20">
       <div className="relative z-10 container mx-auto -mb-28 px-2 md:px-6">
@@ -18,7 +21,7 @@ export function LandingFooter() {
         <div className="container mx-auto flex flex-col gap-10 px-4 md:flex-row md:items-end md:justify-between">
           <FooterBrand />
           <div className="flex flex-wrap gap-x-12 gap-y-6">
-            <FooterAffiliation label="Tworzone przez">
+            <FooterAffiliation label={t("createdBy")}>
               <FooterCreators />
             </FooterAffiliation>
             <FooterAffiliation label="">

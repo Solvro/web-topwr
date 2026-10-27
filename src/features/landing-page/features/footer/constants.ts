@@ -26,9 +26,8 @@ export const MOBILE_APP_STORE_LINKS = [
   },
 ] as const satisfies MobileAppStoreLink[];
 
-export const SOCIAL_LINKS = [
+export const SOCIAL_LINKS: SocialLink[] = [
   {
-    label: "Strona internetowa",
     href: SOLVRO_WEBPAGE_URL,
     logo: WebsiteLogoWhite as StaticImageData,
   },
@@ -52,4 +51,4 @@ export const SOCIAL_LINKS = [
     href: "https://www.facebook.com/knsolvro",
     logo: FacebookLogoWhite as StaticImageData,
   },
-] as const satisfies SocialLink[];
+];
