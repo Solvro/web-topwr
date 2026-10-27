@@ -4,4 +4,5 @@ export * from "./features/changelog";
 export * from "./features/contributors";
 export * from "./features/faq";
 export * from "./features/footer";
+export * from "./features/i18n";
 export * from "./constants";

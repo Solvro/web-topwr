@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,7 @@ import { getChangelogVersions } from "../utils/get-changelog-versions";
 import { ChangelogTimelineVersion } from "./changelog-timeline-version";
 
 export function ChangelogTimeline({ entries }: { entries: ChangelogEntry[] }) {
+  const t = useTranslations("Changelog");
   const {
     scrollContainerRef,
     canScrollPrevious,
@@ -56,7 +58,7 @@ export function ChangelogTimeline({ entries }: { entries: ChangelogEntry[] }) {
           variant="outline"
           size="icon"
           className="rounded-full"
-          aria-label="Poprzednie zmiany"
+          aria-label={t("previous")}
           disabled={!canScrollPrevious}
           onClick={() => {
             scrollTimeline("previous");
@@ -68,7 +70,7 @@ export function ChangelogTimeline({ entries }: { entries: ChangelogEntry[] }) {
           variant="outline"
           size="icon"
           className="rounded-full"
-          aria-label="Następne zmiany"
+          aria-label={t("next")}
           disabled={!canScrollNext}
           onClick={() => {
             scrollTimeline("next");

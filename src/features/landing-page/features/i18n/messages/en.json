@@ -1,0 +1,79 @@
+{
+  "Metadata": {
+    "title": "ToPWR | Your student assistant",
+    "description": "First day of classes and it's already an odd Wednesday on a Monday? A building with the cryptic name C-13 in your timetable? Or maybe you're looking for information about faculties and student research groups? Every student at WUST asks similar questions, so we know how hard it is to get a handle on university life. We created ToPWR to simplify everyday student challenges!"
+  },
+  "AppFeatures": {
+    "title": "Everything you need for your day at university.",
+    "description": "See how ToPWR guides you through every part of your student day.",
+    "features": {
+      "campusMap": {
+        "title": "Campus map",
+        "description": "[PLACEHOLDER]"
+      },
+      "parkings": {
+        "title": "Parking",
+        "description": "[PLACEHOLDER]"
+      },
+      "sksMenu": {
+        "title": "SKS menu",
+        "description": "[PLACEHOLDER]"
+      },
+      "studentOrganizations": {
+        "title": "Student organizations",
+        "description": "[PLACEHOLDER]"
+      },
+      "radioLuz": {
+        "title": "Radio LUZ",
+        "description": "[PLACEHOLDER]"
+      }
+    }
+  },
+  "Changelog": {
+    "title": "Changelog",
+    "description": "Follow what's new in ToPWR with every update.",
+    "previous": "Previous changes",
+    "next": "Next changes"
+  },
+  "Contributors": {
+    "title": "Our creators",
+    "description": "Students of Wrocław University of Science and Technology who build it for you.",
+    "starOnGithub": "Star on GitHub"
+  },
+  "Faq": {
+    "title": "Your questions\nabout ToPWR,",
+    "hook": "answered",
+    "questions": {
+      "isFree": {
+        "question": "Is ToPWR free?",
+        "answer": "Yes — ToPWR is completely free and ad-free. Get it from the App Store and Google Play with no fees, subscriptions or hidden costs."
+      },
+      "placeholder2": {
+        "question": "[PLACEHOLDER] Question 2",
+        "answer": "[PLACEHOLDER]"
+      },
+      "placeholder3": {
+        "question": "[PLACEHOLDER] Question 3",
+        "answer": "[PLACEHOLDER]"
+      },
+      "placeholder4": {
+        "question": "[PLACEHOLDER] Question 4",
+        "answer": "[PLACEHOLDER]"
+      },
+      "placeholder5": {
+        "question": "[PLACEHOLDER] Question 5",
+        "answer": "[PLACEHOLDER]"
+      }
+    }
+  },
+  "Footer": {
+    "downloadTitle": "The whole PWr campus in your pocket.",
+    "downloadDescription": "Get ToPWR for free - no ads, no fees, no sign-in.",
+    "downloadFrom": "Get it on",
+    "brandDescription": "The app that organizes your student day at Wrocław University of Science and Technology. Life made easy.",
+    "createdBy": "Created by",
+    "pwrLogoAlt": "Wrocław University of Science and Technology",
+    "socialMedia": "Social media",
+    "website": "Website"
+  }
+}

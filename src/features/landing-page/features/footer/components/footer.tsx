@@ -1,4 +1,5 @@
 import { Heart } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { DownloadBannerCta } from "./download-banner-cta";
 import { FooterAffiliation } from "./footer-affiliation";
@@ -8,17 +9,19 @@ import { FooterPartners } from "./footer-partners";
 import { FooterSocialLinks } from "./footer-social-links";
 
 export function LandingFooter() {
+  const t = useTranslations("Footer");
+
   return (
     <footer className="dark w-full pt-20">
-      <div className="relative z-10 container mx-auto -mb-28 max-w-6xl px-2 md:px-6">
+      <div className="relative z-10 container mx-auto -mb-28 px-2 md:px-6">
         <DownloadBannerCta />
       </div>
 
       <div className="bg-background text-muted-foreground pt-44 pb-8">
-        <div className="container mx-auto flex max-w-6xl flex-col gap-10 px-4 md:flex-row md:items-end md:justify-between md:px-6">
+        <div className="container mx-auto flex flex-col gap-10 px-4 md:flex-row md:items-end md:justify-between">
           <FooterBrand />
           <div className="flex flex-wrap gap-x-12 gap-y-6">
-            <FooterAffiliation label="Tworzone przez">
+            <FooterAffiliation label={t("createdBy")}>
               <FooterCreators />
             </FooterAffiliation>
             <FooterAffiliation label="">
@@ -30,7 +33,7 @@ export function LandingFooter() {
         <FooterSocialLinks className="mt-8 mb-4 px-2 md:hidden" />
 
         <div className="border-border border-t pt-6 md:mt-12 md:pt-8">
-          <div className="container mx-auto flex max-w-6xl flex-col-reverse gap-4 px-4 md:flex-row md:items-center md:justify-between md:px-6">
+          <div className="container mx-auto flex flex-col-reverse gap-4 px-4 md:flex-row md:items-center md:justify-between">
             <p className="flex items-center gap-1 text-xs">
               Made with
               <Heart

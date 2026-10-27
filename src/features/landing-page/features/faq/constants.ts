@@ -1,25 +1,9 @@
-const ANSWER_PLACEHOLDER = "[PLACEHOLDER]";
+import type { Messages } from "next-intl";
 
-export const FAQ_QUESTIONS = [
-  {
-    question: "Czy ToPWR jest darmowe?",
-    answer:
-      "Tak — ToPWR jest w pełni darmowe i pozbawione reklam. Pobierzesz je z App Store oraz Google Play bez żadnych opłat, subskrypcji i ukrytych kosztów.",
-  },
-  {
-    question: "[PLACEHOLDER] Pytanie 2",
-    answer: ANSWER_PLACEHOLDER,
-  },
-  {
-    question: "[PLACEHOLDER] Pytanie 3",
-    answer: ANSWER_PLACEHOLDER,
-  },
-  {
-    question: "[PLACEHOLDER] Pytanie 4",
-    answer: ANSWER_PLACEHOLDER,
-  },
-  {
-    question: "[PLACEHOLDER] Pytanie 5",
-    answer: ANSWER_PLACEHOLDER,
-  },
-] as const;
+export const FAQ_QUESTION_IDS = [
+  "isFree",
+  "placeholder2",
+  "placeholder3",
+  "placeholder4",
+  "placeholder5",
+] as const satisfies (keyof Messages["Faq"]["questions"])[];

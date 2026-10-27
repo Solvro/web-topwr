@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 
@@ -15,6 +16,7 @@ export function AppFeatureListItem({
   isActive: boolean;
   onSelect: () => void;
 }) {
+  const t = useTranslations("AppFeatures.features");
   const Icon = feature.icon;
 
   return (
@@ -42,14 +44,16 @@ export function AppFeatureListItem({
           <Icon className="size-5" />
         </span>
         <span className="flex flex-col gap-1">
-          <span className="font-semibold md:text-lg">{feature.title}</span>
+          <span className="font-semibold md:text-lg">
+            {t(`${feature.id}.title`)}
+          </span>
           <span
             className={cn(
               "text-muted-foreground text-sm md:block",
               isActive ? "block" : "hidden",
             )}
           >
-            {feature.description}
+            {t(`${feature.id}.description`)}
           </span>
         </span>
       </button>

@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 import CampusPhoto from "@/assets/images/pwr-campus.png";
@@ -6,6 +7,8 @@ import { MOBILE_APP_STORE_LINKS } from "../constants";
 import { MobileAppStoreButton } from "./mobile-app-store-button";
 
 export function DownloadBannerCta() {
+  const t = useTranslations("Footer");
+
   return (
     <section className="border-border bg-background relative overflow-hidden rounded-3xl border p-8 shadow-2xl md:p-14">
       <Image
@@ -20,10 +23,10 @@ export function DownloadBannerCta() {
 
       <div className="relative">
         <h2 className="text-foreground mb-4 max-w-md text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
-          Cały kampus PWr w Twojej kieszeni.
+          {t("downloadTitle")}
         </h2>
         <p className="text-muted-foreground mb-6 max-w-sm text-lg">
-          Pobierz ToPWR za darmo - bez reklam, bez opłat, bez logowania.
+          {t("downloadDescription")}
         </p>
         <div className="flex flex-col flex-wrap gap-3 md:flex-row">
           {MOBILE_APP_STORE_LINKS.map((mobileAppStore) => (

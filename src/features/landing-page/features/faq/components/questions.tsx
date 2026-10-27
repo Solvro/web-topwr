@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 import {
   Accordion,
   AccordionContent,
@@ -5,20 +7,22 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import { FAQ_QUESTIONS } from "../constants";
+import { FAQ_QUESTION_IDS } from "../constants";
 
 export function Questions() {
+  const t = useTranslations("Faq.questions");
+
   return (
     <Accordion
       type="single"
       collapsible
-      defaultValue={FAQ_QUESTIONS[0].question}
+      defaultValue={FAQ_QUESTION_IDS[0]}
       className="flex w-full flex-col gap-3"
     >
-      {FAQ_QUESTIONS.map(({ question, answer }, index) => (
+      {FAQ_QUESTION_IDS.map((questionId, index) => (
         <AccordionItem
-          key={question}
-          value={question}
+          key={questionId}
+          value={questionId}
           className="border-border bg-card rounded-2xl border px-5 last:border-b"
         >
           <AccordionTrigger className="items-center py-5 text-lg font-semibold tracking-tight hover:no-underline md:text-xl">
@@ -29,11 +33,11 @@ export function Questions() {
               >
                 {String(index + 1).padStart(2, "0")}
               </span>
-              {question}
+              {t(`${questionId}.question`)}
             </span>
           </AccordionTrigger>
           <AccordionContent className="text-muted-foreground pb-5 pl-9">
-            {answer}
+            {t(`${questionId}.answer`)}
           </AccordionContent>
         </AccordionItem>
       ))}
