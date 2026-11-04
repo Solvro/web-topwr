@@ -98,7 +98,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.1.0",
+    "@commitlint/cli": "^21.2.3",
     "@faker-js/faker": "^10.4.0",
     "@next/env": "^16.2.1",
     "@next/eslint-plugin-next": "^15.5.6",
