@@ -1,0 +1,79 @@
+{
+  "Metadata": {
+    "title": "ToPWR | Twój studencki asystent",
+    "description": "Pierwszy dzień na zajęciach i już nieparzysta środa w poniedziałek? Budynek o zagadkowej nazwie C-13 w planie zajęć? A może szukasz informacji o wydziałach i kołach naukowych? Każdy student na PWr zadaje podobne pytania, dlatego wiemy, jak trudno jest ogarnąć życie na uczelni. Stworzyliśmy ToPWR, by uprościć i ułatwić codzienne studenckie wyzwania!"
+  },
+  "AppFeatures": {
+    "title": "Wszystko, czego potrzebujesz w ciągu dnia na uczelni.",
+    "description": "Zobacz, jak ToPWR prowadzi Cię przez każdy element studenckiego dnia.",
+    "features": {
+      "campusMap": {
+        "title": "Mapa kampusu",
+        "description": "[PLACEHOLDER]"
+      },
+      "parkings": {
+        "title": "Parkingi",
+        "description": "[PLACEHOLDER]"
+      },
+      "sksMenu": {
+        "title": "SKS menu",
+        "description": "[PLACEHOLDER]"
+      },
+      "studentOrganizations": {
+        "title": "Organizacje studenckie",
+        "description": "[PLACEHOLDER]"
+      },
+      "radioLuz": {
+        "title": "Radio LUZ",
+        "description": "[PLACEHOLDER]"
+      }
+    }
+  },
+  "Changelog": {
+    "title": "Changelog",
+    "description": "Śledź, co nowego pojawia się w ToPWR z każdą aktualizacją.",
+    "previous": "Poprzednie zmiany",
+    "next": "Następne zmiany"
+  },
+  "Contributors": {
+    "title": "Nasi twórcy",
+    "description": "Studenci Politechniki Wrocławskiej, którzy budują to dla ciebie.",
+    "starOnGithub": "Oznacz gwiazdką na GitHubie"
+  },
+  "Faq": {
+    "title": "Twoje Pytania\no ToPWR,",
+    "hook": "z odpowiedziami",
+    "questions": {
+      "isFree": {
+        "question": "Czy ToPWR jest darmowe?",
+        "answer": "Tak — ToPWR jest w pełni darmowe i pozbawione reklam. Pobierzesz je z App Store oraz Google Play bez żadnych opłat, subskrypcji i ukrytych kosztów."
+      },
+      "placeholder2": {
+        "question": "[PLACEHOLDER] Pytanie 2",
+        "answer": "[PLACEHOLDER]"
+      },
+      "placeholder3": {
+        "question": "[PLACEHOLDER] Pytanie 3",
+        "answer": "[PLACEHOLDER]"
+      },
+      "placeholder4": {
+        "question": "[PLACEHOLDER] Pytanie 4",
+        "answer": "[PLACEHOLDER]"
+      },
+      "placeholder5": {
+        "question": "[PLACEHOLDER] Pytanie 5",
+        "answer": "[PLACEHOLDER]"
+      }
+    }
+  },
+  "Footer": {
+    "downloadTitle": "Cały kampus PWr w Twojej kieszeni.",
+    "downloadDescription": "Pobierz ToPWR za darmo - bez reklam, bez opłat, bez logowania.",
+    "downloadFrom": "Pobierz z",
+    "brandDescription": "Aplikacja, która porządkuje studencki dzień na Politechnice Wrocławskiej. Life made easy.",
+    "createdBy": "Tworzone przez",
+    "pwrLogoAlt": "Politechnika Wrocławska",
+    "socialMedia": "Media społecznościowe",
+    "website": "Strona internetowa"
+  }
+}
