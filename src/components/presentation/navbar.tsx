@@ -2,6 +2,7 @@
 
 import { KeyRound, UserRound } from "lucide-react";
 import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
 
 import { Link } from "@/components/core/link";
 import { ThemeToggle } from "@/components/core/theme-toggle";
@@ -25,7 +26,7 @@ import { LogoutButton } from "./logout-button";
 
 function UserProfileMenu({ user }: { user: User | null }) {
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
           size="icon"
@@ -75,33 +76,41 @@ function UserProfileMenu({ user }: { user: User | null }) {
   );
 }
 
-export function Navbar() {
+export function Navbar({ actions }: { actions?: ReactNode }) {
   const { user } = useAuthentication();
   const pathname = usePathname();
 
+  const isLandingPage = pathname === "/";
   const isLoginPage = pathname === "/login";
-  const isOverlayPage = pathname === "/" || isLoginPage;
 
   return (
     <header
-      className={cn(
-        "top-0 z-50 container mx-auto flex flex-row items-center justify-between",
-        isOverlayPage ? "absolute inset-x-0" : "",
-      )}
+      className={cn("sticky top-0 z-50 w-full", isLoginPage && "absolute")}
     >
-      <Link href="/" passHref className="w-32 p-4">
-        <Logo
-          variant={isLoginPage ? "white" : "dynamic"}
-          className="h-auto w-full"
-        />
-      </Link>
-      <nav className="flex items-center gap-2 p-4 sm:gap-4">
-        <UserProfileMenu user={user} />
-        <ThemeToggle
-          className="rounded-full"
-          variant={isLoginPage ? "outline" : "ghost"}
-        />
-      </nav>
+      <div
+        className={cn(
+          "w-full",
+          isLandingPage &&
+            "bg-background/65 border-border absolute border-b backdrop-blur-md",
+        )}
+      >
+        <div className="container mx-auto flex flex-row items-center justify-between">
+          <Link href="/" passHref className="w-32 p-4">
+            <Logo
+              variant={isLoginPage ? "white" : "dynamic"}
+              className="h-auto w-full"
+            />
+          </Link>
+          <nav className="flex items-center gap-2 p-4 sm:gap-4">
+            {actions}
+            <UserProfileMenu user={user} />
+            <ThemeToggle
+              className="rounded-full"
+              variant={isLoginPage ? "outline" : "ghost"}
+            />
+          </nav>
+        </div>
+      </div>
     </header>
   );
 }

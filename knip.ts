@@ -4,6 +4,7 @@ const config: KnipConfig = {
   project: ["src/**"],
   entry: [
     "src/tests/e2e/*.setup.ts", // playwright test setup files
+    "src/features/landing-page/features/i18n/request.ts",
   ],
   ignore: [
     "src/components/ui/**", // not all shadcn components are used
