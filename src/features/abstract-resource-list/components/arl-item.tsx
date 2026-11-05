@@ -1,10 +1,9 @@
-import type { Ref } from "react";
+import type { ReactNode, Ref } from "react";
 
 import { DragHandle } from "@/components/core/drag-handle";
 import type { DragHandleProps } from "@/components/core/drag-handle";
 import { Badge } from "@/components/ui/badge";
 import {
-  EditButton,
   Resource,
   getResourceMetadata,
   getResourcePkValue,
@@ -17,7 +16,9 @@ import type { ResourceRelations } from "@/types/components";
 import { isEmptyValue } from "@/utils";
 
 import { getItemBadges } from "../lib/get-item-badges";
+import type { ItemBadge } from "../types/badges";
 import type { ListItem } from "../types/internal";
+import { ArlItemActions } from "./arl-item-actions";
 import { ResourceBadge } from "./resource-badge";
 import { ToggleOrganizationStatusButton } from "./toggle-status-button";
 
@@ -27,6 +28,10 @@ export interface ItemProps<T extends EditableResource> {
   resource: T;
   relatedResources: ResourceRelations<T>;
   dragHandleProps?: Omit<DragHandleProps, "className">;
+  /** Overrides the default item actions (edit button, status toggle). */
+  actions?: ReactNode;
+  /** Additional badges displayed before the badges derived from the item's relations. */
+  extraBadges?: ItemBadge[];
 }
 
 /** TODO: pass custom delete functionality as a prop, which would eliminate this helper */
@@ -38,7 +43,15 @@ const isStudentOrganizationProps = <T extends EditableResource>(
 } => props.resource === Resource.StudentOrganizations;
 
 export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
-  const { ref, item, resource, relatedResources, dragHandleProps } = props;
+  const {
+    ref,
+    item,
+    resource,
+    relatedResources,
+    dragHandleProps,
+    actions,
+    extraBadges = [],
+  } = props;
 
   const metadata = getResourceMetadata(resource);
   const id = getResourcePkValue(resource, item);
@@ -46,7 +59,10 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
     id,
     ...metadata.itemMapper(item),
   };
-  const badges = getItemBadges(item, resource, relatedResources);
+  const badges = [
+    ...extraBadges,
+    ...getItemBadges(item, resource, relatedResources),
+  ];
   const shortDescription =
     listItem.description == null
       ? listItem.description
@@ -71,7 +87,7 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
         <div className="flex min-w-0 grow flex-col justify-center gap-0.5">
           <header className="flex flex-col gap-y-1">
             {badges.length > 0 && (
-              <div className="hidden space-x-2 overflow-hidden md:block">
+              <div className="hidden items-center gap-2 overflow-hidden md:flex">
                 {badges.map((badge) => (
                   <ResourceBadge key={badge.badgeText} badge={badge} />
                 ))}
@@ -100,14 +116,21 @@ export function ArlItem<T extends EditableResource>(props: ItemProps<T>) {
           )}
         </div>
         <footer className="flex items-center gap-0.5 sm:gap-2">
-          <EditButton resource={resource} id={listItem.id} />
-          {isStudentOrganizationProps(props) ? (
-            <ToggleOrganizationStatusButton
-              id={listItem.id}
+          {actions ?? (
+            <ArlItemActions
               resource={resource}
-              organizationStatus={props.item.organizationStatus}
+              id={listItem.id}
+              toggleStatusButton={
+                isStudentOrganizationProps(props) ? (
+                  <ToggleOrganizationStatusButton
+                    id={listItem.id}
+                    resource={resource}
+                    organizationStatus={props.item.organizationStatus}
+                  />
+                ) : null
+              }
             />
-          ) : null}
+          )}
         </footer>
       </article>
     </li>

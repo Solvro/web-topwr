@@ -14,3 +14,10 @@ export type RoutePermission = keyof typeof ROUTE_PERMISSIONS;
 export type AuthState = z.infer<typeof AuthStateSchema>;
 export type LoginFormValues = z.infer<typeof LoginSchema>;
 export type User = z.infer<typeof UserSchema>;
+export type PermissionAction =
+  | "read"
+  | "create"
+  | "update"
+  | "destroy"
+  | "suggest_new"
+  | "suggest_edit";

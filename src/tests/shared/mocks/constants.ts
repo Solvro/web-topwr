@@ -33,6 +33,12 @@ export const MOCK_USER = {
   },
 } satisfies Mocked<User>;
 
+export const MOCK_SOLVRO_ADMIN = {
+  ...MOCK_USER.valid,
+  id: faker.number.int(),
+  roles: [{ slug: "solvro_admin" }],
+} satisfies User;
+
 export const MOCK_AUTH_STATE = {
   valid: {
     user: MOCK_USER.valid,

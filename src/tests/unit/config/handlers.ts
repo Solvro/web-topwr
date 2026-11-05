@@ -206,6 +206,10 @@ export const handlers = [
     `${API_URL}/${getResourceMetadata(Resource.GuideArticles).apiPath}`,
     async ({ request }) => mockResourceResponse(request),
   ),
+  http.post<PathParams, ResourceFormValues<Resource.GuideArticles>>(
+    `${API_URL}/${getResourceMetadata(Resource.GuideArticles).apiDraftPath ?? ""}`,
+    async ({ request }) => mockResourceResponse(request),
+  ),
   http.post(`${API_URL}/files`, () => {
     return HttpResponse.json({
       key: MOCK_IMAGE_KEY,
