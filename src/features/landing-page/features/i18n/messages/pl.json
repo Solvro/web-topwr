@@ -4,28 +4,28 @@
     "description": "Pierwszy dzień na zajęciach i już nieparzysta środa w poniedziałek? Budynek o zagadkowej nazwie C-13 w planie zajęć? A może szukasz informacji o wydziałach i kołach naukowych? Każdy student na PWr zadaje podobne pytania, dlatego wiemy, jak trudno jest ogarnąć życie na uczelni. Stworzyliśmy ToPWR, by uprościć i ułatwić codzienne studenckie wyzwania!"
   },
   "AppFeatures": {
-    "title": "Wszystko, czego potrzebujesz w ciągu dnia na uczelni.",
-    "description": "Zobacz, jak ToPWR prowadzi Cię przez każdy element studenckiego dnia.",
+    "title": "Studenckie życie potrafi być prostsze!",
+    "description": "Zobacz, jak nasz studencki niezbędnik ułatwia Ci każdy element życia na uczelni.",
     "features": {
       "campusMap": {
         "title": "Mapa kampusu",
-        "description": "[PLACEHOLDER]"
+        "description": "Koniec z\u00a0gubieniem się między budynkami. Nasza wielowarstwowa mapa poprowadzi Cię prosto pod budynek."
       },
       "parkings": {
         "title": "Parkingi",
-        "description": "[PLACEHOLDER]"
+        "description": "Walka o miejsce o\u00a07:55? Sprawdź dostępność parkingów w\u00a0czasie rzeczywistym i\u00a0parkuj wygodnie."
       },
       "sksMenu": {
         "title": "SKS menu",
-        "description": "[PLACEHOLDER]"
+        "description": "Oznacz ulubiony obiad, a\u00a0my wyślemy Ci powiadomienie, gdy tylko pojawi się w\u00a0ofercie!"
       },
       "studentOrganizations": {
         "title": "Organizacje studenckie",
-        "description": "[PLACEHOLDER]"
+        "description": "Odkryj koła naukowe i\u00a0inne organizacje działające na uczelni, w\u00a0których możesz się rozwijać."
       },
       "radioLuz": {
         "title": "Radio LUZ",
-        "description": "[PLACEHOLDER]"
+        "description": "Studenckie radio na wyciągnięcie ręki — słuchaj prosto z\u00a0Naszej aplikacji."
       }
     }
   },

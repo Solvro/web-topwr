@@ -4,28 +4,28 @@
     "description": "First day of classes and it's already an odd Wednesday on a Monday? A building with the cryptic name C-13 in your timetable? Or maybe you're looking for information about faculties and student research groups? Every student at WUST asks similar questions, so we know how hard it is to get a handle on university life. We created ToPWR to simplify everyday student challenges!"
   },
   "AppFeatures": {
-    "title": "Everything you need for your day at university.",
-    "description": "See how ToPWR guides you through every part of your student day.",
+    "title": "Student life can be simpler!",
+    "description": "See how our student toolkit makes every part of university life easier.",
     "features": {
       "campusMap": {
         "title": "Campus map",
-        "description": "[PLACEHOLDER]"
+        "description": "No more getting lost between buildings. Our multi-layer map will guide you straight to the right door."
       },
       "parkings": {
         "title": "Parking",
-        "description": "[PLACEHOLDER]"
+        "description": "Fighting for a spot at 7:55? Check parking availability in real time and park with ease."
       },
       "sksMenu": {
         "title": "SKS menu",
-        "description": "[PLACEHOLDER]"
+        "description": "Mark your favorite dish, and we'll notify you as soon as it's on the menu!"
       },
       "studentOrganizations": {
         "title": "Student organizations",
-        "description": "[PLACEHOLDER]"
+        "description": "Discover research clubs and other student organizations at your university where you can grow."
       },
       "radioLuz": {
         "title": "Radio LUZ",
-        "description": "[PLACEHOLDER]"
+        "description": "Student radio at your fingertips — listen straight from our app."
       }
     }
   },

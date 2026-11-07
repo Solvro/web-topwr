@@ -1,20 +1,25 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 
 import { SectionHeader } from "@/features/landing-page/components";
 
 import { APP_FEATURES } from "../constants";
+import { useFeatureAutoSwitch } from "../hooks/use-feature-auto-switch";
 import { AppFeatureListItem } from "./app-feature-list-item";
 import { AppFeaturePreview } from "./app-feature-preview";
 
 export function AppFeatures() {
   const t = useTranslations("AppFeatures");
-  const [activeIndex, setActiveIndex] = useState(0);
+  const { containerRef, activeIndex, selectFeature } = useFeatureAutoSwitch(
+    APP_FEATURES.length,
+  );
 
   return (
-    <article className="flex w-full items-center justify-center py-20">
+    <article
+      ref={containerRef}
+      className="flex w-full items-center justify-center py-20"
+    >
       <div className="container flex flex-col px-4">
         <SectionHeader title={t("title")} description={t("description")} />
 
@@ -28,7 +33,7 @@ export function AppFeatures() {
                 feature={feature}
                 isActive={index === activeIndex}
                 onSelect={() => {
-                  setActiveIndex(index);
+                  selectFeature(index);
                 }}
               />
             ))}
