@@ -2,6 +2,11 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 import CampusPhoto from "@/assets/images/pwr-campus.png";
+import { SplitText } from "@/components/fancy/split-text";
+import {
+  REVEAL_TRANSITION,
+  VIEWPORT_OFFSET,
+} from "@/features/landing-page/constants";
 
 import { MOBILE_APP_STORE_LINKS } from "../constants";
 import { MobileAppStoreButton } from "./mobile-app-store-button";
@@ -22,9 +27,13 @@ export function DownloadBannerCta() {
       <div className="from-background via-background/90 to-background/25 absolute inset-0 bg-linear-to-br" />
 
       <div className="relative">
-        <h2 className="text-foreground mb-4 max-w-md text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
-          {t("downloadTitle")}
-        </h2>
+        <SplitText
+          tag="h2"
+          viewportMargin={VIEWPORT_OFFSET}
+          {...REVEAL_TRANSITION}
+          text={t("downloadTitle")}
+          className="text-foreground mb-4 block max-w-md text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl"
+        />
         <p className="text-muted-foreground mb-6 max-w-sm text-lg">
           {t("downloadDescription")}
         </p>

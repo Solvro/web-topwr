@@ -1,24 +1,45 @@
-import type { ReactNode } from "react";
+import { GradientText } from "@/components/fancy/gradient-text";
+import { SplitText } from "@/components/fancy/split-text";
+import {
+  REVEAL_TRANSITION,
+  VIEWPORT_OFFSET,
+} from "@/features/landing-page/constants";
+
+const HOOK_GRADIENT_COLORS = [
+  "var(--color-gradient-1)",
+  "var(--color-gradient-2)",
+];
 
 export function SectionHeader({
   title,
   hook,
   description,
 }: {
-  title: ReactNode;
+  title: string;
   hook?: string;
   description?: string;
 }) {
   return (
     <header className="mb-12 flex flex-col gap-4">
-      <h2 className="max-w-2xl text-4xl font-semibold tracking-tight text-balance whitespace-pre-line sm:text-5xl">
-        {title}
+      <h2
+        aria-label={hook == null ? title : `${title} ${hook}`}
+        className="max-w-2xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl"
+      >
+        <SplitText
+          tag="span"
+          text={title}
+          viewportMargin={VIEWPORT_OFFSET}
+          {...REVEAL_TRANSITION}
+        />
         {hook == null ? null : (
           <>
             <br />
-            <span className="from-gradient-1 to-gradient-2 bg-linear-to-r bg-clip-text whitespace-nowrap text-transparent">
+            <GradientText
+              colors={HOOK_GRADIENT_COLORS}
+              className="whitespace-nowrap"
+            >
               {hook}
-            </span>
+            </GradientText>
           </>
         )}
       </h2>

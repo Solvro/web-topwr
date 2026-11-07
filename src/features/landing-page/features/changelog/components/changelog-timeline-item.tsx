@@ -3,7 +3,10 @@
 import { motion } from "motion/react";
 import { useFormatter } from "next-intl";
 
-import { VIEWPORT_OFFSET } from "@/features/landing-page/constants";
+import {
+  REVEAL_TRANSITION,
+  VIEWPORT_OFFSET,
+} from "@/features/landing-page/constants";
 
 import { RELEASE_DATE_FORMAT, TIMELINE_ITEM_WIDTH } from "../constants";
 import type { ChangelogEntry } from "../types";
@@ -27,7 +30,7 @@ export function ChangelogTimelineItem({
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: VIEWPORT_OFFSET }}
-      transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.05 }}
+      transition={{ ...REVEAL_TRANSITION, delay: index * 0.05 }}
       style={{ width: TIMELINE_ITEM_WIDTH }}
       className="flex shrink-0 snap-start flex-col"
     >

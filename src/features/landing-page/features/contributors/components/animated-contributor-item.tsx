@@ -5,6 +5,7 @@ import React from "react";
 
 import { ImageType } from "@/config/enums";
 import { ApiImage } from "@/features/backend";
+import { REVEAL_TRANSITION } from "@/features/landing-page/constants";
 import { cn } from "@/lib/utils";
 import { getInitials } from "@/utils";
 
@@ -46,11 +47,7 @@ export function AnimatedContributorItem({
         hidden: { opacity: 0, filter: "blur(1px)" },
         visible: { opacity: 1, filter: "blur(0px)" },
       }}
-      transition={{
-        duration: 0.5,
-        ease: "easeOut",
-        delay: index * 0.05,
-      }}
+      transition={{ ...REVEAL_TRANSITION, delay: index * 0.05 }}
       className="relative mb-4"
       style={{ zIndex, marginLeft: -ITEM_OVERLAP }}
     >
