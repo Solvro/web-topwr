@@ -33,7 +33,7 @@ export function ChangelogTimelineItem({
         <span className="bg-primary/50 h-px flex-1" />
       </div>
       <div className="border-border bg-card mt-6 mr-8 mb-2 flex flex-1 flex-col gap-2 rounded-2xl border p-5">
-        <p className="text-muted-foreground font-mono text-xs capitalize">
+        <p className="text-muted-foreground text-xs capitalize">
           {format.dateTime(new Date(entry.releaseDate), {
             month: "short",
             day: "numeric",

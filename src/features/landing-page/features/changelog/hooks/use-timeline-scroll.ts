@@ -6,12 +6,26 @@ import type { PointerEvent } from "react";
 import { TIMELINE_ITEM_WIDTH } from "../constants";
 
 const SCROLL_EDGE_THRESHOLD = 0.01;
-const SNAP_ANIMATION_DURATION = 0.3;
+const MIN_GLIDE_DURATION = 0.4;
+const MAX_GLIDE_DURATION = 1.2;
+/** Glide distance (px) covered per second of animation, used to scale its duration */
+const GLIDE_DISTANCE_PER_SECOND = 1200;
+/** How many seconds of release velocity are added to the final scroll position */
+const MOMENTUM_PROJECTION_SECONDS = 0.35;
+/** Pointer samples older than this at release are treated as a stop, not a flick */
+const MOMENTUM_SAMPLE_MAX_AGE_MS = 80;
+const GLIDE_EASE = [0.16, 1, 0.3, 1] as const;
+
+interface PointerSample {
+  pointerX: number;
+  time: number;
+}
 
 export function useTimelineScroll() {
   const scrollContainerRef = useRef<HTMLUListElement>(null);
   const dragStartRef = useRef<{ pointerX: number; scrollLeft: number }>(null);
-  const snapAnimationRef = useRef<AnimationPlaybackControls>(null);
+  const glideAnimationRef = useRef<AnimationPlaybackControls>(null);
+  const pointerSamplesRef = useRef<PointerSample[]>([]);
   const [canScrollPrevious, setCanScrollPrevious] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
@@ -29,19 +43,56 @@ export function useTimelineScroll() {
     });
   };
 
-  const snapToNearestItem = (scrollContainer: HTMLUListElement) => {
+  const getReleaseScrollVelocity = (releaseTime: number) => {
+    const samples = pointerSamplesRef.current;
+    const lastSample = samples.at(-1);
+    const firstSample = samples.at(0);
+    if (
+      lastSample === undefined ||
+      firstSample === undefined ||
+      lastSample === firstSample ||
+      releaseTime - lastSample.time > MOMENTUM_SAMPLE_MAX_AGE_MS
+    ) {
+      return 0;
+    }
+    const elapsedSeconds = (lastSample.time - firstSample.time) / 1000;
+    return -(lastSample.pointerX - firstSample.pointerX) / elapsedSeconds;
+  };
+
+  const glideWithMomentum = (
+    scrollContainer: HTMLUListElement,
+    scrollVelocity: number,
+  ) => {
     const maxScrollLeft =
       scrollContainer.scrollWidth - scrollContainer.clientWidth;
-    const nearestItemScrollLeft =
-      Math.round(scrollContainer.scrollLeft / TIMELINE_ITEM_WIDTH) *
-      TIMELINE_ITEM_WIDTH;
+    const targetScrollLeft = Math.min(
+      Math.max(
+        scrollContainer.scrollLeft +
+          scrollVelocity * MOMENTUM_PROJECTION_SECONDS,
+        0,
+      ),
+      maxScrollLeft,
+    );
+    const glideDistance = Math.abs(
+      targetScrollLeft - scrollContainer.scrollLeft,
+    );
+    if (glideDistance < 1) {
+      setIsDragging(false);
+      return;
+    }
 
-    snapAnimationRef.current = animate(
+    glideAnimationRef.current = animate(
       scrollContainer.scrollLeft,
-      Math.min(nearestItemScrollLeft, maxScrollLeft),
+      targetScrollLeft,
       {
-        duration: SNAP_ANIMATION_DURATION,
-        ease: "easeOut",
+        duration: Math.min(
+          Math.max(
+            MIN_GLIDE_DURATION,
+            glideDistance / GLIDE_DISTANCE_PER_SECOND,
+          ),
+          MAX_GLIDE_DURATION,
+        ),
+        ease: GLIDE_EASE,
         onUpdate: (scrollLeft) => {
           scrollContainer.scrollLeft = scrollLeft;
         },
@@ -56,11 +107,14 @@ export function useTimelineScroll() {
     if (event.pointerType !== "mouse" || event.button !== 0) {
       return;
     }
-    snapAnimationRef.current?.stop();
+    glideAnimationRef.current?.stop();
     dragStartRef.current = {
       pointerX: event.clientX,
       scrollLeft: event.currentTarget.scrollLeft,
     };
+    pointerSamplesRef.current = [
+      { pointerX: event.clientX, time: event.timeStamp },
+    ];
     event.currentTarget.setPointerCapture(event.pointerId);
     setIsDragging(true);
   };
@@ -72,6 +126,12 @@ export function useTimelineScroll() {
     }
     event.currentTarget.scrollLeft =
       dragStart.scrollLeft - (event.clientX - dragStart.pointerX);
+    pointerSamplesRef.current = [
+      ...pointerSamplesRef.current.filter(
+        (sample) => event.timeStamp - sample.time <= MOMENTUM_SAMPLE_MAX_AGE_MS,
+      ),
+      { pointerX: event.clientX, time: event.timeStamp },
+    ];
   };
 
   const stopDragging = (event: PointerEvent<HTMLUListElement>) => {
@@ -79,7 +139,10 @@ export function useTimelineScroll() {
       return;
     }
     dragStartRef.current = null;
-    snapToNearestItem(event.currentTarget);
+    glideWithMomentum(
+      event.currentTarget,
+      getReleaseScrollVelocity(event.timeStamp),
+    );
   };
 
   return {
