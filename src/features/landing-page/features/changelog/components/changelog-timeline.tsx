@@ -3,6 +3,7 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { TargetCursor } from "@/components/fancy/target-cursor";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -37,6 +38,18 @@ export function ChangelogTimeline({ entries }: { entries: ChangelogEntry[] }) {
             <ChangelogTimelineVersion key={version.name} version={version} />
           ))}
         </ul>
+        <TargetCursor
+          container={scrollContainerRef}
+          cursorColor="var(--primary)"
+          blendMode="normal"
+          spinDuration={0}
+          hoverDuration={0.25}
+          size={28}
+          cornerSize={10}
+          idleRadius={6}
+          thickness={2}
+          padding={8}
+        />
         <div
           aria-hidden
           className={cn(

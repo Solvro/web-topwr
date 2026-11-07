@@ -15,6 +15,8 @@ const MOMENTUM_PROJECTION_SECONDS = 0.35;
 /** Pointer samples older than this at release are treated as a stop, not a flick */
 const MOMENTUM_SAMPLE_MAX_AGE_MS = 80;
 const GLIDE_EASE = [0.16, 1, 0.3, 1] as const;
+/** Pointer travel (px) after which a press becomes a drag instead of a click */
+const DRAG_THRESHOLD = 5;
 
 interface PointerSample {
   pointerX: number;
@@ -115,8 +117,6 @@ export function useTimelineScroll() {
     pointerSamplesRef.current = [
       { pointerX: event.clientX, time: event.timeStamp },
     ];
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setIsDragging(true);
   };
 
   const drag = (event: PointerEvent<HTMLUListElement>) => {
@@ -124,8 +124,16 @@ export function useTimelineScroll() {
     if (dragStart == null) {
       return;
     }
-    event.currentTarget.scrollLeft =
-      dragStart.scrollLeft - (event.clientX - dragStart.pointerX);
+    const scrollContainer = event.currentTarget;
+    const dragDistance = event.clientX - dragStart.pointerX;
+    if (!scrollContainer.hasPointerCapture(event.pointerId)) {
+      if (Math.abs(dragDistance) < DRAG_THRESHOLD) {
+        return;
+      }
+      scrollContainer.setPointerCapture(event.pointerId);
+      setIsDragging(true);
+    }
+    scrollContainer.scrollLeft = dragStart.scrollLeft - dragDistance;
     pointerSamplesRef.current = [
       ...pointerSamplesRef.current.filter(
         (sample) => event.timeStamp - sample.time <= MOMENTUM_SAMPLE_MAX_AGE_MS,
@@ -139,6 +147,9 @@ export function useTimelineScroll() {
       return;
     }
     dragStartRef.current = null;
+    if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
+      return;
+    }
     glideWithMomentum(
       event.currentTarget,
       getReleaseScrollVelocity(event.timeStamp),

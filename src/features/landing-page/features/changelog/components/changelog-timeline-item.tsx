@@ -5,8 +5,9 @@ import { useFormatter } from "next-intl";
 
 import { VIEWPORT_OFFSET } from "@/features/landing-page/constants";
 
-import { TIMELINE_ITEM_WIDTH } from "../constants";
+import { RELEASE_DATE_FORMAT, TIMELINE_ITEM_WIDTH } from "../constants";
 import type { ChangelogEntry } from "../types";
+import { ChangelogEntryDialog } from "./changelog-entry-dialog";
 
 export function ChangelogTimelineItem({
   entry,
@@ -16,6 +17,10 @@ export function ChangelogTimelineItem({
   index: number;
 }) {
   const format = useFormatter();
+  const releaseDate = format.dateTime(
+    new Date(entry.releaseDate),
+    RELEASE_DATE_FORMAT,
+  );
 
   return (
     <motion.li
@@ -32,19 +37,19 @@ export function ChangelogTimelineItem({
         </span>
         <span className="bg-primary/50 h-px flex-1" />
       </div>
-      <div className="border-border bg-card mt-6 mr-8 mb-2 flex flex-1 flex-col gap-2 rounded-2xl border p-5">
-        <p className="text-muted-foreground text-xs capitalize">
-          {format.dateTime(new Date(entry.releaseDate), {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </p>
-        <h4 className="text-lg font-semibold tracking-tight">{entry.name}</h4>
-        {entry.description == null ? null : (
-          <p className="text-muted-foreground text-sm">{entry.description}</p>
-        )}
-      </div>
+      <ChangelogEntryDialog entry={entry} releaseDate={releaseDate}>
+        <button
+          type="button"
+          className="cursor-target border-border bg-card focus-visible:ring-ring relative mt-6 mr-8 mb-2 flex flex-1 flex-col rounded-2xl border px-5 pt-8 pb-12 outline-none focus-visible:ring-2"
+        >
+          <span className="m-auto text-center text-lg font-semibold text-balance">
+            {entry.name}
+          </span>
+          <span className="text-muted-foreground absolute inset-x-0 bottom-4 text-center text-[0.625rem]">
+            {releaseDate}
+          </span>
+        </button>
+      </ChangelogEntryDialog>
     </motion.li>
   );
 }

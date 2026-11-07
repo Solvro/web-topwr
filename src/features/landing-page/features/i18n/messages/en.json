@@ -33,7 +33,9 @@
     "title": "Changelog",
     "description": "Follow what's new in ToPWR with every update.",
     "previous": "Previous changes",
-    "next": "Next changes"
+    "next": "Next changes",
+    "close": "Close",
+    "noDescription": "No further details for this change yet."
   },
   "Contributors": {
     "title": "Our creators",
