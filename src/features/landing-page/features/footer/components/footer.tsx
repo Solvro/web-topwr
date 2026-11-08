@@ -13,13 +13,13 @@ export function LandingFooter() {
 
   return (
     <footer className="dark w-full">
-      <div className="to-background bg-linear-to-b from-transparent from-60% to-60%">
+      <div className="to-background in-[html.dark]:to-card bg-linear-to-b from-transparent from-60% to-60%">
         <div className="container mx-auto px-4">
           <DownloadBannerCta />
         </div>
       </div>
 
-      <div className="bg-background text-muted-foreground pt-16 pb-8">
+      <div className="bg-background in-[html.dark]:bg-card text-muted-foreground pt-16 pb-8">
         <div className="container mx-auto flex flex-col gap-10 px-4 md:flex-row md:items-end md:justify-between">
           <FooterBrand />
           <div className="flex flex-wrap gap-x-12 gap-y-6">
