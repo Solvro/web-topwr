@@ -12,7 +12,7 @@ export function LandingFooter() {
   const t = useTranslations("Footer");
 
   return (
-    <footer className="dark w-full pt-20 md:pt-32">
+    <footer className="dark w-full">
       <div className="to-background bg-linear-to-b from-transparent from-60% to-60%">
         <div className="container mx-auto px-4">
           <DownloadBannerCta />
