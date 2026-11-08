@@ -1,1 +1,1 @@
-export * from "./section-header";
+export * from "./landing-section";

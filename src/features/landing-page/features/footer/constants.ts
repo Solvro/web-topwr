@@ -6,23 +6,46 @@ import GithubLogoWhite from "@/assets/logos/github-white.svg";
 import GooglePlayLogoWhite from "@/assets/logos/google-play-white.svg";
 import InstagramLogoWhite from "@/assets/logos/instagram-white.svg";
 import LinkedinLogoWhite from "@/assets/logos/linkedin-white.svg";
+import SolvroLogoColor from "@/assets/logos/solvro-color.svg";
+import ToPWRLogoWhite from "@/assets/logos/topwr-white.svg";
 import WebsiteLogoWhite from "@/assets/logos/website-white.svg";
+import type { BallpitDecal } from "@/components/fancy/ballpit";
 import { SOLVRO_WEBPAGE_URL } from "@/config/constants";
 
 import type { MobileAppStoreLink, SocialLink } from "./types";
 
 export const PWR_WEBPAGE_URL = "https://pwr.edu.pl/";
 
+export const BALLPIT_COLORS = [
+  "var(--primary)",
+  "var(--color-gradient-1)",
+  "var(--color-gradient-2)",
+  "var(--sidebar-primary)",
+  "var(--foreground)",
+  "var(--primary-foreground)",
+];
+
+export const BALLPIT_DECALS = [
+  { src: (ToPWRLogoWhite as StaticImageData).src, target: "dark" },
+  {
+    src: (SolvroLogoColor as StaticImageData).src,
+    target: "light",
+    hasOwnColors: true,
+  },
+] satisfies BallpitDecal[];
+
 export const MOBILE_APP_STORE_LINKS = [
   {
     name: "Google Play",
     href: "https://play.google.com/store/apps/details?id=com.solvro.topwr",
     logo: GooglePlayLogoWhite as StaticImageData,
+    operatingSystem: "Android",
   },
   {
     name: "App Store",
     href: "https://apps.apple.com/pl/app/topwr/id1644647395",
     logo: AppleLogoWhite as StaticImageData,
+    operatingSystem: "iOS",
   },
 ] as const satisfies MobileAppStoreLink[];
 

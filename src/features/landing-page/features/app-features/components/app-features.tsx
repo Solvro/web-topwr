@@ -2,7 +2,12 @@
 
 import { useTranslations } from "next-intl";
 
-import { SectionHeader } from "@/features/landing-page/components";
+import {
+  LandingSection,
+  LandingSectionDescription,
+  LandingSectionHeader,
+  LandingSectionTitle,
+} from "@/features/landing-page/components";
 
 import { APP_FEATURES } from "../constants";
 import { useFeatureAutoSwitch } from "../hooks/use-feature-auto-switch";
@@ -16,30 +21,30 @@ export function AppFeatures() {
   );
 
   return (
-    <article
-      ref={containerRef}
-      className="flex w-full items-center justify-center py-20"
-    >
-      <div className="container flex flex-col px-4">
-        <SectionHeader title={t("title")} description={t("description")} />
+    <LandingSection ref={containerRef}>
+      <LandingSectionHeader>
+        <LandingSectionTitle text={t("title")} />
+        <LandingSectionDescription>
+          {t("description")}
+        </LandingSectionDescription>
+      </LandingSectionHeader>
 
-        <div className="grid items-center gap-6 md:grid-cols-[3fr_2fr] md:gap-12 lg:gap-16">
-          <AppFeaturePreview feature={APP_FEATURES[activeIndex]} />
+      <div className="grid items-center gap-6 md:grid-cols-[3fr_2fr] md:gap-12 lg:gap-16">
+        <AppFeaturePreview feature={APP_FEATURES[activeIndex]} />
 
-          <ul className="border-border flex flex-col border-l">
-            {APP_FEATURES.map((feature, index) => (
-              <AppFeatureListItem
-                key={feature.id}
-                feature={feature}
-                isActive={index === activeIndex}
-                onSelect={() => {
-                  selectFeature(index);
-                }}
-              />
-            ))}
-          </ul>
-        </div>
+        <ul className="border-border flex flex-col border-l">
+          {APP_FEATURES.map((feature, index) => (
+            <AppFeatureListItem
+              key={feature.id}
+              feature={feature}
+              isActive={index === activeIndex}
+              onSelect={() => {
+                selectFeature(index);
+              }}
+            />
+          ))}
+        </ul>
       </div>
-    </article>
+    </LandingSection>
   );
 }

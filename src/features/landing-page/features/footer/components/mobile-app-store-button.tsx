@@ -15,7 +15,7 @@ export function MobileAppStoreButton({
 
   return (
     <Button
-      className="bg-foreground text-background hover:bg-foreground/90 h-auto gap-3 rounded-lg"
+      className="bg-foreground text-background hover:bg-foreground/90 h-auto justify-start gap-3 rounded-lg py-2.5"
       asChild
     >
       <FooterLink href={mobileAppStore.href}>

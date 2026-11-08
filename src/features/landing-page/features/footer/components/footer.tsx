@@ -12,12 +12,14 @@ export function LandingFooter() {
   const t = useTranslations("Footer");
 
   return (
-    <footer className="dark w-full pt-20">
-      <div className="relative z-10 container mx-auto -mb-28 px-2 md:px-6">
-        <DownloadBannerCta />
+    <footer className="dark w-full pt-20 md:pt-32">
+      <div className="to-background bg-linear-to-b from-transparent from-60% to-60%">
+        <div className="container mx-auto px-4">
+          <DownloadBannerCta />
+        </div>
       </div>
 
-      <div className="bg-background text-muted-foreground pt-44 pb-8">
+      <div className="bg-background text-muted-foreground pt-16 pb-8">
         <div className="container mx-auto flex flex-col gap-10 px-4 md:flex-row md:items-end md:justify-between">
           <FooterBrand />
           <div className="flex flex-wrap gap-x-12 gap-y-6">

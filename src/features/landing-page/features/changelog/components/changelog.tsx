@@ -1,7 +1,12 @@
 import { getTranslations } from "next-intl/server";
 
 import { fetchResources } from "@/features/backend";
-import { SectionHeader } from "@/features/landing-page/components";
+import {
+  LandingSection,
+  LandingSectionDescription,
+  LandingSectionHeader,
+  LandingSectionTitle,
+} from "@/features/landing-page/components";
 import { Resource } from "@/features/resources";
 
 import { getChangelogEntries } from "../utils/get-changelog-entries";
@@ -13,12 +18,15 @@ export async function Changelog() {
   const entries = getChangelogEntries(versions);
 
   return (
-    <article className="border-border bg-accent dark:bg-accent/25 flex w-full flex-col items-center justify-center border-y py-20">
-      <div className="container flex flex-col px-4">
-        <SectionHeader title={t("title")} description={t("description")} />
+    <LandingSection className="border-border bg-accent dark:bg-accent/25 border-y">
+      <LandingSectionHeader>
+        <LandingSectionTitle text={t("title")} />
+        <LandingSectionDescription>
+          {t("description")}
+        </LandingSectionDescription>
+      </LandingSectionHeader>
 
-        <ChangelogTimeline entries={entries} />
-      </div>
-    </article>
+      <ChangelogTimeline entries={entries} />
+    </LandingSection>
   );
 }

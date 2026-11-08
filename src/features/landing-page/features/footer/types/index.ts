@@ -11,4 +11,5 @@ export interface MobileAppStoreLink {
   name: string;
   href: Route;
   logo: StaticImageData;
+  operatingSystem: "Android" | "iOS";
 }
