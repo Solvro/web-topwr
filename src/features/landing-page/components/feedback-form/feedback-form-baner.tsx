@@ -1,6 +1,6 @@
 import { MessageSquare } from "lucide-react";
 
-export function FeedbackFormAside() {
+export function FeedbackFormBaner() {
   return (
     <aside className="from-gradient-1 to-gradient-2 relative isolate flex min-h-[360px] flex-col justify-center overflow-hidden bg-gradient-to-br px-9 py-10 text-white sm:px-10">
       <div

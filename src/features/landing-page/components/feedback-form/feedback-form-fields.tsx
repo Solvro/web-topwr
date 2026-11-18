@@ -14,11 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-import {
-  
-  feedbackCategories
-} from "./feedback-form-schema";
-import type {FeedbackFormValues} from "./feedback-form-schema";
+import { feedbackCategories } from "./feedback-form-schema";
+import type { FeedbackFormValues } from "./feedback-form-schema";
 
 interface FeedbackFormFieldsProps {
   form: UseFormReturn<FeedbackFormValues>;
@@ -86,7 +83,9 @@ export function FeedbackFormFields({
                       type="button"
                       role="radio"
                       aria-checked={field.value === category}
-                      onClick={() => { field.onChange(category); }}
+                      onClick={() => {
+                        field.onChange(category);
+                      }}
                       className={`focus-visible:ring-primary cursor-pointer rounded-lg px-3 py-1.5 text-[11px] leading-none text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 ${
                         field.value === category
                           ? "bg-gradient-1"
