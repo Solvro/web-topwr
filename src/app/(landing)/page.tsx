@@ -6,6 +6,7 @@ import {
   Changelog,
   Contributors,
   FAQ,
+  FeedbackForm,
   Hero,
   LandingFooter,
 } from "@/features/landing-page";
@@ -28,6 +29,7 @@ export default async function LandingPage() {
       <Changelog />
       <Contributors />
       <FAQ />
+      <FeedbackForm />
       <LandingFooter />
     </div>
   );
