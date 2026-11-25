@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { Button } from "@/components/ui/button";
+import { isSolvroAdmin, useCurrentUser } from "@/features/authentication";
 import { getKey } from "@/features/backend";
 import type { GetResourcesResponsePaginated } from "@/features/backend/types";
 import { isOrderableResource } from "@/features/resources";
@@ -81,6 +82,7 @@ export function InfiniteScroller<T extends EditableResource>({
   relatedResources: ResourceRelations<T>;
 }) {
   const { ref, inView } = useInView();
+  const user = useCurrentUser();
 
   const queryKey = [
     getKey.query.resourceList(resource),
@@ -119,7 +121,7 @@ export function InfiniteScroller<T extends EditableResource>({
 
   return (
     <section className="flex flex-col gap-4">
-      {isOrderableResource(resource) ? (
+      {isOrderableResource(resource) && isSolvroAdmin(user) ? (
         <OrderableItems
           items={flatData as ResourceDataType<typeof resource>[]}
           resource={resource}

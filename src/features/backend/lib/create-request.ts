@@ -13,6 +13,7 @@ export function createRequest<T extends Resource>(
   {
     accessTokenOverride,
     resource,
+    draft = false,
     body,
     includeRelations = false,
     ...options
@@ -29,7 +30,7 @@ export function createRequest<T extends Resource>(
     };
   }
 
-  const endpointPrefix = getResourceEndpointPrefix(resource);
+  const endpointPrefix = getResourceEndpointPrefix(resource, draft);
   let queryParameters = getRelationQueryParameters(resource, includeRelations);
   if (queryParameters !== "") {
     queryParameters = `${endpoint.includes("?") ? "&" : "?"}${queryParameters}`;

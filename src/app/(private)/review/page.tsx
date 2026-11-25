@@ -1,6 +1,5 @@
-import { ErrorMessage } from "@/components/presentation/error-message";
-import { ApplicationError } from "@/config/enums";
+import { DraftList } from "@/features/review/server";
 
 export default function ReviewPage() {
-  return <ErrorMessage type={ApplicationError.NotImplemented} />;
+  return <DraftList />;
 }

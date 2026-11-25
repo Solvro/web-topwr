@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react";
 import type { Route } from "next";
 import type { ZodString } from "zod";
 
@@ -11,6 +12,7 @@ export interface ItemBadge {
   badgeText: string;
   color?: string;
   editRoute?: Route;
+  icon?: LucideIcon;
 }
 
 export interface BadgeConfig<R extends Resource> {

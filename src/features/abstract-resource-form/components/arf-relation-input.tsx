@@ -57,6 +57,7 @@ export function ArfRelationInput<
   relationDefinition,
   control,
   defaultValues,
+  isDraft,
 }: {
   resource: T;
   resourceRelation: L;
@@ -65,6 +66,7 @@ export function ArfRelationInput<
   relationDefinition: RelationDefinition<T, L>;
   control: Control<ResourceFormValues<T>>;
   defaultValues: ResourceDefaultValues<T>;
+  isDraft?: boolean;
 }) {
   const { showSheet } = useArfSheet<T>(resource);
   const relationContext = useArfRelation();
@@ -126,6 +128,14 @@ export function ArfRelationInput<
       <PendingInput
         label={inputLabel}
         message={`${capitalizeFirstLetter(relationDeclined.plural.accusative)} można dodać po utworzeniu ${declensions.genitive}.`}
+      />
+    );
+  }
+  if (isDraft === true) {
+    return (
+      <PendingInput
+        label={inputLabel}
+        message={`Edycja ${relationDeclined.plural.genitive} w wersjach roboczych nie jest obecnie wspierana.`}
       />
     );
   }

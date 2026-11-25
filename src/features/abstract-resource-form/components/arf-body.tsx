@@ -48,6 +48,7 @@ export function ArfBody<T extends Resource>({
   pivotResources,
   inputs,
   isGroup = false,
+  isDraft,
 }: {
   resource: T;
   control: Control<ResourceFormValues<T>>;
@@ -57,6 +58,7 @@ export function ArfBody<T extends Resource>({
   pivotResources: ResourcePivotRelationData<T>;
   inputs?: AbstractResourceFormInputs<T>;
   isGroup?: boolean;
+  isDraft?: boolean;
 }) {
   const { setValue } = useFormContext<ResourceFormValues<T>>();
   const relationContext = useArfRelation();
@@ -160,6 +162,7 @@ export function ArfBody<T extends Resource>({
               relatedResources={relatedResources}
               pivotResources={pivotResources}
               isGroup
+              isDraft={isDraft}
             />
           );
         })}
@@ -426,6 +429,7 @@ export function ArfBody<T extends Resource>({
                     pivotResources={pivotResources}
                     control={control}
                     defaultValues={defaultValues}
+                    isDraft={isDraft}
                   />
                 );
               }}
