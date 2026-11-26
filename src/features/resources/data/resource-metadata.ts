@@ -183,7 +183,11 @@ export const RESOURCE_METADATA = {
           description: { label: "Opis" },
         },
         imageInputs: {
-          coverPhotoKey: { label: "Zdjęcie w tle", type: ImageType.Banner },
+          coverPhotoKey: {
+            label: "Zdjęcie w tle",
+            type: ImageType.Banner,
+            size: "wide",
+          },
         },
       },
       defaultValues: {
@@ -1061,7 +1065,7 @@ export const RESOURCE_METADATA = {
     form: {
       inputs: {
         imageInputs: {
-          imageKey: { label: "Zdjęcie", type: ImageType.Banner },
+          imageKey: { label: "Zdjęcie", type: ImageType.Banner, size: "wide" },
         },
         textInputs: {
           title: { label: "Tytuł" },
@@ -1407,7 +1411,7 @@ export const RESOURCE_METADATA = {
     form: {
       inputs: {
         imageInputs: {
-          photoKey: { label: "Zdjęcie", type: ImageType.Banner },
+          photoKey: { label: "Zdjęcie", type: ImageType.Banner, size: "wide" },
         },
         textInputs: {
           roomOrNearby: { label: "Numer pokoju lub opis lokalizacji" },
