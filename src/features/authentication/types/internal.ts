@@ -14,3 +14,5 @@ export type RoutePermission = keyof typeof ROUTE_PERMISSIONS;
 export type AuthState = z.infer<typeof AuthStateSchema>;
 export type LoginFormValues = z.infer<typeof LoginSchema>;
 export type User = z.infer<typeof UserSchema>;
+
+export type TokenStatus = "ok" | "expiring-soon" | "expired" | "both-expired";
