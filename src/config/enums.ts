@@ -9,6 +9,7 @@ export enum ApplicationError {
 export enum ImageType {
   Logo = "logo",
   Banner = "banner",
+  Avatar = "avatar",
 }
 
 // from https://github.com/Solvro/backend-topwr/blob/main/app/enums/weekday.ts
